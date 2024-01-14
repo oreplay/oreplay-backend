@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  nginx:
+    image: public.ecr.aws/ct-nilus/base-images:nginx-php-dev-v18-focal-7.4
+    command: bash -c "php-fpm7.4 && nginx -g 'daemon off;'"
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - .:/var/www/cplatform/public
+      - ./docker/sites/nginx-site-dev.conf:/etc/nginx/sites-available/courseticket
+    links:
+      - mysql
+      - memcached
+    env_file:
+      - nginx-dev.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  memcached:
+    image: docker.io/bitnami/memcached:1.6.9-debian-10-r194
+    #ports:
+    #  - '11211:11211'
+  mysql:
+    image: mysql:8.0.28-debian
+    #ports:
+    #  - '13307:3306'
+    volumes:
+      - ./app_rest/tmp/docker-mysql-datadir:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: phputesting
+      MYSQL_USER: phputesting
+      MYSQL_PASSWORD: a1234
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_HOST: '%'
