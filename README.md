@@ -24,9 +24,7 @@ su composeruser
 composer install
 ```
 
-# Work with docker
-
-Connect via ssh to dockerssh@localhost:2222 and the password: password
+# Working with docker
 
 The local path is the location of this readme file and it should be mapped to `/var/www/cplatform/public`
 
