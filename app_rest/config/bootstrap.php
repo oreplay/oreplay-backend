@@ -214,16 +214,16 @@ TypeFactory::map('time', StringType::class);
 //Inflector::rules('plural', ['/^(inflect)or$/i' => '\1ables']);
 //Inflector::rules('irregular', ['red' => 'redlings']);
 //Inflector::rules('uninflected', ['dontinflectme']);
-function jsonEncodeFormatFunction() {
-    /** @var \Cake\I18n\FrozenTime $frozenTime */
-    $frozenTime = func_get_arg(0);
-    return $frozenTime->i18nFormat(
-        "yyyy-MM-dd'T'HH':'mm':'ssxxx",
-        null,
-        \App\Lib\Consts\Languages::ENG
-    );
-}
-\Cake\I18n\FrozenTime::setJsonEncodeFormat('jsonEncodeFormatFunction');
+\Cake\I18n\FrozenTime::setJsonEncodeFormat(
+    function () {
+        /** @var \Cake\I18n\FrozenTime $frozenTime */
+        $frozenTime = func_get_arg(0);
+        return $frozenTime->i18nFormat(
+            "yyyy-MM-dd'T'HH':'mm':'ssxxx",
+            null,
+            \App\Lib\Consts\Languages::ENG
+        );
+    });
 
 function migrationList(): array
 {

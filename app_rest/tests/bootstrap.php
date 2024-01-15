@@ -68,4 +68,13 @@ session_id('cli');
 \RestApi\Lib\RestMigrator::runAll(migrationList());
 
 $_SERVER['HTTP_HOST'] = 'dev.example.com';
-\Cake\I18n\FrozenTime::setJsonEncodeFormat('jsonEncodeFormatFunction');
+\Cake\I18n\FrozenTime::setJsonEncodeFormat(
+    function () {
+        /** @var \Cake\I18n\FrozenTime $frozenTime */
+        $frozenTime = func_get_arg(0);
+        return $frozenTime->i18nFormat(
+            "yyyy-MM-dd'T'HH':'mm':'ssxxx",
+            null,
+            \App\Lib\Consts\Languages::ENG
+        );
+    });
