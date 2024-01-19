@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0ad53b38be1280c8bbc06fd206d28b64",
+    "content-hash": "633cc2adbee2576217dafca21369b5d7",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
@@ -980,26 +980,25 @@
         },
         {
             "name": "freefri/cake-rest-api",
-            "version": "0.1.1",
+            "version": "0.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/freefri/cake-rest-api.git",
-                "reference": "334ab126b75fc3b63935418f71713ee25d856aad"
+                "reference": "b8e5e17b76e496cd2227b366a3d21b97ef4507be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/freefri/cake-rest-api/zipball/334ab126b75fc3b63935418f71713ee25d856aad",
-                "reference": "334ab126b75fc3b63935418f71713ee25d856aad",
+                "url": "https://api.github.com/repos/freefri/cake-rest-api/zipball/b8e5e17b76e496cd2227b366a3d21b97ef4507be",
+                "reference": "b8e5e17b76e496cd2227b366a3d21b97ef4507be",
                 "shasum": ""
             },
             "require": {
-                "bshaffer/oauth2-server-php": "~1.7",
+                "bshaffer/oauth2-server-php": "~1.14",
                 "cakephp/cakephp": "^4.4",
                 "cakephp/migrations": "^3.2",
                 "composer/composer": "^2.0",
                 "ext-json": "*",
                 "ext-mbstring": "*",
-                "ext-memcached": "*",
                 "php": ">=7.3"
             },
             "require-dev": {
@@ -1041,7 +1040,7 @@
                 "issues": "https://github.com/freefri/cake-rest-api/issues",
                 "source": "https://github.com/freefri/cake-rest-api"
             },
-            "time": "2024-01-14T20:26:33+00:00"
+            "time": "2024-01-17T14:47:53+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -4656,16 +4655,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "9.6.15",
+            "version": "9.6.16",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "05017b80304e0eb3f31d90194a563fd53a6021f1"
+                "reference": "3767b2c56ce02d01e3491046f33466a1ae60a37f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/05017b80304e0eb3f31d90194a563fd53a6021f1",
-                "reference": "05017b80304e0eb3f31d90194a563fd53a6021f1",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3767b2c56ce02d01e3491046f33466a1ae60a37f",
+                "reference": "3767b2c56ce02d01e3491046f33466a1ae60a37f",
                 "shasum": ""
             },
             "require": {
@@ -4739,7 +4738,7 @@
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
                 "security": "https://github.com/sebastianbergmann/phpunit/security/policy",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.15"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/9.6.16"
             },
             "funding": [
                 {
@@ -4755,7 +4754,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-12-01T16:55:19+00:00"
+            "time": "2024-01-19T07:03:14+00:00"
         },
         {
             "name": "psy/psysh",

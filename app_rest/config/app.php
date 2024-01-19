@@ -202,7 +202,7 @@ return [
      */
     'Error' => [
         'errorLevel' => E_ALL,
-        'exceptionRenderer' => \App\Lib\Error\ExceptionRenderer::class,
+        'exceptionRenderer' => \RestApi\Lib\Error\ExceptionRenderer::class,
         'skipLog' => [],
         'log' => true,
         'trace' => true,
