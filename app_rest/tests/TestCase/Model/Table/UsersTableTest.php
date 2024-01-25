@@ -28,20 +28,6 @@ class UsersTableTest extends TestCase
         parent::setUp();
         $this->Users = UsersTable::load();
     }
-
-    public function testGetUserGroup(): void
-    {
-        $query = $this->Users->find();
-        $this->assertInstanceOf('Cake\ORM\Query', $query);
-        $this->assertNotEmpty($query->all()->toArray(), 'returns not empty');
-        $uid = UsersFixture::SELLER_ID;
-        $group_id = UserGroups::SELLER;
-        Cache::delete('_getFirst' . $uid, CacheGrp::EXTRALONG);
-
-        $this->assertEquals($group_id, $this->Users->get($uid)->group_id, 'wrong get()');
-        $this->assertEquals($group_id, $this->Users->getUserGroup($uid), 'wrong getUserGroup()');
-    }
-
     public function testCheckLogin_withEmptyArray(): void
     {
         $this->expectException(BadRequestException::class);

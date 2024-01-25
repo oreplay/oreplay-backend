@@ -5,8 +5,10 @@ namespace App\Model\Table;
 use App\Lib\Consts\CacheGrp;
 use App\Model\Entity\User;
 use Cake\Auth\DefaultPasswordHasher;
+use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\UnauthorizedException;
+use Cake\Utility\Text;
 
 class UsersTable extends AppTable
 {
@@ -26,6 +28,13 @@ class UsersTable extends AppTable
     public function initialize(array $config): void
     {
         $this->addBehavior('Timestamp');
+    }
+
+    public function newEmptyEntity(): EntityInterface
+    {
+        $res = parent::newEmptyEntity();
+        $res->id = Text::uuid();
+        return $res;
     }
 
     public function getDependentUserIDs($uID): array

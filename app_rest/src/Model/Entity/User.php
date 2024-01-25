@@ -25,8 +25,8 @@ class User extends Entity
 
         'password' => true,
         'email' => true,
-        'firstname' => true,
-        'lastname' => true,
+        'first_name' => true,
+        'last_name' => true,
     ];
 
     protected $_hidden = [

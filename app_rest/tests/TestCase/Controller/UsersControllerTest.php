@@ -21,8 +21,8 @@ class UsersControllerTest extends ApiCommonErrorsTest
     {
         $data = [
             'email'=> 'test@example.com',
-            'firstname'=> 'Test',
-            'lastname'=> 'Last',
+            'first_name'=> 'Test',
+            'last_name'=> 'Last',
             'password'=> 'passpass'
         ];
 
@@ -32,8 +32,8 @@ class UsersControllerTest extends ApiCommonErrorsTest
         $return = json_decode($this->_getBodyAsString(), true)['data'];
 
         $this->assertEquals($data['email'], $return['email']);
-        $this->assertEquals($data['firstname'], $return['firstname']);
-        $this->assertEquals($data['lastname'], $return['lastname']);
+        $this->assertEquals($data['first_name'], $return['first_name']);
+        $this->assertEquals($data['last_name'], $return['last_name']);
         $this->assertArrayNotHasKey('password', $return);
     }
 }
