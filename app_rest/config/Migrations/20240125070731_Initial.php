@@ -1,4 +1,14 @@
-#######################################################################
+<?php
+declare(strict_types=1);
+
+use Migrations\AbstractMigration;
+
+class Initial extends AbstractMigration
+{
+    public function up(): void
+    {
+        $this->getAdapter()->execute("
+        #######################################################################
 drop table if exists stage_types;
 
 CREATE TABLE stage_types (
@@ -74,7 +84,7 @@ ALTER TABLE stages
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-ALTER TABLE stages 
+ALTER TABLE stages
     ADD FOREIGN KEY (stage_type_id)
     REFERENCES stage_types (id)
     ON DELETE SET NULL;
@@ -85,6 +95,7 @@ drop table if exists users;
 CREATE TABLE users (
         id                   VARCHAR(36) NOT NULL,
         password             VARCHAR(128),
+        email                VARCHAR(160),
         first_name           VARCHAR(50),
         last_name            VARCHAR(100),
         is_admin             BOOLEAN NOT NULL DEFAULT 0,
@@ -267,13 +278,13 @@ CREATE TABLE teams (
   CONSTRAINT PRIMARY KEY(id));
 
 ALTER TABLE teams
-    ADD FOREIGN KEY (event_id) 
+    ADD FOREIGN KEY (event_id)
     REFERENCES events (id)
-    ON DELETE CASCADE 
+    ON DELETE CASCADE
     ON UPDATE CASCADE;
 
 ALTER TABLE teams
-    ADD FOREIGN KEY (stage_id) 
+    ADD FOREIGN KEY (stage_id)
     REFERENCES stages (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
@@ -323,13 +334,13 @@ CREATE TABLE runners (
   CONSTRAINT PRIMARY KEY(id));
 
 ALTER TABLE runners
-    ADD FOREIGN KEY (event_id) 
+    ADD FOREIGN KEY (event_id)
     REFERENCES events (id)
-    ON DELETE CASCADE 
+    ON DELETE CASCADE
     ON UPDATE CASCADE;
 
 ALTER TABLE runners
-    ADD FOREIGN KEY (stage_id) 
+    ADD FOREIGN KEY (stage_id)
     REFERENCES stages (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
@@ -395,18 +406,18 @@ CREATE TABLE controls (
   CONSTRAINT PRIMARY KEY(id));
 
 ALTER TABLE controls
-    ADD FOREIGN KEY (event_id) 
+    ADD FOREIGN KEY (event_id)
     REFERENCES events (id)
-    ON DELETE CASCADE 
+    ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-ALTER TABLE controls 
-    ADD FOREIGN KEY (stage_id) 
+ALTER TABLE controls
+    ADD FOREIGN KEY (stage_id)
     REFERENCES stages (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-ALTER TABLE controls 
+ALTER TABLE controls
     ADD FOREIGN KEY (control_type_id)
     REFERENCES control_types (id)
     ON DELETE SET NULL;
@@ -432,13 +443,13 @@ CREATE TABLE classes_controls (
   CONSTRAINT PRIMARY KEY(class_id, control_id, id_leg, id_revisit));
 
 ALTER TABLE classes_controls
-    ADD FOREIGN KEY (event_id) 
+    ADD FOREIGN KEY (event_id)
     REFERENCES events (id)
-    ON DELETE CASCADE 
+    ON DELETE CASCADE
     ON UPDATE CASCADE;
 
 ALTER TABLE classes_controls
-    ADD FOREIGN KEY (stage_id) 
+    ADD FOREIGN KEY (stage_id)
     REFERENCES stages (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
@@ -506,30 +517,30 @@ CREATE TABLE runner_results (
         deleted              TIMESTAMP NULL,
   CONSTRAINT PRIMARY KEY(id));
 
-ALTER TABLE runner_results 
-    ADD FOREIGN KEY (event_id) 
+ALTER TABLE runner_results
+    ADD FOREIGN KEY (event_id)
     REFERENCES events (id)
-    ON DELETE CASCADE 
+    ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-ALTER TABLE runner_results 
-    ADD FOREIGN KEY (stage_id) 
+ALTER TABLE runner_results
+    ADD FOREIGN KEY (stage_id)
     REFERENCES stages (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-ALTER TABLE runner_results 
+ALTER TABLE runner_results
     ADD FOREIGN KEY (runner_id)
     REFERENCES runners (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-ALTER TABLE runner_results 
+ALTER TABLE runner_results
     ADD FOREIGN KEY (class_id)
     REFERENCES classes (id)
     ON DELETE SET NULL;
 
-ALTER TABLE runner_results 
+ALTER TABLE runner_results
     ADD FOREIGN KEY (result_type_id)
     REFERENCES result_types (id)
     ON DELETE SET NULL;
@@ -567,30 +578,30 @@ CREATE TABLE team_results (
         deleted              TIMESTAMP NULL,
   CONSTRAINT PRIMARY KEY(id));
 
-ALTER TABLE team_results 
-    ADD FOREIGN KEY (event_id) 
+ALTER TABLE team_results
+    ADD FOREIGN KEY (event_id)
     REFERENCES events (id)
-    ON DELETE CASCADE 
+    ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-ALTER TABLE team_results 
-    ADD FOREIGN KEY (stage_id) 
+ALTER TABLE team_results
+    ADD FOREIGN KEY (stage_id)
     REFERENCES stages (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-ALTER TABLE team_results 
+ALTER TABLE team_results
     ADD FOREIGN KEY (team_id)
     REFERENCES teams (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-ALTER TABLE team_results 
+ALTER TABLE team_results
     ADD FOREIGN KEY (class_id)
     REFERENCES classes (id)
     ON DELETE SET NULL;
 
-ALTER TABLE team_results 
+ALTER TABLE team_results
     ADD FOREIGN KEY (result_type_id)
     REFERENCES result_types (id)
     ON DELETE SET NULL;
@@ -631,53 +642,53 @@ CREATE TABLE splits (
 CREATE INDEX splits_lectura ON splits (sicard, station, reading_milli);
 CREATE INDEX splits_lectura2 ON splits (event_id, stage_id, sicard, station, reading_milli);
 
-ALTER TABLE splits 
-    ADD FOREIGN KEY (event_id) 
+ALTER TABLE splits
+    ADD FOREIGN KEY (event_id)
     REFERENCES events (id)
-    ON DELETE CASCADE 
+    ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-ALTER TABLE splits 
-    ADD FOREIGN KEY (stage_id) 
+ALTER TABLE splits
+    ADD FOREIGN KEY (stage_id)
     REFERENCES stages (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-ALTER TABLE splits 
+ALTER TABLE splits
     ADD FOREIGN KEY (runner_result_id)
     REFERENCES runner_results (id)
     ON DELETE SET NULL;
 
-ALTER TABLE splits 
+ALTER TABLE splits
     ADD FOREIGN KEY (team_result_id)
     REFERENCES team_results (id)
     ON DELETE SET NULL;
 
-ALTER TABLE splits 
+ALTER TABLE splits
     ADD FOREIGN KEY (class_id)
     REFERENCES classes (id)
     ON DELETE SET NULL;
 
-ALTER TABLE splits 
+ALTER TABLE splits
     ADD FOREIGN KEY (control_id)
     REFERENCES controls (id);
 
-ALTER TABLE splits 
+ALTER TABLE splits
     ADD FOREIGN KEY (class_id, control_id, id_leg, id_revisit)
     REFERENCES classes_controls (class_id, control_id, id_leg, id_revisit)
     ON DELETE SET NULL;
 
-ALTER TABLE splits 
+ALTER TABLE splits
     ADD FOREIGN KEY (runner_id)
     REFERENCES runners (id)
     ON DELETE SET NULL;
 
-ALTER TABLE splits 
+ALTER TABLE splits
     ADD FOREIGN KEY (team_id)
     REFERENCES teams (id)
     ON DELETE SET NULL;
 
-ALTER TABLE splits 
+ALTER TABLE splits
     ADD FOREIGN KEY (club_id)
     REFERENCES clubs (id)
     ON DELETE SET NULL;
@@ -699,20 +710,47 @@ CREATE TABLE answers (
         deleted              TIMESTAMP NULL,
   CONSTRAINT PRIMARY KEY(id));
 
-ALTER TABLE answers 
-    ADD FOREIGN KEY (event_id) 
+ALTER TABLE answers
+    ADD FOREIGN KEY (event_id)
     REFERENCES events (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-ALTER TABLE answers 
-    ADD FOREIGN KEY (stage_id) 
+ALTER TABLE answers
+    ADD FOREIGN KEY (stage_id)
     REFERENCES stages (id)
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-ALTER TABLE answers 
+ALTER TABLE answers
     ADD FOREIGN KEY (runner_result_id)
     REFERENCES runner_results (id)
     ON DELETE SET NULL;
+        ");
 
+    }
+
+    public function down(): void
+    {
+        $this->table('answers')->drop()->save();
+        $this->table('classes')->drop()->save();
+        $this->table('classes_controls')->drop()->save();
+        $this->table('clubs')->drop()->save();
+        $this->table('control_types')->drop()->save();
+        $this->table('controls')->drop()->save();
+        $this->table('courses')->drop()->save();
+        $this->table('events')->drop()->save();
+        $this->table('federations')->drop()->save();
+        $this->table('result_types')->drop()->save();
+        $this->table('runner_results')->drop()->save();
+        $this->table('runners')->drop()->save();
+        $this->table('splits')->drop()->save();
+        $this->table('stage_types')->drop()->save();
+        $this->table('stages')->drop()->save();
+        $this->table('team_results')->drop()->save();
+        $this->table('teams')->drop()->save();
+        $this->table('users')->drop()->save();
+        $this->table('users_events')->drop()->save();
+        $this->table('users_federations')->drop()->save();
+    }
+}

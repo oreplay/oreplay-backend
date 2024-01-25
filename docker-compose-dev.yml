@@ -23,8 +23,8 @@ services:
     #  - '11211:11211'
   mysql:
     image: mysql:8.0.28-debian
-    #ports:
-    #  - '13307:3306'
+    ports:
+      - '13307:3306'
     volumes:
       - ./app_rest/tmp/docker-mysql-datadir:/var/lib/mysql
     environment:
