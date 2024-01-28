@@ -62,6 +62,8 @@ More info about [phinx](https://book.cakephp.org/phinx/0/en/migrations.html) and
 ```
 # create a new migration called 'CreateUsers'
 bin/cake bake migration CreateUsers
+# create a new migration called 'MyNewMigration' for the 'PluginName' (using -p for plugins)
+bin/cake bake migration MyNewMigration -p PluginName
 
 # execute the migration on the db
 bin/cake migrations migrate

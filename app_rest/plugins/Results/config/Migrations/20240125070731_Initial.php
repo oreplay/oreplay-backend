@@ -9,7 +9,6 @@ class Initial extends AbstractMigration
     {
         $this->getAdapter()->execute("
         #######################################################################
-drop table if exists stage_types;
 
 CREATE TABLE stage_types (
         id                   INTEGER NOT NULL,
@@ -28,7 +27,6 @@ INSERT INTO stage_types VALUES (5, 'Raid', NULL, NULL, NULL);
 INSERT INTO stage_types VALUES (6, 'Trail-O', NULL, NULL, NULL);
 
 #######################################################################
-drop table if exists federations;
 
 CREATE TABLE federations (
         id                   VARCHAR(36) NOT NULL,
@@ -42,7 +40,6 @@ INSERT INTO federations VALUES ('FEDO', 'FEDO SICO', NULL, NULL, NULL);
 INSERT INTO federations VALUES ('IOF', 'IOF OEVENTOR', NULL, NULL, NULL);
 
 #######################################################################
-drop table if exists events;
 
 CREATE TABLE events (
         id                   INTEGER NOT NULL AUTO_INCREMENT,
@@ -61,7 +58,6 @@ ALTER TABLE events
     ON DELETE SET NULL;
 
 #######################################################################
-drop table if exists stages;
 
 CREATE TABLE stages (
         id                   INTEGER NOT NULL AUTO_INCREMENT,
@@ -90,23 +86,10 @@ ALTER TABLE stages
     ON DELETE SET NULL;
 
 #######################################################################
-drop table if exists users;
 
-CREATE TABLE users (
-        id                   VARCHAR(36) NOT NULL,
-        password             VARCHAR(128),
-        email                VARCHAR(160),
-        first_name           VARCHAR(50),
-        last_name            VARCHAR(100),
-        is_admin             BOOLEAN NOT NULL DEFAULT 0,
-        is_super             BOOLEAN NOT NULL DEFAULT 0,
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
-  CONSTRAINT PRIMARY KEY(id));
+## CREATE TABLE users (
 
 #######################################################################
-drop table if exists users_federations;
 
 CREATE TABLE users_federations (
         user_id              VARCHAR(36) NOT NULL,
@@ -130,7 +113,6 @@ ALTER TABLE users_federations
     ON UPDATE CASCADE;
 
 #######################################################################
-drop table if exists users_events;
 
 CREATE TABLE users_events (
         user_id              VARCHAR(36) NOT NULL,
@@ -154,7 +136,6 @@ ALTER TABLE users_events
     ON UPDATE CASCADE;
 
 #######################################################################
-drop table if exists clubs;
 
 CREATE TABLE clubs (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -184,7 +165,6 @@ ALTER TABLE clubs
     ON UPDATE CASCADE;
 
 #######################################################################
-drop table if exists courses;
 
 CREATE TABLE courses (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -222,7 +202,6 @@ ALTER TABLE courses
     ON UPDATE CASCADE;
 
 #######################################################################
-drop table if exists classes;
 
 CREATE TABLE classes (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -256,7 +235,6 @@ ALTER TABLE classes
     ON DELETE SET NULL;
 
 #######################################################################
-drop table if exists teams;
 
 CREATE TABLE teams (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -300,7 +278,6 @@ ALTER TABLE teams
     ON DELETE SET NULL;
 
 #######################################################################
-drop table if exists runners;
 
 CREATE TABLE runners (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -366,7 +343,6 @@ ALTER TABLE runners
     ON DELETE SET NULL;
 
 #######################################################################
-drop table if exists control_types;
 
 CREATE TABLE control_types (
         id                   INTEGER NOT NULL,
@@ -383,7 +359,6 @@ INSERT INTO control_types VALUES (3, 'Clear', NULL, NULL, NULL);
 INSERT INTO control_types VALUES (4, 'Check', NULL, NULL, NULL);
 
 #######################################################################
-drop table if exists controls;
 
 CREATE TABLE controls (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -423,7 +398,6 @@ ALTER TABLE controls
     ON DELETE SET NULL;
 
 #######################################################################
-drop table if exists classes_controls;
 
 CREATE TABLE classes_controls (
         class_id             BIGINT NOT NULL,
@@ -467,7 +441,6 @@ ALTER TABLE classes_controls
     ON UPDATE CASCADE;
 
 #######################################################################
-drop table if exists result_types;
 
 CREATE TABLE result_types (
         id                   INTEGER NOT NULL,
@@ -484,7 +457,6 @@ INSERT INTO result_types VALUES (3, 'Trail-O Timed', NULL, NULL, NULL);
 INSERT INTO result_types VALUES (4, 'Raid Section', NULL, NULL, NULL);
 
 #######################################################################
-drop table if exists runner_results;
 
 CREATE TABLE runner_results (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -546,7 +518,6 @@ ALTER TABLE runner_results
     ON DELETE SET NULL;
 
 #######################################################################
-drop table if exists team_results;
 
 CREATE TABLE team_results (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -607,7 +578,6 @@ ALTER TABLE team_results
     ON DELETE SET NULL;
 
 #######################################################################
-drop table if exists splits;
 
 CREATE TABLE splits (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -694,7 +664,6 @@ ALTER TABLE splits
     ON DELETE SET NULL;
 
 #######################################################################
-drop table if exists answers;
 
 CREATE TABLE answers (
         id                   BIGINT NOT NULL AUTO_INCREMENT,

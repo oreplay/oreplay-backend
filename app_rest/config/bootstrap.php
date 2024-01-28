@@ -229,5 +229,6 @@ function migrationList(): array
 {
     return [
         [],
+        ['plugin' => (new \Results\ResultsPlugin)->getName()],
     ];
 }

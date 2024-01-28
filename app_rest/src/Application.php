@@ -34,9 +34,13 @@ class Application extends BaseApplication
         if (Configure::read('debug')) {
             //$this->addPlugin(\DebugKit\Plugin::class);
         }
+        $this->_loadCommonPlugins();
+    }
 
-        // Load more plugins here
+    private function _loadCommonPlugins()
+    {
         $this->addPlugin('Migrations');
+        $this->addPlugin('Results');
     }
 
     /**
@@ -80,9 +84,6 @@ class Application extends BaseApplication
         } catch (MissingPluginException $e) {
             // Do not halt if the plugin is missing
         }
-
-        $this->addPlugin('Migrations');
-
-        // Load more plugins here
+        $this->_loadCommonPlugins();
     }
 }
