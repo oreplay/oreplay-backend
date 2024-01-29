@@ -15,6 +15,9 @@
   </php>
   <!-- Add any additional test suites you want to run here -->
   <testsuites>
+      <testsuite name="Results">
+          <directory>plugins/Results/tests/TestCase/</directory>
+      </testsuite>
       <testsuite name="App">
           <directory>tests/TestCase/</directory>
       </testsuite>

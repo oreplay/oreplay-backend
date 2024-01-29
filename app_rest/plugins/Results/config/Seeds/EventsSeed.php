@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-use App\Model\Table\AppTable;
 use Migrations\AbstractSeed;
+use Results\Model\Entity\Federation;
 
-class UsersSeed extends AbstractSeed
+class EventsSeed extends AbstractSeed
 {
     public function run(): void
     {
@@ -12,16 +12,17 @@ class UsersSeed extends AbstractSeed
         $data = [
             [
                 'id' => 1,
-                'email' => 'admin@example.com',
-                'first_name' => 'Admin',
-                'last_name' => 'Admin',
-                'password' => '$2y$10$HLZ9RADmNnGzt3wx7o54JeaWT6zt2WIARiXDVNdFI4RIcSeLrEvs6',
+                'description' => 'Test event',
+                'initial_date' => '2024-01-25',
+                'final_date' => '2024-01-25',
+                'federation_id' => Federation::FEDO,
                 'created' => $now,
                 'modified' => $now,
+                'deleted' => null,
             ],
         ];
 
-        $table = $this->table(AppTable::TABLE_PREFIX . 'users');
+        $table = $this->table('events');
         if ($table->getAdapter()->fetchAll('SELECT * from ' . $table->getName() . ' LIMIT 1') === []) {
             $table->insert($data)->save();
         }

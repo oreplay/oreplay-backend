@@ -4,14 +4,15 @@ namespace Results\Model\Entity;
 
 use Cake\ORM\Entity;
 
-class Event extends Entity
+class Federation extends Entity
 {
+    const FEDO = 'FEDO';
+    const IOF = 'IOF';
+
     protected $_accessible = [
         '*' => false,
         'id' => false,
         'description' => true,
-        'initial_date' => true,
-        'final_date' => true,
     ];
 
     protected $_hidden = [

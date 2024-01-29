@@ -20,6 +20,8 @@ class OauthAccessTokensSeed extends AbstractSeed
         ];
 
         $table = $this->table('oauth_access_tokens');
-        $table->insert($data)->save();
+        if ($table->getAdapter()->fetchAll('SELECT * from ' . $table->getName() . ' LIMIT 1') === []) {
+            $table->insert($data)->save();
+        }
     }
 }

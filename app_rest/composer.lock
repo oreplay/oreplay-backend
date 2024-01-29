@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "633cc2adbee2576217dafca21369b5d7",
+    "content-hash": "4c12149592da912f6e8885f56526ac4c",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
@@ -70,16 +70,16 @@
         },
         {
             "name": "cakephp/cakephp",
-            "version": "4.5.2",
+            "version": "4.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/cakephp.git",
-                "reference": "c0977cecf79eb2ae0ed8d89423c1014c200801c0"
+                "reference": "998135ad05877401eab1b47dec8ab9f12ef8b910"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/c0977cecf79eb2ae0ed8d89423c1014c200801c0",
-                "reference": "c0977cecf79eb2ae0ed8d89423c1014c200801c0",
+                "url": "https://api.github.com/repos/cakephp/cakephp/zipball/998135ad05877401eab1b47dec8ab9f12ef8b910",
+                "reference": "998135ad05877401eab1b47dec8ab9f12ef8b910",
                 "shasum": ""
             },
             "require": {
@@ -127,7 +127,7 @@
             "require-dev": {
                 "cakephp/cakephp-codesniffer": "^4.5",
                 "mikey179/vfsstream": "^1.6.10",
-                "paragonie/csp-builder": "^2.3",
+                "paragonie/csp-builder": "^2.3 || ^3.0",
                 "phpunit/phpunit": "^8.5 || ^9.3"
             },
             "suggest": {
@@ -179,7 +179,7 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/cakephp"
             },
-            "time": "2023-12-15T03:05:55+00:00"
+            "time": "2024-01-20T03:07:50+00:00"
         },
         {
             "name": "cakephp/chronos",
@@ -980,16 +980,16 @@
         },
         {
             "name": "freefri/cake-rest-api",
-            "version": "0.1.5",
+            "version": "0.1.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/freefri/cake-rest-api.git",
-                "reference": "b8e5e17b76e496cd2227b366a3d21b97ef4507be"
+                "reference": "4d4f8b41144aabbe02a5a26fa68b2e590a2890d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/freefri/cake-rest-api/zipball/b8e5e17b76e496cd2227b366a3d21b97ef4507be",
-                "reference": "b8e5e17b76e496cd2227b366a3d21b97ef4507be",
+                "url": "https://api.github.com/repos/freefri/cake-rest-api/zipball/4d4f8b41144aabbe02a5a26fa68b2e590a2890d3",
+                "reference": "4d4f8b41144aabbe02a5a26fa68b2e590a2890d3",
                 "shasum": ""
             },
             "require": {
@@ -1040,7 +1040,7 @@
                 "issues": "https://github.com/freefri/cake-rest-api/issues",
                 "source": "https://github.com/freefri/cake-rest-api"
             },
-            "time": "2024-01-17T14:47:53+00:00"
+            "time": "2024-01-28T21:19:00+00:00"
         },
         {
             "name": "justinrainbow/json-schema",

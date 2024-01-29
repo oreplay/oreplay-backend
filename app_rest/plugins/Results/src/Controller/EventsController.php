@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Results\Controller;
 
-use App\Model\Table\EventsTable;
+use Results\Model\Table\EventsTable;
 
 /**
  * @property EventsTable $Events
@@ -23,5 +23,10 @@ class EventsController extends ApiController
     public function getList()
     {
         $this->return = $this->Events->find()->orderDesc('id')->all();
+    }
+
+    protected function getData($id)
+    {
+        $this->return = $this->Events->getEventWithRelations($id);
     }
 }

@@ -5,9 +5,11 @@ namespace App\Controller;
 
 use App\Lib\Consts\CacheGrp;
 use App\Lib\I18n\LegacyI18n;
+use App\Model\Table\UsersTable;
 use Cake\Cache\Cache;
 use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\FrozenTime;
+use Migrations\Migrations;
 use RestApi\Lib\RestMigrator;
 
 class PingController extends ApiController
@@ -50,8 +52,24 @@ class PingController extends ApiController
 
         $migrationList = migrationList();
         if ($this->request->getQuery('migrations') !== 'false') {
-            RestMigrator::runMigrations($migrationList, $toRet);
+            try {
+                RestMigrator::runMigrations($migrationList, $toRet);
+            } catch (\InvalidArgumentException $e) {
+                // if db conexion does not exist a new db will be created or tested
+                UsersTable::load()->find()->all();
+            }
+            if ($this->request->getQuery('seeds') !== 'false') {
+                $this->_runMainSeed($migrationList);
+            }
         }
         $this->return = $toRet;
+    }
+
+    private function _runMainSeed(array $migrationList)
+    {
+        $migrations = new Migrations();
+        foreach ($migrationList as $plugin) {
+            $migrations->seed($plugin);
+        }
     }
 }

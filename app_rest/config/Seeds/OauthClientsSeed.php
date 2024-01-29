@@ -18,6 +18,8 @@ class OauthClientsSeed extends AbstractSeed
         ];
 
         $table = $this->table('oauth_clients');
-        $table->insert($data)->save();
+        if ($table->getAdapter()->fetchAll('SELECT * from ' . $table->getName() . ' LIMIT 1') === []) {
+            $table->insert($data)->save();
+        }
     }
 }

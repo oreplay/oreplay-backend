@@ -8,7 +8,6 @@ class Initial extends AbstractMigration
     public function up(): void
     {
         $this->getAdapter()->execute("
-        #######################################################################
 
 CREATE TABLE stage_types (
         id                   INTEGER NOT NULL,
@@ -18,15 +17,17 @@ CREATE TABLE stage_types (
         deleted              TIMESTAMP NULL,
   CONSTRAINT PRIMARY KEY(id));
 
-INSERT INTO stage_types VALUES (0, 'Foot-O, MTBO, Ski-O', NULL, NULL, NULL);
-INSERT INTO stage_types VALUES (1, 'Mass Start', NULL, NULL, NULL);
-INSERT INTO stage_types VALUES (2, 'Chase Start', NULL, NULL, NULL);
-INSERT INTO stage_types VALUES (3, 'Relay', NULL, NULL, NULL);
-INSERT INTO stage_types VALUES (4, 'Rogaine', NULL, NULL, NULL);
-INSERT INTO stage_types VALUES (5, 'Raid', NULL, NULL, NULL);
-INSERT INTO stage_types VALUES (6, 'Trail-O', NULL, NULL, NULL);
+# INSERT INTO stage_types VALUES (0, 'Foot-O, MTBO, Ski-O', NULL, NULL, NULL);
+# INSERT INTO stage_types VALUES (1, 'Mass Start', NULL, NULL, NULL);
+# INSERT INTO stage_types VALUES (2, 'Chase Start', NULL, NULL, NULL);
+# INSERT INTO stage_types VALUES (3, 'Relay', NULL, NULL, NULL);
+# INSERT INTO stage_types VALUES (4, 'Rogaine', NULL, NULL, NULL);
+# INSERT INTO stage_types VALUES (5, 'Raid', NULL, NULL, NULL);
+# INSERT INTO stage_types VALUES (6, 'Trail-O', NULL, NULL, NULL);
 
-#######################################################################
+
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE federations (
         id                   VARCHAR(36) NOT NULL,
@@ -36,10 +37,11 @@ CREATE TABLE federations (
         deleted              TIMESTAMP NULL,
   CONSTRAINT PRIMARY KEY(id));
 
-INSERT INTO federations VALUES ('FEDO', 'FEDO SICO', NULL, NULL, NULL);
-INSERT INTO federations VALUES ('IOF', 'IOF OEVENTOR', NULL, NULL, NULL);
+# INSERT INTO federations VALUES ('FEDO', 'FEDO SICO', NULL, NULL, NULL);
+# INSERT INTO federations VALUES ('IOF', 'IOF OEVENTOR', NULL, NULL, NULL);
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE events (
         id                   INTEGER NOT NULL AUTO_INCREMENT,
@@ -57,7 +59,8 @@ ALTER TABLE events
     REFERENCES federations (id)
     ON DELETE SET NULL;
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE stages (
         id                   INTEGER NOT NULL AUTO_INCREMENT,
@@ -85,11 +88,8 @@ ALTER TABLE stages
     REFERENCES stage_types (id)
     ON DELETE SET NULL;
 
-#######################################################################
-
-## CREATE TABLE users (
-
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE users_federations (
         user_id              VARCHAR(36) NOT NULL,
@@ -112,7 +112,8 @@ ALTER TABLE users_federations
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE users_events (
         user_id              VARCHAR(36) NOT NULL,
@@ -135,7 +136,8 @@ ALTER TABLE users_events
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE clubs (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -164,7 +166,8 @@ ALTER TABLE clubs
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE courses (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -201,7 +204,8 @@ ALTER TABLE courses
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE classes (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -234,7 +238,8 @@ ALTER TABLE classes
     REFERENCES courses (id)
     ON DELETE SET NULL;
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE teams (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -277,7 +282,8 @@ ALTER TABLE teams
     REFERENCES clubs (id)
     ON DELETE SET NULL;
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE runners (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -342,7 +348,8 @@ ALTER TABLE runners
     REFERENCES users (id)
     ON DELETE SET NULL;
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE control_types (
         id                   INTEGER NOT NULL,
@@ -352,13 +359,14 @@ CREATE TABLE control_types (
         deleted              TIMESTAMP NULL,
   CONSTRAINT PRIMARY KEY(id));
 
-INSERT INTO control_types VALUES (0, 'Normal Control', NULL, NULL, NULL);
-INSERT INTO control_types VALUES (1, 'Start', NULL, NULL, NULL);
-INSERT INTO control_types VALUES (2, 'Finish', NULL, NULL, NULL);
-INSERT INTO control_types VALUES (3, 'Clear', NULL, NULL, NULL);
-INSERT INTO control_types VALUES (4, 'Check', NULL, NULL, NULL);
+# INSERT INTO control_types VALUES (0, 'Normal Control', NULL, NULL, NULL);
+# INSERT INTO control_types VALUES (1, 'Start', NULL, NULL, NULL);
+# INSERT INTO control_types VALUES (2, 'Finish', NULL, NULL, NULL);
+# INSERT INTO control_types VALUES (3, 'Clear', NULL, NULL, NULL);
+# INSERT INTO control_types VALUES (4, 'Check', NULL, NULL, NULL);
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE controls (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -397,7 +405,8 @@ ALTER TABLE controls
     REFERENCES control_types (id)
     ON DELETE SET NULL;
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE classes_controls (
         class_id             BIGINT NOT NULL,
@@ -440,7 +449,8 @@ ALTER TABLE classes_controls
     ON DELETE CASCADE
     ON UPDATE CASCADE;
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE result_types (
         id                   INTEGER NOT NULL,
@@ -450,13 +460,14 @@ CREATE TABLE result_types (
         deleted              TIMESTAMP NULL,
   CONSTRAINT PRIMARY KEY(id));
 
-INSERT INTO result_types VALUES (0, 'Overall', NULL, NULL, NULL);
-INSERT INTO result_types VALUES (1, 'Stage', NULL, NULL, NULL);
-INSERT INTO result_types VALUES (2, 'Trail-O Normal', NULL, NULL, NULL);
-INSERT INTO result_types VALUES (3, 'Trail-O Timed', NULL, NULL, NULL);
-INSERT INTO result_types VALUES (4, 'Raid Section', NULL, NULL, NULL);
+# INSERT INTO result_types VALUES (0, 'Overall', NULL, NULL, NULL);
+# INSERT INTO result_types VALUES (1, 'Stage', NULL, NULL, NULL);
+# INSERT INTO result_types VALUES (2, 'Trail-O Normal', NULL, NULL, NULL);
+# INSERT INTO result_types VALUES (3, 'Trail-O Timed', NULL, NULL, NULL);
+# INSERT INTO result_types VALUES (4, 'Raid Section', NULL, NULL, NULL);
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE runner_results (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -517,7 +528,8 @@ ALTER TABLE runner_results
     REFERENCES result_types (id)
     ON DELETE SET NULL;
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE team_results (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -577,7 +589,8 @@ ALTER TABLE team_results
     REFERENCES result_types (id)
     ON DELETE SET NULL;
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE splits (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -663,7 +676,8 @@ ALTER TABLE splits
     REFERENCES clubs (id)
     ON DELETE SET NULL;
 
-#######################################################################
+        ");
+        $this->getAdapter()->execute("
 
 CREATE TABLE answers (
         id                   BIGINT NOT NULL AUTO_INCREMENT,
@@ -696,7 +710,6 @@ ALTER TABLE answers
     REFERENCES runner_results (id)
     ON DELETE SET NULL;
         ");
-
     }
 
     public function down(): void

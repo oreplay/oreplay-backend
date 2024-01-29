@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model\Table;
+namespace Results\Model\Table;
 
 use RestApi\Model\Table\RestApiTable;
 
