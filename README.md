@@ -46,7 +46,7 @@ Usually a new endpoint will require a new set of related objects.
 - Fixture: The data used to work with tests should be defined in fixtures.
 
 ## Controllers
-Each controller must have a route defined in the BasePlugin file located in src/ directory of each plugin 
+Each controller must have a route defined in the BasePlugin file located in src/ directory of each plugin
 or in the routes.php file (when not using plugins)
 
 Controllers could have defined the following methods (all inherited from \RestApi\Controller\RestApiController)
@@ -107,4 +107,11 @@ bin/cake migrations seed
 
 # run specific seeder class
 bin/cake migrations seed --seed UsersSeed
+```
+# Devops
+
+We will use sonarqube community edition (free). For that is needed to be installed as a docker contrainer, with the following command:
+
+```
+docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest
 ```
