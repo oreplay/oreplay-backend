@@ -37,6 +37,17 @@ Also add `/var/www/cplatform/public/app_rest/vendor/autoload.php` as a default a
 * Navigate to the main path with `cd /var/www/cplatform/public/app_rest`
 * Avoid running commands as root (since it can cause permission problems), change the user with: `su composeruser`
 
+# REST API
+
+Our REST API will follow this priciples:
+- Statelessness: Each HTTP request contains all information needed to complete the request.
+- Well-defined HTTP methods: we are using GET, POST, PATCH and DELETE (as defined in the Controllers section) to perform different CRUD opperations
+- Uniform interface:
+  - Universal syntax: Each resource should be addressed with one single URI
+  - The API is sending and receiving data using JSON
+  - HTTP status codes. 20X codes will always be successful responses while 40X or 50X codes will be used for different errors.
+- Self-explanatory: The API will use a common naming convention for URIs and include HATEOAS to improve self discovery
+
 # Creating a new endpoint
 Usually a new endpoint will require a new set of related objects.
 - Controller: This is where the main logic of the endpoint is located
@@ -67,7 +78,7 @@ Queries are built from tables (or if they are very simple, directly from control
 
 You can run [tests](https://book.cakephp.org/4/en/development/testing.html) using phpunit command: `vendor/bin/phpunit -c ../app_rest/phpunit.xml.dist`
 
-But using an **IDE** is desirable (e.g. PhpStorm)
+But using an **IDE** is desirable (e.g. [PhpStorm](https://www.jetbrains.com/phpstorm/))
 
 Generate test coverage with: `vendor/bin/phpunit --coverage-html ./webroot/coverage/*`
 
