@@ -33,3 +33,9 @@ services:
       MYSQL_PASSWORD: a1234
       MYSQL_ROOT_PASSWORD: password
       MYSQL_ROOT_HOST: '%'
+  sonarqube:
+    image: sonarqube:latest
+    ports:
+      - '9000:9000'
+    environment:
+      SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: true
