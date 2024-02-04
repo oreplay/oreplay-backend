@@ -7,6 +7,8 @@
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/app/src" isTestSource="false" packagePrefix="App\" />
       <sourceFolder url="file://$MODULE_DIR$/app/vendor/cakephp/cakephp/tests" isTestSource="true" packagePrefix="Cake\Test\" />
+      <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Results/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Results/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/src" isTestSource="false" packagePrefix="App" />
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/cakephp/cakephp/tests" />
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/cakephp/bake" />
