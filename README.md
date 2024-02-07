@@ -6,12 +6,23 @@ A skeleton for creating applications with [CakePHP](https://cakephp.org) 4.x.
 
 All code is licensed under MIT License
 
-# Serve
+# Serve and working with docker
+
+We are using docker to develop run tests (where the code in local will be used in the server in real time), and make the system run in production. Each docker service works as if it were an independent machines running on the same local network.
+
+All details from those machines are defined in the docker-compose file. Here a few important notes:
+- Ports definition: host machine : container
+- Links: indicates dependencies between services
+- Volumes: files are linked, so they are updated in the host and the container in real time.
+
 Run from [docker-compose](https://docs.docker.com/compose/install/):
 
 ```
 docker-compose -f ./docker-compose-dev.yml up -d
 ```
+
+Running docker compose will start the http server (nginx) on port 80 and 443 by default (customizable from `docker-compose-dev.yml` file).
+In order to use the ports 80 or 443 docker must have **Admin** rights.
 
 Connect as `root` to the database launched using docker-compose (e.g. you can run exec on the container from nginx) and create a new `default` db for the project
 (check `config/app_local.php` file for the credentials)
@@ -24,7 +35,7 @@ su composeruser
 composer install
 ```
 
-# Working with docker
+## Configuring tests in Jetbrains to work with Docker
 
 The local path is the location of this readme file and it should be mapped to `/var/www/cplatform/public`
 
@@ -45,8 +56,32 @@ Our REST API will follow this priciples:
 - Uniform interface:
   - Universal syntax: Each resource should be addressed with one single URI
   - The API is sending and receiving data using JSON
-  - HTTP status codes. 20X codes will always be successful responses while 40X or 50X codes will be used for different errors.
-- Self-explanatory: The API will use a common naming convention for URIs and include HATEOAS to improve self discovery
+  - HTTP response status codes. 20X codes will always be successful responses while 40X or 50X codes will be used for different errors (see list below).
+- Self-explanatory: The API will use a common naming convention for URIs and include [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS) to improve self discovery
+
+## List of used [HTTP status codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
+
+Error codes are handled with php exceptions. There are many exceptions for all common errors described below.
+Some examples are `BadRequestException` (400), `NotFoundException` (404), `ForbiddenException` (403),
+`InternalErrorException` (500), `NotImplementedException` (501), and some other exceptions with custom
+behaviors like `SilentException` (do not add exception to logs), `ValidationException`
+(to handle default model data validation with a 400 code), and `DetailedException` (the message will be displayed even in production)
+
+| HTTP status | URL                                                       |
+|-------------|-----------------------------------------------------------|
+| 200         | OK                                                        |
+| 201         | Created (on POST)                                         |
+| 204         | No content (on DELETE)                                    |
+| 301         | Moved permanently (redirect)                              |
+| 302         | Found (redirect)                                          |
+| 400         | Bad Request / Data validation error (ValidationException) |
+| 401         | Unauthorized (login required)                             |
+| 403         | Forbidden (user without access to action)                 |
+| 404         | Not found (in lists use 200 empty array)                  |
+| 405         | Method not allowd (invalid HTTP method)                   |
+| 409         | Conflict (in checkout)                                    |
+| 50x         | Server error                                              |
+
 
 # Creating a new endpoint
 Usually a new endpoint will require a new set of related objects.
@@ -57,7 +92,7 @@ Usually a new endpoint will require a new set of related objects.
 - Fixture: The data used to work with tests should be defined in fixtures.
 
 ## Controllers
-Each controller must have a route defined in the BasePlugin file located in src/ directory of each plugin 
+Each controller must have a route defined in the BasePlugin file located in src/ directory of each plugin
 or in the routes.php file (when not using plugins)
 
 Controllers could have defined the following methods (all inherited from \RestApi\Controller\RestApiController)
