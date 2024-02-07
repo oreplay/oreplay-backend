@@ -61,7 +61,9 @@ Our REST API will follow this priciples:
 
 ## List of used [HTTP status codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
 
-Error codes are handled with php exceptions. There are many exceptions for all common errors described below.
+Errors and success responses will be handled with standard HTTP status codes.
+
+Error codes are handled in code throwing PHP exceptions. There are many exceptions for all common errors described below.
 Some examples are `BadRequestException` (400), `NotFoundException` (404), `ForbiddenException` (403),
 `InternalErrorException` (500), `NotImplementedException` (501), and some other exceptions with custom
 behaviors like `SilentException` (do not add exception to logs), `ValidationException`
@@ -92,8 +94,16 @@ Usually a new endpoint will require a new set of related objects.
 - Fixture: The data used to work with tests should be defined in fixtures.
 
 ## Controllers
-Each controller must have a route defined in the BasePlugin file located in src/ directory of each plugin
-or in the routes.php file (when not using plugins)
+This repository uses [CakePHP](https://book.cakephp.org/4/en/index.html) [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) framework with a customized layer on top of it to work easier with Rest APIs.
+
+Controllers will have different methods that can be overwritten to add functionality for each HTTP method.
+
+The type data returned for each HTTP method will follow the standard described below.
+
+A naming convention for routes and parameters in the routes are used (for example, the parameter userID will be checked against the authentication token)
+
+Each controller must have a route defined in the `BasePlugin` file located in `src/` directory of each plugin
+or in the `routes.php` file (when not using plugins)
 
 Controllers could have defined the following methods (all inherited from \RestApi\Controller\RestApiController)
 - isPublicController(): optional function to define if the controller is publicly available (without authentication)
@@ -103,6 +113,19 @@ Controllers could have defined the following methods (all inherited from \RestAp
 - addNew($data): method called when an HTTP POST request is delivered by the server. Used to create a new entity.
 - edit($id, $data): method called when an HTTP PATCH request is delivered by the server. Used to edit one entity.
 - delete($id): method called when an HTTP DELETE request is delivered by the server. Used to delete one entity.
+
+Description of HTTP methods and functions in controllers:
+
+| HTTP method | URL          | Controller Method | Description              | Returns          | HTTP success status |
+|-------------|--------------|-------------------|--------------------------|------------------|---------------------|
+| POST        | /entity      | addNew($data)     | Create a new entity      | Entity created   | 201                 |
+| GET         | /entity      | getList()         | Get list                 | List of entities | 200                 |
+| GET         | /entity/{id} | getData($id)      | Get one entity           | Single entity    | 200                 |
+| PATCH       | /entity/{id} | edit($id, $data)  | Edit                     | Entity modified  | 200                 |
+| DELETE      | /entity/{id} | delete($id)       | Deletes single entity    | (no content)     | 204                 |
+| OPTIONS     | *            | (automatic)       | (check ApiCorsComponent) |                  | 200                 |
+| PUT         | /entity/{id} | put($id, $data)   | ~~Edit~~ (not in use)    | Entity modified  | 200                 |
+
 
 ## Model
 The model level used is the one defined by cakephp with 2 different classes (Tables and Entities).
