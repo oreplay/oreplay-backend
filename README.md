@@ -8,12 +8,13 @@ All code is licensed under MIT License
 
 # Serve and working with docker
 
-We are using docker to develop run tests (where the code in local will be used in the server in real time), and make the system run in production. Each docker service works as if it were an independent machines running on the same local network.
+We are using docker to develop run tests (where the code in local will be used in the server in real time), and make the system run in production.
+Each docker service works as if it were an independent machines running on the same local network.
 
-All details from those machines are defined in the docker-compose file. Here a few important notes:
-- Ports definition: host machine : container
-- Links: indicates dependencies between services
-- Volumes: files are linked, so they are updated in the host and the container in real time.
+All details from those machines are defined in the `docker-compose` file. Here a few important notes:
+- **Ports** definition: host machine : container
+- **Links**: indicates dependencies between services
+- **Volumes**: files are linked, so they are updated in the host and the container in real time.
 
 Run from [docker-compose](https://docs.docker.com/compose/install/):
 
@@ -84,19 +85,20 @@ behaviors like `SilentException` (do not add exception to logs), `ValidationExce
 | 409         | Conflict (in checkout)                                    |
 | 50x         | Server error                                              |
 
-
 # Creating a new endpoint
 Usually a new endpoint will require a new set of related objects.
-- Controller: This is where the main logic of the endpoint is located
-- Entity: This is one single object usually returned in the endpoint. Normally one entity is an object representing a database row
-- Table: This is where the definition of database relations and queries are defined
-- Test: All code should be tested. All different classes should have test cases, this includes controllers (which should have ControllerTests)
-- Fixture: The data used to work with tests should be defined in fixtures.
+- **Controller**: This is where the main logic of the endpoint is located.
+- **Entity**: This is one single object usually returned in the endpoint. Normally one entity is an object representing a database row
+- **Table**: This is where the definition of database relations and queries are defined
+- **Test**: All code should be tested. All different classes should have test cases, this includes controllers (which should have ControllerTests)
+- **Fixture**: The data used to work with **unit tests** should be defined in fixtures.
 
 ## Controllers
 This repository uses [CakePHP](https://book.cakephp.org/4/en/index.html) [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller) framework with a customized layer on top of it to work easier with Rest APIs.
 
 Controllers will have different methods that can be overwritten to add functionality for each HTTP method.
+
+Each different API URL must be linked to a controller.
 
 The type data returned for each HTTP method will follow the standard described below.
 
@@ -145,14 +147,24 @@ Plugins allow to code functionalities with a logical separation between them.
 
 Follow cakephp [plugin](https://book.cakephp.org/4/en/plugins.html) documentation:
 - Bake a plugin with `bin/cake bake plugin Thename`
-- Add new directories to `composer.json` and refresh autoload cache with `composer dumpautoload` (remind the team to run this in every local laptop, or they may get errors)
+- Add new directories to `composer.json` and refresh autoload cache with `composer dumpautoload`
+  (remind the team to run this in every local laptop, or they may get errors)
 - Remember to add the new route to tests in `phpunit.xml`
 - Add new plugin to `migrationList()` in `app_rest/config/bootstrap.php`
 - Add new plugin to `bootstrap()` in `app_rest/src/Application.php`
 
 # Migrations
 
-Migrations should be the only way to perform changes in the database schema
+We are working on two different databases `phputesting` for testing and `app_rest` for local development.
+
+Migrations should be the only way to perform changes in the database schema.
+
+Plain sql scripts should be avoided due to:
+- SQL injection
+- Lack of database motor abstraction
+
+Seeds: Will deinfine the initial state of development the database
+(and could be also defining the initial basic state for the production database)
 
 More info about [phinx](https://book.cakephp.org/phinx/0/en/migrations.html) and the migration plugin on [cake book](https://book.cakephp.org/migrations/3/en/index.html)
 
