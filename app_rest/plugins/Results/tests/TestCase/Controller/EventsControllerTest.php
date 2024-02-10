@@ -67,6 +67,9 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'federation_id' => Federation::FEDO,
             'created' => '2022-03-01T10:01:00+00:00',
             'modified' => '2022-03-01T10:01:00+00:00',
+            '_links' => [
+                'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9'
+            ]
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Lib\FullBaseUrl;
 use App\Lib\I18n\LegacyI18n;
 use Cake\Cache\Cache;
 use Cake\Routing\Router;
@@ -31,9 +32,15 @@ class RootController extends ApiController
                     'title' => $title,
                     'href' => explode('?', Router::url(null, true))[0]
                 ],
+                'events' => [
+                    'href' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX . '/events/'
+                ],
+                'checks' => [
+                    'href' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX . '/ping/pong/'
+                ],
                 'documentation' => [
                     'title' => 'API docs',
-                    'href' => 'https://github.com/freefri/cakephp-rest-ct'
+                    'href' => 'https://github.com/oreplay/oreplay'
                 ]
             ],
         ];

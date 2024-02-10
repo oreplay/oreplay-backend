@@ -2,6 +2,8 @@
 
 namespace Results\Model\Entity;
 
+use App\Controller\ApiController;
+use App\Lib\FullBaseUrl;
 use Cake\ORM\Entity;
 
 class Event extends Entity
@@ -16,7 +18,18 @@ class Event extends Entity
         'final_date' => true,
     ];
 
+    protected $_virtual = [
+        '_links',
+    ];
+
     protected $_hidden = [
         'deleted',
     ];
+
+    public function _get_links(): array
+    {
+        return [
+            'self' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX . '/events/' . $this->id
+        ];
+    }
 }
