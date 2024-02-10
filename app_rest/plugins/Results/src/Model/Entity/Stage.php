@@ -2,8 +2,13 @@
 
 namespace Results\Model\Entity;
 
+use App\Controller\ApiController;
+use App\Lib\FullBaseUrl;
 use Cake\ORM\Entity;
 
+/**
+ * @property string $event_id
+ */
 class Stage extends Entity
 {
     public const FIRST_STAGE = '51d63e99-5d7c-4382-a541-8567015d8eed';
@@ -12,6 +17,10 @@ class Stage extends Entity
         '*' => false,
         'id' => false,
         'description' => true,
+    ];
+
+    protected $_virtual = [
+        '_links',
     ];
 
     protected $_hidden = [
@@ -27,4 +36,12 @@ class Stage extends Entity
         'deleted',
         'deleted',
     ];
+
+    public function _get_links(): array
+    {
+        return [
+            'results' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX
+                . '/events/' . $this->event_id . '/stages/' . $this->id . '/runners/'
+        ];
+    }
 }

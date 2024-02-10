@@ -44,10 +44,16 @@ class EventsControllerTest extends ApiCommonErrorsTest
             [
                 'id' => Stage::FIRST_STAGE,
                 'description' => 'First stage',
+                '_links' => [
+                    'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/runners/'
+                ],
             ],
             [
                 'id' => '8f45d409-72bc-4cdc-96e9-0a2c4504d964',
                 'description' => 'Second stage',
+                '_links' => [
+                    'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/runners/'
+                ],
             ],
         ];
         $expected['federation'] = [

@@ -6,7 +6,6 @@ namespace Results;
 use App\Controller\ApiController;
 use Cake\Core\BasePlugin;
 use Cake\Routing\RouteBuilder;
-use Results\Controller\EventsController;
 
 class ResultsPlugin extends BasePlugin
 {
@@ -16,7 +15,11 @@ class ResultsPlugin extends BasePlugin
             $this->name,
             ['path' => ApiController::ROUTE_PREFIX],
             function (RouteBuilder $builder) {
-                $builder->connect('/events/*', EventsController::route());
+                $builder->connect(
+                    '/events/{eventID}/stages/{stageID}/runners/*',
+                    \Results\Controller\RunnersController::route()
+                );
+                $builder->connect('/events/*', \Results\Controller\EventsController::route());
             }
         );
         parent::routes($routes);
