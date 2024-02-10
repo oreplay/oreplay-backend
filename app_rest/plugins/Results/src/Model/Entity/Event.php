@@ -6,6 +6,8 @@ use Cake\ORM\Entity;
 
 class Event extends Entity
 {
+    public const FIRST_EVENT = '8f3b542c-23b9-4790-a113-b83d476c0ad9';
+
     protected $_accessible = [
         '*' => false,
         'id' => false,

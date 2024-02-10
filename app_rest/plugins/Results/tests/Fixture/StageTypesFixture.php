@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace Results\Test\Fixture;
 
+use Results\Model\Entity\StageType;
 use RestApi\TestSuite\Fixture\RestApiFixture;
 
 class StageTypesFixture extends RestApiFixture
@@ -11,49 +12,49 @@ class StageTypesFixture extends RestApiFixture
 
     public $records = [
         [
-            'id' => 0,
+            'id' => StageType::CLASSIC,
             'description' => 'Foot-O, MTBO, Ski-O',
             'created' => '2023-01-01 10:01:00',
             'modified' => '2023-01-01 10:01:00',
             'deleted' => null,
         ],
         [
-            'id' => 1,
+            'id' => StageType::MASS_START,
             'description' => 'Mass Start',
             'created' => '2023-01-01 10:01:00',
             'modified' => '2023-01-01 10:01:00',
             'deleted' => null,
         ],
         [
-            'id' => 2,
+            'id' => StageType::CHASE_START,
             'description' => 'Chase Start',
             'created' => '2023-01-01 10:01:00',
             'modified' => '2023-01-01 10:01:00',
             'deleted' => null,
         ],
         [
-            'id' => 3,
+            'id' => StageType::RELAY,
             'description' => 'Relay',
             'created' => '2023-01-01 10:01:00',
             'modified' => '2023-01-01 10:01:00',
             'deleted' => null,
         ],
         [
-            'id' => 4,
+            'id' => StageType::ROGAINE,
             'description' => 'Rogaine',
             'created' => '2023-01-01 10:01:00',
             'modified' => '2023-01-01 10:01:00',
             'deleted' => null,
         ],
         [
-            'id' => 5,
+            'id' => StageType::RAID,
             'description' => 'Raid',
             'created' => '2023-01-01 10:01:00',
             'modified' => '2023-01-01 10:01:00',
             'deleted' => null,
         ],
         [
-            'id' => 6,
+            'id' => StageType::TRAIL,
             'description' => 'Trail-O',
             'created' => '2023-01-01 10:01:00',
             'modified' => '2023-01-01 10:01:00',

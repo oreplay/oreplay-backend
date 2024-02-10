@@ -4,15 +4,19 @@ namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
+use Results\Model\Entity\Event;
 use Results\Model\Entity\Federation;
+use Results\Model\Entity\Stage;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
+use Results\Test\Fixture\StagesFixture;
 
 class EventsControllerTest extends ApiCommonErrorsTest
 {
     protected $fixtures = [
         FederationsFixture::LOAD,
         EventsFixture::LOAD,
+        StagesFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -32,15 +36,23 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
     public function testGetData()
     {
-        $this->get($this->_getEndpoint() . EventsFixture::FEDO_EVENT);
+        $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $expected = $this->_getFirstEvent();
+        $expected['stages'] = [
+            [
+                'id' => Stage::FIRST_STAGE,
+                'description' => 'First stage',
+            ],
+            [
+                'id' => '8f45d409-72bc-4cdc-96e9-0a2c4504d964',
+                'description' => 'Second stage',
+            ],
+        ];
         $expected['federation'] = [
             'id' => Federation::FEDO,
             'description' => 'FEDO SICO',
-            'created' => '2023-01-01T10:01:00+00:00',
-            'modified' => '2023-01-01T10:01:00+00:00',
         ];
         $this->assertEquals($expected, $bodyDecoded['data']);
     }
@@ -48,7 +60,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
     private function _getFirstEvent(): array
     {
         return [
-            'id' => EventsFixture::FEDO_EVENT,
+            'id' => Event::FIRST_EVENT,
             'description' => 'Test event',
             'initial_date' => '2024-01-25',
             'final_date' => '2024-01-25',

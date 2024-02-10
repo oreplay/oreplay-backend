@@ -27,6 +27,7 @@
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/symfony/finder" />
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/symfony/process" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/cakephp/debug_kit" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

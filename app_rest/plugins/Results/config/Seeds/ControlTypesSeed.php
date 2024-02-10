@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use Migrations\AbstractSeed;
+use Results\Model\Entity\ControlType;
 
 class ControlTypesSeed extends AbstractSeed
 {
@@ -10,35 +11,35 @@ class ControlTypesSeed extends AbstractSeed
         $now = date('Y-m-d H:i:00');
         $data = [
             [
-                'id' => 0,
+                'id' => ControlType::NORMAL,
                 'description' => 'Normal Control',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
             ],
             [
-                'id' => 1,
+                'id' => ControlType::START,
                 'description' => 'Start',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
             ],
             [
-                'id' => 2,
+                'id' => ControlType::FINISH,
                 'description' => 'Finish',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
             ],
             [
-                'id' => 3,
+                'id' => ControlType::CLEAR,
                 'description' => 'Clear',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
             ],
             [
-                'id' => 4,
+                'id' => ControlType::CHECK,
                 'description' => 'Check',
                 'created' => $now,
                 'modified' => $now,

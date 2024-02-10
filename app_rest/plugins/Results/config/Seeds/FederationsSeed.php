@@ -18,7 +18,7 @@ class FederationsSeed extends AbstractSeed
                 'deleted' => null,
             ],
             [
-                'id' => 'IOF',
+                'id' => Federation::IOF,
                 'description' => 'IOF OEVENTOR',
                 'created' => $now,
                 'modified' => $now,
