@@ -9,12 +9,13 @@ use RestApi\TestSuite\Fixture\RestApiFixture;
 class UsersFixture extends RestApiFixture
 {
     const LOAD = 'app.Users';
-    const SELLER_ID = 2;
+    const USER_ADMIN_ID = '8186ef35-e8c1-4e5c-bcc4-42bb362f050b';
+    const USER_ADMIN_EMAIL = 'admin@example.';
 
     public $records = [
         [
-            'id' => self::SELLER_ID,
-            'email' => 'seller@example.com',
+            'id' => self::USER_ADMIN_ID,
+            'email' => self::USER_ADMIN_EMAIL,
             'first_name' => 'My Name',
             'last_name' => 'My Surname',
             'password' => '$2y$10$1cCayk8qquFFWyvk161qZuOm4kgLFbmg4O1ItVQ5Qt.w3V28VNUk2',

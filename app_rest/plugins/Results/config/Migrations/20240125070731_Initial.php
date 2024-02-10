@@ -10,7 +10,7 @@ class Initial extends AbstractMigration
         $this->getAdapter()->execute("
 
 CREATE TABLE stage_types (
-        id                   INTEGER NOT NULL,
+        id                   VARCHAR(36) NOT NULL,
         description          VARCHAR(255),
         created              TIMESTAMP NULL,
         modified             TIMESTAMP NULL,
@@ -44,7 +44,7 @@ CREATE TABLE federations (
         $this->getAdapter()->execute("
 
 CREATE TABLE events (
-        id                   INTEGER NOT NULL AUTO_INCREMENT,
+        id                   VARCHAR(36) NOT NULL,
         description          VARCHAR(255),
         initial_date         DATE NULL,
 	final_date           DATE NULL,
@@ -63,13 +63,13 @@ ALTER TABLE events
         $this->getAdapter()->execute("
 
 CREATE TABLE stages (
-        id                   INTEGER NOT NULL AUTO_INCREMENT,
-        event_id             INTEGER NOT NULL,
+        id                   VARCHAR(36) NOT NULL,
+        event_id             VARCHAR(36) NOT NULL,
         description          VARCHAR(255),
         base_date            DATE NULL,
-	base_time            TIME NULL,
+	    base_time            TIME NULL,
         order_number         INTEGER DEFAULT 1,
-        stage_type_id        INTEGER DEFAULT 0,
+        stage_type_id        VARCHAR(36) NOT NULL,
         server_offset        INTEGER DEFAULT 0,
         utc_value            VARCHAR(10),
         created              TIMESTAMP NULL,
@@ -117,7 +117,7 @@ ALTER TABLE users_federations
 
 CREATE TABLE users_events (
         user_id              VARCHAR(36) NOT NULL,
-        event_id             INTEGER NOT NULL,
+        event_id             VARCHAR(36) NOT NULL,
         is_admin             BOOLEAN DEFAULT 0,
         created              TIMESTAMP NULL,
         modified             TIMESTAMP NULL,
@@ -140,9 +140,9 @@ ALTER TABLE users_events
         $this->getAdapter()->execute("
 
 CREATE TABLE clubs (
-        id                   BIGINT NOT NULL AUTO_INCREMENT,
-        event_id             INTEGER NOT NULL,
-        stage_id             INTEGER NOT NULL,
+        id                   VARCHAR(36) NOT NULL,
+        event_id             VARCHAR(36) NOT NULL,
+        stage_id             VARCHAR(36) NOT NULL,
         uuid                 VARCHAR(36),
         oe_key               VARCHAR(36),
         short_name           VARCHAR(50),
@@ -170,9 +170,9 @@ ALTER TABLE clubs
         $this->getAdapter()->execute("
 
 CREATE TABLE courses (
-        id                   BIGINT NOT NULL AUTO_INCREMENT,
-        event_id             INTEGER NOT NULL,
-        stage_id             INTEGER NOT NULL,
+        id                   VARCHAR(36) NOT NULL,
+        event_id             VARCHAR(36) NOT NULL,
+        stage_id             VARCHAR(36) NOT NULL,
         uuid                 VARCHAR(36),
         oe_key               VARCHAR(36),
         short_name           VARCHAR(50),
@@ -208,9 +208,9 @@ ALTER TABLE courses
         $this->getAdapter()->execute("
 
 CREATE TABLE classes (
-        id                   BIGINT NOT NULL AUTO_INCREMENT,
-        event_id             INTEGER NOT NULL,
-        stage_id             INTEGER NOT NULL,
+        id                   VARCHAR(36) NOT NULL,
+        event_id             VARCHAR(36) NOT NULL,
+        stage_id             VARCHAR(36) NOT NULL,
         course_id            BIGINT NULL,
         uuid                 VARCHAR(36),
         oe_key               VARCHAR(36),
@@ -242,9 +242,9 @@ ALTER TABLE classes
         $this->getAdapter()->execute("
 
 CREATE TABLE teams (
-        id                   BIGINT NOT NULL AUTO_INCREMENT,
-        event_id             INTEGER NOT NULL,
-        stage_id             INTEGER NOT NULL,
+        id                   VARCHAR(36) NOT NULL,
+        event_id             VARCHAR(36) NOT NULL,
+        stage_id             VARCHAR(36) NOT NULL,
         uuid                 VARCHAR(36),
         bib_number           VARCHAR(10),
         bib_alt              VARCHAR(10),
@@ -286,9 +286,9 @@ ALTER TABLE teams
         $this->getAdapter()->execute("
 
 CREATE TABLE runners (
-        id                   BIGINT NOT NULL AUTO_INCREMENT,
-        event_id             INTEGER NOT NULL,
-        stage_id             INTEGER NOT NULL,
+        id                   VARCHAR(36) NOT NULL,
+        event_id             VARCHAR(36) NOT NULL,
+        stage_id             VARCHAR(36) NOT NULL,
         uuid                 VARCHAR(36),
         first_name           VARCHAR(50),
         last_name            VARCHAR(100),
@@ -352,7 +352,7 @@ ALTER TABLE runners
         $this->getAdapter()->execute("
 
 CREATE TABLE control_types (
-        id                   INTEGER NOT NULL,
+        id                   VARCHAR(36) NOT NULL,
         description          VARCHAR(255),
         created              TIMESTAMP NULL,
         modified             TIMESTAMP NULL,
@@ -369,9 +369,9 @@ CREATE TABLE control_types (
         $this->getAdapter()->execute("
 
 CREATE TABLE controls (
-        id                   BIGINT NOT NULL AUTO_INCREMENT,
-        event_id             INTEGER NOT NULL,
-        stage_id             INTEGER NOT NULL,
+        id                   VARCHAR(36) NOT NULL,
+        event_id             VARCHAR(36) NOT NULL,
+        stage_id             VARCHAR(36) NOT NULL,
 	control_name         VARCHAR(50),
 	station              VARCHAR(10),
         coord_system         CHAR(1),
@@ -413,8 +413,8 @@ CREATE TABLE classes_controls (
         control_id           BIGINT NOT NULL,
         id_leg               INTEGER NOT NULL,
         id_revisit           INTEGER NOT NULL,
-        event_id             INTEGER NOT NULL,
-        stage_id             INTEGER NOT NULL,
+        event_id             VARCHAR(36) NOT NULL,
+        stage_id             VARCHAR(36) NOT NULL,
         description          VARCHAR(255),
         order_number         INTEGER,
         kilometer            NUMERIC(6,2),
@@ -453,7 +453,7 @@ ALTER TABLE classes_controls
         $this->getAdapter()->execute("
 
 CREATE TABLE result_types (
-        id                   INTEGER NOT NULL,
+        id                   VARCHAR(36) NOT NULL,
         description          VARCHAR(255),
         created              TIMESTAMP NULL,
         modified             TIMESTAMP NULL,
@@ -470,9 +470,9 @@ CREATE TABLE result_types (
         $this->getAdapter()->execute("
 
 CREATE TABLE runner_results (
-        id                   BIGINT NOT NULL AUTO_INCREMENT,
-        event_id             INTEGER NOT NULL,
-        stage_id             INTEGER NOT NULL,
+        id                   VARCHAR(36) NOT NULL,
+        event_id             VARCHAR(36) NOT NULL,
+        stage_id             VARCHAR(36) NOT NULL,
         runner_id            BIGINT NOT NULL,
         class_id             BIGINT NULL,
         stage_order          INTEGER DEFAULT 1,
@@ -532,9 +532,9 @@ ALTER TABLE runner_results
         $this->getAdapter()->execute("
 
 CREATE TABLE team_results (
-        id                   BIGINT NOT NULL AUTO_INCREMENT,
-        event_id             INTEGER NOT NULL,
-        stage_id             INTEGER NOT NULL,
+        id                   VARCHAR(36) NOT NULL,
+        event_id             VARCHAR(36) NOT NULL,
+        stage_id             VARCHAR(36) NOT NULL,
         team_id              BIGINT NOT NULL,
         class_id             BIGINT NULL,
         stage_order          INTEGER DEFAULT 1,
@@ -593,9 +593,9 @@ ALTER TABLE team_results
         $this->getAdapter()->execute("
 
 CREATE TABLE splits (
-        id                   BIGINT NOT NULL AUTO_INCREMENT,
-        event_id             INTEGER NOT NULL,
-        stage_id             INTEGER NOT NULL,
+        id                   VARCHAR(36) NOT NULL,
+        event_id             VARCHAR(36) NOT NULL,
+        stage_id             VARCHAR(36) NOT NULL,
         stage_order          INTEGER,
         sicard               VARCHAR(10),
         station              VARCHAR(10),
@@ -680,9 +680,9 @@ ALTER TABLE splits
         $this->getAdapter()->execute("
 
 CREATE TABLE answers (
-        id                   BIGINT NOT NULL AUTO_INCREMENT,
-        event_id             INTEGER NOT NULL,
-        stage_id             INTEGER NOT NULL,
+        id                   VARCHAR(36) NOT NULL,
+        event_id             VARCHAR(36) NOT NULL,
+        stage_id             VARCHAR(36) NOT NULL,
         runner_result_id     BIGINT NULL,
         order_number         INTEGER,
         given                VARCHAR(10),

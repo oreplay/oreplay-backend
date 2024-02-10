@@ -54,7 +54,7 @@ class UsersTableTest extends TestCase
         $this->expectException(UnauthorizedException::class);
         $this->expectExceptionMessage('Invalid password');
         $data = [
-            'username' => 'seller@example.com',
+            'username' => UsersFixture::USER_ADMIN_EMAIL,
             'password' => 'invalidpass',
         ];
         $this->Users->checkLogin($data);
@@ -63,7 +63,7 @@ class UsersTableTest extends TestCase
     public function testCheckLogin(): void
     {
         $data = [
-            'username' => 'seller@example.com',
+            'username' => UsersFixture::USER_ADMIN_EMAIL,
             'password' => 'passpass',
         ];
         $res = $this->Users->checkLogin($data);

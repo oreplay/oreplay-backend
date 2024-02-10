@@ -32,7 +32,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
     public function testGetData()
     {
-        $this->get($this->_getEndpoint() . EventsFixture::EVENT_ID);
+        $this->get($this->_getEndpoint() . EventsFixture::FEDO_EVENT);
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $expected = $this->_getFirstEvent();
@@ -48,7 +48,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
     private function _getFirstEvent(): array
     {
         return [
-            'id' => EventsFixture::EVENT_ID,
+            'id' => EventsFixture::FEDO_EVENT,
             'description' => 'Test event',
             'initial_date' => '2024-01-25',
             'final_date' => '2024-01-25',

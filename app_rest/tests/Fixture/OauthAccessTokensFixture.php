@@ -24,7 +24,7 @@ class OauthAccessTokensFixture extends RestApiFixture
         $this->records[] = [
             'access_token' => self::ACCESS_TOKEN_SELLER,
             'client_id' => '54',
-            'user_id' => UsersFixture::SELLER_ID,
+            'user_id' => UsersFixture::USER_ADMIN_ID,
             'expires' => (date('Y') + 1) . '-05-20 17:20:05',
             'scope' => null,
         ];

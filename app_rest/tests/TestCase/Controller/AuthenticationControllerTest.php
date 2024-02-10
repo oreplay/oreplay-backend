@@ -31,7 +31,7 @@ class AuthenticationControllerTest extends ApiCommonErrorsTest
     public function testAddNew_login()
     {
         $data = [
-            'username' => 'seller@example.com',
+            'username' => UsersFixture::USER_ADMIN_EMAIL,
             'password' => 'passpass',
             'client_id' => OauthClientsFixture::DASHBOARD_CLI,
             'grant_type' => 'password',
@@ -45,14 +45,14 @@ class AuthenticationControllerTest extends ApiCommonErrorsTest
         $this->assertArrayHasKey('access_token', $return);
         $this->assertEquals('7206', $return['expires_in'], 'expires in seconds');
         $this->assertEquals('Bearer', $return['token_type']);
-        $this->assertEquals(UsersFixture::SELLER_ID, $return['user']['id']);
-        $this->assertEquals('seller@example.com', $return['user']['email']);
+        $this->assertEquals(UsersFixture::USER_ADMIN_ID, $return['user']['id']);
+        $this->assertEquals(UsersFixture::USER_ADMIN_EMAIL, $return['user']['email']);
     }
 
     public function testAddNew_loginShouldRememberMe()
     {
         $data = [
-            'username' => 'seller@example.com',
+            'username' => UsersFixture::USER_ADMIN_EMAIL,
             'password' => 'passpass',
             'client_id' => OauthClientsFixture::DASHBOARD_CLI,
             'grant_type' => 'password',
@@ -67,14 +67,14 @@ class AuthenticationControllerTest extends ApiCommonErrorsTest
         $this->assertArrayHasKey('access_token', $return);
         $this->assertEquals('172806', $return['expires_in'], 'expires in seconds');
         $this->assertEquals('Bearer', $return['token_type']);
-        $this->assertEquals(UsersFixture::SELLER_ID, $return['user']['id']);
-        $this->assertEquals('seller@example.com', $return['user']['email']);
+        $this->assertEquals(UsersFixture::USER_ADMIN_ID, $return['user']['id']);
+        $this->assertEquals(UsersFixture::USER_ADMIN_EMAIL, $return['user']['email']);
     }
 
     public function testAddNew_loginShouldThrowWithoutGrantType()
     {
         $data = [
-            'username' => 'seller@example.com',
+            'username' => UsersFixture::USER_ADMIN_EMAIL,
             'password' => 'passpass',
             'client_id' => OauthClientsFixture::DASHBOARD_CLI,
         ];
