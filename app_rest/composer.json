@@ -49,8 +49,8 @@
             "@cs-check",
             "@test"
         ],
-        "cs-check": "phpcs --colors -p --standard=phpcs.xml src/ tests/",
-        "cs-fix": "phpcbf --colors -p --standard=phpcs.xml src/ tests/",
+        "cs-check": "phpcs --colors -p --standard=phpcs.xml src/ tests/ plugins/",
+        "cs-fix": "phpcbf --colors -p --standard=phpcs.xml src/ tests/ plugins/",
         "stan": "phpstan analyse",
         "test": "phpunit --colors=always"
     },
