@@ -28,7 +28,7 @@ class StagesSeed extends AbstractSeed
             ],
         ];
 
-        $table = $this->table('events');
+        $table = $this->table('stages');
         if ($table->getAdapter()->fetchAll('SELECT * from ' . $table->getName() . ' LIMIT 1') === []) {
             $table->insert($data)->save();
         }
