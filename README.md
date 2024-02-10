@@ -155,7 +155,9 @@ Follow cakephp [plugin](https://book.cakephp.org/4/en/plugins.html) documentatio
 
 # Migrations
 
-We are working on two different databases `phputesting` for testing and `app_rest` for local development.
+We are working on two different databases:
+- `phputesting` for unit testing (it will be created automatically when running tests)
+- `app_rest` for local development (it will be creted automatically when browsing [api/v1/ping/pong](http://localhost/api/v1/ping/pong))
 
 Migrations should be the only way to perform changes in the database schema.
 
