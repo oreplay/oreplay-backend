@@ -8,6 +8,7 @@ use Cake\Auth\DefaultPasswordHasher;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\UnauthorizedException;
+use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\Utility\Text;
 
 class UsersTable extends AppTable
@@ -18,16 +19,9 @@ class UsersTable extends AppTable
         parent::__construct($config);
     }
 
-    public static function load(): UsersTable
-    {
-        /** @var UsersTable $table */
-        $table = parent::load();
-        return $table;
-    }
-
     public function initialize(array $config): void
     {
-        $this->addBehavior('Timestamp');
+        $this->addBehavior(TimestampBehavior::class);
     }
 
     public function newEmptyEntity(): EntityInterface

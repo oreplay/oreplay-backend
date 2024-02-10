@@ -3,6 +3,7 @@
 namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
+use Cake\ORM\Behavior\TimestampBehavior;
 use Results\Model\Entity\Event;
 
 /**
@@ -12,14 +13,13 @@ class FederationsTable extends AppTable
 {
     public function initialize(array $config): void
     {
-        $this->addBehavior('Timestamp');
-        $this->hasMany('Events',
-            ['className' => EventsTable::nameWithPlugin()]);
+        $this->addBehavior(TimestampBehavior::class);
+        EventsTable::addHasMany($this);
     }
 
     public function getEventWith($id): Event
     {
-        $query = $this->find()->contain('Federations')->where(['id' => $id]);
+        $query = $this->find()->contain(FederationsTable::name())->where(['id' => $id]);
         /** @var Event $res */
         $res = $query->firstOrFail();
         return $res;
