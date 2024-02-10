@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="App">
+<ruleset name="AppRest">
     <!-- 2. General -->
 
     <!-- 2.1 Basic Coding Standard -->

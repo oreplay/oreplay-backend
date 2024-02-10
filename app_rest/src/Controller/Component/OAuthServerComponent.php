@@ -169,4 +169,5 @@ class OAuthServerComponent extends Component
                 throw new BadRequestException('HTTP method requires ID');
             }
         }
-    }}
+    }
+}
