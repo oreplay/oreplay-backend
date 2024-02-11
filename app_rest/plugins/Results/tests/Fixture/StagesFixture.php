@@ -53,8 +53,8 @@ class StagesFixture extends RestApiFixture
             'stage_type_id' => StageType::RAID,
             'server_offset' => 0,
             'utc_value' => '',
-            'created' => '2023-11-01 10:02:00',
-            'modified' => '2023-11-01 10:02:00',
+            'created' => '2023-11-01 10:02:10',
+            'modified' => '2023-11-01 10:02:10',
             'deleted' => null,
         ],
     ];

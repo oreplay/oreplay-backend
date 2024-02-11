@@ -19,6 +19,7 @@ class ResultsPlugin extends BasePlugin
                     '/events/{eventID}/stages/{stageID}/runners/*',
                     \Results\Controller\RunnersController::route()
                 );
+                $builder->connect('/events/{eventID}/stages/*', \Results\Controller\StagesController::route());
                 $builder->connect('/events/*', \Results\Controller\EventsController::route());
             }
         );

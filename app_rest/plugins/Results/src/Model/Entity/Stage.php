@@ -42,6 +42,8 @@ class Stage extends Entity
     {
         $resultsPath = $this->isTeam() ? '/teams/' : '/runners/';
         return [
+            'self' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX
+                . '/events/' . $this->event_id . '/stages/' . $this->id,
             'results' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX
                 . '/events/' . $this->event_id . '/stages/' . $this->id . $resultsPath
         ];

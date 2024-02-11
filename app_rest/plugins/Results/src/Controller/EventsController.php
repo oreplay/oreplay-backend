@@ -22,7 +22,7 @@ class EventsController extends ApiController
 
     public function getList()
     {
-        $this->return = $this->Events->find()->orderDesc('id')->all();
+        $this->return = $this->Events->find()->orderAsc('created')->all();
     }
 
     protected function getData($id)
