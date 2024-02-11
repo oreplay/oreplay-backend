@@ -4,6 +4,9 @@
     <option name="directories">
       <list>
         <option value="$PROJECT_DIR$/app/tests" />
+        <option value="$PROJECT_DIR$/app_rest/plugins/Results/tests" />
+        <option value="$PROJECT_DIR$/app_rest/tests" />
+        <option value="$PROJECT_DIR$/app_rest/vendor/freefri/cake-rest-api/tests" />
       </list>
     </option>
   </component>
