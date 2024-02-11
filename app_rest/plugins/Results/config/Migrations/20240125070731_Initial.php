@@ -600,7 +600,7 @@ CREATE TABLE splits (
         sicard               VARCHAR(10),
         station              VARCHAR(10),
         reading_time         TIMESTAMP NULL,
-	reading_milli        BIGINT,
+        reading_milli        BIGINT,
         points               INTEGER,
         runner_result_id     VARCHAR(36) NULL,
         team_result_id       VARCHAR(36) NULL,

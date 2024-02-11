@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace Results\Test\Fixture;
 
 use RestApi\TestSuite\Fixture\RestApiFixture;
+use Results\Model\Entity\ResultType;
 
 class ResultTypesFixture extends RestApiFixture
 {
@@ -11,35 +12,35 @@ class ResultTypesFixture extends RestApiFixture
 
     public $records = [
         [
-            'id' => 0,
+            'id' => ResultType::OVERAL,
             'description' => 'Overall',
             'created' => '2023-01-01 10:01:00',
             'modified' => '2023-01-01 10:01:00',
             'deleted' => null,
         ],
         [
-            'id' => 1,
+            'id' => ResultType::STAGE,
             'description' => 'Stage',
             'created' => '2023-01-01 10:01:00',
             'modified' => '2023-01-01 10:01:00',
             'deleted' => null,
         ],
         [
-            'id' => 2,
+            'id' => ResultType::TRAIL_NORMAL,
             'description' => 'Trail-O Normal',
             'created' => '2023-01-01 10:01:00',
             'modified' => '2023-01-01 10:01:00',
             'deleted' => null,
         ],
         [
-            'id' => 3,
+            'id' => ResultType::TRAIL_TIMED,
             'description' => 'Trail-O Timed',
             'created' => '2023-01-01 10:01:00',
             'modified' => '2023-01-01 10:01:00',
             'deleted' => null,
         ],
         [
-            'id' => 4,
+            'id' => ResultType::RAID_SECTION,
             'description' => 'Raid Section',
             'created' => '2023-01-01 10:01:00',
             'modified' => '2023-01-01 10:01:00',
