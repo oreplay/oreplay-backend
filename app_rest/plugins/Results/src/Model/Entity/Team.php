@@ -1,22 +1,18 @@
 <?php
+declare(strict_types=1);
 
 namespace Results\Model\Entity;
 
 use Cake\ORM\Entity;
 
-/**
- * @property RunnerResult[] $runner_results
- * @property TeamResult[] $team_results
- * @property string $first_name
- * @property string $last_name
- */
-class Runner extends Entity
+class Team extends Entity
 {
-    public const FIRST_RUNNER = 'd08fa43b-ddf8-47f6-9a59-2f1828881765';
+    public const FIRST_TEAM = '8ea9f351-4141-4ff2-891d-9e2a904bc296';
 
     protected $_accessible = [
         '*' => false,
         'id' => false,
+        'description' => true,
     ];
 
     protected $_virtual = [
@@ -44,7 +40,6 @@ class Runner extends Entity
         'class_uuid',
         'club_id',
         'team_id',
-        'leg_number',
         'created',
         'modified',
         'deleted',

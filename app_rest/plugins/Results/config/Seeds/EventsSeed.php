@@ -23,7 +23,7 @@ class EventsSeed extends AbstractSeed
         $data = [
             [
                 'id' => Event::FIRST_EVENT,
-                'description' => 'Test event',
+                'description' => 'Test Foot-o',
                 'initial_date' => '2024-01-25',
                 'final_date' => '2024-01-25',
                 'federation_id' => Federation::FEDO,

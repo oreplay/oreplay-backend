@@ -1,22 +1,15 @@
 <?php
+declare(strict_types=1);
 
 namespace Results\Model\Entity;
 
 use Cake\ORM\Entity;
 
-/**
- * @property integer $position
- * @property integer $time_seconds
- * @property Split[] $splits
- */
-class RunnerResult extends Entity
+class TeamResult extends Entity
 {
-    public const FIRST_RES = '635af121-db7b-4c5e-82ab-79208e45568f';
-
     protected $_accessible = [
         '*' => false,
         'id' => false,
-        'description' => true,
     ];
 
     protected $_virtual = [
@@ -25,7 +18,7 @@ class RunnerResult extends Entity
     protected $_hidden = [
         'event_id',
         'stage_id',
-        'runner_id',
+        'team_id',
         'class_id',
         'stage_order',
         'runner_uuid',

@@ -8,6 +8,7 @@ use Cake\ORM\Entity;
 
 /**
  * @property string $event_id
+ * @property integer $stage_type_id
  */
 class Stage extends Entity
 {
@@ -39,9 +40,15 @@ class Stage extends Entity
 
     public function _get_links(): array
     {
+        $resultsPath = $this->isTeam() ? '/teams/' : '/runners/';
         return [
             'results' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX
-                . '/events/' . $this->event_id . '/stages/' . $this->id . '/runners/'
+                . '/events/' . $this->event_id . '/stages/' . $this->id . $resultsPath
         ];
+    }
+
+    private function isTeam(): bool
+    {
+        return in_array($this->stage_type_id, [StageType::RAID, StageType::ROGAINE]);
     }
 }

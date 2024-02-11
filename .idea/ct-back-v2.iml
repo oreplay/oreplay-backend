@@ -28,6 +28,7 @@
       <excludeFolder url="file://$MODULE_DIR$/app/vendor/symfony/process" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/logs" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/cakephp/debug_kit" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/tmp" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

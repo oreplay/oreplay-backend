@@ -29,9 +29,9 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->get($this->_getEndpoint());
 
         $bodyDecoded = $this->assertJsonResponseOK();
-        $this->assertEquals(1, count($bodyDecoded['data']));
-        $expected = $this->_getFirstEvent();
-        $this->assertEquals($expected, $bodyDecoded['data'][0]);
+        $this->assertEquals(2, count($bodyDecoded['data']));
+        $this->assertEquals($this->_getFirstEvent(), $bodyDecoded['data'][0]);
+        $this->assertEquals($this->_getSecondEvent(), $bodyDecoded['data'][1]);
     }
 
     public function testGetData()
@@ -67,7 +67,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
     {
         return [
             'id' => Event::FIRST_EVENT,
-            'description' => 'Test event',
+            'description' => 'Test Foot-o',
             'initial_date' => '2024-01-25',
             'final_date' => '2024-01-25',
             'federation_id' => Federation::FEDO,
@@ -77,5 +77,43 @@ class EventsControllerTest extends ApiCommonErrorsTest
                 'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9'
             ]
         ];
+    }
+
+    private function _getSecondEvent(): array
+    {
+        return [
+            'id' => EventsFixture::FIRST_RAID,
+            'description' => 'Test Adventure Race',
+            'initial_date' => '2024-01-26',
+            'final_date' => '2024-01-26',
+            'federation_id' => Federation::IOF,
+            'created' => '2022-03-07T10:01:00+00:00',
+            'modified' => '2022-03-07T10:01:00+00:00',
+            '_links' => [
+                'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00'
+            ]
+        ];
+    }
+
+    public function testGetData_shouldReturnRaid()
+    {
+        $this->get($this->_getEndpoint() . EventsFixture::FIRST_RAID);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $expected = $this->_getSecondEvent();
+        $expected['stages'] = [
+            [
+                'id' => StagesFixture::STAGE_RAID,
+                'description' => 'Stage raid',
+                '_links' => [
+                    'results' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/teams/'
+                ],
+            ],
+        ];
+        $expected['federation'] = [
+            'id' => Federation::IOF,
+            'description' => 'IOF OEVENTOR',
+        ];
+        $this->assertEquals($expected, $bodyDecoded['data']);
     }
 }

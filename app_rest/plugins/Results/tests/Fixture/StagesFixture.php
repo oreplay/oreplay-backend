@@ -12,6 +12,7 @@ class StagesFixture extends RestApiFixture
 {
     const LOAD = 'plugin.Results.Stages';
     const STAGE_FEDO_2 = '8f45d409-72bc-4cdc-96e9-0a2c4504d964';
+    const STAGE_RAID = '91c54cd6-98de-441c-a71c-cda466c1abc3';
 
     public $records = [
         [
@@ -36,6 +37,20 @@ class StagesFixture extends RestApiFixture
             'base_time' => null,
             'order_number' => 1,
             'stage_type_id' => StageType::CLASSIC,
+            'server_offset' => 0,
+            'utc_value' => '',
+            'created' => '2023-11-01 10:02:00',
+            'modified' => '2023-11-01 10:02:00',
+            'deleted' => null,
+        ],
+        [
+            'id' => self::STAGE_RAID,
+            'event_id' => EventsFixture::FIRST_RAID,
+            'description' => 'Stage raid',
+            'base_date' => null,
+            'base_time' => null,
+            'order_number' => 1,
+            'stage_type_id' => StageType::RAID,
             'server_offset' => 0,
             'utc_value' => '',
             'created' => '2023-11-01 10:02:00',

@@ -4,6 +4,9 @@ namespace Results\Model\Entity;
 
 use Cake\ORM\Entity;
 
+/**
+ * @property mixed $reading_time
+ */
 class Split extends Entity
 {
     protected $_accessible = [
