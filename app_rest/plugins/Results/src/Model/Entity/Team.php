@@ -12,7 +12,6 @@ class Team extends Entity
     protected $_accessible = [
         '*' => false,
         'id' => false,
-        'description' => true,
     ];
 
     protected $_virtual = [

@@ -3,7 +3,6 @@
 namespace Results\Model\Entity;
 
 use Cake\ORM\Entity;
-use Model\Entity\Club;
 
 /**
  * @property RunnerResult[] $runner_results
@@ -11,6 +10,8 @@ use Model\Entity\Club;
  * @property string $first_name
  * @property string $last_name
  * @property Club $club
+ * @property string $event_id
+ * @property string $stage_id
  */
 class Runner extends Entity
 {
@@ -19,6 +20,8 @@ class Runner extends Entity
     protected $_accessible = [
         '*' => false,
         'id' => false,
+        'first_name' => true,
+        'last_name' => true,
     ];
 
     protected $_virtual = [

@@ -2,12 +2,17 @@
 
 namespace Results\Model\Entity;
 
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Entity;
 
 /**
  * @property integer $position
  * @property integer $time_seconds
  * @property Split[] $splits
+ * @property string $event_id
+ * @property string $stage_id
+ * @property string $result_type_id
+ * @property FrozenTime $start_time
  */
 class RunnerResult extends Entity
 {
@@ -16,7 +21,7 @@ class RunnerResult extends Entity
     protected $_accessible = [
         '*' => false,
         'id' => false,
-        'description' => true,
+        'start_time' => true,
     ];
 
     protected $_virtual = [
