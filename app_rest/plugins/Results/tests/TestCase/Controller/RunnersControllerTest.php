@@ -48,6 +48,24 @@ class RunnersControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($expected, $bodyDecoded['data'][0]);
     }
 
+    public function testGetList_filteredByExistingClass()
+    {
+        $this->get($this->_getEndpoint() . '?class_id='.ClassesFixture::ME);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals(1, count($bodyDecoded['data']));
+        $expected = $this->_getFirstRunner();
+        $this->assertEquals($expected, $bodyDecoded['data'][0]);
+    }
+
+    public function testGetList_filteredByNotExistingClass()
+    {
+        $this->get($this->_getEndpoint() . '?class_id=NOT_EXISTING_CLASS');
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals([], $bodyDecoded['data']);
+    }
+
     private function _getFirstRunner(): array
     {
         return [

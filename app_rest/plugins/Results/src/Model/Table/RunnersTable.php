@@ -5,6 +5,7 @@ namespace Results\Model\Table;
 use App\Model\Table\AppTable;
 use App\Model\Table\UsersTable;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Cake\ORM\Query;
 
 /**
  * @property UsersTable $Users
@@ -27,11 +28,14 @@ class RunnersTable extends AppTable
         TeamsTable::addHasMany($this);
     }
 
-    public function findRunnersInStage(string $eventId, string $stageId)
+    public function findRunnersInStage(string $eventId, string $stageId, array $filters = []): Query
     {
-        return $this->find()
-            ->where(['Runners.event_id' => $eventId, 'Runners.stage_id' => $stageId])
-            ->contain(ClubsTable::name())
+        $q = $this->find()
+            ->where(['Runners.event_id' => $eventId, 'Runners.stage_id' => $stageId]);
+        if ($filters['class_id'] ?? null) {
+            $q->where(['class_id' => $filters['class_id']]);
+        }
+        return $q->contain(ClubsTable::name())
             ->contain(ClassesTable::name())
             ->contain(
                 RunnerResultsTable::name()

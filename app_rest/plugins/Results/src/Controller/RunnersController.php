@@ -19,6 +19,7 @@ class RunnersController extends ApiController
     {
         $eventId = $this->request->getParam('eventID');
         $stageId = $this->request->getParam('stageID');
-        $this->return = $this->Runners->findRunnersInStage($eventId, $stageId)->all();
+        $filters = $this->request->getQueryParams();
+        $this->return = $this->Runners->findRunnersInStage($eventId, $stageId, $filters)->all();
     }
 }
