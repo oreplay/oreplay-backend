@@ -16,6 +16,6 @@ class TeamResultsTable extends AppTable
     {
         $this->addBehavior(TimestampBehavior::class);
         TeamsTable::addBelongsTo($this);
-        SplitsTable::addHasMany($this);
+        SplitsTable::addBelongsTo($this);
     }
 }

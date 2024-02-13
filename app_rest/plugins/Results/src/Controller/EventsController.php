@@ -15,11 +15,6 @@ class EventsController extends ApiController
         return true;
     }
 
-    protected function getMandatoryParams(): array
-    {
-        return [];
-    }
-
     public function getList()
     {
         $this->return = $this->Events->find()->orderAsc('created')->all();

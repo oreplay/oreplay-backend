@@ -15,11 +15,6 @@ class RunnersController extends ApiController
         return true;
     }
 
-    protected function getMandatoryParams(): array
-    {
-        return ['eventID', 'stageID'];
-    }
-
     public function getList()
     {
         $eventId = $this->request->getParam('eventID');

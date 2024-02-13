@@ -6,15 +6,13 @@ use App\Model\Table\AppTable;
 use Cake\ORM\Behavior\TimestampBehavior;
 
 /**
- * @property EventsTable $Events
- * @property RunnersTable $Runners
+ * @property RunnersTable $Runner
  */
-class StagesTable extends AppTable
+class TeamsTable extends AppTable
 {
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
-        EventsTable::addHasMany($this);
         RunnersTable::addBelongsTo($this);
     }
 }

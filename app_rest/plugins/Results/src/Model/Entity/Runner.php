@@ -3,12 +3,14 @@
 namespace Results\Model\Entity;
 
 use Cake\ORM\Entity;
+use Model\Entity\Club;
 
 /**
  * @property RunnerResult[] $runner_results
  * @property TeamResult[] $team_results
  * @property string $first_name
  * @property string $last_name
+ * @property Club $club
  */
 class Runner extends Entity
 {

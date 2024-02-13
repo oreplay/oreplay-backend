@@ -4,17 +4,18 @@ namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Results\Model\Entity\ClassEntity;
 
 /**
- * @property EventsTable $Events
- * @property RunnersTable $Runners
+ * @property RunnersTable $Runner
  */
-class StagesTable extends AppTable
+class ClassesTable extends AppTable
 {
+    protected $_entityClass = ClassEntity::class;
+
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
-        EventsTable::addHasMany($this);
         RunnersTable::addBelongsTo($this);
     }
 }

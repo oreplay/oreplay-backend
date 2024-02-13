@@ -14,7 +14,7 @@ class RunnerResultsTable extends AppTable
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
-        RunnersTable::addBelongsTo($this);
-        SplitsTable::addHasMany($this);
+        RunnersTable::addHasMany($this);
+        SplitsTable::addBelongsTo($this);
     }
 }

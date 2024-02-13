@@ -24,7 +24,7 @@ class RunnerResultsFixture extends RestApiFixture
             'stage_order' => null,
             'runner_uuid' => null,
             'class_uuid' => null,
-            'result_type_id' => ResultType::OVERAL,
+            'result_type_id' => ResultType::STAGE,
             'check_time' => null,
             'start_time' => '2024-01-02 10:00:00',
             'finish_time' => '2024-01-02 10:05:10',

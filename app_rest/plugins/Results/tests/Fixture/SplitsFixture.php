@@ -29,7 +29,7 @@ class SplitsFixture extends RestApiFixture
             'runner_result_id' => RunnerResult::FIRST_RES,
             'team_result_id' => null,
             'class_id' => null,
-            'control_id' => null,
+            'control_id' => ControlsFixture::CONTROL_31,
             'id_leg' => null,
             'id_revisit' => null,
             'runner_id' => Runner::FIRST_RUNNER,

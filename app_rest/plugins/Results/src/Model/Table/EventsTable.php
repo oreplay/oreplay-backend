@@ -15,8 +15,8 @@ class EventsTable extends AppTable
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
-        FederationsTable::addBelongsTo($this);
-        StagesTable::addHasMany($this);
+        FederationsTable::addHasMany($this);
+        StagesTable::addBelongsTo($this);
     }
 
     public function getEventWithRelations($id): Event

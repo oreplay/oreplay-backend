@@ -6,6 +6,8 @@ use Cake\ORM\Entity;
 
 /**
  * @property mixed $reading_time
+ * @property mixed $points
+ * @property Control $control
  */
 class Split extends Entity
 {
@@ -24,7 +26,6 @@ class Split extends Entity
         'sicard',
         'station',
         'reading_milli',
-        'points',
         'runner_result_id',
         'team_result_id',
         'class_id',

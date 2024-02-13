@@ -11,7 +11,7 @@
         "cakephp/plugin-installer": "^1.3",
         "mobiledetect/mobiledetectlib": "^2.8",
         "bshaffer/oauth2-server-php": "~1.7",
-        "freefri/cake-rest-api": "0.1.8",
+        "freefri/cake-rest-api": "0.1.9",
         "ext-json": "*"
     },
     "require-dev": {
