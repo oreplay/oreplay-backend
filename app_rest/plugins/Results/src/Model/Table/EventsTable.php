@@ -4,6 +4,7 @@ namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Cake\ORM\Query;
 use Results\Model\Entity\Event;
 
 /**
@@ -19,7 +20,12 @@ class EventsTable extends AppTable
         StagesTable::addBelongsTo($this);
     }
 
-    public function getEventWithRelations($id): Event
+    public function findPaginatedEvents(array $filters): Query
+    {
+        return $this->find()->orderAsc('created');
+    }
+
+    public function getEventWithRelations(string $id): Event
     {
         $query = $this->find()
             ->contain(FederationsTable::name())
