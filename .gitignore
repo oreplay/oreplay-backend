@@ -34,3 +34,5 @@ nbproject/*
 .vscode
 # Sass preprocessor
 .sass-cache/
+#sonarqube
+sonar-project.properties
