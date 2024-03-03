@@ -12,7 +12,10 @@ permissions:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    container:
+      image: public.ecr.aws/ct-nilus/base-images:nginx-php-dev-v18-focal-7.4
+      options: --user root
 
     steps:
     - uses: actions/checkout@v3
