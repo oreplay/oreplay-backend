@@ -2,41 +2,74 @@ name: PHP Composer
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - 'main'
+      - 'test'
   pull_request:
-    branches: [ "main" ]
-
+    branches:
+      - '*'
 permissions:
   contents: read
 
 jobs:
-  build:
+  test:
 
-    runs-on: self-hosted
-    container:
-      image: public.ecr.aws/ct-nilus/base-images:nginx-php-dev-v18-focal-7.4
-      options: --user root
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: [ '7.4' ]
+        db-type: [ mysql ]
+    services:
+      memcached:
+        image: memcached
+        ports:
+          - 11211/tcp
 
     steps:
-    - uses: actions/checkout@v3
+      - name: Setup MySQL
+        if: matrix.db-type == 'mysql'
+        run: docker run --rm --name=mysqld -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=phputesting -p 3306:3306 -d mysql:8.0.28-debian --default-authentication-plugin=mysql_native_password --disable-log-bin
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict -d app_rest
+      - uses: actions/checkout@v4
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: app_rest/vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, intl-72.1, apcu, memcached, pdo_${{ matrix.db-type }}
+          ini-values: apc.enable_cli = 1, zend.assertions = 1
+          coverage: pcov
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress -d app_rest
+      - name: Get composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
-    - name: Run phpcs
-      run: composer run-script cs-check -d app_rest
+      - name: Get date part for cache key
+        id: key-date
+        run: echo "date=$(date +'%Y-%m')" >> $GITHUB_OUTPUT
 
-    - name: Run test suite
-      run: composer run-script test -d app_rest
+      - name: Cache composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ steps.key-date.outputs.date }}-${{ hashFiles('composer.json') }}-${{ matrix.prefer-lowest }}
+
+      - name: Composer install
+        run: composer update -d app_rest
+
+      - name: Wait for MySQL
+        if: matrix.db-type == 'mysql' || matrix.db-type == 'mariadb'
+        run: while ! `mysqladmin ping -h 127.0.0.1 --silent`; do printf 'Waiting for MySQL...\n'; sleep 2; done;
+
+      - name: Run PHP code sniffer
+        run: composer run-script cs-check -d app_rest
+
+      - name: Run PHPUnit
+        if: matrix.db-type == 'mariadb'
+        env:
+          MEMCACHED_PORT: ${{ job.services.memcached.ports['11211'] }}
+        run: |
+          export $(cat nginx-dev.env | xargs);
+          export DATABASE_TEST_URL='mysql://root:password@127.0.0.1:3306/phputesting';
+          composer run-script test -d app_rest
