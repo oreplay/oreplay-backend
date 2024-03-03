@@ -1,4 +1,7 @@
 <?php
+
+declare(strict_types = 1);
+
 namespace App\Test\TestCase\View\Helper;
 
 use App\Lib\Consts\CacheGrp;

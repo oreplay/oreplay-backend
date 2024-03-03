@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Lib\I18n;
 
 use App\Lib\Consts\Languages;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Lib;
 
 use Cake\Http\Exception\NotImplementedException;
