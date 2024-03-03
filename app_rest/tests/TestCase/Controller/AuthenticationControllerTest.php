@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace App\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
+use App\Model\Table\OauthAccessTokensTable;
 use App\Model\Table\UsersTable;
 use App\Test\Fixture\OauthClientsFixture;
 use App\Test\Fixture\UsersFixture;

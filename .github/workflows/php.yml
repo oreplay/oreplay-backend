@@ -66,10 +66,9 @@ jobs:
         run: composer run-script cs-check -d app_rest
 
       - name: Run PHPUnit
-        if: matrix.db-type == 'mariadb'
         env:
-          MEMCACHED_PORT: ${{ job.services.memcached.ports['11211'] }}
+          CACHE_DEFAULT_URL: ${{ format('memcached://127.0.0.1:{0}', job.services.memcached.ports['11211']) }}
+          DATABASE_TEST_URL: 'mysql://root:password@127.0.0.1:3306/phputesting'
+          COOKIE_ENCRYPT_CONFIG: 'restCookie:6584945321164241:5833546516543654'
         run: |
-          export $(cat nginx-dev.env | xargs);
-          export DATABASE_TEST_URL='mysql://root:password@127.0.0.1:3306/phputesting';
           composer run-script test -d app_rest

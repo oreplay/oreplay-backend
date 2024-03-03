@@ -16,6 +16,7 @@ use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\ControlsFixture;
 use Results\Test\Fixture\ControlTypesFixture;
 use Results\Test\Fixture\EventsFixture;
+use Results\Test\Fixture\ResultTypesFixture;
 use Results\Test\Fixture\RunnerResultsFixture;
 use Results\Test\Fixture\RunnersFixture;
 use Results\Test\Fixture\SplitsFixture;
@@ -29,6 +30,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         ClubsFixture::LOAD,
         ClassesFixture::LOAD,
         RunnersFixture::LOAD,
+        ResultTypesFixture::LOAD,
         RunnerResultsFixture::LOAD,
         SplitsFixture::LOAD,
         ControlsFixture::LOAD,
