@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
@@ -8,6 +10,7 @@ use Results\Model\Entity\ClassEntity;
 
 /**
  * @property RunnersTable $Runners
+ * @property CoursesTable $Courses
  */
 class ClassesTable extends AppTable
 {
@@ -17,5 +20,6 @@ class ClassesTable extends AppTable
     {
         $this->addBehavior(TimestampBehavior::class);
         RunnersTable::addBelongsTo($this);
+        CoursesTable::addHasMany($this);
     }
 }

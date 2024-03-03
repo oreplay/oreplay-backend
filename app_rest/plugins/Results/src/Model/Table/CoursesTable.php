@@ -6,16 +6,15 @@ namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
 use Cake\ORM\Behavior\TimestampBehavior;
-use Results\Model\Entity\Club;
 
 /**
- * @property RunnersTable $Runner
+ * @property ClassesTable $Runner
  */
-class ClubsTable extends AppTable
+class CoursesTable extends AppTable
 {
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
-        RunnersTable::addBelongsTo($this);
+        ClassesTable::addBelongsTo($this);
     }
 }

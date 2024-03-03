@@ -7,20 +7,26 @@ namespace Results\Model\Entity;
 use Cake\ORM\Entity;
 
 /**
- * @property string $short_name
+ * @property RunnerResult[] $runner_results
+ * @property TeamResult[] $team_results
+ * @property string $first_name
+ * @property string $last_name
+ * @property Club $club
  * @property string $event_id
  * @property string $stage_id
- * @property Runner[] $runners
- * @property Course $course
+ * @property mixed $sicard
+ * @property mixed $bib_number
  */
-class ClassEntity extends Entity
+class Course extends Entity
 {
     protected $_accessible = [
         '*' => false,
         'id' => false,
         'short_name' => true,
-        'long_name' => true,
         'oe_key' => true,
+        'distance' => true,
+        'climb' => true,
+        'controls' => true,
     ];
 
     protected $_virtual = [
@@ -29,10 +35,15 @@ class ClassEntity extends Entity
     protected $_hidden = [
         'event_id',
         'stage_id',
-        'course_id',
         'uuid',
-        'oe_key',
         'long_name',
+        'coord_system',
+        'datum',
+        'utm_zone',
+        'hemisphere',
+        'latitude',
+        'longitude',
+        'zoom',
         'created',
         'modified',
         'deleted',

@@ -1,5 +1,6 @@
 <?php
-declare(strict_types=1);
+
+declare(strict_types = 1);
 
 namespace Results\Test\TestCase\Controller;
 
@@ -43,6 +44,9 @@ class UploadsControllerTest extends ApiCommonErrorsTest
     public function testAddNew_shouldAddStartDates()
     {
         $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassesFixture::ME]);
 
         $data = $this->_exampleImport();
         $this->post($this->_getEndpoint(), $data);
@@ -50,12 +54,15 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $jsonDecoded = $this->assertJsonResponseOK()['data'];
 
         $addedClasses = $ClassesTable->find()
-            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])
-            ->orderAsc('oe_key')
+            ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->contain('Courses')
+            ->orderAsc('Classes.oe_key')
             ->all();
+        $this->assertEquals(2, count($addedClasses));
         $expectedClasses = ['ME', 'WE'];
         foreach ($addedClasses as $k => $class) {
             $this->assertEquals($expectedClasses[$k], $class->short_name);
+            $this->assertEquals($expectedClasses[$k], $class->course->short_name);
         }
 
         $res = RunnersTable::load()

@@ -1,5 +1,6 @@
 <?php
-declare(strict_types=1);
+
+declare(strict_types = 1);
 
 namespace Results\Controller;
 
@@ -40,9 +41,9 @@ class UploadsController extends ApiController
         $classes = [];
         foreach ($data as $classObj) {
             /** @var ClassEntity $class */
-            $class = $this->Classes->patchFromNewWithUuid($classObj);
-            $class->event_id = $eventId;
-            $class->stage_id = $stageId;
+            $class = $this->Classes->createIfNotExists($eventId, $stageId, $classObj);
+            $course = $this->Classes->Courses->createIfNotExists($eventId, $stageId, $classObj);
+            $class->course = $course;
             $runners = [];
             foreach ($classObj['runners'] as $runnerData) {
                 /** @var Runner $runner */
