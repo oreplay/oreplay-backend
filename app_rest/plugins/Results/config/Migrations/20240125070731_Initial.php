@@ -86,8 +86,7 @@ ALTER TABLE stages
 
 ALTER TABLE stages
     ADD FOREIGN KEY (stage_type_id)
-    REFERENCES stage_types (id)
-    ON DELETE SET NULL;
+    REFERENCES stage_types (id);
 
         ");
         $this->getAdapter()->execute("
@@ -102,10 +101,7 @@ CREATE TABLE users_federations (
   CONSTRAINT PRIMARY KEY(user_id, federation_id));
 
 ALTER TABLE users_federations
-    ADD FOREIGN KEY (user_id)
-    REFERENCES users (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE;
+    ADD index (user_id);
 
 ALTER TABLE users_federations
     ADD FOREIGN KEY (federation_id)
@@ -126,10 +122,7 @@ CREATE TABLE users_events (
   CONSTRAINT PRIMARY KEY(user_id, event_id));
 
 ALTER TABLE users_events
-    ADD FOREIGN KEY (user_id)
-    REFERENCES users (id)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE;
+    ADD index (user_id);
 
 ALTER TABLE users_events
     ADD FOREIGN KEY (event_id)
@@ -345,9 +338,7 @@ ALTER TABLE runners
     ON DELETE SET NULL;
 
 ALTER TABLE runners
-    ADD FOREIGN KEY (user_id)
-    REFERENCES users (id)
-    ON DELETE SET NULL;
+    ADD index (user_id);
 
         ");
         $this->getAdapter()->execute("
@@ -403,8 +394,7 @@ ALTER TABLE controls
 
 ALTER TABLE controls
     ADD FOREIGN KEY (control_type_id)
-    REFERENCES control_types (id)
-    ON DELETE SET NULL;
+    REFERENCES control_types (id);
 
         ");
         $this->getAdapter()->execute("
@@ -526,8 +516,7 @@ ALTER TABLE runner_results
 
 ALTER TABLE runner_results
     ADD FOREIGN KEY (result_type_id)
-    REFERENCES result_types (id)
-    ON DELETE SET NULL;
+    REFERENCES result_types (id);
 
         ");
         $this->getAdapter()->execute("
@@ -587,8 +576,7 @@ ALTER TABLE team_results
 
 ALTER TABLE team_results
     ADD FOREIGN KEY (result_type_id)
-    REFERENCES result_types (id)
-    ON DELETE SET NULL;
+    REFERENCES result_types (id);
 
         ");
         $this->getAdapter()->execute("
