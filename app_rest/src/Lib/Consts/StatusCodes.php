@@ -7,7 +7,7 @@ class StatusCodes
     // Values as in OE, comments as in IOF XML
     public const OK = 0; // OK
     public const DNS = 1; // DidNotStart
-    public const DNF = 1; // DidNotFinish
+    public const DNF = 2; // DidNotFinish
     public const MP = 3; // MissingPunch
     public const DSQ = 4; // Disqualified
     public const OVER_TIME = 5; // OverTime

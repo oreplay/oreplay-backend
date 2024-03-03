@@ -12,6 +12,8 @@ use Cake\ORM\Entity;
  * @property Club $club
  * @property string $event_id
  * @property string $stage_id
+ * @property mixed $sicard
+ * @property mixed $bib_number
  */
 class Runner extends Entity
 {
@@ -22,6 +24,8 @@ class Runner extends Entity
         'id' => false,
         'first_name' => true,
         'last_name' => true,
+        'sicard' => true,
+        'bib_number' => true,
     ];
 
     protected $_virtual = [
@@ -33,9 +37,7 @@ class Runner extends Entity
         'uuid',
         'db_id',
         'iof_id',
-        'bib_number',
         'bib_alt',
-        'sicard',
         'sicard_alt',
         'license',
         'national_id',

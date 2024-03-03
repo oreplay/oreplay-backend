@@ -21,7 +21,7 @@ class ClassesFixture extends RestApiFixture
             'uuid' => null,
             'oe_key' => null,
             'short_name' => 'ME',
-            'long_name' => 'Male Elite',
+            'long_name' => 'M Elite',
             'created' => '2024-01-02 10:00:18',
             'modified' => '2024-01-02 10:00:18',
             'deleted' => null,

@@ -7,7 +7,7 @@ use Cake\ORM\Behavior\TimestampBehavior;
 use Results\Model\Entity\ClassEntity;
 
 /**
- * @property RunnersTable $Runner
+ * @property RunnersTable $Runners
  */
 class ClassesTable extends AppTable
 {
