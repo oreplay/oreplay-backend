@@ -47,7 +47,9 @@ class Stage extends Entity
             'self' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX
                 . '/events/' . $this->event_id . '/stages/' . $this->id,
             'results' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX
-                . '/events/' . $this->event_id . '/stages/' . $this->id . $resultsPath
+                . '/events/' . $this->event_id . '/stages/' . $this->id . $resultsPath,
+            'classes' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX
+                . '/events/' . $this->event_id . '/stages/' . $this->id . '/classes/'
         ];
     }
 

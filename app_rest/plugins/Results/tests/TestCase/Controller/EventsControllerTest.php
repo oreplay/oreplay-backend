@@ -57,7 +57,8 @@ class EventsControllerTest extends ApiCommonErrorsTest
                 'description' => 'First stage',
                 '_links' => [
                     'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed',
-                    'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/runners/'
+                    'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/runners/',
+                    'classes' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/',
                 ],
             ],
             [
@@ -65,7 +66,8 @@ class EventsControllerTest extends ApiCommonErrorsTest
                 'description' => 'Second stage',
                 '_links' => [
                     'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964',
-                    'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/runners/'
+                    'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/runners/',
+                    'classes' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/classes/',
                 ],
             ],
         ];
@@ -120,7 +122,8 @@ class EventsControllerTest extends ApiCommonErrorsTest
                 'description' => 'Stage raid',
                 '_links' => [
                     'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3',
-                    'results' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/teams/'
+                    'results' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/teams/',
+                    'classes' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/classes/',
                 ],
             ],
         ];

@@ -22,4 +22,12 @@ class ClassesTable extends AppTable
         RunnersTable::addBelongsTo($this);
         CoursesTable::addHasMany($this);
     }
+
+    public function findByStage(string $eventId, string $stageId)
+    {
+        return $this->find()->where([
+            'event_id' => $eventId,
+            'stage_id' => $stageId,
+        ]);
+    }
 }
