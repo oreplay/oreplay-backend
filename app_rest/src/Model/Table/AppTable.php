@@ -21,12 +21,14 @@ abstract class AppTable extends RestApiTable
 
     private function getByShortName(string $eventId, string $stageId, string $shortName)
     {
+        $conditions = [
+            $this->_alias . '.event_id' => $eventId,
+            $this->_alias . '.stage_id' => $stageId,
+            $this->_alias . '.short_name' => $shortName
+        ];
         return $this->find()
-            ->where([
-                $this->_alias . '.event_id' => $eventId,
-                $this->_alias . '.stage_id' => $stageId,
-                $this->_alias . '.short_name' => $shortName
-            ])
+            ->where($conditions)
+            ->cache('getByShortName_'.md5(json_encode($conditions)))
             ->first();
     }
 
