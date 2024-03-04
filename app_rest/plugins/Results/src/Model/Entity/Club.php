@@ -26,7 +26,6 @@ class Club extends Entity
     protected $_hidden = [
         'event_id',
         'stage_id',
-        'uuid',
         'oe_key',
         'long_name',
         'city',

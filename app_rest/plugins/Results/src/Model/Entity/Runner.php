@@ -36,7 +36,6 @@ class Runner extends Entity
     protected $_hidden = [
         'event_id',
         'stage_id',
-        'uuid',
         'db_id',
         'iof_id',
         'bib_alt',
@@ -50,7 +49,6 @@ class Runner extends Entity
         'email',
         'user_id',
         'class_id',
-        'class_uuid',
         'club_id',
         'team_id',
         'leg_number',

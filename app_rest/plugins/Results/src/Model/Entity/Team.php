@@ -21,7 +21,6 @@ class Team extends Entity
     protected $_hidden = [
         'event_id',
         'stage_id',
-        'uuid',
         'db_id',
         'iof_id',
         'bib_number',
@@ -37,7 +36,6 @@ class Team extends Entity
         'email',
         'user_id',
         'class_id',
-        'class_uuid',
         'club_id',
         'team_id',
         'created',

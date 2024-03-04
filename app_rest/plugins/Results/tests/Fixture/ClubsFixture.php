@@ -18,7 +18,6 @@ class ClubsFixture extends RestApiFixture
             'id' => ClubsFixture::CLUB_1,
             'event_id' => Event::FIRST_EVENT,
             'stage_id' => Stage::FIRST_STAGE,
-            'uuid' => null,
             'oe_key' => null,
             'short_name' => 'Club A',
             'long_name' => 'Official Club A from Spain',

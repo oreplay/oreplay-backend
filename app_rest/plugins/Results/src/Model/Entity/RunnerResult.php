@@ -38,8 +38,6 @@ class RunnerResult extends Entity
         'runner_id',
         'class_id',
         'stage_order',
-        'runner_uuid',
-        'class_uuid',
         'check_time',
         'time_neutralization',
         'time_adjusted',

@@ -109,13 +109,11 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                         'classes' => [
                             (int) 0 => [
                                 'id' => '',
-                                'uuid' => '',
                                 'oe_key' => '10',
                                 'short_name' => 'ME',
                                 'long_name' => 'M Elite',
                                 'course' => [
                                     'id' => '',
-                                    'uuid' => '',
                                     'distance' => '5660.0',
                                     'climb' => '280.0',
                                     'controls' => (int) 22,
@@ -125,7 +123,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                                 'runners' => [
                                     (int) 0 => [
                                         'id' => '',
-                                        'uuid' => '',
                                         'sicard' => '889818',
                                         'first_name' => 'Carlos',
                                         'last_name' => 'Alonso',
@@ -145,7 +142,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                                         ],
                                         'club' => [
                                             'id' => '',
-                                            'uuid' => '',
                                             'oe_key' => '24738',
                                             'short_name' => 'BRIGHTNET',
                                             'long_name' => 'BRIGHTNET'
@@ -153,7 +149,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                                     ],
                                     (int) 1 => [
                                         'id' => '',
-                                        'uuid' => '',
                                         'sicard' => '820100',
                                         'first_name' => 'Francisco',
                                         'last_name' => 'Alvarez',
@@ -173,7 +168,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                                         ],
                                         'club' => [
                                             'id' => '',
-                                            'uuid' => '',
                                             'oe_key' => '21715',
                                             'short_name' => 'Bredaryds SOK',
                                             'long_name' => 'Bredaryds SOK'
@@ -183,13 +177,11 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                             ],
                             (int) 1 => [
                                 'id' => '',
-                                'uuid' => '',
                                 'oe_key' => '20',
                                 'short_name' => 'WE',
                                 'long_name' => 'W Elite',
                                 'course' => [
                                     'id' => '',
-                                    'uuid' => '',
                                     'distance' => '4710.0',
                                     'climb' => '230.0',
                                     'controls' => (int) 19,
@@ -199,7 +191,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                                 'runners' => [
                                     (int) 0 => [
                                         'id' => '',
-                                        'uuid' => '',
                                         'sicard' => '7504274',
                                         'first_name' => 'Ana',
                                         'last_name' => 'Gomez',
@@ -219,7 +210,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                                         ],
                                         'club' => [
                                             'id' => '',
-                                            'uuid' => '',
                                             'oe_key' => '28026',
                                             'short_name' => 'Tullinge SK',
                                             'long_name' => 'Tullinge SK'
@@ -227,7 +217,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                                     ],
                                     (int) 1 => [
                                         'id' => '',
-                                        'uuid' => '',
                                         'sicard' => '889312',
                                         'first_name' => 'Maria',
                                         'last_name' => 'Rodriguez',
@@ -247,7 +236,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                                         ],
                                         'club' => [
                                             'id' => '',
-                                            'uuid' => '',
                                             'oe_key' => '30303',
                                             'short_name' => 'Hana Orienteering',
                                             'long_name' => 'Hana Orienteering'

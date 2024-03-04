@@ -34,8 +34,6 @@ class RunnerResultsSeed extends AbstractSeed
                 'runner_id' => Runner::FIRST_RUNNER,
                 'class_id' => null,
                 'stage_order' => null,
-                'runner_uuid' => null,
-                'class_uuid' => null,
                 'result_type_id' => ResultType::OVERAL,
                 'check_time' => null,
                 'start_time' => '2024-01-02 10:00:00.000',

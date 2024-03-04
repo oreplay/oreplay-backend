@@ -19,7 +19,6 @@ class ClassesFixture extends RestApiFixture
             'event_id' => Event::FIRST_EVENT,
             'stage_id' => Stage::FIRST_STAGE,
             'course_id' => null,
-            'uuid' => null,
             'oe_key' => null,
             'short_name' => 'ME',
             'long_name' => 'M Elite',

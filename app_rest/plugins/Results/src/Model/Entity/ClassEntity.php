@@ -30,7 +30,6 @@ class ClassEntity extends Entity
         'event_id',
         'stage_id',
         'course_id',
-        'uuid',
         'oe_key',
         'long_name',
         'created',

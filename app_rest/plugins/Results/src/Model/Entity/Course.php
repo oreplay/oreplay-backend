@@ -35,7 +35,6 @@ class Course extends Entity
     protected $_hidden = [
         'event_id',
         'stage_id',
-        'uuid',
         'long_name',
         'coord_system',
         'datum',
