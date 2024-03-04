@@ -3,6 +3,7 @@
 declare(strict_types = 1);
 
 use Migrations\AbstractSeed;
+use Results\Model\Entity\ResultType;
 
 class ResultTypesSeed extends AbstractSeed
 {
@@ -11,35 +12,35 @@ class ResultTypesSeed extends AbstractSeed
         $now = date('Y-m-d H:i:00');
         $data = [
             [
-                'id' => 0,
+                'id' => ResultType::OVERAL,
                 'description' => 'Overall',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
             ],
             [
-                'id' => 1,
+                'id' => ResultType::STAGE,
                 'description' => 'Stage',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
             ],
             [
-                'id' => 2,
+                'id' => ResultType::TRAIL_NORMAL,
                 'description' => 'Trail-O Normal',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
             ],
             [
-                'id' => 3,
+                'id' => ResultType::TRAIL_TIMED,
                 'description' => 'Trail-O Timed',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
             ],
             [
-                'id' => 4,
+                'id' => ResultType::RAID_SECTION,
                 'description' => 'Raid Section',
                 'created' => $now,
                 'modified' => $now,

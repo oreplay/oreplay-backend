@@ -9,8 +9,18 @@ use Results\Model\Entity\StageType;
 
 class StagesSeed extends AbstractSeed
 {
+    protected $seedClasses = [
+        StageTypesSeed::class,
+    ];
+
     public function run(): void
     {
+        foreach ($this->seedClasses as $seedClass) {
+            /** @var AbstractSeed $seeder */
+            $seeder = new $seedClass;
+            $seeder->setAdapter($this->getAdapter());
+            $seeder->run();
+        }
         $now = date('Y-m-d H:i:00');
         $data = [
             [
