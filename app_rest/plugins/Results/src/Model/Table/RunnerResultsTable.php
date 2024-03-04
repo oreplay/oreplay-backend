@@ -8,6 +8,7 @@ use App\Model\Table\AppTable;
 use Cake\ORM\Behavior\TimestampBehavior;
 
 /**
+ * @property ResultTypesTable $ResultTypes
  * @property RunnersTable $Runners
  * @property SplitsTable $Splits
  */
@@ -18,5 +19,6 @@ class RunnerResultsTable extends AppTable
         $this->addBehavior(TimestampBehavior::class);
         RunnersTable::addHasMany($this);
         SplitsTable::addBelongsTo($this);
+        ResultTypesTable::addHasMany($this);
     }
 }

@@ -6,7 +6,6 @@ namespace Results\Controller;
 
 use RestApi\Lib\Exception\DetailedException;
 use Results\Model\Entity\ClassEntity;
-use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Table\ClassesTable;
@@ -50,15 +49,23 @@ class UploadsController extends ApiController
                 $runner = $this->Classes->Runners->patchFromNewWithUuid($runnerData);
                 $runner->event_id = $eventId;
                 $runner->stage_id = $stageId;
-                $resultData = $runnerData['runner_results'] ?? null;
-                if ($resultData) {
+                $results = $runnerData['runner_results'] ?? [];
+                foreach ($results as $resultData) {
                     /** @var RunnerResult $result */
                     $result = $this->Classes->Runners->RunnerResults
                         ->patchFromNewWithUuid($resultData);
                     $result->event_id = $eventId;
                     $result->stage_id = $stageId;
-                    $result->result_type_id = ResultType::STAGE;
-                    $runner->runner_results = [$result];
+                    $typeId = $resultData['result_type']['id'] ?? null;
+                    if (!$typeId) {
+                        throw new DetailedException('runner_results.result_type.id is mandatory');
+                    }
+                    $result->result_type = $this
+                        ->Classes->Runners->RunnerResults->ResultTypes->getCached($typeId);
+                    if (!isset($runner->runner_results)) {
+                        $runner->runner_results = [];
+                    }
+                    $runner->runner_results[] = $result;
                 }
                 $runnerClub = $runnerData['club'] ?? null;
                 if ($runnerClub) {

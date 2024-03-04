@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace App\Controller\Component;
 
 use App\Controller\ApiController;
-use App\Lib\Exception\DetailedException;
 use App\Lib\Oauth\OAuthServer;
 use App\Model\Entity\Trainer;
 use App\Model\Table\ServicesTable;
@@ -17,6 +16,7 @@ use Cake\Event\Event;
 use Cake\Event\EventInterface;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ForbiddenException;
+use RestApi\Lib\Exception\DetailedException;
 
 class OAuthServerComponent extends Component
 {

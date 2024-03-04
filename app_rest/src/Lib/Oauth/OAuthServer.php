@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace App\Lib\Oauth;
 
-use App\Lib\Exception\SilentException;
 use App\Model\Table\OauthAccessTokensTable;
 use App\Model\Table\UsersTable;
 use Cake\Controller\Controller;
@@ -13,7 +12,6 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\I18n\FrozenTime;
 use Cake\Log\LogTrait;
-use Cake\ORM\TableRegistry;
 use OAuth2\Autoloader;
 use OAuth2\Controller\AuthorizeControllerInterface;
 use OAuth2\GrantType\AuthorizationCode;
@@ -21,6 +19,7 @@ use OAuth2\GrantType\UserCredentials;
 use OAuth2\Request;
 use OAuth2\Response;
 use OAuth2\Server;
+use RestApi\Lib\Exception\SilentException;
 
 class OAuthServer
 {

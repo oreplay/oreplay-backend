@@ -131,15 +131,17 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                                         'last_name' => 'Alonso',
                                         'bib_number' => '359',
                                         'runner_results' => [
-                                            'id' => '',
-                                            'stage_order' => (int) 1,
-                                            'start_time' => '2014-07-06T13:09:01.523',
-                                            'status_code' => '0',
-                                            'leg_number' => (int) 1,
-                                            'result_type' => [
-                                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
-                                                'description' => 'Stage'
-                                            ]
+                                            [
+                                                'id' => '',
+                                                'stage_order' => (int) 1,
+                                                'start_time' => '2014-07-06T13:09:01.523',
+                                                'status_code' => '0',
+                                                'leg_number' => (int) 1,
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ],
                                         ],
                                         'club' => [
                                             'id' => '',
@@ -157,15 +159,17 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                                         'last_name' => 'Alvarez',
                                         'bib_number' => '255',
                                         'runner_results' => [
-                                            'id' => '',
-                                            'stage_order' => (int) 1,
-                                            'start_time' => '2014-07-06T13:11:00',
-                                            'status_code' => '0',
-                                            'leg_number' => (int) 1,
-                                            'result_type' => [
-                                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
-                                                'description' => 'Stage'
-                                            ]
+                                            [
+                                                'id' => '',
+                                                'stage_order' => (int) 1,
+                                                'start_time' => '2014-07-06T13:11:00',
+                                                'status_code' => '0',
+                                                'leg_number' => (int) 1,
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ],
                                         ],
                                         'club' => [
                                             'id' => '',
@@ -201,15 +205,17 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                                         'last_name' => 'Gomez',
                                         'bib_number' => '1348',
                                         'runner_results' => [
-                                            'id' => '',
-                                            'stage_order' => (int) 1,
-                                            'start_time' => '2014-07-06T13:22:00',
-                                            'status_code' => '0',
-                                            'leg_number' => (int) 1,
-                                            'result_type' => [
-                                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
-                                                'description' => 'Stage'
-                                            ]
+                                            [
+                                                'id' => '',
+                                                'stage_order' => (int) 1,
+                                                'start_time' => '2014-07-06T13:22:00',
+                                                'status_code' => '0',
+                                                'leg_number' => (int) 1,
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ],
                                         ],
                                         'club' => [
                                             'id' => '',
@@ -227,15 +233,17 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                                         'last_name' => 'Rodriguez',
                                         'bib_number' => '1512',
                                         'runner_results' => [
-                                            'id' => '',
-                                            'stage_order' => (int) 1,
-                                            'start_time' => '2014-07-06T13:26:00',
-                                            'status_code' => '0',
-                                            'leg_number' => (int) 1,
-                                            'result_type' => [
-                                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
-                                                'description' => 'Stage'
-                                            ]
+                                            [
+                                                'id' => '',
+                                                'stage_order' => (int) 1,
+                                                'start_time' => '2014-07-06T13:26:00',
+                                                'status_code' => '0',
+                                                'leg_number' => (int) 1,
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ],
                                         ],
                                         'club' => [
                                             'id' => '',

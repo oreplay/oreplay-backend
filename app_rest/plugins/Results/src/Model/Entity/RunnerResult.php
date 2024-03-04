@@ -15,6 +15,7 @@ use Cake\ORM\Entity;
  * @property string $stage_id
  * @property string $result_type_id
  * @property FrozenTime $start_time
+ * @property ResultType $result_type
  */
 class RunnerResult extends Entity
 {
@@ -24,6 +25,8 @@ class RunnerResult extends Entity
         '*' => false,
         'id' => false,
         'start_time' => true,
+        'stage_order' => true,
+        'leg_number' => true,
     ];
 
     protected $_virtual = [
