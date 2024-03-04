@@ -46,8 +46,7 @@ class RunnersControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals(1, count($bodyDecoded['data']));
-        $expected = $this->_getFirstRunner();
-        $this->assertEquals($expected, $bodyDecoded['data'][0]);
+        $this->assertEquals($this->_getFirstRunner(), $bodyDecoded['data'][0]);
     }
 
     public function testGetList_filteredByExistingClass()
@@ -88,8 +87,8 @@ class RunnersControllerTest extends ApiCommonErrorsTest
                 [
                     'id' => RunnerResult::FIRST_RES,
                     'result_type_id' => ResultType::STAGE,
-                    'start_time' => '2024-01-02T10:00:00+00:00',
-                    'finish_time' => '2024-01-02T10:05:10+00:00',
+                    'start_time' => '2024-01-02T10:00:00.000+00:00',
+                    'finish_time' => '2024-01-02T10:05:10.123+00:00',
                     'time_seconds' => 310,
                     'position' => 1,
                     'status_code' => null,
@@ -99,7 +98,7 @@ class RunnersControllerTest extends ApiCommonErrorsTest
                         [
                             'id' => SplitsFixture::SPLIT_1,
                             'points' => null,
-                            'reading_time' => '2024-01-02T10:00:10+00:00',
+                            'reading_time' => '2024-01-02T10:00:10.321+00:00',
                             //'position' => 0,
                             //'time_behind' => 0,
                             'control' => [

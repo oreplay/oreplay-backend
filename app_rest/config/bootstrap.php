@@ -216,13 +216,7 @@ TypeFactory::map('time', StringType::class);
 //Inflector::rules('uninflected', ['dontinflectme']);
 \Cake\I18n\FrozenTime::setJsonEncodeFormat(
     function () {
-        /** @var \Cake\I18n\FrozenTime $frozenTime */
-        $frozenTime = func_get_arg(0);
-        return $frozenTime->i18nFormat(
-            "yyyy-MM-dd'T'HH':'mm':'ssxxx",
-            null,
-            \App\Lib\Consts\Languages::ENG
-        );
+        return \App\Lib\ApiFrozenTime::i18nFormatMillis(func_get_arg(0));
     });
 
 function migrationList(): array

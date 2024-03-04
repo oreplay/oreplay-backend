@@ -86,6 +86,9 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals($runnersJson[$key]['club']['short_name'], $value->club->short_name);
             $this->assertEquals($runnersJson[$key]['runner_results'][0]['start_time'],
                 $value->runner_results[0]->start_time->jsonSerialize());
+            if ($key === 0) {
+                $this->assertEquals('2014-07-06T13:09:01.523+00:00', $runnersJson[$key]['runner_results'][0]['start_time']);
+            }
             $this->assertEquals($runnersJson[$key]['runner_results'][0]['id'],
                 $value->runner_results[0]->id);
             $this->assertEquals(ResultType::STAGE,
@@ -130,7 +133,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                                         'runner_results' => [
                                             'id' => '',
                                             'stage_order' => (int) 1,
-                                            'start_time' => '2014-07-06T13:09:00',
+                                            'start_time' => '2014-07-06T13:09:01.523',
                                             'status_code' => '0',
                                             'leg_number' => (int) 1,
                                             'result_type' => [

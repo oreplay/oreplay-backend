@@ -24,7 +24,7 @@ class SplitsFixture extends RestApiFixture
             'stage_order' => null,
             'sicard' => null,
             'station' => null,
-            'reading_time' => '2024-01-02 10:00:10',
+            'reading_time' => '2024-01-02 10:00:10.321',
             'reading_milli' => null,
             'points' => null,
             'runner_result_id' => RunnerResult::FIRST_RES,

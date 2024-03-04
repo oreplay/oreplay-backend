@@ -13,9 +13,9 @@ class Initial extends AbstractMigration
 CREATE TABLE stage_types (
         id                   VARCHAR(36) NOT NULL,
         description          VARCHAR(255),
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 # INSERT INTO stage_types VALUES (0, 'Foot-O, MTBO, Ski-O', NULL, NULL, NULL);
@@ -33,9 +33,9 @@ CREATE TABLE stage_types (
 CREATE TABLE federations (
         id                   VARCHAR(36) NOT NULL,
         description          VARCHAR(255),
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 # INSERT INTO federations VALUES ('FEDO', 'FEDO SICO', NULL, NULL, NULL);
@@ -50,9 +50,9 @@ CREATE TABLE events (
         initial_date         DATE NULL,
 	    final_date           DATE NULL,
         federation_id        VARCHAR(36) NULL,
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 ALTER TABLE events
@@ -73,9 +73,9 @@ CREATE TABLE stages (
         stage_type_id        VARCHAR(36) NOT NULL,
         server_offset        INTEGER DEFAULT 0,
         utc_value            VARCHAR(10),
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 ALTER TABLE stages
@@ -95,9 +95,9 @@ CREATE TABLE users_federations (
         user_id              VARCHAR(36) NOT NULL,
         federation_id        VARCHAR(36) NOT NULL,
         uuid_value           VARCHAR(36),
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(user_id, federation_id));
 
 ALTER TABLE users_federations
@@ -116,9 +116,9 @@ CREATE TABLE users_events (
         user_id              VARCHAR(36) NOT NULL,
         event_id             VARCHAR(36) NOT NULL,
         is_admin             BOOLEAN DEFAULT 0,
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(user_id, event_id));
 
 ALTER TABLE users_events
@@ -143,9 +143,9 @@ CREATE TABLE clubs (
         long_name            VARCHAR(50),
         city                 VARCHAR(50),
         logo                 BLOB,
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 ALTER TABLE clubs
@@ -181,9 +181,9 @@ CREATE TABLE courses (
         latitude             NUMERIC(14, 6),
         longitude            NUMERIC(14, 6),
         zoom                 INTEGER,
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 ALTER TABLE courses
@@ -210,9 +210,9 @@ CREATE TABLE classes (
         oe_key               VARCHAR(36),
         short_name           VARCHAR(50),
         long_name            VARCHAR(50),
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 ALTER TABLE classes
@@ -249,9 +249,9 @@ CREATE TABLE teams (
         class_uuid           VARCHAR(36),
         club_id              VARCHAR(36) NULL,
         legs                 INTEGER NULL,
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 ALTER TABLE teams
@@ -305,9 +305,9 @@ CREATE TABLE runners (
         club_id              VARCHAR(36) NULL,
         team_id              VARCHAR(36) NULL,
         leg_number           INTEGER NULL DEFAULT 1,
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 ALTER TABLE runners
@@ -346,9 +346,9 @@ ALTER TABLE runners
 CREATE TABLE control_types (
         id                   VARCHAR(36) NOT NULL,
         description          VARCHAR(255),
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 # INSERT INTO control_types VALUES (0, 'Normal Control', NULL, NULL, NULL);
@@ -374,10 +374,10 @@ CREATE TABLE controls (
         longitude            NUMERIC(14, 6),
         control_type_id      VARCHAR(36) NOT NULL,
         battery_perc         INTEGER DEFAULT 100,
-        last_reading         TIMESTAMP NULL,
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        last_reading         TIMESTAMP(3) NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 ALTER TABLE controls
@@ -411,9 +411,9 @@ CREATE TABLE classes_controls (
         kilometer            NUMERIC(6,2),
         relative_position    INTEGER,
         controls             INTEGER,
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(class_id, control_id, id_leg, id_revisit));
 
 ALTER TABLE classes_controls
@@ -446,9 +446,9 @@ ALTER TABLE classes_controls
 CREATE TABLE result_types (
         id                   VARCHAR(36) NOT NULL,
         description          VARCHAR(255),
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 # INSERT INTO result_types VALUES (0, 'Overall', NULL, NULL, NULL);
@@ -470,9 +470,9 @@ CREATE TABLE runner_results (
         runner_uuid          VARCHAR(36),
         class_uuid           VARCHAR(36),
         result_type_id       VARCHAR(36) NOT NULL,
-        check_time           TIMESTAMP NULL,
-        start_time           TIMESTAMP NULL,
-        finish_time          TIMESTAMP NULL,
+        check_time           TIMESTAMP(3) NULL,
+        start_time           TIMESTAMP(3) NULL,
+        finish_time          TIMESTAMP(3) NULL,
         time_seconds         INTEGER DEFAULT 0,
         position             INTEGER DEFAULT 0,
         status_code          CHAR(1) DEFAULT '0',
@@ -486,9 +486,9 @@ CREATE TABLE runner_results (
         points_penalty       INTEGER DEFAULT 0,
         points_bonus         INTEGER DEFAULT 0,
         leg_number           INTEGER DEFAULT 1,
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 ALTER TABLE runner_results
@@ -531,9 +531,9 @@ CREATE TABLE team_results (
         team_uuid            VARCHAR(36),
         class_uuid           VARCHAR(36),
         result_type_id       VARCHAR(36) NOT NULL,
-        check_time           TIMESTAMP NULL,
-        start_time           TIMESTAMP NULL,
-        finish_time          TIMESTAMP NULL,
+        check_time           TIMESTAMP(3) NULL,
+        start_time           TIMESTAMP(3) NULL,
+        finish_time          TIMESTAMP(3) NULL,
         time_seconds         INTEGER DEFAULT 0,
         position             INTEGER DEFAULT 0,
         status_code          CHAR(1) DEFAULT '0',
@@ -546,9 +546,9 @@ CREATE TABLE team_results (
         points_adjusted      INTEGER DEFAULT 0,
         points_penalty       INTEGER DEFAULT 0,
         points_bonus         INTEGER DEFAULT 0,
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 ALTER TABLE team_results
@@ -588,7 +588,7 @@ CREATE TABLE splits (
         stage_order          INTEGER,
         sicard               VARCHAR(10),
         station              VARCHAR(10),
-        reading_time         TIMESTAMP NULL,
+        reading_time         TIMESTAMP(3) NULL,
         reading_milli        BIGINT,
         points               INTEGER,
         runner_result_id     VARCHAR(36) NULL,
@@ -604,11 +604,11 @@ CREATE TABLE splits (
         club_id              VARCHAR(36) NULL,
         order_number         INTEGER,
         battery_perc         INTEGER,
-        battery_time         TIMESTAMP NULL,
+        battery_time         TIMESTAMP(3) NULL,
         raw_value            VARCHAR(50),
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 CREATE INDEX splits_lectura ON splits (sicard, station, reading_milli);
@@ -677,9 +677,9 @@ CREATE TABLE answers (
         given                VARCHAR(10),
         correct              VARCHAR(10),
         time_seconds         NUMERIC(8,2) DEFAULT 0,
-        created              TIMESTAMP NULL,
-        modified             TIMESTAMP NULL,
-        deleted              TIMESTAMP NULL,
+        created              TIMESTAMP(3) NULL,
+        modified             TIMESTAMP(3) NULL,
+        deleted              TIMESTAMP(3) NULL,
   CONSTRAINT PRIMARY KEY(id));
 
 ALTER TABLE answers

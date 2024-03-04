@@ -84,8 +84,8 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => '2024-01-25',
             'final_date' => '2024-01-25',
             'federation_id' => Federation::FEDO,
-            'created' => '2022-03-01T10:01:00+00:00',
-            'modified' => '2022-03-01T10:01:00+00:00',
+            'created' => '2022-03-01T10:01:00.000+00:00',
+            'modified' => '2022-03-01T10:01:00.000+00:00',
             '_links' => [
                 'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9'
             ]
@@ -100,8 +100,8 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => '2024-01-26',
             'final_date' => '2024-01-26',
             'federation_id' => Federation::IOF,
-            'created' => '2022-03-07T10:01:00+00:00',
-            'modified' => '2022-03-07T10:01:00+00:00',
+            'created' => '2022-03-07T10:01:00.000+00:00',
+            'modified' => '2022-03-07T10:01:00.000+00:00',
             '_links' => [
                 'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00'
             ]
