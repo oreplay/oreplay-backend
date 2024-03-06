@@ -28,11 +28,10 @@ In order to use the ports 80 or 443 docker must have **Admin** rights.
 Connect as `root` to the database launched using docker-compose (e.g. you can run exec on the container from nginx) and create a new `default` db for the project
 (check `config/app_local.php` file for the credentials)
 
-Connect to the nginx container using exec and **run composer** (do not run as root, but in order to set folder permissions root may be needed)
+Connect to the nginx container using exec and **run composer**
 
 ```
 cd /var/www/cplatform/public/app_rest/
-su composeruser
 composer install
 ```
 
