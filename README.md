@@ -35,6 +35,15 @@ cd /var/www/cplatform/public/app_rest/
 composer install
 ```
 
+After running composer install, the application should be served in http://localhost as root json page.
+
+In order to get the database populated, the ping-check endpoint (a link is available in the root json page) should be called twice
+(the first time will create the database and the second time will populate the database)
+
+From the root json page, the events list endpoint is also referenced.
+In similar way navigation within the endpoints should be possible using the _`links` property provided in each object
+(using Firefox cliking on the links should work by default, in Chorme a [json-viewer](https://chromewebstore.google.com/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh) extension may be needed)
+
 ## Configuring tests in Jetbrains to work with Docker
 
 The local path is the location of this readme file and it should be mapped to `/var/www/cplatform/public`
@@ -156,7 +165,7 @@ Follow cakephp [plugin](https://book.cakephp.org/4/en/plugins.html) documentatio
 
 We are working on two different databases:
 - `phputesting` for unit testing (it will be created automatically when running tests)
-- `app_rest` for local development (it will be creted automatically when browsing [api/v1/ping/pong](http://localhost/api/v1/ping/pong))
+- `app_rest` for local development (it will be created automatically when browsing [api/v1/ping/pong](http://localhost/api/v1/ping/pong))
 
 Migrations should be the only way to perform changes in the database schema.
 

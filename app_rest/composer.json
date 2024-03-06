@@ -1,7 +1,7 @@
 {
     "name": "cakephp/app",
     "description": "Oreplay skeleton app",
-    "homepage": "https://github.com/oreplay/oreplay",
+    "homepage": "https://github.com/oreplay/oreplay-backend",
     "type": "project",
     "license": "MIT",
     "require": {
