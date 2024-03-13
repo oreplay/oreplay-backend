@@ -41,7 +41,7 @@ In order to get the database populated, the ping-check endpoint (a link is avail
 (the first time will create the database and the second time will populate the database)
 
 From the root json page, the events list endpoint is also referenced.
-In similar way navigation within the endpoints should be possible using the _`links` property provided in each object
+In similar way navigation within the endpoints should be possible using the `_links` property provided in each object
 (using Firefox cliking on the links should work by default, in Chorme a [json-viewer](https://chromewebstore.google.com/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh) extension may be needed)
 
 ## Configuring tests in Jetbrains to work with Docker

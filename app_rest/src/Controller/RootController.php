@@ -37,12 +37,12 @@ class RootController extends ApiController
                 'events' => [
                     'href' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX . '/events/'
                 ],
-                'checks' => [
+                'ping-check' => [
                     'href' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX . '/ping/pong/'
                 ],
                 'documentation' => [
                     'title' => 'API docs',
-                    'href' => 'https://github.com/oreplay/oreplay'
+                    'href' => 'https://github.com/oreplay/oreplay-backend'
                 ]
             ],
         ];

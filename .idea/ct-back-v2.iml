@@ -8,8 +8,10 @@
       <sourceFolder url="file://$MODULE_DIR$/app/src" isTestSource="false" packagePrefix="App\" />
       <sourceFolder url="file://$MODULE_DIR$/app/vendor/cakephp/cakephp/tests" isTestSource="true" packagePrefix="Cake\Test\" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Results/src" isTestSource="false" packagePrefix="Results\" />
+      <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Results/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Results/tests" isTestSource="true" packagePrefix="Results\Test\" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/src" isTestSource="false" packagePrefix="App\" />
+      <sourceFolder url="file://$MODULE_DIR$/app_rest/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/tests" isTestSource="true" packagePrefix="App\Test\" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/vendor/cakephp/cakephp/tests" isTestSource="true" packagePrefix="Cake\Test\" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/vendor/freefri/cake-rest-api/tests" isTestSource="true" />

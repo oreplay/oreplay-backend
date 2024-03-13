@@ -67,8 +67,10 @@ return [
             'locales' => [RESOURCES . 'locales' . DS],
         ],
         'Cors' => [
+            'ClassName' => \App\Controller\Component\ApiCorsComponent::class,
             'AllowOrigin' => [
                 '*',
+                'http://localhost:3000',
                 'http://localhost:8080',
                 'http://localhost:8081',
                 'http://localhost:8083',
