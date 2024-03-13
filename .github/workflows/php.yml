@@ -56,7 +56,7 @@ jobs:
           key: ${{ runner.os }}-composer-${{ steps.key-date.outputs.date }}-${{ hashFiles('composer.json') }}-${{ matrix.prefer-lowest }}
 
       - name: Composer install
-        run: composer update -d app_rest
+        run: composer install -d app_rest
 
       - name: Wait for MySQL
         if: matrix.db-type == 'mysql' || matrix.db-type == 'mariadb'
