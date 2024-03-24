@@ -8,8 +8,8 @@ on:
 
 
 jobs:
-  build:
-    name: Build
+  sonar:
+    name: sonar
     runs-on: ubuntu-latest
     permissions: read-all
     steps:
