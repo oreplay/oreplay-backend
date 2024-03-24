@@ -199,3 +199,10 @@ bin/cake migrations seed
 # run specific seeder class
 bin/cake migrations seed --seed UsersSeed
 ```
+# Devops
+
+We will use sonarqube community edition (free). For that is needed to be installed as a docker contrainer, with the following command:
+
+```
+docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest
+```

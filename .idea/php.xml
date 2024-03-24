@@ -216,8 +216,8 @@
   </component>
   <component name="PhpInterpreters">
     <interpreters>
-      <interpreter id="81069c62-a2aa-4e9a-903a-d6d051c8d7a9" name="PHP-docker" home="docker-compose://DATA" auto="false" debugger_id="php.debugger.XDebug">
-        <remote_data INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" DOCKER_ACCOUNT_NAME="Docker" DOCKER_COMPOSE_SERVICE_NAME="nginx" DOCKER_REMOTE_PROJECT_PATH="/opt/project">
+      <interpreter id="81069c62-a2aa-4e9a-903a-d6d051c8d7a9" name="PHP-docker" home="docker-compose://DATA" debugger_id="php.debugger.XDebug">
+        <remote_data INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" INITIALIZED="false" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" DOCKER_ACCOUNT_NAME="Docker" DOCKER_COMPOSE_SERVICE_NAME="nginx" DOCKER_REMOTE_PROJECT_PATH="/opt/project">
           <type_data command="EXEC" />
           <dockerComposeConfigurationPaths>
             <item value="$PROJECT_DIR$/docker-compose-dev.yml" />
