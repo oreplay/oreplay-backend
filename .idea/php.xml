@@ -17,7 +17,7 @@
   </component>
   <component name="PhpCSFixer">
     <phpcsfixer_settings>
-      <PhpCSFixerConfiguration tool_path="$PROJECT_DIR$/app_rest/vendor/bin/php-cs-fixer" />
+      <PhpCSFixerConfiguration standards="PSR1;PSR2;Symfony;DoctrineAnnotation;PHP70Migration;PHP71Migration" tool_path="$PROJECT_DIR$/app_rest/vendor/bin/php-cs-fixer" />
     </phpcsfixer_settings>
   </component>
   <component name="PhpCodeSniffer">
@@ -216,8 +216,8 @@
   </component>
   <component name="PhpInterpreters">
     <interpreters>
-      <interpreter id="81069c62-a2aa-4e9a-903a-d6d051c8d7a9" name="PHP-docker" home="docker-compose://DATA" debugger_id="php.debugger.XDebug">
-        <remote_data INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" INITIALIZED="false" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" DOCKER_ACCOUNT_NAME="Docker" DOCKER_COMPOSE_SERVICE_NAME="nginx" DOCKER_REMOTE_PROJECT_PATH="/opt/project">
+      <interpreter id="81069c62-a2aa-4e9a-903a-d6d051c8d7a9" name="PHP-docker" home="docker-compose://DATA" auto="false" debugger_id="php.debugger.XDebug">
+        <remote_data INTERPRETER_PATH="php" HELPERS_PATH="/opt/.phpstorm_helpers" VALID="true" RUN_AS_ROOT_VIA_SUDO="false" DOCKER_ACCOUNT_NAME="Docker" DOCKER_COMPOSE_SERVICE_NAME="nginx" DOCKER_REMOTE_PROJECT_PATH="/opt/project">
           <type_data command="EXEC" />
           <dockerComposeConfigurationPaths>
             <item value="$PROJECT_DIR$/docker-compose-dev.yml" />
@@ -314,8 +314,8 @@
   </component>
   <component name="PhpUnit">
     <phpunit_settings>
+      <PhpUnitSettings configuration_file_path="$PROJECT_DIR$/app_rest/phpunit.xml.dist" custom_loader_path="$PROJECT_DIR$/app_rest/vendor/autoload.php" phpunit_phar_path="" use_configuration_file="true" />
       <phpunit_by_interpreter interpreter_id="81069c62-a2aa-4e9a-903a-d6d051c8d7a9" configuration_file_path="/var/www/cplatform/public/app_rest/phpunit.xml.dist" custom_loader_path="/var/www/cplatform/public/app_rest/vendor/autoload.php" phpunit_phar_path="" use_configuration_file="true" />
-      <PhpUnitSettings configuration_file_path="$PROJECT_DIR$/app_rest/phpunit.xml.dist" custom_loader_path="$PROJECT_DIR$/app_rest/vendor/autoload.php" use_configuration_file="true" />
     </phpunit_settings>
   </component>
   <component name="PsalmOptionsConfiguration">

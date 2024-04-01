@@ -5,17 +5,17 @@ declare(strict_types = 1);
 namespace Results\Test\Fixture;
 
 use RestApi\TestSuite\Fixture\RestApiFixture;
+use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
 
 class ClassesFixture extends RestApiFixture
 {
     public const LOAD = 'plugin.Results.Classes';
-    public const ME = '5fd0e06d-eb65-478a-878e-b1b7919ee327';
 
     public $records = [
         [
-            'id' => ClassesFixture::ME,
+            'id' => ClassEntity::ME,
             'event_id' => Event::FIRST_EVENT,
             'stage_id' => Stage::FIRST_STAGE,
             'course_id' => null,
