@@ -6,6 +6,7 @@ namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
+use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
@@ -48,7 +49,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
-            ['id' => ClassesFixture::ME]);
+            ['id' => ClassEntity::ME]);
 
         $data = $this->_exampleImport();
         $this->post($this->_getEndpoint(), $data);

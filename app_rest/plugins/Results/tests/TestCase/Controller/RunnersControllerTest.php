@@ -6,6 +6,7 @@ namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
+use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\ControlType;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
@@ -51,7 +52,7 @@ class RunnersControllerTest extends ApiCommonErrorsTest
 
     public function testGetList_filteredByExistingClass()
     {
-        $this->get($this->_getEndpoint() . '?class_id='.ClassesFixture::ME);
+        $this->get($this->_getEndpoint() . '?class_id='.ClassEntity::ME);
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals(1, count($bodyDecoded['data']));
@@ -80,7 +81,7 @@ class RunnersControllerTest extends ApiCommonErrorsTest
                 'short_name' => 'Club A',
             ],
             'class' => [
-                'id' => ClassesFixture::ME,
+                'id' => ClassEntity::ME,
                 'short_name' => 'ME',
             ],
             'runner_results' => [

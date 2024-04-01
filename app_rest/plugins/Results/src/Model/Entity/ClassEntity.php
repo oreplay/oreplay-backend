@@ -15,6 +15,8 @@ use Cake\ORM\Entity;
  */
 class ClassEntity extends Entity
 {
+    public const ME = 'd8a87faf-68a4-487b-8f28-6e0ead6c1a57';
+
     protected $_accessible = [
         '*' => false,
         'id' => false,

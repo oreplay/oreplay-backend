@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Test\Fixture;
 
 use RestApi\TestSuite\Fixture\RestApiFixture;
+use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Stage;
@@ -38,7 +39,7 @@ class RunnersFixture extends RestApiFixture
             'telephone2' => null,
             'email' => null,
             'user_id' => null,
-            'class_id' => ClassesFixture::ME,
+            'class_id' => ClassEntity::ME,
             'class_uuid' => null,
             'club_id' => ClubsFixture::CLUB_1,
             'team_id' => null,
