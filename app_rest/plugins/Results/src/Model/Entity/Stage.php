@@ -37,7 +37,6 @@ class Stage extends Entity
         'created',
         'modified',
         'deleted',
-        'deleted',
     ];
 
     public function _get_links(): array
