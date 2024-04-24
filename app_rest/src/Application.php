@@ -41,7 +41,7 @@ class Application extends BaseApplication
     private function _loadCommonPlugins()
     {
         $this->addPlugin('Migrations');
-        $this->addPlugin('Results');
+        $this->addPlugin(\Results\ResultsPlugin::class);
     }
 
     /**
