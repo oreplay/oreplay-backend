@@ -5,7 +5,9 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
+use App\Test\Fixture\OauthAccessTokensFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
+use Results\Controller\EventsController;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Federation;
 use Results\Model\Entity\Stage;
@@ -19,6 +21,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
         FederationsFixture::LOAD,
         EventsFixture::LOAD,
         StagesFixture::LOAD,
+        OauthAccessTokensFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -47,6 +50,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
     public function testGetData()
     {
+        $this->cleanup();
         $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
 
         $bodyDecoded = $this->assertJsonResponseOK();
@@ -112,6 +116,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
     public function testGetData_shouldReturnRaid()
     {
+        $this->cleanup();
         $this->get($this->_getEndpoint() . EventsFixture::FIRST_RAID);
 
         $bodyDecoded = $this->assertJsonResponseOK();
@@ -132,5 +137,48 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'description' => 'IOF OEVENTOR',
         ];
         $this->assertEquals($expected, $bodyDecoded['data']);
+    }
+
+    public function testGetData_notAuthenticatedAsDesktopClient()
+    {
+        $this->loadAuthToken('bad_fake_token');
+        $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
+
+        $this->assertException('Forbidden', 403, 'Invalid Bearer token');
+    }
+
+    public function testGetData_authenticatedAsDesktopClient()
+    {
+        $this->loadAuthToken(EventsController::FAKE_TOKEN);
+        $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        debug($bodyDecoded);
+        $expected = $this->_getFirstEvent();
+        $expected['stages'] = [
+            [
+                'id' => Stage::FIRST_STAGE,
+                'description' => 'First stage',
+                '_links' => [
+                    'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed',
+                    'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/runners/',
+                    'classes' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/',
+                ],
+            ],
+            [
+                'id' => StagesFixture::STAGE_FEDO_2,
+                'description' => 'Second stage',
+                '_links' => [
+                    'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964',
+                    'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/runners/',
+                    'classes' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/classes/',
+                ],
+            ],
+        ];
+        $expected['federation'] = [
+            'id' => Federation::FEDO,
+            'description' => 'FEDO SICO',
+        ];
+        $this->assertEquals($expected, $bodyDecoded['event']);
     }
 }
