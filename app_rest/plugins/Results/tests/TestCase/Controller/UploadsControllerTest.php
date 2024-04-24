@@ -40,8 +40,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     protected function _getEndpoint(): string
     {
-        return ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/stages/'
-            . StagesFixture::STAGE_FEDO_2 . '/uploads/';
+        return ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/uploads/';
     }
 
     public function testAddNew_shouldAddStartDates()
@@ -100,12 +99,16 @@ class UploadsControllerTest extends ApiCommonErrorsTest
     private function _exampleImport(): array
     {
         return [
-            'events' => [
+            'oreplay_data_transfer' => [
+                'source' => 'OE2010',
+                'iof_version' => '3.0',
+            ],
+            'event' => [
                 'id' => '8f3b542c-23b9-4790-a113-b83d476c0ad9',
                 'description' => 'Demo - 5 days of Italy 2014',
                 'stages' => [
                     (int) 0 => [
-                        'id' => '8f3b542c-23b9-4790-a113-b83d476c0ad9',
+                        'id' => StagesFixture::STAGE_FEDO_2,
                         'order_number' => (int) 1,
                         'classes' => [
                             (int) 0 => [

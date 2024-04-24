@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Controller;
 
+use Cake\Http\Exception\BadRequestException;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Runner;
@@ -26,15 +27,23 @@ class UploadsController extends ApiController
     {
         $this->Classes = ClassesTable::load();
         $eventId = $this->request->getParam('eventID');
-        $stageId = $this->request->getParam('stageID');
+        if ($data['event']['id'] !== $eventId) {
+            throw new BadRequestException('Event id must match');
+        }
 
-        $firstStage = $data['events']['stages'][0] ?? null;
+        $firstStage = $data['event']['stages'][0] ?? null;
         if ($firstStage) {
             $data = $firstStage;
+        } else {
+            throw new BadRequestException('Invalid payload structure event.stages.0');
+        }
+        $stageId = $firstStage['id'] ?? null;
+        if (!$stageId) {
+            throw new BadRequestException('Invalid payload structure event.stages.0.id');
         }
         $data = $data['classes'] ?? null;
         if (!is_array($data)) {
-            throw new DetailedException('Invalid payload structure events.stages.0.classes');
+            throw new DetailedException('Invalid payload structure event.stages.0.classes');
         }
 
         $classes = [];
