@@ -4,8 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Controller;
 
-use Cake\Http\Exception\BadRequestException;
-use RestApi\Lib\Exception\DetailedException;
+use App\Lib\Exception\InvalidPayloadException;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
@@ -27,23 +26,30 @@ class UploadsController extends ApiController
     {
         $this->Classes = ClassesTable::load();
         $eventId = $this->request->getParam('eventID');
+        if (!isset($data['oreplay_data_transfer'])) {
+            throw new InvalidPayloadException('Invalid payload structure oreplay_data_transfer must be root element');
+        }
+        $data = $data['oreplay_data_transfer'];
+        if (!isset($data['event']['id'])) {
+            throw new InvalidPayloadException('Invalid payload structure event.id');
+        }
         if ($data['event']['id'] !== $eventId) {
-            throw new BadRequestException('Event id must match');
+            throw new InvalidPayloadException('Event id must match');
         }
 
         $firstStage = $data['event']['stages'][0] ?? null;
         if ($firstStage) {
             $data = $firstStage;
         } else {
-            throw new BadRequestException('Invalid payload structure event.stages.0');
+            throw new InvalidPayloadException('Invalid payload structure event.stages.0');
         }
         $stageId = $firstStage['id'] ?? null;
         if (!$stageId) {
-            throw new BadRequestException('Invalid payload structure event.stages.0.id');
+            throw new InvalidPayloadException('Invalid payload structure event.stages.0.id');
         }
         $data = $data['classes'] ?? null;
         if (!is_array($data)) {
-            throw new DetailedException('Invalid payload structure event.stages.0.classes');
+            throw new InvalidPayloadException('Invalid payload structure event.stages.0.classes');
         }
 
         $classes = [];
@@ -67,7 +73,7 @@ class UploadsController extends ApiController
                     $result->stage_id = $stageId;
                     $typeId = $resultData['result_type']['id'] ?? null;
                     if (!$typeId) {
-                        throw new DetailedException('runner_results.result_type.id is mandatory');
+                        throw new InvalidPayloadException('runner_results.result_type.id is mandatory');
                     }
                     $result->result_type = $this
                         ->Classes->Runners->RunnerResults->ResultTypes->getCached($typeId);

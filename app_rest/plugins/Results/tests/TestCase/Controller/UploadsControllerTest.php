@@ -50,7 +50,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
             ['id' => ClassEntity::ME]);
 
-        $data = $this->_exampleImport();
+        $data = ['oreplay_data_transfer' => $this->_exampleImport()];
         $this->post($this->_getEndpoint(), $data);
 
         $jsonDecoded = $this->assertJsonResponseOK()['data'];
@@ -99,7 +99,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
     private function _exampleImport(): array
     {
         return [
-            'oreplay_data_transfer' => [
+            'configuration' => [
                 'source' => 'OE2010',
                 'iof_version' => '3.0',
             ],
