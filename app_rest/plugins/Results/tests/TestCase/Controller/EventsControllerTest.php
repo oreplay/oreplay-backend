@@ -153,7 +153,6 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
 
         $bodyDecoded = $this->assertJsonResponseOK();
-        debug($bodyDecoded);
         $expected = $this->_getFirstEvent();
         $expected['stages'] = [
             [

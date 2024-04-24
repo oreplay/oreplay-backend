@@ -77,6 +77,10 @@ return [
             ],
         ]
     ],
+    'ResultsPlugin' => [
+        'tablePrefix' => '',
+        'routePath' => \App\Controller\ApiController::ROUTE_PREFIX,
+    ],
 
     /*
      * Security and encryption configuration

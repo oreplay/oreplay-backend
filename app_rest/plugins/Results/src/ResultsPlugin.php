@@ -4,34 +4,26 @@ declare(strict_types = 1);
 
 namespace Results;
 
-use App\Controller\ApiController;
-use Cake\Core\BasePlugin;
 use Cake\Routing\RouteBuilder;
+use RestApi\Lib\RestPlugin;
 
-class ResultsPlugin extends BasePlugin
+class ResultsPlugin extends RestPlugin
 {
-    public function routes(RouteBuilder $routes): void
+    protected function routeConnectors(RouteBuilder $builder): void
     {
-        $routes->plugin(
-            $this->name,
-            ['path' => ApiController::ROUTE_PREFIX],
-            function (RouteBuilder $builder) {
-                $builder->connect(
-                    '/events/{eventID}/stages/{stageID}/runners/*',
-                    \Results\Controller\RunnersController::route()
-                );
-                $builder->connect(
-                    '/events/{eventID}/stages/{stageID}/uploads/*',
-                    \Results\Controller\UploadsController::route()
-                );
-                $builder->connect(
-                    '/events/{eventID}/stages/{stageID}/classes/*',
-                    \Results\Controller\ClassesController::route()
-                );
-                $builder->connect('/events/{eventID}/stages/*', \Results\Controller\StagesController::route());
-                $builder->connect('/events/*', \Results\Controller\EventsController::route());
-            }
+        $builder->connect(
+            '/events/{eventID}/stages/{stageID}/runners/*',
+            \Results\Controller\RunnersController::route()
         );
-        parent::routes($routes);
+        $builder->connect(
+            '/events/{eventID}/stages/{stageID}/uploads/*',
+            \Results\Controller\UploadsController::route()
+        );
+        $builder->connect(
+            '/events/{eventID}/stages/{stageID}/classes/*',
+            \Results\Controller\ClassesController::route()
+        );
+        $builder->connect('/events/{eventID}/stages/*', \Results\Controller\StagesController::route());
+        $builder->connect('/events/*', \Results\Controller\EventsController::route());
     }
 }
