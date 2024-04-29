@@ -3,6 +3,9 @@ version: '3'
 services:
   nginx:
     image: public.ecr.aws/ct-nilus/base-images:nginx-php-dev-v18-focal-7.4
+    #build:
+    #  context: .
+    #  dockerfile: docker/Dockerfile
     command: bash -c "php-fpm7.4 && nginx -g 'daemon off;'"
     ports:
       - '80:80'
