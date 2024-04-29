@@ -1,0 +1,45 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-{{ .Values.ingress.host | replace "." "-" }}
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.ingress.class | quote }}
+    {{- if .Values.ingress.basicHttpAuthSecret }}
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: {{ .Values.ingress.basicHttpAuthSecret }}
+    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
+    {{- end }}
+    {{- if .Values.ingress.basicHttpAuthHeaderForward }}
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      proxy_set_header Authorization "Basic {{ .Values.ingress.basicHttpAuthHeaderForward }}";
+    {{- end }}
+    nginx.ingress.kubernetes.io/proxy-body-size: 500m
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "15"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "2700"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "2700"
+    nginx.ingress.kubernetes.io/client-body-timeout: "2700"
+    cert-manager.io/issuer: {{ printf "%s-%s" .Values.ingress.host .Values.ingress.usedIssuer | replace "." "-" | replace "*" "wildcard-all" | trunc 63 | trimSuffix "-" | quote }}
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ printf "%s-%s" .Values.ingress.host .Values.ingress.secretName | replace "." "-" | replace "*" "wildcard-all" | trunc 63 | trimSuffix "-" | quote }}
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.service.name }}
+                port:
+                  number: {{ .Values.service.port }}
+          - path: /api/v1/.*$
+            pathType: Prefix
+            backend:
+              service:
+                name: cakeapi-nginx-svc
+                port:
+                  number: 80

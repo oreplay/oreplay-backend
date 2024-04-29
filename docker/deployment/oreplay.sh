@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+#++kubectl create namespace oreplay
+# kubectl delete namespace oreplay
+#++kubectl -n oreplay create secret generic sec-edu-back --dry-run=client \
+#++  --from-env-file="./oreplay/.env.nginx-oreplay.env" \
+#++  --output json | kubeseal | tee ./oreplay/oreplay-secret-oreplay.yaml
+#++kubectl apply -f ./oreplay/oreplay-secret-oreplay.yaml -n oreplay
+#kubectl delete -f oreplay/oreplay-secret-oreplay.yaml -n oreplay
+helm upgrade -i api-memcached bitnami/memcached -n oreplay
+# helm uninstall api-memcached -n oreplay
+### Before installing ssl-ingress, DNS must be properly set
+helm upgrade -i ssl-ingress ./subssl -n oreplay --set ingress.host=www.oreplay.es
+# helm uninstall ssl-ingress -n oreplay
+helm upgrade -i cakeapi ./nginx -n oreplay --set image.tag=0.1.2 \
+  --set image.repository=freefri/oreplay
+# helm uninstall cakeapi -n oreplay
