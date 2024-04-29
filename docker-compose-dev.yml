@@ -2,7 +2,7 @@ version: '3'
 
 services:
   nginx:
-    image: public.ecr.aws/ct-nilus/base-images:nginx-php-dev-v18-focal-7.4
+    image: freefri/oreplay:0.1.2
     #build:
     #  context: .
     #  dockerfile: docker/Dockerfile
@@ -29,7 +29,7 @@ services:
     ports:
       - '13307:3306'
     volumes:
-      - ./app_rest/tmp/docker-mysql-datadir-3:/var/lib/mysql
+      - ./app_rest/tmp/docker-mysql-datadir-4:/var/lib/mysql
     environment:
       MYSQL_DATABASE: phputesting
       MYSQL_USER: phputesting
