@@ -36,7 +36,7 @@ spec:
                 name: {{ .Values.service.name }}
                 port:
                   number: {{ .Values.service.port }}
-          - path: /api/v1/.*$
+          - path: /api/.*$
             pathType: Prefix
             backend:
               service:
