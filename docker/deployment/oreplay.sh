@@ -6,6 +6,12 @@
 #++  --output json | kubeseal | tee ./oreplay/oreplay-secret-oreplay.yaml
 #++kubectl apply -f ./oreplay/oreplay-secret-oreplay.yaml -n oreplay
 #kubectl delete -f oreplay/oreplay-secret-oreplay.yaml -n oreplay
+#++helm install mysql-db bitnami/mysql -n oreplay \
+#++  --set auth.rootPassword=****** \
+#++  --set mysqlUser=oreplayadmin \
+#++  --set mysqlPassword=****** \
+#++  --set mysqlDatabase=app_rest
+#mysql -h mysql-db.oreplay.svc.cluster.local -uroot -p
 helm upgrade -i api-memcached bitnami/memcached -n oreplay
 # helm uninstall api-memcached -n oreplay
 ### Before installing ssl-ingress, DNS must be properly set
