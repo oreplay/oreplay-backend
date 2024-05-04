@@ -159,7 +159,7 @@ class OAuthServerComponent extends Component
 
     private function _parseRequestParamIDs(Controller $controller)
     {
-        $idName = strtolower(substr($controller->getName(), 4, -1)) . 'ID';
+        $idName = strtolower(substr($controller->getName(), 0, -1)) . 'ID';
         $idValue = $controller->getRequest()->getParam('pass')[0] ?? null;
         if ($idValue !== null) {
             $req = $controller->getRequest();
