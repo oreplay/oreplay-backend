@@ -46,8 +46,6 @@ class AuthenticationControllerTest extends ApiCommonErrorsTest
         $this->assertArrayHasKey('access_token', $return);
         $this->assertEquals('7206', $return['expires_in'], 'expires in seconds');
         $this->assertEquals('Bearer', $return['token_type']);
-        $this->assertEquals(UsersFixture::USER_ADMIN_ID, $return['user']['id']);
-        $this->assertEquals(UsersFixture::USER_ADMIN_EMAIL, $return['user']['email']);
     }
 
     public function testAddNew_loginShouldRememberMe()
@@ -68,8 +66,6 @@ class AuthenticationControllerTest extends ApiCommonErrorsTest
         $this->assertArrayHasKey('access_token', $return);
         $this->assertEquals('172806', $return['expires_in'], 'expires in seconds');
         $this->assertEquals('Bearer', $return['token_type']);
-        $this->assertEquals(UsersFixture::USER_ADMIN_ID, $return['user']['id']);
-        $this->assertEquals(UsersFixture::USER_ADMIN_EMAIL, $return['user']['email']);
     }
 
     public function testAddNew_loginShouldThrowWithoutGrantType()
@@ -85,12 +81,12 @@ class AuthenticationControllerTest extends ApiCommonErrorsTest
         $this->assertResponseError();
         $return = json_decode($this->_getBodyAsString(), true);
 
-        $this->assertEquals('grant_type should be password', $return['message']);
+        $this->assertEquals('Invalid grant_type', $return['message']);
     }
 
     public function testDelete()
     {
-        $this->delete($this->_getEndpoint() . 'cookie?access_token=asdklfj');
+        $this->delete($this->_getEndpoint() . 'current?access_token=asdklfj');
         $this->assertResponseCode(204);
     }
 }

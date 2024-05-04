@@ -5,36 +5,36 @@ declare(strict_types = 1);
 namespace App\Controller;
 
 use App\Controller\Component\OAuthServerComponent;
+use App\Lib\Helpers\ConcurrentCookieHelper;
+use App\Lib\Helpers\Configure;
 use App\Lib\Oauth\OAuthServer;
+use App\Model\Table\LogAttemptsTable;
 use App\Model\Table\OauthAccessTokensTable;
 use App\Model\Table\UsersTable;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\ForbiddenException;
 use RestApi\Lib\Helpers\CookieHelper;
 
 /**
  * @property UsersTable $Users
  * @property OAuthServerComponent $OAuthServer
+ * @property OauthAccessTokensTable $OauthAccessTokens
  */
 class AuthenticationController extends ApiController
 {
-    /** @var CookieHelper */
-    public $CookieHelper;
+    public CookieHelper $CookieHelper;
 
     public function initialize(): void
     {
         parent::initialize();
         $this->Users = UsersTable::load();
         $this->CookieHelper = new CookieHelper();
+        $this->OauthAccessTokens = OauthAccessTokensTable::load();
     }
 
     public function isPublicController(): bool
     {
         return true;
-    }
-
-    protected function getMandatoryParams(): array
-    {
-        return [];
     }
 
     private function _secsToExpire($data)
@@ -48,62 +48,53 @@ class AuthenticationController extends ApiController
         }
     }
 
-    private function _get($uid, array $data): array
-    {
-        $grantType = $data['grant_type'] ?? '';
-        if ($grantType !== 'password') {
-            throw new BadRequestException('grant_type should be password');
-        }
-        $config = [
-            'skipAuth' => true,
-            'serverConfig' => [
-                'enforce_state' => true,
-                'allow_implicit' => true,
-                'access_lifetime' => $this->_secsToExpire($data)
-            ],
-        ];
-        $server = new OAuthServer($config);
-        $server->setupOauth($this);
-        return $server->getAccessTokenParams($uid, $data['client_id'] ?? null);
-    }
-
     protected function addNew($data)
     {
-        $res = $this->Users->checkLogin($data);
+        switch ($data['grant_type'] ?? null) {
+            case 'password':
+                $this->return = $this->_loginWithPassword($data);
+                break;
+            default:
+                throw new BadRequestException('Invalid grant_type');
+        }
+    }
 
-        $token = $this->_get($res->id, $data);
+    private function _loginWithPassword($data): array
+    {
+        $this->_logoutCookie();
 
-        $this->CookieHelper->writeApi2Remember($token['access_token'], $token['expires_in']);
-        unset($token['expires_at']);
-        unset($token['state']);
+        $clientId = $data['client_id'] ?? false;
+        if (!$clientId) {
+            throw new BadRequestException('Client id is mandatory');
+        }
+        $usr = $this->Users->checkLogin($data);
 
-        $this->return = $token;
-        $this->return['user'] = $res;
+        $token = $this->OauthAccessTokens->createBearerToken($usr->id, $clientId, $this->_secsToExpire($data));
+
+        $cookieHelper = new CookieHelper();
+        $cookie = $cookieHelper
+            ->writeApi2Remember($token['access_token'], $token['expires_in']);
+        $this->response = $this->response->withCookie($cookie);
+        return $token;
     }
 
     protected function delete($id)
     {
-        $accessToken = $this->_getAccessToken($this->CookieHelper->popApi2Remember($this->request));
+        $accessToken = $this->_logoutCookie();
+        if ($id !== 'current') {
+            $accessToken = $id;
+        }
         if ($accessToken) {
-            OauthAccessTokensTable::load()->expireAccessToken($accessToken);
+            $this->OauthAccessTokens->expireAccessToken($accessToken);
         }
         $this->return = false;
     }
 
-    private function _getAccessToken($accessToken): ?string
+    private function _logoutCookie()
     {
-        if ($accessToken) {
-            return $accessToken;
-        } else {
-            if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
-                $exploded = explode(' ', $_SERVER['HTTP_AUTHORIZATION']);
-                $accessToken = ($exploded[1] ?? null);
-            }
-            if ($accessToken) {
-                return $accessToken;
-            } else {
-                return null;
-            }
-        }
+        $cookieHelper = new CookieHelper();
+        $res = $cookieHelper->popApi2Remember($this->getRequest());
+        $this->response = $this->response->withCookie($cookieHelper->cookie);
+        return $res;
     }
 }
