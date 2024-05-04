@@ -29,7 +29,7 @@ services:
     ports:
       - '13307:3306'
     volumes:
-      - ./app_rest/tmp/docker-mysql-datadir-4:/var/lib/mysql
+      - ./app_rest/tmp/docker-mysql-datadir-5:/var/lib/mysql
     environment:
       MYSQL_DATABASE: phputesting
       MYSQL_USER: phputesting

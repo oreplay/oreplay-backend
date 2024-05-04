@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Controller;
 
+use Cake\Http\Exception\BadRequestException;
 use Results\Model\Table\TokensTable;
 
 /**
@@ -17,15 +18,15 @@ class EventTokensController extends ApiController
         parent::initialize();
     }
 
-    public function isPublicController(): bool
-    {
-        return true;
-    }
-
     protected function addNew($data)
     {
         $eventId = $this->request->getParam('eventID');
-        // TODO authenticate user
-        $this->return = $this->EventTokens->createTokenForEvent($eventId);
+        $userId = $this->OAuthServer->getUserID();
+        $this->EventTokens->Events->getEventFromUser($eventId, $userId);
+        $expires = $data['expires'] ?? null;
+        if (!$expires) {
+            throw new BadRequestException('Expires is mandatory');
+        }
+        $this->return = $this->EventTokens->createTokenForEvent($eventId, $data);
     }
 }

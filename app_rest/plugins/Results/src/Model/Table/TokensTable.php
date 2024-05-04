@@ -5,8 +5,8 @@ declare(strict_types = 1);
 namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
+use Cake\Http\Exception\InternalErrorException;
 use Cake\ORM\Behavior\TimestampBehavior;
-use Cake\Utility\Text;
 use Results\Model\Entity\Token;
 
 /**
@@ -20,14 +20,25 @@ class TokensTable extends AppTable
         EventsTable::addHasMany($this);
     }
 
-    public function createTokenForEvent(string $eventId): Token
+    public function createTokenForEvent(string $eventId, array $data): Token
     {
         /** @var Token $token */
-        $token = $this->patchFromNewWithUuid(['foreign_model' => 'Event']);
+        $token = $this->patchFromNewWithUuid($data);
         $token->foreign_model = 'Event';
         $token->foreign_key = $eventId;
-        $token->token = Text::uuid(); // todo change this
+        $token->token = $this->_generateToken();
         $this->saveOrFail($token);
         return $token;
+    }
+
+    private function _generateToken(): string
+    {
+        if (function_exists('random_bytes')) {
+            $randomData = random_bytes(20);
+            if ($randomData !== false && strlen($randomData) === 20) {
+                return bin2hex($randomData);
+            }
+        }
+        throw new InternalErrorException('Cannot generate token');
     }
 }
