@@ -32,6 +32,8 @@ class User extends Entity
     ];
 
     protected $_hidden = [
+        'is_admin',
+        'is_super',
         'deleted',
         'password',
     ];

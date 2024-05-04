@@ -5,14 +5,9 @@ declare(strict_types = 1);
 namespace App\Controller;
 
 use App\Controller\Component\OAuthServerComponent;
-use App\Lib\Helpers\ConcurrentCookieHelper;
-use App\Lib\Helpers\Configure;
-use App\Lib\Oauth\OAuthServer;
-use App\Model\Table\LogAttemptsTable;
 use App\Model\Table\OauthAccessTokensTable;
 use App\Model\Table\UsersTable;
 use Cake\Http\Exception\BadRequestException;
-use Cake\Http\Exception\ForbiddenException;
 use RestApi\Lib\Helpers\CookieHelper;
 
 /**

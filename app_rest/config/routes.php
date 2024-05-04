@@ -14,6 +14,7 @@ return static function (RouteBuilder $routes) {
         $builder->connect('/ping/*', \App\Controller\PingController::route());
         $builder->connect('/users/*', \App\Controller\UsersController::route());
         $builder->connect('/authentication/*', \App\Controller\AuthenticationController::route());
+        $builder->connect('/me/*', \App\Controller\MeController::route());
     });
 
     $routes->setRouteClass(DashedRoute::class);
