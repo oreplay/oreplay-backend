@@ -33,9 +33,9 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ .Values.service.name }}
+                name: ct-frontend-svc
                 port:
-                  number: {{ .Values.service.port }}
+                  number: 4173
           - path: /api/.*$
             pathType: Prefix
             backend:
