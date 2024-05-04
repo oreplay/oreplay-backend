@@ -5,12 +5,15 @@ declare(strict_types = 1);
 namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
+use App\Model\Table\UsersTable;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
 use Results\Model\Entity\Event;
 
 /**
  * @property FederationsTable $Federations
+ * @property UsersTable $Users
  * @property StagesTable $Stages
  */
 class EventsTable extends AppTable
@@ -20,6 +23,9 @@ class EventsTable extends AppTable
         $this->addBehavior(TimestampBehavior::class);
         FederationsTable::addHasMany($this);
         StagesTable::addBelongsTo($this);
+        $this->belongsToMany('Users', [
+            'joinTable' => 'users_events',
+        ]);
     }
 
     public function findPaginatedEvents(array $filters): Query
@@ -36,5 +42,22 @@ class EventsTable extends AppTable
         /** @var Event $res */
         $res = $query->firstOrFail();
         return $res;
+    }
+
+    public function getEventFromUser(string $eventId, string $userId): Event
+    {
+        /** @var Event $event */
+        $event = $this->find()
+            ->where(['id' => $eventId])
+            ->contain('Users', function (Query $query) use ($userId) {
+                return $query->where([
+                    'Users.id' => $userId,
+                ]);
+            })
+            ->firstOrFail();
+        if (!$event->getFirstUser()) {
+            throw new ForbiddenException('Event not from this user');
+        }
+        return $event;
     }
 }

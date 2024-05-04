@@ -6,8 +6,12 @@ namespace Results\Model\Entity;
 
 use App\Controller\ApiController;
 use App\Lib\FullBaseUrl;
+use App\Model\Entity\User;
 use Cake\ORM\Entity;
 
+/**
+ * @property User[] $users
+ */
 class Event extends Entity
 {
     public const FIRST_EVENT = '8f3b542c-23b9-4790-a113-b83d476c0ad9';
@@ -33,5 +37,15 @@ class Event extends Entity
         return [
             'self' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX . '/events/' . $this->id
         ];
+    }
+
+    public function getFirstUser()
+    {
+        if (!$this->users) {
+            return null;
+        }
+        foreach ($this->users as $usr) {
+            return $usr;
+        }
     }
 }

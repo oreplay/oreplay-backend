@@ -6,9 +6,11 @@ namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
 use App\Test\Fixture\OauthAccessTokensFixture;
+use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Results\Model\Entity\Event;
 use Results\Test\Fixture\EventsFixture;
+use Results\Test\Fixture\UsersEventsFixture;
 use Results\Test\Fixture\TokensFixture;
 use Results\Test\Fixture\FederationsFixture;
 use Results\Test\Fixture\StagesFixture;
@@ -21,6 +23,8 @@ class EventTokensControllerTest extends ApiCommonErrorsTest
         StagesFixture::LOAD,
         OauthAccessTokensFixture::LOAD,
         TokensFixture::LOAD,
+        UsersFixture::LOAD,
+        UsersEventsFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -30,11 +34,13 @@ class EventTokensControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew()
     {
-        $this->post($this->_getEndpoint(), ['jlkajdsf']);// TODO change
+        $data = ['expires' => '2034-01-06T13:09:01.523+00:00'];
+        $this->post($this->_getEndpoint(), $data);
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertArrayHasKey('id', $bodyDecoded['data']);
         $this->assertArrayHasKey('token', $bodyDecoded['data']);
-        $this->assertEquals(4, count($bodyDecoded['data']));
+        $this->assertEquals($data['expires'], $bodyDecoded['data']['expires']);
+        $this->assertEquals(5, count($bodyDecoded['data']));
     }
 }

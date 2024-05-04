@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace App\Test\Fixture;
 
-use App\Lib\Consts\UserGroups;
 use RestApi\TestSuite\Fixture\RestApiFixture;
 
 class UsersFixture extends RestApiFixture

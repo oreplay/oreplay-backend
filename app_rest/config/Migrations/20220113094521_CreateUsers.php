@@ -9,7 +9,7 @@ class CreateUsers extends AbstractMigration
     public function change()
     {
         $table = $this->table('users', ['id' => false,
-            'collation'=>'utf8mb4_unicode_ci', 'primary_key' => ['id']]);
+            'collation'=>'utf8mb4_0900_ai_ci', 'primary_key' => ['id']]);
         $table->addColumn('id', 'string', [
             'default' => null,
             'limit' => 36,
