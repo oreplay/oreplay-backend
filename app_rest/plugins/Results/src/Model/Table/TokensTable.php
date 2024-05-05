@@ -6,6 +6,7 @@ namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
 use Cake\Http\Exception\InternalErrorException;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Results\Model\Entity\Token;
 
@@ -28,6 +29,22 @@ class TokensTable extends AppTable
         $token->foreign_key = $eventId;
         $token->token = $this->_generateToken();
         $this->saveOrFail($token);
+        return $token;
+    }
+
+    public function expireTokenForEvent(string $token, string $eventId): Token
+    {
+        /** @var Token $token */
+        $token = $this->find()->where(['token' => $token])
+            ->innerJoin(['Events' => 'events'], [
+                'Events.id = Tokens.foreign_key',
+                'Events.id' => $eventId,
+                'Tokens.foreign_model = "Event"',
+            ])->firstOrFail();
+        $token->expires = new FrozenTime();
+        $token->deleted = $token->expires;
+        /** @var Token $token */
+        $token = $this->saveOrFail($token);
         return $token;
     }
 

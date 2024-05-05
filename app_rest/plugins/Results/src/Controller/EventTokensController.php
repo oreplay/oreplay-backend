@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Controller;
 
 use Cake\Http\Exception\BadRequestException;
+use Results\Model\Entity\Event;
 use Results\Model\Table\TokensTable;
 
 /**
@@ -18,15 +19,27 @@ class EventTokensController extends ApiController
         parent::initialize();
     }
 
-    protected function addNew($data)
+    private function _checkIsOwnEvent(): Event
     {
         $eventId = $this->request->getParam('eventID');
         $userId = $this->OAuthServer->getUserID();
-        $this->EventTokens->Events->getEventFromUser($eventId, $userId);
+        return $this->EventTokens->Events->getEventFromUser($eventId, $userId);
+    }
+
+    protected function addNew($data)
+    {
+        $event = $this->_checkIsOwnEvent();
         $expires = $data['expires'] ?? null;
         if (!$expires) {
             throw new BadRequestException('Expires is mandatory');
         }
-        $this->return = $this->EventTokens->createTokenForEvent($eventId, $data);
+        $this->return = $this->EventTokens->createTokenForEvent($event->id, $data);
+    }
+
+    protected function delete($id)
+    {
+        $event = $this->_checkIsOwnEvent();
+        $this->EventTokens->expireTokenForEvent($id, $event->id);
+        $this->return = false;
     }
 }
