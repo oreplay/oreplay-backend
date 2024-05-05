@@ -9,6 +9,7 @@ Icon?
 ehthumbs.db
 Thumbs.db
 .directory
+*.local
 
 /app_rest/auth.json
 # Tool specific files #

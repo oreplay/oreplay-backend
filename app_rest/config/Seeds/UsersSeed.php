@@ -1,7 +1,9 @@
 <?php
-declare(strict_types=1);
+
+declare(strict_types = 1);
 
 use App\Model\Table\AppTable;
+use App\Test\Fixture\UsersFixture;
 use Migrations\AbstractSeed;
 
 class UsersSeed extends AbstractSeed
@@ -11,7 +13,7 @@ class UsersSeed extends AbstractSeed
         $now = date('Y-m-d H:i:00');
         $data = [
             [
-                'id' => 1,
+                'id' => UsersFixture::USER_ADMIN_ID,
                 'email' => 'admin@example.com',
                 'first_name' => 'Admin',
                 'last_name' => 'Admin',
