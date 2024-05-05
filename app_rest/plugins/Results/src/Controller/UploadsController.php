@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Controller;
 
 use App\Lib\Exception\InvalidPayloadException;
+use Cake\Http\Exception\ForbiddenException;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
@@ -24,6 +25,11 @@ class UploadsController extends ApiController
 
     protected function addNew($data)
     {
+        $token = $this->_getBearer();
+        $isDesktopClientAuthenticated = $token === EventsController::FAKE_TOKEN;
+        if (!$isDesktopClientAuthenticated) {
+            throw new ForbiddenException('Invalid Bearer token');
+        }
         $this->Classes = ClassesTable::load();
         $eventId = $this->request->getParam('eventID');
         if (!isset($data['oreplay_data_transfer'])) {
@@ -52,6 +58,7 @@ class UploadsController extends ApiController
             throw new InvalidPayloadException('Invalid payload structure event.stages.0.classes');
         }
 
+        $runnerCount = 0;
         $classes = [];
         foreach ($data as $classObj) {
             /** @var ClassEntity $class */
@@ -88,11 +95,35 @@ class UploadsController extends ApiController
                         ->createIfNotExists($eventId, $stageId, $runnerClub);
                 }
                 $runners[] = $runner;
+                $runnerCount++;
             }
             $class->runners = $runners;
             $classes[] = $class;
         }
         $this->Classes->saveManyOrFail($classes);
-        $this->return = $classes;
+        $this->flatResponse = true;
+        $classCount = count($classes);
+        $this->return = [
+            'data' => $classes,
+            'meta' => [
+                'updated' => [
+                    'classes' => $classCount,
+                    'runners' => $runnerCount,
+                ],
+                'human' => [
+                    "Updated $classCount classes",
+                    "Updated $classCount runners",
+                ]
+            ]
+        ];
+    }
+
+    private function _getBearer(): ?string
+    {
+        $auth = $this->getRequest()->getHeader('Authorization')[0] ?? null;
+        if (!$auth) {
+            return null;
+        }
+        return substr($auth, strlen('Bearer '));
     }
 }
