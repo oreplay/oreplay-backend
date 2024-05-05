@@ -6,6 +6,7 @@ namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
+use Results\Controller\EventsController;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
@@ -45,6 +46,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddStartDates()
     {
+        $this->loadAuthToken(EventsController::FAKE_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
@@ -94,6 +96,18 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals(ResultType::STAGE,
                 $value->runner_results[0]->result_type_id);
         }
+    }
+
+    public function testAddNew_shouldRequireAuthenticatedToken()
+    {
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = ['oreplay_data_transfer' => $this->_exampleImport()];
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertException('Forbidden', 403, 'Invalid Bearer token');
     }
 
     private function _exampleImport(): array
