@@ -9,6 +9,8 @@ use App\Test\Fixture\OauthAccessTokensFixture;
 use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Results\Model\Entity\Event;
+use Results\Model\Entity\Token;
+use Results\Model\Table\TokensTable;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\UsersEventsFixture;
 use Results\Test\Fixture\TokensFixture;
@@ -42,5 +44,20 @@ class EventTokensControllerTest extends ApiCommonErrorsTest
         $this->assertArrayHasKey('token', $bodyDecoded['data']);
         $this->assertEquals($data['expires'], $bodyDecoded['data']['expires']);
         $this->assertEquals(5, count($bodyDecoded['data']));
+    }
+
+    public function testDelete()
+    {
+        $this->delete($this->_getEndpoint() . TokensFixture::FIRST_TOKEN);
+
+        $this->assertResponseOK();
+        /** @var Token $db */
+        $db = TokensTable::load()->find()
+            ->where(['id' => TokensFixture::FIRST_ID])
+            ->withDeleted(true)
+            ->firstOrFail();
+        $this->assertEquals(TokensFixture::FIRST_TOKEN, $db->token);
+        $this->assertTrue($db->expires->isPast());
+        $this->assertTrue($db->deleted->isPast());
     }
 }
