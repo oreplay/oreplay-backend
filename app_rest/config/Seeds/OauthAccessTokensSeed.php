@@ -1,8 +1,10 @@
 <?php
-declare(strict_types=1);
+
+declare(strict_types = 1);
 
 use App\Test\Fixture\OauthAccessTokensFixture;
 use App\Test\Fixture\OauthClientsFixture;
+use App\Test\Fixture\UsersFixture;
 use Migrations\AbstractSeed;
 
 class OauthAccessTokensSeed extends AbstractSeed
@@ -11,9 +13,9 @@ class OauthAccessTokensSeed extends AbstractSeed
     {
         $data = [
             [
-                'access_token' => OauthAccessTokensFixture::ACCESS_TOKEN_SELLER,
+                'access_token' => OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER,
                 'client_id' => OauthClientsFixture::DASHBOARD_CLI,
-                'user_id' => '2',
+                'user_id' => UsersFixture::USER_ADMIN_ID,
                 'expires' => (date('Y') + 1) . '-05-20 17:20:05',
                 'scope' => null,
             ]

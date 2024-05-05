@@ -6,14 +6,17 @@ namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
 use App\Test\Fixture\OauthAccessTokensFixture;
+use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Results\Controller\EventsController;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Federation;
 use Results\Model\Entity\Stage;
+use Results\Model\Table\EventsTable;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
 use Results\Test\Fixture\StagesFixture;
+use Results\Test\Fixture\UsersEventsFixture;
 
 class EventsControllerTest extends ApiCommonErrorsTest
 {
@@ -22,6 +25,8 @@ class EventsControllerTest extends ApiCommonErrorsTest
         EventsFixture::LOAD,
         StagesFixture::LOAD,
         OauthAccessTokensFixture::LOAD,
+        UsersFixture::LOAD,
+        UsersEventsFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -179,5 +184,24 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'description' => 'FEDO SICO',
         ];
         $this->assertEquals($expected, $bodyDecoded['event']);
+    }
+
+    public function testAddNew()
+    {
+        $data = [
+            'description' => 'Test New Race',
+            'initial_date' => '2024-03-26',
+            'final_date' => '2024-03-26',
+            'federation_id' => null,
+        ];
+        $this->post($this->_getEndpoint(), $data);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals($data['description'], $bodyDecoded['data']['description']);
+        $this->assertEquals($data['initial_date'], $bodyDecoded['data']['initial_date']);
+        $this->assertEquals($data['final_date'], $bodyDecoded['data']['final_date']);
+
+        $db = EventsTable::load()->getEventFromUser($bodyDecoded['data']['id'], UsersFixture::USER_ADMIN_ID);
+        $this->assertEquals($data['description'], $db->description);
     }
 }

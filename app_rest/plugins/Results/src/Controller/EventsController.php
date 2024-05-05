@@ -7,6 +7,7 @@ namespace Results\Controller;
 use App\Lib\FullBaseUrl;
 use Cake\Http\Exception\ForbiddenException;
 use RestApi\Lib\Helpers\PaginationHelper;
+use Results\Model\Entity\Event;
 use Results\Model\Table\EventsTable;
 
 /**
@@ -57,5 +58,14 @@ class EventsController extends ApiController
             return null;
         }
         return substr($auth, strlen('Bearer '));
+    }
+
+    protected function addNew($data)
+    {
+        $userId = $this->getLocalOauth()->verifyAuthorization();
+        /** @var Event $event */
+        $event = $this->Events->patchFromNewWithUuid($data);
+        $event->users = [$this->Events->Users->get($userId)];
+        $this->return = $this->Events->saveOrFail($event, ['associated' => true]);
     }
 }

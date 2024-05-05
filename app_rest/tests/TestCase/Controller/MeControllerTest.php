@@ -26,7 +26,7 @@ class MeControllerTest extends ApiCommonErrorsTest
     {
         parent::setUp();
         $this->clearUserCache();
-        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_TOKEN_SELLER);
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
     }
 
     public function testGetList_shouldReturn()

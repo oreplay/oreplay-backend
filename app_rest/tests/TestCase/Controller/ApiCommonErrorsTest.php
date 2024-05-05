@@ -20,7 +20,7 @@ abstract class ApiCommonErrorsTest extends \RestApi\TestSuite\ApiCommonErrorsTes
     {
         parent::setUp();
         if (!$this->currentAccessToken) {
-            $this->currentAccessToken = OauthAccessTokensFixture::ACCESS_TOKEN_SELLER;
+            $this->currentAccessToken = OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER;
         }
         $_SERVER['HTTP_ORIGIN'] = 'http://dev.example.com';
         $this->loadAuthToken($this->currentAccessToken);
