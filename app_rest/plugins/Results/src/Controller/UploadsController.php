@@ -67,10 +67,7 @@ class UploadsController extends ApiController
             $class->course = $course;
             $runners = [];
             foreach ($classObj['runners'] as $runnerData) {
-                /** @var Runner $runner */
-                $runner = $this->Classes->Runners->patchFromNewWithUuid($runnerData);
-                $runner->event_id = $eventId;
-                $runner->stage_id = $stageId;
+                $runner = $this->Classes->Runners->createRunnerIfNotExists($eventId, $stageId, $runnerData);
                 $results = $runnerData['runner_results'] ?? [];
                 foreach ($results as $resultData) {
                     /** @var RunnerResult $result */
