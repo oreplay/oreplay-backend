@@ -73,14 +73,4 @@ class UsersTable extends AppTable
         }
         return $usr;
     }
-
-    public function getUserWithNotebooks($id): User
-    {
-        /** @var User $user */
-        $user = $this->find()
-            ->where(['id' => $id])
-            ->contain('Notebooks')
-            ->first();
-        return $user;
-    }
 }
