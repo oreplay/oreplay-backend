@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace App\Model\Table;
 
+use Cake\Cache\Cache;
+use Cake\ORM\Entity;
 use Cake\Utility\Text;
 use RestApi\Model\Table\RestApiTable;
 
@@ -19,17 +21,24 @@ abstract class AppTable extends RestApiTable
         return $this->patchEntity($entity, $data);
     }
 
-    private function getByShortName(string $eventId, string $stageId, string $shortName)
+    protected function getByShortName(string $eventId, string $stageId, string $shortName): ?Entity
     {
         $conditions = [
             $this->_alias . '.event_id' => $eventId,
             $this->_alias . '.stage_id' => $stageId,
             $this->_alias . '.short_name' => $shortName
         ];
-        return $this->find()
+        $cacheKey = 'getByShortName_' . md5(json_encode($conditions));
+        $res = Cache::read($cacheKey);
+        if ($res) {
+            return $res;
+        }
+
+        $res = $this->find()
             ->where($conditions)
-            ->cache('getByShortName_'.md5(json_encode($conditions)))
             ->first();
+        Cache::write($cacheKey, $res);
+        return $res;
     }
 
     public function createIfNotExists(string $eventId, string $stageId, array $data)

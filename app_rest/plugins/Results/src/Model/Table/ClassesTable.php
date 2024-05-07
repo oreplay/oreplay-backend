@@ -23,6 +23,13 @@ class ClassesTable extends AppTable
         CoursesTable::addHasMany($this);
     }
 
+    public function getByShortName(string $eventId, string $stageId, string $shortName): ?ClassEntity
+    {
+        /** @var ClassEntity $res */
+        $res = parent::getByShortName($eventId, $stageId, $shortName);
+        return $res;
+    }
+
     public function findByStage(string $eventId, string $stageId)
     {
         return $this->find()->where([
