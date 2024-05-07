@@ -49,7 +49,7 @@ class EventsTable extends AppTable
         /** @var Event $event */
         $event = $this->find()
             ->where(['id' => $eventId])
-            ->contain('Users', function (Query $query) use ($userId) {
+            ->contain(UsersTable::name(), function (Query $query) use ($userId) {
                 return $query->where([
                     'Users.id' => $userId,
                 ]);

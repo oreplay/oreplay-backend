@@ -8,7 +8,7 @@ use App\Model\Table\AppTable;
 use Cake\ORM\Behavior\TimestampBehavior;
 
 /**
- * @property RunnersTable $Runners
+ * @property TeamsTable $Teams
  * @property SplitsTable $Splits
  */
 class TeamResultsTable extends AppTable

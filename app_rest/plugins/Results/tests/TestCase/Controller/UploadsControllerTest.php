@@ -12,6 +12,7 @@ use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Table\ClassesTable;
+use Results\Model\Table\CoursesTable;
 use Results\Model\Table\RunnersTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;
@@ -59,7 +60,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
-            ->contain('Courses')
+            ->contain(CoursesTable::name())
             ->orderAsc('Classes.oe_key')
             ->all();
         $this->assertEquals(2, count($addedClasses));
@@ -74,7 +75,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ->orderAsc('last_name')
             ->all();
 
-        $this->assertEquals(4, count($res));
+        $this->assertEquals(4, count($res), 'Runner count in db');
         $this->assertEquals(2, count($jsonDecoded[0]['runners']));
         $this->assertEquals(2, count($jsonDecoded[1]['runners']));
         $runnersJson = array_merge($jsonDecoded[0]['runners'], $jsonDecoded[1]['runners']);
