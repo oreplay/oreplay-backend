@@ -79,8 +79,8 @@ class UploadsController extends ApiController
                     if (!$typeId) {
                         throw new InvalidPayloadException('runner_results.result_type.id is mandatory');
                     }
-                    $result->result_type = $this
-                        ->Classes->Runners->RunnerResults->ResultTypes->getCached($typeId);
+                    $result->result_type = $this->Classes->Runners->RunnerResults->ResultTypes
+                        ->getCached($typeId);
                     if (!isset($runner->runner_results)) {
                         $runner->runner_results = [];
                     }

@@ -63,7 +63,7 @@ class EventsSeed extends AbstractSeed
                 'deleted' => null,
             ],
             [
-                'id' => Event::FIFTH_EVENT,
+                'id' => '8fdr542c-23b9-4790-a117-b83Af4760ad9',
                 'description' => 'Test Foot-o Present Event 3',
                 'initial_date' => '2024-01-02',
                 'final_date' => '2024-12-31',
