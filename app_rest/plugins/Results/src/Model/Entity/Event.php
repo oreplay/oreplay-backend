@@ -14,7 +14,12 @@ use Cake\ORM\Entity;
  */
 class Event extends Entity
 {
-    public const FIRST_EVENT = '8f3b542c-23b9-4790-a113-b83d476c0ad9';
+    public const FIRST_EVENT  = '8f3b542c-23b9-4790-a113-b83d476c0ad9';
+    public const SECOND_EVENT = 'f8f3ad2c-23b9-4790-a114-b83d47jl0ad9';
+    public const THIRD_EVENT  = '8f3b542c-23b9-4790-a115-b83Af4760ad9';
+    public const FOURTH_EVENT = '8f3b5adc-23b9-4790-a116-b83Af4760ad9';
+    public const FIFTH_EVENT  = '8fdr542c-23b9-4790-a117-b83Af4760ad9';
+
 
     protected $_accessible = [
         '*' => false,
