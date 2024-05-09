@@ -177,10 +177,6 @@ class OAuthServer
 
         // instantiate the oauth server
         $this->server = new Server($this->_storage, $this->_serverConfig, $grantTypes);
-        $tokenType = $this->request->headers('X_CT_TOKEN', false);
-        if ($tokenType && strtolower($tokenType) == 'jwt') {
-            $this->setUseJWT();
-        }
     }
 
     public function setUseJWT($use = true)

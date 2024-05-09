@@ -31,7 +31,7 @@ abstract class ApiController extends RestApiController
 
     protected function _loadCorsComponent(): ApiRestCorsComponent
     {
-        ApiRestCorsComponent::load($this);
+        $this->ApiCors = ApiRestCorsComponent::load($this);
         return $this->ApiCors;
     }
 

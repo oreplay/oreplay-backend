@@ -109,7 +109,7 @@ class UploadsController extends ApiController
                 ],
                 'human' => [
                     "Updated $classCount classes",
-                    "Updated $classCount runners",
+                    "Updated $runnerCount runners",
                 ]
             ]
         ];

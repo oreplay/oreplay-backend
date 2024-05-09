@@ -58,7 +58,19 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => UploadsControllerHelper::exampleImportSmall()];
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK()['data'];
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $decodedData = $jsonDecoded['data'];
+        $expectedMeta = [
+            'updated' => [
+                'classes' => 2,
+                'runners' => 4,
+            ],
+            'human' => [
+                'Updated 2 classes',
+                'Updated 4 runners',
+            ]
+        ];
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -78,9 +90,9 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ->all();
 
         $this->assertEquals(4, count($res), 'Runner count in db');
-        $this->assertEquals(2, count($jsonDecoded[0]['runners']));
-        $this->assertEquals(2, count($jsonDecoded[1]['runners']));
-        $runnersJson = array_merge($jsonDecoded[0]['runners'], $jsonDecoded[1]['runners']);
+        $this->assertEquals(2, count($decodedData[0]['runners']));
+        $this->assertEquals(2, count($decodedData[1]['runners']));
+        $runnersJson = array_merge($decodedData[0]['runners'], $decodedData[1]['runners']);
         /** @var Runner $value */
         foreach ($res as $key => $value) {
             $this->assertEquals($runnersJson[$key]['last_name'], $value->last_name);
