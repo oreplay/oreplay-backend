@@ -10,6 +10,7 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
 use RestApi\Model\ORM\RestApiSelectQuery;
+use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Runner;
 
 /**
@@ -33,33 +34,88 @@ class RunnersTable extends AppTable
         TeamsTable::addHasMany($this);
     }
 
-    private function _matchRunner(string $eventId, string $stageId, array $runnerData): Runner
-    {
-        $q = $this->_findRunnersInStage($eventId, $stageId);
-        if ($runnerData['sicard'] ?? null) {
-            $q->where(['sicard' => $runnerData['sicard']]);
-        }
-        if ($runnerData['bib_number'] ?? null) {
-            $q->where(['bib_number' => $runnerData['bib_number']]);
-        }
-        if ($runnerData['first_name'] ?? null) {
-            $q->where(['first_name' => $runnerData['first_name']]);
-        }
-        if ($runnerData['last_name'] ?? null) {
-            $q->where(['last_name' => $runnerData['last_name']]);
-        }
+    private function _findRunnersInStageBy(
+        string $field,
+        string $eventId,
+        string $stageId,
+        array $runnerData
+    ): ?Runner {
         /** @var Runner $potentialRunner */
-        $potentialRunner = $q->first();
-        if (!$potentialRunner) {
-            throw new NotFoundException('Not found runner');
+        $q = $this->_findRunnersInStage($eventId, $stageId);
+        if ($runnerData[$field] ?? null) {
+            $q->where([$field => $runnerData[$field]]);
+            $potentialRunner = $q->first();
+            if ($potentialRunner) {
+                return $potentialRunner;
+            } else {
+                throw new NotFoundException('Not found runner by ' . $field);
+            }
         }
-        return $potentialRunner;
+        return null;
     }
 
-    public function createRunnerIfNotExists(string $eventId, string $stageId, array $runnerData): Runner
-    {
+    public function matchRunner(
+        string $eventId,
+        string $stageId,
+        array $runnerData,
+        ClassEntity $class = null
+    ): Runner {
+        $runner = $this->_findRunnersInStageBy('db_id', $eventId, $stageId, $runnerData);
+        if ($runner) {
+            return $runner;
+        }
+        $runner = $this->_findRunnersInStageBy('bib_number', $eventId, $stageId, $runnerData);
+        if ($runner) {
+            return $runner;
+        }
+        /** @var Runner $potentialRunner */
+        $q = $this->_findRunnersInStage($eventId, $stageId);
+        $sicard = $runnerData['sicard'] ?? null;
+        $stName = $runnerData['first_name'] ?? null;
+        $lastName = $runnerData['last_name'] ?? null;
+        if ($sicard && $stName && $lastName) {
+            $q->where([
+                'sicard' => $runnerData['sicard'],
+                'first_name' => $runnerData['first_name'],
+                'last_name' => $runnerData['last_name']
+            ]);
+            if ($class) {
+                $q->where(['class_id' => $class->id]);
+            }
+            $potentialRunner = $q->first();
+            if ($potentialRunner) {
+                return $potentialRunner;
+            } else {
+                $q = $this->_findRunnersInStage($eventId, $stageId);
+                $q->where([
+                    'first_name' => $runnerData['first_name'],
+                    'last_name' => $runnerData['last_name']
+                ]);
+                $err = '';
+                if ($class) {
+                    $err = ' in class';
+                    $q->where(['class_id' => $class->id]);
+                }
+                /** @var Runner $potentialRunner */
+                $potentialRunner = $q->first();
+                if ($potentialRunner) {
+                    return $potentialRunner;
+                } else {
+                    throw new NotFoundException('Not found runner by name' . $err);
+                }
+            }
+        }
+        throw new NotFoundException('Runner not found');
+    }
+
+    public function createRunnerIfNotExists(
+        string $eventId,
+        string $stageId,
+        array $runnerData,
+        ClassEntity $class = null
+    ): Runner {
         try {
-            $runner = $this->_matchRunner($eventId, $stageId, $runnerData);
+            $runner = $this->matchRunner($eventId, $stageId, $runnerData, $class);
         } catch (NotFoundException $e) {
             /** @var Runner $runner */
             $runner = $this->patchFromNewWithUuid($runnerData);

@@ -29,7 +29,7 @@ class RunnersFixture extends RestApiFixture
             'iof_id' => null,
             'bib_number' => 4444,
             'bib_alt' => null,
-            'sicard' => null,
+            'sicard' => 2009933,
             'sicard_alt' => null,
             'license' => null,
             'national_id' => null,

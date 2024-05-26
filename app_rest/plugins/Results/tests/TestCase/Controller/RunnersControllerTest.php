@@ -74,7 +74,7 @@ class RunnersControllerTest extends ApiCommonErrorsTest
             'id' => Runner::FIRST_RUNNER,
             'first_name' => 'First',
             'last_name' => 'Runner',
-            'sicard' => null,
+            'sicard' => 2009933,
             'bib_number' => '4444',
             'club' => [
                 'id' => ClubsFixture::CLUB_1,
