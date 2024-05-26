@@ -21,4 +21,14 @@ class RunnerResultsTable extends AppTable
         SplitsTable::addBelongsTo($this);
         ResultTypesTable::addHasMany($this);
     }
+
+    public function hasFinishTimes(string $eventId, string $stageId): bool
+    {
+        $res = $this->find()->where([
+            'event_id' => $eventId,
+            'stage_id' => $stageId,
+            'finish_time is not null'
+        ])->first();
+        return !!$res;
+    }
 }

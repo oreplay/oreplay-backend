@@ -6,8 +6,8 @@ namespace Results\Controller;
 
 use App\Lib\Exception\InvalidPayloadException;
 use Cake\Http\Exception\ForbiddenException;
+use Results\Lib\UploadConfigChecker;
 use Results\Model\Entity\ClassEntity;
-use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\RunnersTable;
@@ -31,31 +31,13 @@ class UploadsController extends ApiController
             throw new ForbiddenException('Invalid Bearer token');
         }
         $this->Classes = ClassesTable::load();
+        $checker = new UploadConfigChecker($data);
         $eventId = $this->request->getParam('eventID');
-        if (!isset($data['oreplay_data_transfer'])) {
-            throw new InvalidPayloadException('Invalid payload structure oreplay_data_transfer must be root element');
-        }
-        $data = $data['oreplay_data_transfer'];
-        if (!isset($data['event']['id'])) {
-            throw new InvalidPayloadException('Invalid payload structure event.id');
-        }
-        if ($data['event']['id'] !== $eventId) {
-            throw new InvalidPayloadException('Event id must match');
-        }
-
-        $firstStage = $data['event']['stages'][0] ?? null;
-        if ($firstStage) {
-            $data = $firstStage;
-        } else {
-            throw new InvalidPayloadException('Invalid payload structure event.stages.0');
-        }
-        $stageId = $firstStage['id'] ?? null;
-        if (!$stageId) {
-            throw new InvalidPayloadException('Invalid payload structure event.stages.0.id');
-        }
-        $data = $data['classes'] ?? null;
-        if (!is_array($data)) {
-            throw new InvalidPayloadException('Invalid payload structure event.stages.0.classes');
+        list($data, $stageId) = $checker->validateStructure($eventId);
+        if ($checker->isStartLists()) {
+            if ($this->Classes->Runners->RunnerResults->hasFinishTimes($eventId, $stageId)) {
+                throw new InvalidPayloadException('Cannot add start times when there are finish times');
+            }
         }
 
         $runnerCount = 0;

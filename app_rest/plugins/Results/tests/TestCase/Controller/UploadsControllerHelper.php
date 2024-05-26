@@ -10,11 +10,12 @@ class UploadsControllerHelper
 {
     public static function exampleImportSmall(): array
     {
-
         return [
             'configuration' => [
                 'source' => 'OE2010',
                 'iof_version' => '3.0',
+                'contents' => 'StartList',
+                'results_type' => 'Other',
             ],
             'event' => [
                 'id' => '8f3b542c-23b9-4790-a113-b83d476c0ad9',
