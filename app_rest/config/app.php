@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 use App\Lib\Consts\CacheGrp;
 use Cake\Cache\Engine\MemcachedEngine;
 use Cake\Database\Connection;
