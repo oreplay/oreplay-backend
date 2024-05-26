@@ -5,19 +5,26 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
+use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
+use Results\Model\Entity\StageType;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
 use Results\Test\Fixture\StagesFixture;
+use Results\Test\Fixture\StageTypesFixture;
+use Results\Test\Fixture\UsersEventsFixture;
 
 class StagesControllerTest extends ApiCommonErrorsTest
 {
     protected $fixtures = [
         FederationsFixture::LOAD,
+        UsersEventsFixture::LOAD,
+        UsersFixture::LOAD,
         EventsFixture::LOAD,
         StagesFixture::LOAD,
+        StageTypesFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -61,6 +68,10 @@ class StagesControllerTest extends ApiCommonErrorsTest
         $expected = [
             'id' => StagesFixture::STAGE_FEDO_2,
             'description' => 'Second stage',
+            'stage_type' => [
+                'id' => StageType::CLASSIC,
+                'description' => 'Foot-O, MTBO, Ski-O',
+            ],
             '_links' => [
                 'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964',
                 'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/runners/',
@@ -68,5 +79,32 @@ class StagesControllerTest extends ApiCommonErrorsTest
             ],
         ];
         $this->assertEquals($expected, $bodyDecoded['data']);
+    }
+
+    public function testAddNew()
+    {
+        $description = 'My test stage';
+        $data = [
+            'description' => $description,
+        ];
+        $this->post($this->_getEndpoint(), $data);
+
+        $bodyDecoded = $this->assertJsonResponseOK()['data'];
+        $this->assertEquals($description, $bodyDecoded['description']);
+        $this->assertEquals(StageType::CLASSIC, $bodyDecoded['stage_type']['id']);
+    }
+
+    public function testAddNew_includingType()
+    {
+        $description = 'My other test stage';
+        $data = [
+            'description' => $description,
+            'stage_type_id' => StageType::MASS_START,
+        ];
+        $this->post($this->_getEndpoint(), $data);
+
+        $bodyDecoded = $this->assertJsonResponseOK()['data'];
+        $this->assertEquals($description, $bodyDecoded['description']);
+        $this->assertEquals(StageType::MASS_START, $bodyDecoded['stage_type']['id']);
     }
 }
