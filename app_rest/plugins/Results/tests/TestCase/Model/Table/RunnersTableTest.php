@@ -4,8 +4,10 @@ declare(strict_types = 1);
 
 namespace Results\Test\TestCase\Controller\Model\Table;
 
+use Cake\Http\Exception\NotFoundException;
 use Cake\I18n\FrozenTime;
 use Cake\TestSuite\TestCase;
+use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
@@ -53,5 +55,115 @@ class RunnersTableTest extends TestCase
         $split = $runnerResult->splits[0];
         $this->assertEquals(SplitsFixture::SPLIT_1, $split->id);
         $this->assertEquals(new FrozenTime('2024-01-02T10:00:10.321+00:00'), $split->reading_time);
+    }
+
+    public function testMatchRunner()
+    {
+        // db_id found
+        $dbId = '984ur983u';
+        $this->Runners->updateAll(['db_id' => $dbId], ['id' => Runner::FIRST_RUNNER]);
+        $data = ['db_id' => $dbId];
+        $runner = $this->Runners->matchRunner(Event::FIRST_EVENT, Stage::FIRST_STAGE, $data);
+        $this->assertEquals(Runner::FIRST_RUNNER, $runner->id);
+
+        // db_id not found
+        $data = ['db_id' => 'badDbId'];
+        $exception = 'not rised';
+        try {
+            $this->Runners->matchRunner(Event::FIRST_EVENT, Stage::FIRST_STAGE, $data);
+        } catch (NotFoundException $e) {
+            $exception = $e->getMessage();
+        }
+        $this->assertEquals('Not found runner by db_id', $exception);
+
+        // bib found
+        $bib = '4444';
+        $data = ['bib_number' => $bib];
+        $runner = $this->Runners->matchRunner(Event::FIRST_EVENT, Stage::FIRST_STAGE, $data);
+        $this->assertEquals(Runner::FIRST_RUNNER, $runner->id);
+
+        // bib not found
+        $data = ['bib_number' => '$bib'];
+        $exception = 'not rised';
+        try {
+            $this->Runners->matchRunner(Event::FIRST_EVENT, Stage::FIRST_STAGE, $data);
+        } catch (NotFoundException $e) {
+            $exception = $e->getMessage();
+        }
+        $this->assertEquals('Not found runner by bib_number', $exception);
+
+        // runner found with sicard
+        $class = new ClassEntity();
+        $class->id = ClassEntity::ME;
+        $data = [
+            'sicard' => '2009933',
+            'first_name' => 'First',
+            'last_name' => 'Runner',
+        ];
+        $runner = $this->Runners->matchRunner(
+            Event::FIRST_EVENT, Stage::FIRST_STAGE, $data, $class);
+        $this->assertEquals(Runner::FIRST_RUNNER, $runner->id);
+
+        // runner found without sicard
+        $data = [
+            'sicard' => 'badSiCard',
+            'first_name' => 'First',
+            'last_name' => 'Runner',
+        ];
+        $runner = $this->Runners->matchRunner(
+            Event::FIRST_EVENT, Stage::FIRST_STAGE, $data, $class);
+        $this->assertEquals(Runner::FIRST_RUNNER, $runner->id);
+
+        // runner not found with class
+        $data = [
+            'sicard' => 'badSiCard',
+            'first_name' => 'badName',
+            'last_name' => 'Runner',
+        ];
+        $exception = 'not rised';
+        try {
+            $this->Runners->matchRunner(
+                Event::FIRST_EVENT, Stage::FIRST_STAGE, $data, $class);
+        } catch (NotFoundException $e) {
+            $exception = $e->getMessage();
+        }
+        $this->assertEquals('Not found runner by name in class', $exception);
+
+        // runner not found without class
+        $exception = 'not rised';
+        try {
+            $this->Runners->matchRunner(
+                Event::FIRST_EVENT, Stage::FIRST_STAGE, $data,);
+        } catch (NotFoundException $e) {
+            $exception = $e->getMessage();
+        }
+        $this->assertEquals('Not found runner by name', $exception);
+
+        // runner found with sicard
+        $classNotMatched = new ClassEntity();
+        $classNotMatched->id = 'bad_id';
+        $data = [
+            'sicard' => '2009933',
+            'first_name' => 'First',
+            'last_name' => 'Runner',
+        ];
+        $exception = 'not rised';
+        try {
+            $runner = $this->Runners->matchRunner(
+                Event::FIRST_EVENT, Stage::FIRST_STAGE, $data, $classNotMatched);
+        } catch (NotFoundException $e) {
+            $exception = $e->getMessage();
+        }
+        $this->assertEquals('Not found runner by name in class', $exception);
+
+        // runner not found
+        $data = ['param' => 'badParam'];
+        $exception = 'not rised';
+        try {
+            $this->Runners->matchRunner(Event::FIRST_EVENT, Stage::FIRST_STAGE, $data);
+        } catch (NotFoundException $e) {
+            $exception = $e->getMessage();
+        }
+        $this->assertEquals('Runner not found', $exception);
     }
 }
