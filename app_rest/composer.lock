@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b83f008a9eb8ab574c4ac51e0c2ee283",
+    "content-hash": "797d68d96c830b09dd0f8f9e21002389",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
@@ -682,16 +682,16 @@
         },
         {
             "name": "composer/pcre",
-            "version": "3.1.3",
+            "version": "3.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/composer/pcre.git",
-                "reference": "5b16e25a5355f1f3afdfc2f954a0a80aec4826a8"
+                "reference": "04229f163664973f68f38f6f73d917799168ef24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/composer/pcre/zipball/5b16e25a5355f1f3afdfc2f954a0a80aec4826a8",
-                "reference": "5b16e25a5355f1f3afdfc2f954a0a80aec4826a8",
+                "url": "https://api.github.com/repos/composer/pcre/zipball/04229f163664973f68f38f6f73d917799168ef24",
+                "reference": "04229f163664973f68f38f6f73d917799168ef24",
                 "shasum": ""
             },
             "require": {
@@ -733,7 +733,7 @@
             ],
             "support": {
                 "issues": "https://github.com/composer/pcre/issues",
-                "source": "https://github.com/composer/pcre/tree/3.1.3"
+                "source": "https://github.com/composer/pcre/tree/3.1.4"
             },
             "funding": [
                 {
@@ -749,7 +749,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-03-19T10:26:25+00:00"
+            "time": "2024-05-27T13:40:54+00:00"
         },
         {
             "name": "composer/semver",
@@ -979,17 +979,59 @@
             "time": "2024-05-06T16:37:16+00:00"
         },
         {
-            "name": "freefri/cake-rest-api",
-            "version": "0.3.25",
+            "name": "eduplex-api/cake-api-swagger",
+            "version": "0.1.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/freefri/cake-rest-api.git",
-                "reference": "9dbfc0ed682d2c2d1679530bcdf2580c9185cd3f"
+                "url": "https://gitlab.com/eduplex-api/cake-api-swagger.git",
+                "reference": "3e3331c5022e9e808506c29d897353b64151c6de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/freefri/cake-rest-api/zipball/9dbfc0ed682d2c2d1679530bcdf2580c9185cd3f",
-                "reference": "9dbfc0ed682d2c2d1679530bcdf2580c9185cd3f",
+                "url": "https://gitlab.com/api/v4/projects/eduplex-api%2Fcake-api-swagger/repository/archive.zip?sha=3e3331c5022e9e808506c29d897353b64151c6de",
+                "reference": "3e3331c5022e9e808506c29d897353b64151c6de",
+                "shasum": ""
+            },
+            "require": {
+                "cakephp/cakephp": "^4.3",
+                "cakephp/migrations": "^3.2",
+                "php": ">=7.4",
+                "swagger-api/swagger-ui": "^5.17.14"
+            },
+            "require-dev": {
+                "freefri/cake-rest-api": "^0.3.26",
+                "freefri/cake-rest-api-fake-app": "^0.1.2",
+                "phpunit/phpunit": "^8.5 || ^9.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Swagger\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Simple endpoint to display swagger-ui",
+            "support": {
+                "issues": "https://gitlab.com/eduplex-api/cake-api-swagger/-/issues",
+                "source": "https://gitlab.com/eduplex-api/cake-api-swagger/-/tree/0.1.4"
+            },
+            "time": "2024-05-29T12:09:14+00:00"
+        },
+        {
+            "name": "freefri/cake-rest-api",
+            "version": "0.4.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/freefri/cake-rest-api.git",
+                "reference": "bee5fc38764528f9ac9936c1687467e8fdee2f9c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/freefri/cake-rest-api/zipball/bee5fc38764528f9ac9936c1687467e8fdee2f9c",
+                "reference": "bee5fc38764528f9ac9936c1687467e8fdee2f9c",
                 "shasum": ""
             },
             "require": {
@@ -997,6 +1039,7 @@
                 "cakephp/cakephp": "^4.4",
                 "cakephp/migrations": "^3.2",
                 "composer/composer": "^2.0",
+                "eduplex-api/cake-api-swagger": "^0.1.4",
                 "ext-json": "*",
                 "ext-mbstring": "*",
                 "php": ">=7.4"
@@ -1040,7 +1083,7 @@
                 "issues": "https://github.com/freefri/cake-rest-api/issues",
                 "source": "https://github.com/freefri/cake-rest-api"
             },
-            "time": "2024-05-24T13:40:35+00:00"
+            "time": "2024-05-29T16:33:46+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
@@ -2178,6 +2221,67 @@
                 "source": "https://github.com/Seldaek/signal-handler/tree/2.0.2"
             },
             "time": "2023-09-03T09:24:00+00:00"
+        },
+        {
+            "name": "swagger-api/swagger-ui",
+            "version": "v5.17.14",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swagger-api/swagger-ui.git",
+                "reference": "74ed0adebfc9c8dd0de2bf8e81495b022a66c083"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swagger-api/swagger-ui/zipball/74ed0adebfc9c8dd0de2bf8e81495b022a66c083",
+                "reference": "74ed0adebfc9c8dd0de2bf8e81495b022a66c083",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Anna Bodnia",
+                    "email": "anna.bodnia@gmail.com"
+                },
+                {
+                    "name": "Buu Nguyen",
+                    "email": "buunguyen@gmail.com"
+                },
+                {
+                    "name": "Josh Ponelat",
+                    "email": "jponelat@gmail.com"
+                },
+                {
+                    "name": "Kyle Shockey",
+                    "email": "kyleshockey1@gmail.com"
+                },
+                {
+                    "name": "Robert Barnwell",
+                    "email": "robert@robertismy.name"
+                },
+                {
+                    "name": "Sahar Jafari",
+                    "email": "shr.jafari@gmail.com"
+                }
+            ],
+            "description": " Swagger UI is a collection of HTML, Javascript, and CSS assets that dynamically generate beautiful documentation from a Swagger-compliant API.",
+            "homepage": "http://swagger.io",
+            "keywords": [
+                "api",
+                "documentation",
+                "openapi",
+                "specification",
+                "swagger",
+                "ui"
+            ],
+            "support": {
+                "issues": "https://github.com/swagger-api/swagger-ui/issues",
+                "source": "https://github.com/swagger-api/swagger-ui/tree/v5.17.14"
+            },
+            "time": "2024-05-28T05:24:40+00:00"
         },
         {
             "name": "symfony/config",
@@ -4035,16 +4139,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.57.2",
+            "version": "v3.58.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "22f7f3145606df92b02fb1bd22c30abfce956d3c"
+                "reference": "04e9424025677a86914b9a4944dbbf4060bb0aff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/22f7f3145606df92b02fb1bd22c30abfce956d3c",
-                "reference": "22f7f3145606df92b02fb1bd22c30abfce956d3c",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/04e9424025677a86914b9a4944dbbf4060bb0aff",
+                "reference": "04e9424025677a86914b9a4944dbbf4060bb0aff",
                 "shasum": ""
             },
             "require": {
@@ -4123,7 +4227,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.57.2"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.58.1"
             },
             "funding": [
                 {
@@ -4131,7 +4235,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-05-20T20:41:57+00:00"
+            "time": "2024-05-29T16:39:07+00:00"
         },
         {
             "name": "jasny/twig-extensions",

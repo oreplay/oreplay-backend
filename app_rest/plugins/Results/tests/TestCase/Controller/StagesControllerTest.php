@@ -5,13 +5,18 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
+use App\Test\Fixture\OauthAccessTokensFixture;
 use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageType;
+use Results\Model\Table\ClassesTable;
+use Results\Model\Table\StagesTable;
+use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
+use Results\Test\Fixture\RunnersFixture;
 use Results\Test\Fixture\StagesFixture;
 use Results\Test\Fixture\StageTypesFixture;
 use Results\Test\Fixture\UsersEventsFixture;
@@ -25,6 +30,9 @@ class StagesControllerTest extends ApiCommonErrorsTest
         EventsFixture::LOAD,
         StagesFixture::LOAD,
         StageTypesFixture::LOAD,
+        ClubsFixture::LOAD,
+        RunnersFixture::LOAD,
+        OauthAccessTokensFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -106,5 +114,27 @@ class StagesControllerTest extends ApiCommonErrorsTest
         $bodyDecoded = $this->assertJsonResponseOK()['data'];
         $this->assertEquals($description, $bodyDecoded['description']);
         $this->assertEquals(StageType::MASS_START, $bodyDecoded['stage_type']['id']);
+    }
+
+    public function testDelete()
+    {
+        $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE . '');
+
+        $this->assertEquals(204, $this->_response->getStatusCode());
+        $stage = StagesTable::load()->findById(Stage::FIRST_STAGE)->first();
+        $this->assertNull($stage);
+        $class = ClassesTable::load()->findById(Stage::FIRST_STAGE)->first();
+        $this->assertNull($class);
+    }
+
+    public function testDelete_shouldNotRemoveStage()
+    {
+        $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE . '?clean=1');
+
+        $this->assertEquals(204, $this->_response->getStatusCode());
+        $stage = StagesTable::load()->findById(Stage::FIRST_STAGE)->first();
+        $this->assertEquals(Stage::FIRST_STAGE, $stage->id);
+        $class = ClassesTable::load()->findById(Stage::FIRST_STAGE)->first();
+        $this->assertNull($class);
     }
 }
