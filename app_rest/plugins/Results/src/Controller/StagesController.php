@@ -4,9 +4,22 @@ declare(strict_types = 1);
 
 namespace Results\Controller;
 
+use Cake\Http\Exception\ForbiddenException;
+use Cake\I18n\FrozenTime;
 use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageType;
+use Results\Model\Table\AnswersTable;
+use Results\Model\Table\ClassesControlsTable;
+use Results\Model\Table\ClassesTable;
+use Results\Model\Table\ClubsTable;
+use Results\Model\Table\ControlsTable;
+use Results\Model\Table\CoursesTable;
+use Results\Model\Table\RunnerResultsTable;
+use Results\Model\Table\RunnersTable;
+use Results\Model\Table\SplitsTable;
 use Results\Model\Table\StagesTable;
+use Results\Model\Table\TeamResultsTable;
+use Results\Model\Table\TeamsTable;
 
 /**
  * @property StagesTable $Stages
@@ -35,9 +48,8 @@ class StagesController extends ApiController
     protected function addNew($data)
     {
         $eventId = $this->request->getParam('eventID');
-        $userId = $this->getLocalOauth()->verifyAuthorization();
+        $this->_isUserAllowedInEvent($eventId);
         /** @var Stage $stage */
-        $this->Stages->Events->getEventFromUser($eventId, $userId);
         $stage = $this->Stages->patchFromNewWithUuid($data);
         $stage->event_id = $eventId;
         if ($data['stage_type_id'] ?? null) {
@@ -47,5 +59,51 @@ class StagesController extends ApiController
         }
         $stage->stage_type = $this->Stages->StageTypes->get($stageType);
         $this->return = $this->Stages->saveOrFail($stage);
+    }
+
+    protected function delete($id)
+    {
+        $eventId = $this->request->getParam('eventID');
+        $this->_isUserAllowedInStage($eventId, $id);
+
+        $clean = $this->getRequest()->getQuery('clean');
+
+        $tables = [
+            ClubsTable::load(),
+            CoursesTable::load(),
+            ClassesTable::load(),
+            TeamsTable::load(),
+            RunnersTable::load(),
+            ControlsTable::load(),
+            ClassesControlsTable::load(),
+            RunnerResultsTable::load(),
+            TeamResultsTable::load(),
+            SplitsTable::load(),
+            AnswersTable::load(),
+        ];
+        $now = new FrozenTime();
+        foreach ($tables as $table) {
+            $table->updateAll(['deleted' => $now], ['stage_id' => $id]);
+        }
+
+        if (!$clean) {
+            $this->Stages->updateAll(['deleted' => $now], ['id' => $id]);
+        }
+        $this->return = false;
+    }
+
+    private function _isUserAllowedInEvent(string $eventId): void
+    {
+        $userId = $this->getLocalOauth()->verifyAuthorization();
+        $this->Stages->Events->getEventFromUser($eventId, $userId);
+    }
+
+    private function _isUserAllowedInStage(string $eventId, string $stageId): void
+    {
+        $this->_isUserAllowedInEvent($eventId);
+        $stage = $this->Stages->find()->where(['id' => $stageId, 'event_id' => $eventId])->first();
+        if (!$stage) {
+            throw new ForbiddenException('The stage is not from this event');
+        }
     }
 }
