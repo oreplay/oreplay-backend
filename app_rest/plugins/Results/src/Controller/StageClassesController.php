@@ -9,11 +9,16 @@ use Results\Model\Table\ClassesTable;
 /**
  * @property ClassesTable $Classes
  */
-class ClassesController extends ApiController
+class StageClassesController extends ApiController
 {
     public function isPublicController(): bool
     {
         return true;
+    }
+
+    public function initialize(): void
+    {
+        $this->Classes = ClassesTable::load();
     }
 
     protected function getList()

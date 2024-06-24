@@ -12,7 +12,7 @@ use Results\Model\Entity\Stage;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\EventsFixture;
 
-class ClassesControllerTest extends ApiCommonErrorsTest
+class StageClassesControllerTest extends ApiCommonErrorsTest
 {
     protected $fixtures = [
         EventsFixture::LOAD,
