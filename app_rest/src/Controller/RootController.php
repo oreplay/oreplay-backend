@@ -43,6 +43,10 @@ class RootController extends ApiController
                 'documentation' => [
                     'title' => 'API docs',
                     'href' => 'https://github.com/oreplay/oreplay-backend'
+                ],
+                'swagger-ui' => [
+                    'title' => 'API docs',
+                    'href' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX . '/openapi/'
                 ]
             ],
         ];

@@ -1,5 +1,6 @@
 <?php
-declare(strict_types=1);
+
+declare(strict_types = 1);
 
 use App\Controller\ApiController;
 use Cake\Routing\Route\DashedRoute;
@@ -15,6 +16,7 @@ return static function (RouteBuilder $routes) {
         $builder->connect('/users/*', \App\Controller\UsersController::route());
         $builder->connect('/authentication/*', \App\Controller\AuthenticationController::route());
         $builder->connect('/me/*', \App\Controller\MeController::route());
+        $builder->connect('/openapi/*', \App\Controller\SwaggerJsonController::route());
     });
 
     $routes->setRouteClass(DashedRoute::class);
