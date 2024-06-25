@@ -6,9 +6,11 @@ namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
 use App\Model\Table\UsersTable;
+use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
+use DateTime;
 use Results\Model\Entity\Event;
 
 /**
@@ -28,9 +30,46 @@ class EventsTable extends AppTable
         ]);
     }
 
+    /**
+     * Generate a paginated events query with a given set of filters
+     * @param array $filters Array of query filters
+     * @return Query With the selected events
+     * @throws BadRequestException If a filter value is not within allowed range
+     */
     public function findPaginatedEvents(array $filters): Query
     {
-        return $this->find()->orderAsc('created');
+        $now = new DateTime('now');
+        $now = $now->format('Y-m-d H:i:s');
+
+        $query = $this->find();
+
+        //Filter by ?when='today','past',future
+        if (array_key_exists("when", $filters)) {
+            $when = $filters["when"];
+            // case today
+            if ($when === "today") {
+                $query = $query->where([
+                    'initial_date <=' => $now,
+                    'final_date >='   => $now
+                ]);
+            // case past
+            } elseif ($when === "past") {
+                $query = $query->where([
+                    'final_date <='   => $now
+                ]);
+            // case future
+            } elseif ($when === "future") {
+                $query = $query->where([
+                    'initial_date >=' => $now,
+                ]);
+            // sorry man, it was not meant to be
+            } else {
+                throw new BadRequestException("?when must be either null or a literal 'today', 'future, or 'past'.");
+            }
+        }
+
+        // Return query
+        return $query->orderAsc('created');
     }
 
     public function getEventWithRelations(string $id): Event
