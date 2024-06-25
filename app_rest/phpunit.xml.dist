@@ -21,9 +21,6 @@
       <testsuite name="App">
           <directory>tests/TestCase/</directory>
       </testsuite>
-      <testsuite name="RestApi">
-          <directory>vendor/freefri/cake-rest-api/tests/TestCase/</directory>
-      </testsuite>
   </testsuites>
   <!-- Load extension for fixtures -->
   <extensions>

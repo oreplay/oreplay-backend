@@ -2,6 +2,7 @@
 <ruleset name="AppRest">
     <!-- Custom -->
     <rule ref="SlevomatCodingStandard.TypeHints.DeclareStrictTypes"/>
+    <!-- <rule ref="SlevomatCodingStandard.Arrays.TrailingArrayComma.MissingTrailingComma"/>-->
 
     <!-- 2. General -->
 

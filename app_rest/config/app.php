@@ -79,6 +79,9 @@ return [
             ],
         ]
     ],
+    'Swagger' => [
+        'acceptLanguage' => false,
+    ],
     'ResultsPlugin' => [
         'tablePrefix' => '',
         'routePath' => \App\Controller\ApiController::ROUTE_PREFIX,

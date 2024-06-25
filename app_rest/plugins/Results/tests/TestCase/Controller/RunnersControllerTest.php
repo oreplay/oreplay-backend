@@ -62,6 +62,7 @@ class RunnersControllerTest extends ApiCommonErrorsTest
 
     public function testGetList_filteredByNotExistingClass()
     {
+        $this->skipNextRequestInSwagger();
         $this->get($this->_getEndpoint() . '?class_id=NOT_EXISTING_CLASS');
 
         $bodyDecoded = $this->assertJsonResponseOK();
