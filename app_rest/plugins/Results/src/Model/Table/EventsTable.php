@@ -55,12 +55,12 @@ class EventsTable extends AppTable
             // case past
             } elseif ($when === "past") {
                 $query = $query->where([
-                    'final_date <='   => $today
+                    'final_date <'   => $today
                 ]);
             // case future
             } elseif ($when === "future") {
                 $query = $query->where([
-                    'initial_date >=' => $today,
+                    'initial_date >' => $today,
                 ]);
             // sorry man, it was not meant to be
             } else {
