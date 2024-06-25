@@ -38,8 +38,8 @@ class EventsTable extends AppTable
      */
     public function findPaginatedEvents(array $filters): Query
     {
-        $now = new DateTime('now');
-        $now = $now->format('Y-m-d H:i:s');
+        $today = new DateTime('now');
+        $today = $today->format('Y-m-d');
 
         $query = $this->find();
 
@@ -49,18 +49,18 @@ class EventsTable extends AppTable
             // case today
             if ($when === "today") {
                 $query = $query->where([
-                    'initial_date <=' => $now,
-                    'final_date >='   => $now
+                    'initial_date <=' => $today,
+                    'final_date >='   => $today
                 ]);
             // case past
             } elseif ($when === "past") {
                 $query = $query->where([
-                    'final_date <='   => $now
+                    'final_date <='   => $today
                 ]);
             // case future
             } elseif ($when === "future") {
                 $query = $query->where([
-                    'initial_date >=' => $now,
+                    'initial_date >=' => $today,
                 ]);
             // sorry man, it was not meant to be
             } else {
