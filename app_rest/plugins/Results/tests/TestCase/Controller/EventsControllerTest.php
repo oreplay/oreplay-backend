@@ -8,6 +8,7 @@ use App\Controller\ApiController;
 use App\Test\Fixture\OauthAccessTokensFixture;
 use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
+use DateTime;
 use Results\Controller\EventsController;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Federation;
@@ -44,13 +45,64 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($this->_getSecondEvent(), $bodyDecoded['data'][1]);
     }
 
-    public function testGetList_paginated()
+    public function testGetList_paginated_NoParams()
     {
         $this->get($this->_getEndpoint() . '?page=2&limit=1');
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals(1, count($bodyDecoded['data']));
         $this->assertEquals($this->_getSecondEvent(), $bodyDecoded['data'][0]);
+    }
+
+    public function testGetList_paginated_WhenToday()
+    {
+        $this->get($this->_getEndpoint() . '?when=today');
+        $today = (new DateTime('now'))->format('Y-m-d');
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $expected = [
+            'id' => '1b10cfcc-b3f2-40bb-8dbe-8b24c0-today',
+            'description' => 'Today event',
+            'initial_date' => $today,
+            'final_date' => $today,
+            'federation_id' => 'IOF',
+            'created' => '2022-03-10T10:01:00.000+00:00',
+            'modified' => '2022-03-10T10:01:00.000+00:00',
+            '_links' => [
+                'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8b24c0-today'
+            ]
+        ];
+
+        $this->assertEquals($expected,$bodyDecoded["data"][0]);
+    }
+
+    public function testGetList_paginated_WhenFuture()
+    {
+        $this->get($this->_getEndpoint() . '?when=future');
+        $tomorrow = (new DateTime('now'))->modify("+1 day")->format('Y-m-d');
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $expected = [
+            'id' => '1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow',
+            'description' => 'Tomorrow event',
+            'initial_date' => $tomorrow,
+            'final_date' => $tomorrow,
+            'federation_id' => 'IOF',
+            'created' => '2022-03-13T10:01:00.000+00:00',
+            'modified' => '2022-03-13T10:01:00.000+00:00',
+            '_links' => [
+                'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow'
+            ]
+        ];
+        $this->assertEquals($expected,$bodyDecoded["data"][0]);
+    }
+
+    public function testGetList_paginated_WhenPast()
+    {
+        $this->get($this->_getEndpoint() . '?when=past&page=2&limit=1');
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals($this->_getSecondEvent(),$bodyDecoded["data"][0]);
     }
 
     public function testGetData()
