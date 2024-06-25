@@ -1,0 +1,63 @@
+{
+    "/api/v1/events/{eventID}/stages/{stageID}/classes/": {
+        "get": {
+            "operationId": 1,
+            "summary": "",
+            "description": "Get List",
+            "parameters": [
+                {
+                    "description": "",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "path",
+                    "name": "stageID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "tags": [
+                "StageClasses"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Get List",
+                                "properties": {
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
+                                                },
+                                                "short_name": {
+                                                    "type": "string",
+                                                    "example": "ME"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

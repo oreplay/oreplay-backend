@@ -1,0 +1,164 @@
+{
+    "/api/v1/events/{eventID}/tokens/": {
+        "post": {
+            "operationId": 1,
+            "summary": "",
+            "description": "Add New",
+            "parameters": [
+                {
+                    "description": "",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authentication",
+                    "example": "Bearer xxxxxx",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "EventTokens"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Add New",
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string",
+                                                "example": "ac8ad9df-f41c-4478-9498-68edf2128120"
+                                            },
+                                            "expires": {
+                                                "type": "string",
+                                                "example": "2034-01-06T13:09:01.523+00:00"
+                                            },
+                                            "token": {
+                                                "type": "string",
+                                                "example": "65fc7379ce03c7746b5f9c189cef5efaf1fe2c0d"
+                                            },
+                                            "created": {
+                                                "type": "string",
+                                                "example": "2024-06-25T15:20:23.285+00:00"
+                                            },
+                                            "modified": {
+                                                "type": "string",
+                                                "example": "2024-06-25T15:20:23.285+00:00"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "expires": {
+                                    "type": "string",
+                                    "example": "2034-01-06T13:09:01.523+00:00"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/api/v1/events/{eventID}/tokens/{entity_id}": {
+        "delete": {
+            "operationId": 2,
+            "summary": "",
+            "description": "Delete",
+            "parameters": [
+                {
+                    "description": "",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "path",
+                    "name": "entity_id",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authentication",
+                    "example": "Bearer xxxxxx",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "EventTokens"
+            ],
+            "responses": {
+                "204": {
+                    "description": "No content. Successfully deleted."
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Bad Request"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 400
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ]
+        }
+    }
+}

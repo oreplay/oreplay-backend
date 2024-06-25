@@ -1,0 +1,97 @@
+{
+    "/api/v1/events/{eventID}/stages/{stageID}/runners/": {
+        "get": {
+            "operationId": 1,
+            "summary": "",
+            "description": "Get List",
+            "parameters": [
+                {
+                    "description": "",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "path",
+                    "name": "stageID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "class_id",
+                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "Runners"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Get List",
+                                "properties": {
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "d08fa43b-ddf8-47f6-9a59-2f1828881765"
+                                                },
+                                                "first_name": {
+                                                    "type": "string",
+                                                    "example": "First"
+                                                },
+                                                "last_name": {
+                                                    "type": "string",
+                                                    "example": "Runner"
+                                                },
+                                                "bib_number": {
+                                                    "type": "number",
+                                                    "example": 4444
+                                                },
+                                                "sicard": {
+                                                    "type": "number",
+                                                    "example": 2009933
+                                                },
+                                                "runner_results": {
+                                                    "type": "string",
+                                                    "example": "[{`id`:`635af121-db7b-4c5e-82ab-79208e45568f`,`result_type_id`:`e4ddfa9d-3347-47e4-9d32-c6c119aeac0e`,`start_time`:`2024-01-02T10:00:00.000+00:00`,`finish_time`:`2024-01-02T10:05:10.123+00:00`,`time_seconds`:310,`position`:1,`status_code`:null,`time_behind`:0,`points_final`:null,`splits`:[{`id`:`34ed02e5-da3c-4457-b2cb-4492fea19805`,`reading_time`:`2024-01-02T10:00:10.321+00:00`,`points`:null,`control`:{`id`:`34ed02e5-da3c-4457-b2cb-4492fea19805`,`station`:`31`,`control_type`:{`id`:`f3cc5efa-065f-4ad6-844b-74e99612889b`,`description`:`Normal Control`}}}]}]"
+                                                },
+                                                "class": {
+                                                    "type": "string",
+                                                    "example": "{`id`:`d8a87faf-68a4-487b-8f28-6e0ead6c1a57`,`short_name`:`ME`}"
+                                                },
+                                                "club": {
+                                                    "type": "string",
+                                                    "example": "{`id`:`83dc3504-9edd-4bbd-80b8-589aa0359c3e`,`short_name`:`Club A`}"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
