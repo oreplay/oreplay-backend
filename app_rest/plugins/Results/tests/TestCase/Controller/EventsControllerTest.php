@@ -40,7 +40,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->get($this->_getEndpoint());
 
         $bodyDecoded = $this->assertJsonResponseOK();
-        $this->assertEquals(2, count($bodyDecoded['data']));
+        $this->assertEquals(4, count($bodyDecoded['data']));
         $this->assertEquals($this->_getFirstEvent(), $bodyDecoded['data'][0]);
         $this->assertEquals($this->_getSecondEvent(), $bodyDecoded['data'][1]);
     }
