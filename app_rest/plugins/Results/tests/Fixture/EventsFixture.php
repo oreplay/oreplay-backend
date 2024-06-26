@@ -15,7 +15,7 @@ class EventsFixture extends RestApiFixture
 
     public const FIRST_RAID = '1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00';
 
-    public function init (): void
+    public function init(): void
     {
         $this->records = [
             [
@@ -49,19 +49,17 @@ class EventsFixture extends RestApiFixture
                 'deleted' => null,
             ],
             [
-            'id' => '1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow',
-            'description' => 'Tomorrow event',
-            'initial_date' => (new DateTime('now'))->modify("+1 day")->format('Y-m-d'),
-            'final_date' => (new DateTime('now'))->modify("+1 day")->format('Y-m-d'),
-            'federation_id' => Federation::IOF,
-            'created' => '2022-03-13 10:01:00',
-            'modified' => '2022-03-13 10:01:00',
-            'deleted' => null,
-        ]
+                'id' => '1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow',
+                'description' => 'Tomorrow event',
+                'initial_date' => (new DateTime('now'))->modify('+1 day')->format('Y-m-d'),
+                'final_date' => (new DateTime('now'))->modify('+1 day')->format('Y-m-d'),
+                'federation_id' => Federation::IOF,
+                'created' => '2022-03-13 10:01:00',
+                'modified' => '2022-03-13 10:01:00',
+                'deleted' => null,
+            ]
         ];
 
         parent::init();
     }
-
-
 }

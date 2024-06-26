@@ -73,13 +73,13 @@ class EventsControllerTest extends ApiCommonErrorsTest
             ]
         ];
 
-        $this->assertEquals($expected,$bodyDecoded["data"][0]);
+        $this->assertEquals($expected, $bodyDecoded['data'][0]);
     }
 
     public function testGetList_paginated_WhenFuture()
     {
         $this->get($this->_getEndpoint() . '?when=future');
-        $tomorrow = (new DateTime('now'))->modify("+1 day")->format('Y-m-d');
+        $tomorrow = (new DateTime('now'))->modify('+1 day')->format('Y-m-d');
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $expected = [
@@ -94,7 +94,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
                 'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow'
             ]
         ];
-        $this->assertEquals($expected,$bodyDecoded["data"][0]);
+        $this->assertEquals($expected, $bodyDecoded['data'][0]);
     }
 
     public function testGetList_paginated_WhenPast()
@@ -102,7 +102,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->get($this->_getEndpoint() . '?when=past&page=2&limit=1');
 
         $bodyDecoded = $this->assertJsonResponseOK();
-        $this->assertEquals($this->_getSecondEvent(),$bodyDecoded["data"][0]);
+        $this->assertEquals($this->_getSecondEvent(), $bodyDecoded['data'][0]);
     }
 
     public function testGetData()
