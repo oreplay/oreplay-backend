@@ -44,21 +44,21 @@ class EventsTable extends AppTable
         $query = $this->find();
 
         //Filter by ?when='today','past',future
-        if (array_key_exists("when", $filters)) {
-            $when = $filters["when"];
+        if (array_key_exists('when', $filters)) {
+            $when = $filters['when'];
             // case today
-            if ($when === "today") {
+            if ($when === 'today') {
                 $query = $query->where([
                     'initial_date <=' => $today,
-                    'final_date >='   => $today
+                    'final_date >=' => $today
                 ]);
             // case past
-            } elseif ($when === "past") {
+            } elseif ($when === 'past') {
                 $query = $query->where([
-                    'final_date <'   => $today
+                    'final_date <' => $today
                 ]);
             // case future
-            } elseif ($when === "future") {
+            } elseif ($when === 'future') {
                 $query = $query->where([
                     'initial_date >' => $today,
                 ]);
