@@ -68,7 +68,7 @@ class AuthenticationControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('Bearer', $return['token_type']);
     }
 
-    public function testAddNew_loginShouldThrowWithoutGrantType()
+    public function testAddNew_loginShouldExceptionWithInvalidPayload()
     {
         $data = [
             'username' => UsersFixture::USER_ADMIN_EMAIL,
@@ -84,9 +84,9 @@ class AuthenticationControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('Invalid grant_type', $return['message']);
     }
 
-    public function testDelete()
+    public function testDelete_shouldLogoutWhenSendingCurrentAsEntityId()
     {
-        $this->delete($this->_getEndpoint() . 'current?access_token=asdklfj');
+        $this->delete($this->_getEndpoint() . 'current');
         $this->assertResponseCode(204);
     }
 }

@@ -29,14 +29,14 @@ class MeControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
     }
 
-    public function testGetList_shouldReturn()
+    public function testGetList_shouldGetUserAuthenticatedWithCookie()
     {
         $this->get(ApiController::ROUTE_PREFIX . '/me');
 
         $expected = [
             'data' => [
                 'id' => '8186ef35-e8c1-4e5c-bcc4-42bb362f050b',
-                'email' => 'admin@example.',
+                'email' => 'admin@example.com',
                 'first_name' => 'My Name',
                 'last_name' => 'My Surname',
                 'created' => '2021-01-18T10:39:23.000+00:00',

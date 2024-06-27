@@ -91,7 +91,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew()
     {
-        $description = 'My test stage';
+        $description = 'My new test stage';
         $data = [
             'description' => $description,
         ];
@@ -102,7 +102,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(StageType::CLASSIC, $bodyDecoded['stage_type']['id']);
     }
 
-    public function testAddNew_includingType()
+    public function testAddNew_includingOptionalStageType()
     {
         $description = 'My other test stage';
         $data = [

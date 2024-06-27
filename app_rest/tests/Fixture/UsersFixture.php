@@ -10,7 +10,7 @@ class UsersFixture extends RestApiFixture
 {
     const LOAD = 'app.Users';
     const USER_ADMIN_ID = '8186ef35-e8c1-4e5c-bcc4-42bb362f050b';
-    const USER_ADMIN_EMAIL = 'admin@example.';
+    const USER_ADMIN_EMAIL = 'admin@example.com';
 
     public $records = [
         [
