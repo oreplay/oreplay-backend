@@ -80,6 +80,7 @@ return [
         ]
     ],
     'Swagger' => [
+        'jsonDir' => ROOT . DS . 'tmp' . DS . 'swagger-openapi' . DS,
         'acceptLanguage' => false,
     ],
     'ResultsPlugin' => [
