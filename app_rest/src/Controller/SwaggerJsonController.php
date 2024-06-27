@@ -10,6 +10,10 @@ class SwaggerJsonController extends \RestApi\Controller\SwaggerJsonController
 {
     protected function getContent(SwaggerReader $reader, array $paths): array
     {
+        $serverUrl = ($_SERVER['HTTP_HOST'] ?? '');
+        if ($serverUrl) {
+            $serverUrl = 'https://' . $serverUrl;
+        }
         return [
             'openapi' => '3.0.0',
             'info' => [
@@ -22,7 +26,7 @@ class SwaggerJsonController extends \RestApi\Controller\SwaggerJsonController
                 ],
             ],
             'servers' => [
-                ['url' => $_SERVER['HTTP_HOST']]
+                ['url' => $serverUrl]
             ],
             'tags' => [],
             'paths' => $paths,
