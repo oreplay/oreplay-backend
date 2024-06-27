@@ -57,7 +57,7 @@
         "post": {
             "operationId": 2,
             "summary": "",
-            "description": "Add new including optional stage type",
+            "description": "Add new",
             "parameters": [
                 {
                     "description": "",
@@ -79,7 +79,7 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "description": "Add new including optional stage type",
+                                "description": "Add new",
                                 "properties": {
                                     "data": {
                                         "type": "object",
@@ -109,21 +109,36 @@
                 }
             },
             "requestBody": {
-                "description": "",
+                "description": "Request body can match to any of the 2 provided schemas",
                 "content": {
                     "application/json": {
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "description": {
-                                    "type": "string",
-                                    "example": "My new test stage"
+                            "oneOf": [
+                                {
+                                    "type": "object",
+                                    "description": "Add new",
+                                    "properties": {
+                                        "description": {
+                                            "type": "string",
+                                            "example": "My new test stage"
+                                        }
+                                    }
                                 },
-                                "stage_type_id": {
-                                    "type": "string",
-                                    "example": "ce5e95ea-9f2b-4a98-86e1-2b43651adfee"
+                                {
+                                    "type": "object",
+                                    "description": "Add new including optional stage type",
+                                    "properties": {
+                                        "description": {
+                                            "type": "string",
+                                            "example": "My other test stage"
+                                        },
+                                        "stage_type_id": {
+                                            "type": "string",
+                                            "example": "ce5e95ea-9f2b-4a98-86e1-2b43651adfee"
+                                        }
+                                    }
                                 }
-                            }
+                            ]
                         }
                     }
                 }
@@ -235,27 +250,6 @@
             "responses": {
                 "204": {
                     "description": "No content. Successfully deleted."
-                },
-                "405": {
-                    "description": "Method Not Allowed",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Delete should throw bad request exception when no id provided",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Method Not Allowed"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 405
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }

@@ -79,6 +79,7 @@
                     "application/json": {
                         "schema": {
                             "type": "object",
+                            "description": "Add new",
                             "properties": {
                                 "expires": {
                                     "type": "string",
@@ -119,7 +120,7 @@
                     "description": "Auth token",
                     "in": "header",
                     "name": "Authentication",
-                    "example": "Bearer xxxxxx",
+                    "example": "Bearer ****************",
                     "required": true,
                     "schema": {
                         "type": "string"
@@ -132,26 +133,6 @@
             "responses": {
                 "204": {
                     "description": "No content. Successfully deleted."
-                },
-                "400": {
-                    "description": "Bad Request",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Bad Request"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 400
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             },
             "security": [

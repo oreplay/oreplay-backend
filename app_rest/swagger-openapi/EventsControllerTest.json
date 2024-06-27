@@ -117,7 +117,7 @@
                                         "properties": {
                                             "id": {
                                                 "type": "string",
-                                                "example": "a80479c7-2002-4dd6-b4e7-023db4fdcbd1"
+                                                "example": "0d4ccd9a-5d1d-4b11-a568-e703a5bb12f5"
                                             },
                                             "description": {
                                                 "type": "string",
@@ -133,42 +133,21 @@
                                             },
                                             "users": {
                                                 "type": "string",
-                                                "example": "[{`id`:`8186ef35-e8c1-4e5c-bcc4-42bb362f050b`,`email`:`admin@example.com`,`first_name`:`My Name`,`last_name`:`My Surname`,`created`:`2021-01-18T10:39:23.000+00:00`,`modified`:`2021-01-18T10:41:31.000+00:00`,`_joinData`:{`event_id`:`a80479c7-2002-4dd6-b4e7-023db4fdcbd1`,`user_id`:`8186ef35-e8c1-4e5c-bcc4-42bb362f050b`}}]"
+                                                "example": "[{`id`:`8186ef35-e8c1-4e5c-bcc4-42bb362f050b`,`email`:`admin@example.com`,`first_name`:`My Name`,`last_name`:`My Surname`,`created`:`2021-01-18T10:39:23.000+00:00`,`modified`:`2021-01-18T10:41:31.000+00:00`,`_joinData`:{`event_id`:`0d4ccd9a-5d1d-4b11-a568-e703a5bb12f5`,`user_id`:`8186ef35-e8c1-4e5c-bcc4-42bb362f050b`}}]"
                                             },
                                             "created": {
                                                 "type": "string",
-                                                "example": "2024-06-26T16:30:22.470+00:00"
+                                                "example": "2024-06-27T13:29:32.429+00:00"
                                             },
                                             "modified": {
                                                 "type": "string",
-                                                "example": "2024-06-26T16:30:22.470+00:00"
+                                                "example": "2024-06-27T13:29:32.429+00:00"
                                             },
                                             "_links": {
                                                 "type": "string",
-                                                "example": "{`self`:`http:\\/\\/dev.example.com\\/api\\/v1\\/events\\/a80479c7-2002-4dd6-b4e7-023db4fdcbd1`}"
+                                                "example": "{`self`:`http://dev.example.com/api/v1/events/0d4ccd9a-5d1d-4b11-a568-e703a5bb12f5`}"
                                             }
                                         }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "400": {
-                    "description": "Bad Request",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Post should throw bad request exception when empty body provided",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Bad Request"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 400
                                     }
                                 }
                             }
@@ -182,6 +161,7 @@
                     "application/json": {
                         "schema": {
                             "type": "object",
+                            "description": "Add new",
                             "properties": {
                                 "description": {
                                     "type": "string",

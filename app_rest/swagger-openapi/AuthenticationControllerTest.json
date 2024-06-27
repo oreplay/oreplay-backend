@@ -22,7 +22,7 @@
                                         "properties": {
                                             "access_token": {
                                                 "type": "string",
-                                                "example": "ec020a97615f39b71534b09cba81e118c2d38a24"
+                                                "example": "****************************************"
                                             },
                                             "expires_in": {
                                                 "type": "number",
@@ -66,29 +66,60 @@
                 }
             },
             "requestBody": {
-                "description": "",
+                "description": "Request body can match to any of the 2 provided schemas",
                 "content": {
                     "application/json": {
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "username": {
-                                    "type": "string",
-                                    "example": "admin@example.com"
+                            "oneOf": [
+                                {
+                                    "type": "object",
+                                    "description": "Add new login",
+                                    "properties": {
+                                        "username": {
+                                            "type": "string",
+                                            "example": "admin@example.com"
+                                        },
+                                        "password": {
+                                            "type": "string",
+                                            "example": "********"
+                                        },
+                                        "client_id": {
+                                            "type": "number",
+                                            "example": 2658
+                                        },
+                                        "grant_type": {
+                                            "type": "string",
+                                            "example": "password"
+                                        }
+                                    }
                                 },
-                                "password": {
-                                    "type": "string",
-                                    "example": "********"
-                                },
-                                "client_id": {
-                                    "type": "number",
-                                    "example": 2658
-                                },
-                                "grant_type": {
-                                    "type": "string",
-                                    "example": "password"
+                                {
+                                    "type": "object",
+                                    "description": "Add new login should remember me",
+                                    "properties": {
+                                        "username": {
+                                            "type": "string",
+                                            "example": "admin@example.com"
+                                        },
+                                        "password": {
+                                            "type": "string",
+                                            "example": "********"
+                                        },
+                                        "client_id": {
+                                            "type": "number",
+                                            "example": 2658
+                                        },
+                                        "grant_type": {
+                                            "type": "string",
+                                            "example": "password"
+                                        },
+                                        "remember_me": {
+                                            "type": "number",
+                                            "example": 1
+                                        }
+                                    }
                                 }
-                            }
+                            ]
                         }
                     }
                 }
@@ -117,27 +148,6 @@
             "responses": {
                 "204": {
                     "description": "No content. Successfully deleted."
-                },
-                "405": {
-                    "description": "Method Not Allowed",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Delete should throw bad request exception when no id provided",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Method Not Allowed"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 405
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
