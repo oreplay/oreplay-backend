@@ -28,7 +28,11 @@ Thumbs.db
 # Eclipse
 .settings/*
 # JetBrains, aka PHPStorm, IntelliJ IDEA
-.idea/*
+/.idea/*
+!/.idea/sqldialects.xml
+!/.idea/phpspec.xml
+!/.idea/php.xml
+!/.idea/icon.svg
 # NetBeans
 nbproject/*
 # Visual Studio Code
