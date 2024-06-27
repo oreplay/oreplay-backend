@@ -42,11 +42,11 @@ In order to get the database populated, the ping-check endpoint (a link is avail
 
 From the root json page, the events list endpoint is also referenced.
 In similar way navigation within the endpoints should be possible using the `_links` property provided in each object
-(using Firefox cliking on the links should work by default, in Chorme a [json-viewer](https://chromewebstore.google.com/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh) extension may be needed)
+(using Firefox clicking on the links should work by default, in Chrome a [json-viewer](https://chromewebstore.google.com/detail/json-viewer/gbmdgpbipfallnflgajpaliibnhdgobh) extension may be needed)
 
 ## Configuring tests in Jetbrains to work with Docker
 
-The local path is the location of this readme file and it should be mapped to `/var/www/cplatform/public`
+The local path is the location of this readme file, and it should be mapped to `/var/www/cplatform/public`
 
 When running test use `/var/www/cplatform/public/app_rest/phpunit.xml.dist` as default configuration file.
 Also add `/var/www/cplatform/public/app_rest/vendor/autoload.php` as a default autoload file
@@ -59,9 +59,9 @@ Also add `/var/www/cplatform/public/app_rest/vendor/autoload.php` as a default a
 
 # REST API
 
-Our REST API will follow this priciples:
+Our REST API will follow these principles:
 - Statelessness: Each HTTP request contains all information needed to complete the request.
-- Well-defined HTTP methods: we are using GET, POST, PATCH and DELETE (as defined in the Controllers section) to perform different CRUD opperations
+- Well-defined HTTP methods: we are using GET, POST, PATCH and DELETE (as defined in the Controllers section) to perform different CRUD operations
 - Uniform interface:
   - Universal syntax: Each resource should be addressed with one single URI
   - The API is sending and receiving data using JSON
@@ -89,7 +89,7 @@ behaviors like `SilentException` (do not add exception to logs), `ValidationExce
 | 401         | Unauthorized (login required)                             |
 | 403         | Forbidden (user without access to action)                 |
 | 404         | Not found (in lists use 200 empty array)                  |
-| 405         | Method not allowd (invalid HTTP method)                   |
+| 405         | Method not allowed (invalid HTTP method)                  |
 | 409         | Conflict (in checkout)                                    |
 | 50x         | Server error                                              |
 
@@ -173,7 +173,7 @@ Plain sql scripts should be avoided due to:
 - SQL injection
 - Lack of database motor abstraction
 
-Seeds: Will deinfine the initial state of development the database
+Seeds: Will define the initial state of development the database
 (and could be also defining the initial basic state for the production database)
 
 More info about [phinx](https://book.cakephp.org/phinx/0/en/migrations.html) and the migration plugin on [cake book](https://book.cakephp.org/migrations/3/en/index.html)
@@ -201,7 +201,7 @@ bin/cake migrations seed --seed UsersSeed
 ```
 # Devops
 
-We will use sonarqube community edition (free). For that is needed to be installed as a docker contrainer, with the following command:
+We will use sonarqube community edition (free). For that is needed to be installed as a docker container, with the following command:
 
 ```
 docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest
