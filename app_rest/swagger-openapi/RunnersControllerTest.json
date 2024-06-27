@@ -3,7 +3,7 @@
         "get": {
             "operationId": 1,
             "summary": "",
-            "description": "Get List",
+            "description": "Get list",
             "parameters": [
                 {
                     "description": "",
@@ -44,7 +44,7 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "description": "Get List",
+                                "description": "Get list",
                                 "properties": {
                                     "data": {
                                         "type": "array",

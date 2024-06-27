@@ -1,0 +1,263 @@
+{
+    "/api/v1/events/{eventID}/stages/": {
+        "get": {
+            "operationId": 1,
+            "summary": "",
+            "description": "Get list",
+            "parameters": [
+                {
+                    "description": "",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "tags": [
+                "Stages"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Get list",
+                                "properties": {
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "First stage"
+                                                },
+                                                "_links": {
+                                                    "type": "string",
+                                                    "example": "{`self`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed`,`results`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/runners/`,`classes`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/`}"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "post": {
+            "operationId": 2,
+            "summary": "",
+            "description": "Add new including optional stage type",
+            "parameters": [
+                {
+                    "description": "",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "tags": [
+                "Stages"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Add new including optional stage type",
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string",
+                                                "example": "95225a23-bdbe-4bc3-90e7-23b8c83a1c2a"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "My new test stage"
+                                            },
+                                            "stage_type": {
+                                                "type": "string",
+                                                "example": "{`id`:`ce5e95ea-9f2b-4a98-86e1-2b43651adfee`,`description`:`Mass Start`}"
+                                            },
+                                            "_links": {
+                                                "type": "string",
+                                                "example": "{`self`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/95225a23-bdbe-4bc3-90e7-23b8c83a1c2a`,`results`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/95225a23-bdbe-4bc3-90e7-23b8c83a1c2a/runners/`,`classes`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/95225a23-bdbe-4bc3-90e7-23b8c83a1c2a/classes/`}"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "description": {
+                                    "type": "string",
+                                    "example": "My new test stage"
+                                },
+                                "stage_type_id": {
+                                    "type": "string",
+                                    "example": "ce5e95ea-9f2b-4a98-86e1-2b43651adfee"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/api/v1/events/{eventID}/stages/{entity_id}": {
+        "get": {
+            "operationId": 3,
+            "summary": "",
+            "description": "Get data",
+            "parameters": [
+                {
+                    "description": "",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "path",
+                    "name": "entity_id",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "tags": [
+                "Stages"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Get data",
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string",
+                                                "example": "8f45d409-72bc-4cdc-96e9-0a2c4504d964"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "Second stage"
+                                            },
+                                            "stage_type": {
+                                                "type": "string",
+                                                "example": "{`id`:`29d5050b-4769-4be5-ace4-7e5973f68e3c`,`description`:`Foot-O, MTBO, Ski-O`}"
+                                            },
+                                            "_links": {
+                                                "type": "string",
+                                                "example": "{`self`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964`,`results`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/runners/`,`classes`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/classes/`}"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "delete": {
+            "operationId": 4,
+            "summary": "",
+            "description": "Delete",
+            "parameters": [
+                {
+                    "description": "",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "path",
+                    "name": "entity_id",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "clean",
+                    "example": "1",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "Stages"
+            ],
+            "responses": {
+                "204": {
+                    "description": "No content. Successfully deleted."
+                },
+                "405": {
+                    "description": "Method Not Allowed",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Delete should throw bad request exception when no id provided",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Method Not Allowed"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 405
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

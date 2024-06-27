@@ -1,0 +1,145 @@
+{
+    "/api/v1/authentication/": {
+        "post": {
+            "operationId": 1,
+            "summary": "",
+            "description": "Add new login",
+            "parameters": [],
+            "tags": [
+                "Authentication"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Add new login",
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "access_token": {
+                                                "type": "string",
+                                                "example": "ec020a97615f39b71534b09cba81e118c2d38a24"
+                                            },
+                                            "expires_in": {
+                                                "type": "number",
+                                                "example": 7206
+                                            },
+                                            "token_type": {
+                                                "type": "string",
+                                                "example": "Bearer"
+                                            },
+                                            "scope": {
+                                                "type": "string",
+                                                "example": ""
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Add new login should exception with invalid payload",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Bad Request"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 400
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "type": "string",
+                                    "example": "admin@example.com"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "example": "********"
+                                },
+                                "client_id": {
+                                    "type": "number",
+                                    "example": 2658
+                                },
+                                "grant_type": {
+                                    "type": "string",
+                                    "example": "password"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/api/v1/authentication/{entity_id}": {
+        "delete": {
+            "operationId": 2,
+            "summary": "",
+            "description": "Delete should logout when sending current as entity id",
+            "parameters": [
+                {
+                    "description": "",
+                    "in": "path",
+                    "name": "entity_id",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    }
+                }
+            ],
+            "tags": [
+                "Authentication"
+            ],
+            "responses": {
+                "204": {
+                    "description": "No content. Successfully deleted."
+                },
+                "405": {
+                    "description": "Method Not Allowed",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Delete should throw bad request exception when no id provided",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Method Not Allowed"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 405
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

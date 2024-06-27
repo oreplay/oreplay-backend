@@ -3,7 +3,7 @@
         "post": {
             "operationId": 1,
             "summary": "",
-            "description": "Add New",
+            "description": "Add new",
             "parameters": [
                 {
                     "description": "",
@@ -18,7 +18,7 @@
                     "description": "Auth token",
                     "in": "header",
                     "name": "Authentication",
-                    "example": "Bearer xxxxxx",
+                    "example": "Bearer ****************",
                     "required": true,
                     "schema": {
                         "type": "string"
@@ -35,14 +35,14 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "description": "Add New",
+                                "description": "Add new",
                                 "properties": {
                                     "data": {
                                         "type": "object",
                                         "properties": {
                                             "id": {
                                                 "type": "string",
-                                                "example": "ac8ad9df-f41c-4478-9498-68edf2128120"
+                                                "example": "8c10c0ec-73cd-4f18-95f1-946dd09d992d"
                                             },
                                             "expires": {
                                                 "type": "string",
