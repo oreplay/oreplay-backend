@@ -43,6 +43,11 @@ class EventsTable extends AppTable
 
         $query = $this->find();
 
+        $isShowHiddenOff = ($filters['show_hidden'] ?? null) !== '1';
+        if ($isShowHiddenOff) {
+            $query->where(['is_hidden' => false]);
+        }
+
         //Filter by ?when='today','past',future
         if (array_key_exists('when', $filters)) {
             $when = $filters['when'];

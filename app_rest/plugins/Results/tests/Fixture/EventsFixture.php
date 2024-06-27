@@ -14,6 +14,7 @@ class EventsFixture extends RestApiFixture
     public const LOAD = 'plugin.Results.Events';
 
     public const FIRST_RAID = '1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00';
+    public const EVENT_TODAY = '1b10cfcc-b3f2-40bb-8dbe-8b24c0-today';
 
     public function init(): void
     {
@@ -39,7 +40,7 @@ class EventsFixture extends RestApiFixture
                 'deleted' => null,
             ],
             [
-                'id' => '1b10cfcc-b3f2-40bb-8dbe-8b24c0-today',
+                'id' => self::EVENT_TODAY,
                 'description' => 'Today event',
                 'initial_date' => (new DateTime('now'))->format('Y-m-d'),
                 'final_date' => (new DateTime('now'))->format('Y-m-d'),

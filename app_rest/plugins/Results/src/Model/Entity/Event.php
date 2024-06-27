@@ -33,6 +33,7 @@ class Event extends Entity
     ];
 
     protected $_hidden = [
+        'is_hidden',
         'deleted',
     ];
 

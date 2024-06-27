@@ -56,12 +56,12 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
     public function testGetList_paginated_WhenToday()
     {
-        $this->get($this->_getEndpoint() . '?when=today');
+        $this->get($this->_getEndpoint() . '?when=today&show_hidden=1');
         $today = (new DateTime('now'))->format('Y-m-d');
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $expected = [
-            'id' => '1b10cfcc-b3f2-40bb-8dbe-8b24c0-today',
+            'id' => EventsFixture::EVENT_TODAY,
             'description' => 'Today event',
             'initial_date' => $today,
             'final_date' => $today,
@@ -69,7 +69,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'created' => '2022-03-10T10:01:00.000+00:00',
             'modified' => '2022-03-10T10:01:00.000+00:00',
             '_links' => [
-                'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8b24c0-today'
+                'self' => 'http://dev.example.com/api/v1/events/' . EventsFixture::EVENT_TODAY
             ]
         ];
 
