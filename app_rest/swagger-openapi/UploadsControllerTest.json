@@ -133,6 +133,16 @@
                                                 }
                                             }
                                         }
+                                    },
+                                    "meta": {
+                                        "updated": {
+                                            "classes": 2,
+                                            "runners": 4
+                                        },
+                                        "human": [
+                                            "Updated 2 classes",
+                                            "Updated 4 runners"
+                                        ]
                                     }
                                 }
                             }

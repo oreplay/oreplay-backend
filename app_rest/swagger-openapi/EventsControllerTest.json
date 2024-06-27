@@ -102,6 +102,13 @@
                                                 }
                                             }
                                         }
+                                    },
+                                    "total": 4,
+                                    "limit": 10,
+                                    "_links": {
+                                        "self": {
+                                            "href": "http://dev.example.com/api/v1/events/?page=1"
+                                        }
                                     }
                                 }
                             }
