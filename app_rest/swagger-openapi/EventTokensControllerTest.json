@@ -133,6 +133,27 @@
             "responses": {
                 "204": {
                     "description": "No content. Successfully deleted."
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Delete should throw bad request exception when no id provided",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Bad Request"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 400
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             },
             "security": [

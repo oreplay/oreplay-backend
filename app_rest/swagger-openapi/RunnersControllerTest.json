@@ -72,16 +72,120 @@
                                                     "example": 2009933
                                                 },
                                                 "runner_results": {
-                                                    "type": "string",
-                                                    "example": "[{`id`:`635af121-db7b-4c5e-82ab-79208e45568f`,`result_type_id`:`e4ddfa9d-3347-47e4-9d32-c6c119aeac0e`,`start_time`:`2024-01-02T10:00:00.000+00:00`,`finish_time`:`2024-01-02T10:05:10.123+00:00`,`time_seconds`:310,`position`:1,`status_code`:null,`time_behind`:0,`points_final`:null,`splits`:[{`id`:`34ed02e5-da3c-4457-b2cb-4492fea19805`,`reading_time`:`2024-01-02T10:00:10.321+00:00`,`points`:null,`control`:{`id`:`34ed02e5-da3c-4457-b2cb-4492fea19805`,`station`:`31`,`control_type`:{`id`:`f3cc5efa-065f-4ad6-844b-74e99612889b`,`description`:`Normal Control`}}}]}]"
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string",
+                                                                "example": "635af121-db7b-4c5e-82ab-79208e45568f"
+                                                            },
+                                                            "result_type_id": {
+                                                                "type": "string",
+                                                                "example": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e"
+                                                            },
+                                                            "start_time": {
+                                                                "type": "string",
+                                                                "example": "2024-01-02T10:00:00.000+00:00"
+                                                            },
+                                                            "finish_time": {
+                                                                "type": "string",
+                                                                "example": "2024-01-02T10:05:10.123+00:00"
+                                                            },
+                                                            "time_seconds": {
+                                                                "type": "number",
+                                                                "example": 310
+                                                            },
+                                                            "position": {
+                                                                "type": "number",
+                                                                "example": 1
+                                                            },
+                                                            "status_code": {
+                                                                "type": "string",
+                                                                "example": ""
+                                                            },
+                                                            "time_behind": {
+                                                                "type": "number",
+                                                                "example": 0
+                                                            },
+                                                            "points_final": {
+                                                                "type": "string",
+                                                                "example": ""
+                                                            },
+                                                            "splits": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "string",
+                                                                            "example": "34ed02e5-da3c-4457-b2cb-4492fea19805"
+                                                                        },
+                                                                        "reading_time": {
+                                                                            "type": "string",
+                                                                            "example": "2024-01-02T10:00:10.321+00:00"
+                                                                        },
+                                                                        "points": {
+                                                                            "type": "string",
+                                                                            "example": ""
+                                                                        },
+                                                                        "control": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "id": {
+                                                                                    "type": "string",
+                                                                                    "example": "34ed02e5-da3c-4457-b2cb-4492fea19805"
+                                                                                },
+                                                                                "station": {
+                                                                                    "type": "number",
+                                                                                    "example": 31
+                                                                                },
+                                                                                "control_type": {
+                                                                                    "type": "object",
+                                                                                    "properties": {
+                                                                                        "id": {
+                                                                                            "type": "string",
+                                                                                            "example": "f3cc5efa-065f-4ad6-844b-74e99612889b"
+                                                                                        },
+                                                                                        "description": {
+                                                                                            "type": "string",
+                                                                                            "example": "Normal Control"
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
                                                 },
                                                 "class": {
-                                                    "type": "string",
-                                                    "example": "{`id`:`d8a87faf-68a4-487b-8f28-6e0ead6c1a57`,`short_name`:`ME`}"
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string",
+                                                            "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
+                                                        },
+                                                        "short_name": {
+                                                            "type": "string",
+                                                            "example": "ME"
+                                                        }
+                                                    }
                                                 },
                                                 "club": {
-                                                    "type": "string",
-                                                    "example": "{`id`:`83dc3504-9edd-4bbd-80b8-589aa0359c3e`,`short_name`:`Club A`}"
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string",
+                                                            "example": "83dc3504-9edd-4bbd-80b8-589aa0359c3e"
+                                                        },
+                                                        "short_name": {
+                                                            "type": "string",
+                                                            "example": "Club A"
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }

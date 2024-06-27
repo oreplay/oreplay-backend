@@ -82,8 +82,13 @@
                                                     "example": "2022-03-01T10:01:00.000+00:00"
                                                 },
                                                 "_links": {
-                                                    "type": "string",
-                                                    "example": "{`self`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9`}"
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "self": {
+                                                            "type": "string",
+                                                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -117,7 +122,7 @@
                                         "properties": {
                                             "id": {
                                                 "type": "string",
-                                                "example": "0d4ccd9a-5d1d-4b11-a568-e703a5bb12f5"
+                                                "example": "81e4b969-c0ec-409e-afac-9e27bff9f1fa"
                                             },
                                             "description": {
                                                 "type": "string",
@@ -132,8 +137,49 @@
                                                 "example": "2024-03-26"
                                             },
                                             "users": {
-                                                "type": "string",
-                                                "example": "[{`id`:`8186ef35-e8c1-4e5c-bcc4-42bb362f050b`,`email`:`admin@example.com`,`first_name`:`My Name`,`last_name`:`My Surname`,`created`:`2021-01-18T10:39:23.000+00:00`,`modified`:`2021-01-18T10:41:31.000+00:00`,`_joinData`:{`event_id`:`0d4ccd9a-5d1d-4b11-a568-e703a5bb12f5`,`user_id`:`8186ef35-e8c1-4e5c-bcc4-42bb362f050b`}}]"
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string",
+                                                            "example": "8186ef35-e8c1-4e5c-bcc4-42bb362f050b"
+                                                        },
+                                                        "email": {
+                                                            "type": "string",
+                                                            "example": "admin@example.com"
+                                                        },
+                                                        "first_name": {
+                                                            "type": "string",
+                                                            "example": "My Name"
+                                                        },
+                                                        "last_name": {
+                                                            "type": "string",
+                                                            "example": "My Surname"
+                                                        },
+                                                        "created": {
+                                                            "type": "string",
+                                                            "example": "2021-01-18T10:39:23.000+00:00"
+                                                        },
+                                                        "modified": {
+                                                            "type": "string",
+                                                            "example": "2021-01-18T10:41:31.000+00:00"
+                                                        },
+                                                        "_joinData": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "event_id": {
+                                                                    "type": "string",
+                                                                    "example": "81e4b969-c0ec-409e-afac-9e27bff9f1fa"
+                                                                },
+                                                                "user_id": {
+                                                                    "type": "string",
+                                                                    "example": "8186ef35-e8c1-4e5c-bcc4-42bb362f050b"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             },
                                             "created": {
                                                 "type": "string",
@@ -144,10 +190,36 @@
                                                 "example": "2024-06-27T13:29:32.429+00:00"
                                             },
                                             "_links": {
-                                                "type": "string",
-                                                "example": "{`self`:`http://dev.example.com/api/v1/events/0d4ccd9a-5d1d-4b11-a568-e703a5bb12f5`}"
+                                                "type": "object",
+                                                "properties": {
+                                                    "self": {
+                                                        "type": "string",
+                                                        "example": "http://dev.example.com/api/v1/events/81e4b969-c0ec-409e-afac-9e27bff9f1fa"
+                                                    }
+                                                }
                                             }
                                         }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Post should throw bad request exception when empty body provided",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Bad Request"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 400
                                     }
                                 }
                             }
@@ -246,16 +318,59 @@
                                                 "example": "2022-03-01T10:01:00.000+00:00"
                                             },
                                             "stages": {
-                                                "type": "string",
-                                                "example": "[{`id`:`51d63e99-5d7c-4382-a541-8567015d8eed`,`description`:`First stage`,`_links`:{`self`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed`,`results`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/runners/`,`classes`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/`}},{`id`:`8f45d409-72bc-4cdc-96e9-0a2c4504d964`,`description`:`Second stage`,`_links`:{`self`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964`,`results`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/runners/`,`classes`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/classes/`}}]"
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string",
+                                                            "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                                                        },
+                                                        "description": {
+                                                            "type": "string",
+                                                            "example": "First stage"
+                                                        },
+                                                        "_links": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "self": {
+                                                                    "type": "string",
+                                                                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed"
+                                                                },
+                                                                "results": {
+                                                                    "type": "string",
+                                                                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/runners/"
+                                                                },
+                                                                "classes": {
+                                                                    "type": "string",
+                                                                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
                                             },
                                             "federation": {
-                                                "type": "string",
-                                                "example": "{`id`:`FEDO`,`description`:`FEDO SICO`}"
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "example": "FEDO"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "FEDO SICO"
+                                                    }
+                                                }
                                             },
                                             "_links": {
-                                                "type": "string",
-                                                "example": "{`self`:`http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9`}"
+                                                "type": "object",
+                                                "properties": {
+                                                    "self": {
+                                                        "type": "string",
+                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                                    }
+                                                }
                                             }
                                         }
                                     }
