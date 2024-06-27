@@ -12,6 +12,7 @@ services:
       - '443:443'
     volumes:
       - .:/var/www/cplatform/public
+      #- ./docker/sites/nginx-site-dev.conf:/etc/nginx/sites-available/courseticket
     depends_on:
       - mysql
       - memcached
