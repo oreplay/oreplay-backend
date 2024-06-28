@@ -23,7 +23,12 @@ class Event extends Entity
     protected $_accessible = [
         '*' => false,
         'id' => false,
+        'is_hidden' => true,
         'description' => true,
+        'scope' => true,
+        'location' => true,
+        'website' => true,
+        'picture' => true,
         'initial_date' => true,
         'final_date' => true,
     ];

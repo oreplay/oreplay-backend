@@ -10,6 +10,7 @@ class AddIsHiddenToEvents extends AbstractMigration
     {
         $table = $this->table('events');
         $table->addColumn('is_hidden', 'tinyinteger', [
+            'after' => 'id',
             'default' => false,
             'limit' => 1,
             'null' => false,
