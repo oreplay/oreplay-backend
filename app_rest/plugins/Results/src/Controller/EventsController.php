@@ -62,7 +62,7 @@ class EventsController extends ApiController
 
     protected function addNew($data)
     {
-        $userId = $this->getLocalOauth()->verifyAuthorization();
+        $userId = $this->getLocalOauth()->verifyAuthorizationAndGetToken()->getUserId();
         /** @var Event $event */
         $event = $this->Events->patchFromNewWithUuid($data);
         $event->users = [$this->Events->Users->get($userId)];

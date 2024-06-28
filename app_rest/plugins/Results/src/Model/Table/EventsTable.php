@@ -53,25 +53,22 @@ class EventsTable extends AppTable
             $when = $filters['when'];
             // case today
             if ($when === 'today') {
-                $query = $query->where([
-                    'initial_date <=' => $today,
-                    'final_date >=' => $today
-                ]);
+                $filters['initial_date:lte'] = $today;
+                $filters['final_date:gte'] = $today;
             // case past
             } elseif ($when === 'past') {
-                $query = $query->where([
-                    'final_date <' => $today
-                ]);
+                $filters['final_date:lt'] = $today;
             // case future
             } elseif ($when === 'future') {
-                $query = $query->where([
-                    'initial_date >' => $today,
-                ]);
+                $filters['initial_date:gt'] = $today;
             // sorry man, it was not meant to be
             } else {
                 throw new BadRequestException("?when must be either null or a literal 'today', 'future, or 'past'.");
             }
         }
+
+        $query = $query->handleTimeFilter($filters, 'initial_date');
+        $query = $query->handleTimeFilter($filters, 'final_date');
 
         // Return query
         return $query->orderAsc('created');

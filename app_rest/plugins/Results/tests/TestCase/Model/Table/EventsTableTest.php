@@ -29,7 +29,16 @@ class EventsTableTest extends TestCase
 
     public function testFindPaginatedEvents(): void
     {
-        // today
+        // today as date
+        $filters = [
+            'initial_date:lte' => '2024-06-28',
+            'final_date:gte' => '2024-06-28',
+        ];
+        $events = $this->Events->findPaginatedEvents($filters)->all();
+        $this->assertEquals(1, $events->count());
+        $this->assertEquals(EventsFixture::EVENT_TODAY, $events->first()->id);
+
+        // today as word
         $filters = [
             'when' => 'today',
         ];

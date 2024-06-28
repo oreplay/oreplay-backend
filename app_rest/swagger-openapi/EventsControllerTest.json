@@ -44,6 +44,26 @@
                     "schema": {
                         "type": "string"
                     }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "initial_date:lte",
+                    "example": "2024-06-28",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "final_date:gte",
+                    "example": "2024-06-28",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
                 }
             ],
             "tags": [
@@ -70,6 +90,22 @@
                                                 "description": {
                                                     "type": "string",
                                                     "example": "Test Foot-o"
+                                                },
+                                                "picture": {
+                                                    "type": "string",
+                                                    "example": ""
+                                                },
+                                                "website": {
+                                                    "type": "string",
+                                                    "example": ""
+                                                },
+                                                "scope": {
+                                                    "type": "string",
+                                                    "example": ""
+                                                },
+                                                "location": {
+                                                    "type": "string",
+                                                    "example": ""
                                                 },
                                                 "initial_date": {
                                                     "type": "string",
@@ -313,6 +349,22 @@
                                             "description": {
                                                 "type": "string",
                                                 "example": "Test Foot-o"
+                                            },
+                                            "picture": {
+                                                "type": "string",
+                                                "example": ""
+                                            },
+                                            "website": {
+                                                "type": "string",
+                                                "example": ""
+                                            },
+                                            "scope": {
+                                                "type": "string",
+                                                "example": ""
+                                            },
+                                            "location": {
+                                                "type": "string",
+                                                "example": ""
                                             },
                                             "initial_date": {
                                                 "type": "string",

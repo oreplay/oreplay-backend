@@ -56,8 +56,9 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
     public function testGetList_paginated_WhenToday()
     {
-        $this->get($this->_getEndpoint() . '?when=today&show_hidden=1');
         $today = (new DateTime('now'))->format('Y-m-d');
+        $this->get($this->_getEndpoint() . '?when=today&show_hidden=1&initial_date:lte='
+            . $today . '&final_date:gte=' . $today);
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $expected = [
@@ -66,6 +67,10 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => $today,
             'final_date' => $today,
             'federation_id' => 'IOF',
+            'picture' => null,
+            'website' => null,
+            'scope' => null,
+            'location' => null,
             'created' => '2022-03-10T10:01:00.000+00:00',
             'modified' => '2022-03-10T10:01:00.000+00:00',
             '_links' => [
@@ -88,6 +93,10 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => $tomorrow,
             'final_date' => $tomorrow,
             'federation_id' => 'IOF',
+            'picture' => null,
+            'website' => null,
+            'scope' => null,
+            'location' => null,
             'created' => '2022-03-13T10:01:00.000+00:00',
             'modified' => '2022-03-13T10:01:00.000+00:00',
             '_links' => [
@@ -147,6 +156,10 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => '2024-01-25',
             'final_date' => '2024-01-25',
             'federation_id' => Federation::FEDO,
+            'picture' => null,
+            'website' => null,
+            'scope' => null,
+            'location' => null,
             'created' => '2022-03-01T10:01:00.000+00:00',
             'modified' => '2022-03-01T10:01:00.000+00:00',
             '_links' => [
@@ -163,6 +176,10 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => '2024-01-26',
             'final_date' => '2024-01-26',
             'federation_id' => Federation::IOF,
+            'picture' => null,
+            'website' => null,
+            'scope' => null,
+            'location' => null,
             'created' => '2022-03-07T10:01:00.000+00:00',
             'modified' => '2022-03-07T10:01:00.000+00:00',
             '_links' => [
