@@ -18,6 +18,7 @@ class StageClassesController extends ApiController
 
     public function initialize(): void
     {
+        parent::initialize();
         $this->Classes = ClassesTable::load();
     }
 

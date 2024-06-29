@@ -15,8 +15,8 @@ class EventTokensController extends ApiController
 {
     public function initialize(): void
     {
-        $this->EventTokens = TokensTable::load();
         parent::initialize();
+        $this->EventTokens = TokensTable::load();
     }
 
     private function _checkIsOwnEvent(): Event
