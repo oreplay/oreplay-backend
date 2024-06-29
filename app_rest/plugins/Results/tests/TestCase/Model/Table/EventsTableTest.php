@@ -31,8 +31,8 @@ class EventsTableTest extends TestCase
     {
         // today as date
         $filters = [
-            'initial_date:lte' => '2024-06-28',
-            'final_date:gte' => '2024-06-28',
+            'initial_date:lte' => date('Y-m-d'),
+            'final_date:gte' => date('Y-m-d'),
         ];
         $events = $this->Events->findPaginatedEvents($filters)->all();
         $this->assertEquals(1, $events->count());
