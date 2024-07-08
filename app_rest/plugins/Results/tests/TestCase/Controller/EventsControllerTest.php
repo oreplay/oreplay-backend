@@ -42,13 +42,13 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals(4, count($bodyDecoded['data']));
-        $this->assertEquals($this->_getFirstEvent(), $bodyDecoded['data'][0]);
-        $this->assertEquals($this->_getSecondEvent(), $bodyDecoded['data'][1]);
+        $this->assertEquals($this->_getSecondEvent(), $bodyDecoded['data'][2]);
+        $this->assertEquals($this->_getFirstEvent(), $bodyDecoded['data'][3]);
     }
 
     public function testGetList_paginated_NoParams()
     {
-        $this->get($this->_getEndpoint() . '?page=2&limit=1');
+        $this->get($this->_getEndpoint() . '?page=3&limit=1');
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals(1, count($bodyDecoded['data']));
@@ -113,7 +113,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
     public function testGetList_paginated_WhenPast()
     {
-        $this->get($this->_getEndpoint() . '?when=past&page=2&limit=1');
+        $this->get($this->_getEndpoint() . '?when=past&page=1&limit=1');
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals($this->_getSecondEvent(), $bodyDecoded['data'][0]);

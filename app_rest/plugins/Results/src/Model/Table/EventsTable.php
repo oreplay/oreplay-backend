@@ -71,7 +71,7 @@ class EventsTable extends AppTable
         $query = $query->handleTimeFilter($filters, 'final_date');
 
         // Return query
-        return $query->orderAsc('created');
+        return $query->orderDesc('initial_date');
     }
 
     public function getEventWithRelations(string $id): Event
