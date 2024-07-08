@@ -46,6 +46,9 @@ class EventsController extends ApiController
         }
         $this->flatResponse = true;
         $res = $this->Events->getEventWithRelations($id);
+        if ($isDesktopClientAuthenticated) {
+            $res = $res->getVerySimplified();
+        }
         $this->return = [
             $rootEntity => $res
         ];

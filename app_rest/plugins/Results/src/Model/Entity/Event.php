@@ -58,4 +58,21 @@ class Event extends Entity
             return $usr;
         }
     }
+
+    public function getVerySimplified(): array
+    {
+        $array = $this->toArray();
+        $stages = [];
+        foreach ($array['stages'] as $stage) {
+            $stages[] = [
+                'id' => $stage['id'],
+                'description' => $stage['description'],
+            ];
+        }
+        return [
+            'id' => $array['id'],
+            'description' => $array['description'],
+            'stages' => $stages,
+        ];
+    }
 }
