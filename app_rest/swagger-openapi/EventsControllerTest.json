@@ -49,7 +49,7 @@
                     "description": "",
                     "in": "query",
                     "name": "initial_date:lte",
-                    "example": "2024-06-28",
+                    "example": "2024-07-08",
                     "required": false,
                     "schema": {
                         "type": "string"
@@ -59,7 +59,7 @@
                     "description": "",
                     "in": "query",
                     "name": "final_date:gte",
-                    "example": "2024-06-28",
+                    "example": "2024-07-08",
                     "required": false,
                     "schema": {
                         "type": "string"
@@ -87,6 +87,10 @@
                                                     "type": "string",
                                                     "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
                                                 },
+                                                "is_hidden": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
                                                 "description": {
                                                     "type": "string",
                                                     "example": "Test Foot-o"
@@ -104,6 +108,10 @@
                                                     "example": ""
                                                 },
                                                 "location": {
+                                                    "type": "string",
+                                                    "example": ""
+                                                },
+                                                "country_code": {
                                                     "type": "string",
                                                     "example": ""
                                                 },
@@ -175,7 +183,7 @@
                                         "properties": {
                                             "id": {
                                                 "type": "string",
-                                                "example": "81e4b969-c0ec-409e-afac-9e27bff9f1fa"
+                                                "example": "c973ae06-0635-4945-89b2-a7462ffad8f9"
                                             },
                                             "description": {
                                                 "type": "string",
@@ -223,7 +231,7 @@
                                                             "properties": {
                                                                 "event_id": {
                                                                     "type": "string",
-                                                                    "example": "81e4b969-c0ec-409e-afac-9e27bff9f1fa"
+                                                                    "example": "c973ae06-0635-4945-89b2-a7462ffad8f9"
                                                                 },
                                                                 "user_id": {
                                                                     "type": "string",
@@ -236,18 +244,18 @@
                                             },
                                             "created": {
                                                 "type": "string",
-                                                "example": "2024-06-27T13:29:32.429+00:00"
+                                                "example": "2024-07-08T11:31:05.944+00:00"
                                             },
                                             "modified": {
                                                 "type": "string",
-                                                "example": "2024-06-27T13:29:32.429+00:00"
+                                                "example": "2024-07-08T11:31:05.944+00:00"
                                             },
                                             "_links": {
                                                 "type": "object",
                                                 "properties": {
                                                     "self": {
                                                         "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/81e4b969-c0ec-409e-afac-9e27bff9f1fa"
+                                                        "example": "http://dev.example.com/api/v1/events/c973ae06-0635-4945-89b2-a7462ffad8f9"
                                                     }
                                                 }
                                             }
@@ -346,6 +354,10 @@
                                                 "type": "string",
                                                 "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
                                             },
+                                            "is_hidden": {
+                                                "type": "boolean",
+                                                "example": false
+                                            },
                                             "description": {
                                                 "type": "string",
                                                 "example": "Test Foot-o"
@@ -363,6 +375,10 @@
                                                 "example": ""
                                             },
                                             "location": {
+                                                "type": "string",
+                                                "example": ""
+                                            },
+                                            "country_code": {
                                                 "type": "string",
                                                 "example": ""
                                             },

@@ -71,6 +71,8 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'website' => null,
             'scope' => null,
             'location' => null,
+            'country_code' => null,
+            'is_hidden' => false,
             'created' => '2022-03-10T10:01:00.000+00:00',
             'modified' => '2022-03-10T10:01:00.000+00:00',
             '_links' => [
@@ -97,6 +99,8 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'website' => null,
             'scope' => null,
             'location' => null,
+            'country_code' => null,
+            'is_hidden' => false,
             'created' => '2022-03-13T10:01:00.000+00:00',
             'modified' => '2022-03-13T10:01:00.000+00:00',
             '_links' => [
@@ -160,6 +164,8 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'website' => null,
             'scope' => null,
             'location' => null,
+            'country_code' => null,
+            'is_hidden' => false,
             'created' => '2022-03-01T10:01:00.000+00:00',
             'modified' => '2022-03-01T10:01:00.000+00:00',
             '_links' => [
@@ -180,6 +186,8 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'website' => null,
             'scope' => null,
             'location' => null,
+            'country_code' => null,
+            'is_hidden' => false,
             'created' => '2022-03-07T10:01:00.000+00:00',
             'modified' => '2022-03-07T10:01:00.000+00:00',
             '_links' => [

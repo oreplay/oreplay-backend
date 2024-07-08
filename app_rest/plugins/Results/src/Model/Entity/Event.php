@@ -27,6 +27,7 @@ class Event extends Entity
         'description' => true,
         'scope' => true,
         'location' => true,
+        'country_code' => true,
         'website' => true,
         'picture' => true,
         'initial_date' => true,
@@ -38,7 +39,6 @@ class Event extends Entity
     ];
 
     protected $_hidden = [
-        'is_hidden',
         'deleted',
     ];
 
