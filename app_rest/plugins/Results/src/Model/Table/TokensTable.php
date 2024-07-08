@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
+use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
@@ -32,20 +33,46 @@ class TokensTable extends AppTable
         return $token;
     }
 
-    public function expireTokenForEvent(string $token, string $eventId): Token
+    private function getTokenForEvent(string $token, string $eventId): Token
     {
         /** @var Token $token */
-        $token = $this->find()->where(['token' => $token])
+        $token = $this->find()->where([
+            'token' => $token,
+            'expires >' => new FrozenTime(),
+        ])
             ->innerJoin(['Events' => 'events'], [
                 'Events.id = Tokens.foreign_key',
                 'Events.id' => $eventId,
                 'Tokens.foreign_model = "Event"',
             ])->firstOrFail();
+
+        return $token;
+    }
+
+    public function expireTokenForEvent(string $token, string $eventId): Token
+    {
+        $token = $this->getTokenForEvent($token, $eventId);
         $token->expires = new FrozenTime();
         $token->deleted = $token->expires;
         /** @var Token $token */
         $token = $this->saveOrFail($token);
         return $token;
+    }
+
+    public function isValidEventToken(string $eventId, string $token = null): bool
+    {
+        if (!$token) {
+            return false;
+        }
+        if ($token === 'fake_token') {// TODO remove this
+            return true;
+        }
+        try {
+            $this->getTokenForEvent($token, $eventId);
+            return true;
+        } catch (RecordNotFoundException $e) {
+            return false;
+        }
     }
 
     private function _generateToken(): string

@@ -8,7 +8,6 @@ use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Cake\Cache\Cache;
 use Cake\I18n\FrozenTime;
-use Results\Controller\EventsController;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
@@ -28,6 +27,7 @@ use Results\Test\Fixture\RunnerResultsFixture;
 use Results\Test\Fixture\RunnersFixture;
 use Results\Test\Fixture\SplitsFixture;
 use Results\Test\Fixture\StagesFixture;
+use Results\Test\Fixture\TokensFixture;
 
 class UploadsControllerTest extends ApiCommonErrorsTest
 {
@@ -42,6 +42,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         SplitsFixture::LOAD,
         ControlsFixture::LOAD,
         ControlTypesFixture::LOAD,
+        TokensFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -52,7 +53,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
     public function testAddNew_shouldAddStartDates()
     {
         Cache::clear();
-        $this->loadAuthToken(EventsController::FAKE_TOKEN);
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
@@ -135,7 +136,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'stage_id' => StagesFixture::STAGE_FEDO_2,
             'finish_time' => new FrozenTime()
         ], ['id' => RunnerResult::FIRST_RES]);
-        $this->loadAuthToken(EventsController::FAKE_TOKEN);
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
             ['stage_id' => StagesFixture::STAGE_FEDO_2],

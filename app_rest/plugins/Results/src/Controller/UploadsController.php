@@ -13,6 +13,7 @@ use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\RunnersTable;
+use Results\Model\Table\TokensTable;
 
 /**
  * @property RunnersTable $Runners
@@ -27,14 +28,14 @@ class UploadsController extends ApiController
 
     private function _addNew($data): array
     {
+        $eventId = $this->request->getParam('eventID');
         $token = $this->_getBearer();
-        $isDesktopClientAuthenticated = $token === EventsController::FAKE_TOKEN;
+        $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($eventId, $token);
         if (!$isDesktopClientAuthenticated) {
             throw new ForbiddenException('Invalid Bearer token');
         }
         $this->Classes = ClassesTable::load();
         $checker = new UploadConfigChecker($data);
-        $eventId = $this->request->getParam('eventID');
         list($data, $stageId) = $checker->validateStructure($eventId);
         if ($checker->isStartLists()) {
             if ($this->Classes->Runners->RunnerResults->hasFinishTimes($eventId, $stageId)) {

@@ -9,7 +9,6 @@ use App\Test\Fixture\OauthAccessTokensFixture;
 use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use DateTime;
-use Results\Controller\EventsController;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Federation;
 use Results\Model\Entity\Stage;
@@ -17,6 +16,7 @@ use Results\Model\Table\EventsTable;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
 use Results\Test\Fixture\StagesFixture;
+use Results\Test\Fixture\TokensFixture;
 use Results\Test\Fixture\UsersEventsFixture;
 
 class EventsControllerTest extends ApiCommonErrorsTest
@@ -28,6 +28,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
         OauthAccessTokensFixture::LOAD,
         UsersFixture::LOAD,
         UsersEventsFixture::LOAD,
+        TokensFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -221,17 +222,9 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($expected, $bodyDecoded['data']);
     }
 
-    public function testGetData_notAuthenticatedAsDesktopClient()
-    {
-        $this->loadAuthToken('bad_fake_token');
-        $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
-
-        $this->assertException('Forbidden', 403, 'Invalid Bearer token');
-    }
-
     public function testGetData_authenticatedAsDesktopClient()
     {
-        $this->loadAuthToken(EventsController::FAKE_TOKEN);
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
 
         $bodyDecoded = $this->assertJsonResponseOK();
@@ -250,6 +243,23 @@ class EventsControllerTest extends ApiCommonErrorsTest
             ],
         ];
         $this->assertEquals($expected, $bodyDecoded['event']);
+    }
+
+    public function testGetData_authenticatedAsUser()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals(Event::FIRST_EVENT, $bodyDecoded['data']['id']);
+    }
+
+    public function testGetData_notAuthenticatedAsDesktopClient()
+    {
+        $this->loadAuthToken('bad_fake_token');
+        $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
+
+        $this->assertException('Unauthorized', 401, 'Verify authorization error: The access token provided is invalid');
     }
 
     public function testAddNew()

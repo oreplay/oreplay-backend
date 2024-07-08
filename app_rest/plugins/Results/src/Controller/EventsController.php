@@ -5,17 +5,16 @@ declare(strict_types = 1);
 namespace Results\Controller;
 
 use App\Lib\FullBaseUrl;
-use Cake\Http\Exception\ForbiddenException;
 use RestApi\Lib\Helpers\PaginationHelper;
 use Results\Model\Entity\Event;
 use Results\Model\Table\EventsTable;
+use Results\Model\Table\TokensTable;
 
 /**
  * @property EventsTable $Events
  */
 class EventsController extends ApiController
 {
-    public const FAKE_TOKEN = 'fake_token';
     public function isPublicController(): bool
     {
         return true;
@@ -36,12 +35,12 @@ class EventsController extends ApiController
     {
         $rootEntity = 'data';
         $token = $this->_getBearer();
-        $isDesktopClientAuthenticated = $token === EventsController::FAKE_TOKEN;
+        $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($id, $token);
         if ($token) {
             if ($isDesktopClientAuthenticated) {
                 $rootEntity = 'event';
             } else {
-                throw new ForbiddenException('Invalid Bearer token');
+                $this->getLocalOauth()->verifyAuthorizationAndGetToken();
             }
         }
         $this->flatResponse = true;
