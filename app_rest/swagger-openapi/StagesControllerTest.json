@@ -270,7 +270,7 @@
         "delete": {
             "operationId": 4,
             "summary": "",
-            "description": "Delete",
+            "description": "Delete with clean param should not remove stage but empty contents",
             "parameters": [
                 {
                     "description": "",

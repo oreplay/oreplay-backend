@@ -116,24 +116,24 @@ class StagesControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(StageType::MASS_START, $bodyDecoded['stage_type']['id']);
     }
 
-    public function testDelete()
-    {
-        $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE . '');
-
-        $this->assertEquals(204, $this->_response->getStatusCode());
-        $stage = StagesTable::load()->findById(Stage::FIRST_STAGE)->first();
-        $this->assertNull($stage);
-        $class = ClassesTable::load()->findById(Stage::FIRST_STAGE)->first();
-        $this->assertNull($class);
-    }
-
-    public function testDelete_shouldNotRemoveStage()
+    public function testDelete_withCleanParamShouldNotRemoveStageButEmptyContents()
     {
         $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE . '?clean=1');
 
         $this->assertEquals(204, $this->_response->getStatusCode());
         $stage = StagesTable::load()->findById(Stage::FIRST_STAGE)->first();
         $this->assertEquals(Stage::FIRST_STAGE, $stage->id);
+        $class = ClassesTable::load()->findById(Stage::FIRST_STAGE)->first();
+        $this->assertNull($class);
+    }
+
+    public function testDelete_withoutCleanParamShouldRemoveStage()
+    {
+        $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE . '');
+
+        $this->assertEquals(204, $this->_response->getStatusCode());
+        $stage = StagesTable::load()->findById(Stage::FIRST_STAGE)->first();
+        $this->assertNull($stage);
         $class = ClassesTable::load()->findById(Stage::FIRST_STAGE)->first();
         $this->assertNull($class);
     }

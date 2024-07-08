@@ -9,7 +9,7 @@
                     "description": "",
                     "in": "query",
                     "name": "page",
-                    "example": "2",
+                    "example": "3",
                     "required": false,
                     "schema": {
                         "type": "string"
@@ -85,7 +85,7 @@
                                             "properties": {
                                                 "id": {
                                                     "type": "string",
-                                                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                                    "example": "1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow"
                                                 },
                                                 "is_hidden": {
                                                     "type": "boolean",
@@ -93,7 +93,7 @@
                                                 },
                                                 "description": {
                                                     "type": "string",
-                                                    "example": "Test Foot-o"
+                                                    "example": "Tomorrow event"
                                                 },
                                                 "picture": {
                                                     "type": "string",
@@ -117,30 +117,30 @@
                                                 },
                                                 "initial_date": {
                                                     "type": "string",
-                                                    "example": "2024-01-25"
+                                                    "example": "2024-07-09"
                                                 },
                                                 "final_date": {
                                                     "type": "string",
-                                                    "example": "2024-01-25"
+                                                    "example": "2024-07-09"
                                                 },
                                                 "federation_id": {
                                                     "type": "string",
-                                                    "example": "FEDO"
+                                                    "example": "IOF"
                                                 },
                                                 "created": {
                                                     "type": "string",
-                                                    "example": "2022-03-01T10:01:00.000+00:00"
+                                                    "example": "2022-03-13T10:01:00.000+00:00"
                                                 },
                                                 "modified": {
                                                     "type": "string",
-                                                    "example": "2022-03-01T10:01:00.000+00:00"
+                                                    "example": "2022-03-13T10:01:00.000+00:00"
                                                 },
                                                 "_links": {
                                                     "type": "object",
                                                     "properties": {
                                                         "self": {
                                                             "type": "string",
-                                                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow"
                                                         }
                                                     }
                                                 }
@@ -183,7 +183,7 @@
                                         "properties": {
                                             "id": {
                                                 "type": "string",
-                                                "example": "c973ae06-0635-4945-89b2-a7462ffad8f9"
+                                                "example": "f8591217-4cd6-4da7-8408-b750d7f4259f"
                                             },
                                             "description": {
                                                 "type": "string",
@@ -231,7 +231,7 @@
                                                             "properties": {
                                                                 "event_id": {
                                                                     "type": "string",
-                                                                    "example": "c973ae06-0635-4945-89b2-a7462ffad8f9"
+                                                                    "example": "f8591217-4cd6-4da7-8408-b750d7f4259f"
                                                                 },
                                                                 "user_id": {
                                                                     "type": "string",
@@ -244,18 +244,18 @@
                                             },
                                             "created": {
                                                 "type": "string",
-                                                "example": "2024-07-08T11:31:05.944+00:00"
+                                                "example": "2024-07-08T15:54:56.532+00:00"
                                             },
                                             "modified": {
                                                 "type": "string",
-                                                "example": "2024-07-08T11:31:05.944+00:00"
+                                                "example": "2024-07-08T15:54:56.532+00:00"
                                             },
                                             "_links": {
                                                 "type": "object",
                                                 "properties": {
                                                     "self": {
                                                         "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/c973ae06-0635-4945-89b2-a7462ffad8f9"
+                                                        "example": "http://dev.example.com/api/v1/events/f8591217-4cd6-4da7-8408-b750d7f4259f"
                                                     }
                                                 }
                                             }
@@ -323,7 +323,7 @@
         "get": {
             "operationId": 3,
             "summary": "",
-            "description": "Get data",
+            "description": "Get data authenticated as user",
             "parameters": [
                 {
                     "description": "",
@@ -345,7 +345,7 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "description": "Get data",
+                                "description": "Get data authenticated as user",
                                 "properties": {
                                     "data": {
                                         "type": "object",
@@ -464,8 +464,8 @@
                         }
                     }
                 },
-                "403": {
-                    "description": "Forbidden",
+                "401": {
+                    "description": "Unauthorized",
                     "content": {
                         "application/json": {
                             "schema": {
@@ -474,11 +474,11 @@
                                 "properties": {
                                     "error": {
                                         "type": "string",
-                                        "example": "Forbidden"
+                                        "example": "Unauthorized"
                                     },
                                     "code": {
                                         "type": "number",
-                                        "example": 403
+                                        "example": 401
                                     }
                                 }
                             }
