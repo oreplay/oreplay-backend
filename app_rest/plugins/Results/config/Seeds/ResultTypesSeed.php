@@ -12,7 +12,7 @@ class ResultTypesSeed extends AbstractSeed
         $now = date('Y-m-d H:i:00');
         $data = [
             [
-                'id' => ResultType::OVERAL,
+                'id' => ResultType::OVERALL,
                 'description' => 'Overall',
                 'created' => $now,
                 'modified' => $now,

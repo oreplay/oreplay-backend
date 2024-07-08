@@ -25,7 +25,7 @@ class TeamResultsFixture extends RestApiFixture
             'stage_order' => null,
             'team_uuid' => null,
             'class_uuid' => null,
-            'result_type_id' => ResultType::OVERAL,
+            'result_type_id' => ResultType::OVERALL,
             'check_time' => null,
             'start_time' => '2024-01-03 10:10:00',
             'finish_time' => '2024-01-03 10:15:10',

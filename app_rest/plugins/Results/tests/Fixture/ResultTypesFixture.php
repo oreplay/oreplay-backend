@@ -13,7 +13,7 @@ class ResultTypesFixture extends RestApiFixture
 
     public $records = [
         [
-            'id' => ResultType::OVERAL,
+            'id' => ResultType::OVERALL,
             'description' => 'Overall',
             'created' => '2023-01-01 10:01:00',
             'modified' => '2023-01-01 10:01:00',
