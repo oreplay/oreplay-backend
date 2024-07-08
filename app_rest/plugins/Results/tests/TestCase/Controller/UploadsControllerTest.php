@@ -7,13 +7,16 @@ namespace Results\Test\TestCase\Controller;
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Cake\Cache\Cache;
+use Cake\I18n\FrozenTime;
 use Results\Controller\EventsController;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
+use Results\Model\Entity\RunnerResult;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\CoursesTable;
+use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\RunnersTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;
@@ -123,5 +126,49 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => UploadsControllerHelper::exampleImportSmall()];
         $this->post($this->_getEndpoint(), $data);
         $this->assertException('Forbidden', 403, 'Invalid Bearer token');
+    }
+
+    public function testAddNew_shouldNotUpdateStartListWhenThereAreFinishTimes()
+    {
+        Cache::clear();
+        RunnerResultsTable::load()->updateAll([
+            'stage_id' => StagesFixture::STAGE_FEDO_2,
+            'finish_time' => new FrozenTime()
+        ], ['id' => RunnerResult::FIRST_RES]);
+        $this->loadAuthToken(EventsController::FAKE_TOKEN);
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = ['oreplay_data_transfer' => UploadsControllerHelper::exampleImportSmall()];
+        $this->post($this->_getEndpoint(), $data);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $now = new FrozenTime();
+        $expectedMeta = [
+            'updated' => [
+                'classes' => 0,
+                'runners' => 0,
+            ],
+            'human' => [
+                "[Error - 400] ($now) Cannot add start times when there are already finish times"
+            ]
+        ];
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+
+        $addedClasses = $ClassesTable->find()
+            ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->contain(CoursesTable::name())
+            ->orderAsc('Classes.oe_key')
+            ->all();
+        $this->assertEquals(1, count($addedClasses));
+
+        $res = RunnersTable::load()
+            ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
+            ->orderAsc('last_name')
+            ->all();
+
+        $this->assertEquals(0, count($res), 'Runner count in db');
     }
 }

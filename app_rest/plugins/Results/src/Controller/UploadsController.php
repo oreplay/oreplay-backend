@@ -6,6 +6,8 @@ namespace Results\Controller;
 
 use App\Lib\Exception\InvalidPayloadException;
 use Cake\Http\Exception\ForbiddenException;
+use Cake\I18n\FrozenTime;
+use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\UploadConfigChecker;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\RunnerResult;
@@ -23,7 +25,7 @@ class UploadsController extends ApiController
         return true;
     }
 
-    protected function addNew($data)
+    private function _addNew($data): array
     {
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = $token === EventsController::FAKE_TOKEN;
@@ -36,7 +38,7 @@ class UploadsController extends ApiController
         list($data, $stageId) = $checker->validateStructure($eventId);
         if ($checker->isStartLists()) {
             if ($this->Classes->Runners->RunnerResults->hasFinishTimes($eventId, $stageId)) {
-                throw new InvalidPayloadException('Cannot add start times when there are finish times');
+                throw new InvalidPayloadException('Cannot add start times when there are already finish times');
             }
         }
 
@@ -81,9 +83,8 @@ class UploadsController extends ApiController
             $classes[] = $class;
         }
         $this->Classes->saveManyOrFail($classes);
-        $this->flatResponse = true;
         $classCount = count($classes);
-        $this->return = [
+        return [
             'data' => $classes,
             'meta' => [
                 'updated' => [
@@ -96,6 +97,31 @@ class UploadsController extends ApiController
                 ]
             ]
         ];
+    }
+
+    protected function addNew($data)
+    {
+        $this->flatResponse = true;
+        try {
+            $this->return = $this->_addNew($data);
+        } catch (DetailedException $e) {
+            $now = new FrozenTime();
+            $message = $e->getMessage();
+            $code = $e->getCode();
+            $this->response = $this->response->withStatus(200); // TODO change to 202 after desktop-client 0.2.5
+            $this->return = [
+                'data' => null,
+                'meta' => [
+                    'updated' => [
+                        'classes' => 0,
+                        'runners' => 0,
+                    ],
+                    'human' => [
+                        "[Error - $code] ($now) $message",
+                    ]
+                ]
+            ];
+        }
     }
 
     private function _getBearer(): ?string
