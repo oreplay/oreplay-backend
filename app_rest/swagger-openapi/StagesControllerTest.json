@@ -6,13 +6,14 @@
             "description": "Get list",
             "parameters": [
                 {
-                    "description": "",
+                    "description": "ID in URL",
                     "in": "path",
                     "name": "eventID",
                     "required": true,
                     "schema": {
-                        "type": "integer"
-                    }
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
                 }
             ],
             "tags": [
@@ -73,13 +74,14 @@
             "description": "Add new",
             "parameters": [
                 {
-                    "description": "",
+                    "description": "ID in URL",
                     "in": "path",
                     "name": "eventID",
                     "required": true,
                     "schema": {
-                        "type": "integer"
-                    }
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
                 }
             ],
             "tags": [
@@ -99,7 +101,7 @@
                                         "properties": {
                                             "id": {
                                                 "type": "string",
-                                                "example": "dabae133-a80b-411f-b935-dbbcba1666f7"
+                                                "example": "9f6edcad-1036-4d12-96b0-b3d77feaf31a"
                                             },
                                             "description": {
                                                 "type": "string",
@@ -123,15 +125,15 @@
                                                 "properties": {
                                                     "self": {
                                                         "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/dabae133-a80b-411f-b935-dbbcba1666f7"
+                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9f6edcad-1036-4d12-96b0-b3d77feaf31a"
                                                     },
                                                     "results": {
                                                         "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/dabae133-a80b-411f-b935-dbbcba1666f7/runners/"
+                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9f6edcad-1036-4d12-96b0-b3d77feaf31a/runners/"
                                                     },
                                                     "classes": {
                                                         "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/dabae133-a80b-411f-b935-dbbcba1666f7/classes/"
+                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9f6edcad-1036-4d12-96b0-b3d77feaf31a/classes/"
                                                     }
                                                 }
                                             }
@@ -187,22 +189,24 @@
             "description": "Get data",
             "parameters": [
                 {
-                    "description": "",
+                    "description": "ID in URL",
                     "in": "path",
                     "name": "eventID",
                     "required": true,
                     "schema": {
-                        "type": "integer"
-                    }
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
                 },
                 {
-                    "description": "",
+                    "description": "ID in URL",
                     "in": "path",
                     "name": "entity_id",
                     "required": true,
                     "schema": {
-                        "type": "integer"
-                    }
+                        "type": "string"
+                    },
+                    "example": "8f45d409-72bc-4cdc-96e9-0a2c4504d964"
                 }
             ],
             "tags": [
@@ -273,22 +277,24 @@
             "description": "Delete with clean param should not remove stage but empty contents",
             "parameters": [
                 {
-                    "description": "",
+                    "description": "ID in URL",
                     "in": "path",
                     "name": "eventID",
                     "required": true,
                     "schema": {
-                        "type": "integer"
-                    }
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
                 },
                 {
-                    "description": "",
+                    "description": "ID in URL",
                     "in": "path",
                     "name": "entity_id",
                     "required": true,
                     "schema": {
-                        "type": "integer"
-                    }
+                        "type": "string"
+                    },
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
                 },
                 {
                     "description": "",

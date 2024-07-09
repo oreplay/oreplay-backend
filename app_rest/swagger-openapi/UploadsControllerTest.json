@@ -6,13 +6,14 @@
             "description": "Add new should add start dates",
             "parameters": [
                 {
-                    "description": "",
+                    "description": "ID in URL",
                     "in": "path",
                     "name": "eventID",
                     "required": true,
                     "schema": {
-                        "type": "integer"
-                    }
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
                 }
             ],
             "tags": [
@@ -45,7 +46,7 @@
                                                     "properties": {
                                                         "id": {
                                                             "type": "string",
-                                                            "example": "6bda37e3-25f9-4e7b-b148-a73e50279f5c"
+                                                            "example": "90b998ca-0b44-4132-95fc-0e33cdfcd43a"
                                                         },
                                                         "oe_key": {
                                                             "type": "number",
@@ -64,7 +65,7 @@
                                                         "properties": {
                                                             "id": {
                                                                 "type": "string",
-                                                                "example": "04a36be6-13cf-4393-a10c-d3ea11e7320e"
+                                                                "example": "0c77ea56-0d2b-4706-b54a-4915d514b13e"
                                                             },
                                                             "sicard": {
                                                                 "type": "number",
@@ -89,7 +90,7 @@
                                                                     "properties": {
                                                                         "id": {
                                                                             "type": "string",
-                                                                            "example": "0bb2019a-0c97-4f79-95e1-e23d44d644a0"
+                                                                            "example": "4cb6c563-e29f-4329-ab32-b75c2245f227"
                                                                         },
                                                                         "start_time": {
                                                                             "type": "string",
@@ -120,7 +121,7 @@
                                                                 "properties": {
                                                                     "id": {
                                                                         "type": "string",
-                                                                        "example": "978bcce8-27a3-473c-b6ed-c1067370aa88"
+                                                                        "example": "d05fb747-e25a-4ab5-8f41-ad00ea82b2d6"
                                                                     },
                                                                     "short_name": {
                                                                         "type": "string",
@@ -135,14 +136,29 @@
                                         }
                                     },
                                     "meta": {
-                                        "updated": {
-                                            "classes": 2,
-                                            "runners": 4
-                                        },
-                                        "human": [
-                                            "Updated 2 classes",
-                                            "Updated 4 runners"
-                                        ]
+                                        "type": "object",
+                                        "properties": {
+                                            "updated": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "classes": {
+                                                        "type": "number",
+                                                        "example": 2
+                                                    },
+                                                    "runners": {
+                                                        "type": "number",
+                                                        "example": 4
+                                                    }
+                                                }
+                                            },
+                                            "human": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "example": "Updated 2 classes"
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }

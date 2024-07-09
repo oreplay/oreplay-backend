@@ -49,7 +49,7 @@
                     "description": "",
                     "in": "query",
                     "name": "initial_date:lte",
-                    "example": "2024-07-08",
+                    "example": "2024-07-09",
                     "required": false,
                     "schema": {
                         "type": "string"
@@ -59,7 +59,7 @@
                     "description": "",
                     "in": "query",
                     "name": "final_date:gte",
-                    "example": "2024-07-08",
+                    "example": "2024-07-09",
                     "required": false,
                     "schema": {
                         "type": "string"
@@ -117,11 +117,11 @@
                                                 },
                                                 "initial_date": {
                                                     "type": "string",
-                                                    "example": "2024-07-09"
+                                                    "example": "2024-07-10"
                                                 },
                                                 "final_date": {
                                                     "type": "string",
-                                                    "example": "2024-07-09"
+                                                    "example": "2024-07-10"
                                                 },
                                                 "federation_id": {
                                                     "type": "string",
@@ -147,11 +147,26 @@
                                             }
                                         }
                                     },
-                                    "total": 4,
-                                    "limit": 10,
+                                    "total": {
+                                        "type": "number",
+                                        "example": 4
+                                    },
+                                    "limit": {
+                                        "type": "number",
+                                        "example": 10
+                                    },
                                     "_links": {
-                                        "self": {
-                                            "href": "http://dev.example.com/api/v1/events/?page=1"
+                                        "type": "object",
+                                        "properties": {
+                                            "self": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "href": {
+                                                        "type": "string",
+                                                        "example": "http://dev.example.com/api/v1/events/?page=1"
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -183,7 +198,7 @@
                                         "properties": {
                                             "id": {
                                                 "type": "string",
-                                                "example": "f8591217-4cd6-4da7-8408-b750d7f4259f"
+                                                "example": "a5a08628-7903-432d-9a13-3c512e0ef51e"
                                             },
                                             "description": {
                                                 "type": "string",
@@ -231,7 +246,7 @@
                                                             "properties": {
                                                                 "event_id": {
                                                                     "type": "string",
-                                                                    "example": "f8591217-4cd6-4da7-8408-b750d7f4259f"
+                                                                    "example": "a5a08628-7903-432d-9a13-3c512e0ef51e"
                                                                 },
                                                                 "user_id": {
                                                                     "type": "string",
@@ -244,18 +259,18 @@
                                             },
                                             "created": {
                                                 "type": "string",
-                                                "example": "2024-07-08T15:54:56.532+00:00"
+                                                "example": "2024-07-09T09:26:14.184+00:00"
                                             },
                                             "modified": {
                                                 "type": "string",
-                                                "example": "2024-07-08T15:54:56.532+00:00"
+                                                "example": "2024-07-09T09:26:14.184+00:00"
                                             },
                                             "_links": {
                                                 "type": "object",
                                                 "properties": {
                                                     "self": {
                                                         "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/f8591217-4cd6-4da7-8408-b750d7f4259f"
+                                                        "example": "http://dev.example.com/api/v1/events/a5a08628-7903-432d-9a13-3c512e0ef51e"
                                                     }
                                                 }
                                             }
@@ -326,13 +341,14 @@
             "description": "Get data authenticated as user",
             "parameters": [
                 {
-                    "description": "",
+                    "description": "ID in URL",
                     "in": "path",
                     "name": "entity_id",
                     "required": true,
                     "schema": {
-                        "type": "integer"
-                    }
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
                 }
             ],
             "tags": [

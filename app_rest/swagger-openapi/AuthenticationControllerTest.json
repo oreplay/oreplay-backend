@@ -133,13 +133,14 @@
             "description": "Delete should logout when sending current as entity id",
             "parameters": [
                 {
-                    "description": "",
+                    "description": "ID in URL",
                     "in": "path",
                     "name": "entity_id",
                     "required": true,
                     "schema": {
-                        "type": "integer"
-                    }
+                        "type": "string"
+                    },
+                    "example": "current"
                 }
             ],
             "tags": [

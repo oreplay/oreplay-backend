@@ -6,13 +6,14 @@
             "description": "Add new",
             "parameters": [
                 {
-                    "description": "",
+                    "description": "ID in URL",
                     "in": "path",
                     "name": "eventID",
                     "required": true,
                     "schema": {
-                        "type": "integer"
-                    }
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
                 },
                 {
                     "description": "Auth token",
@@ -42,7 +43,7 @@
                                         "properties": {
                                             "id": {
                                                 "type": "string",
-                                                "example": "8c10c0ec-73cd-4f18-95f1-946dd09d992d"
+                                                "example": "7249105b-9177-47ee-87fe-b33021e56ae5"
                                             },
                                             "expires": {
                                                 "type": "string",
@@ -50,15 +51,15 @@
                                             },
                                             "token": {
                                                 "type": "string",
-                                                "example": "65fc7379ce03c7746b5f9c189cef5efaf1fe2c0d"
+                                                "example": "58f4bfc851960fc876fc4aff4426d89f387de954"
                                             },
                                             "created": {
                                                 "type": "string",
-                                                "example": "2024-06-25T15:20:23.285+00:00"
+                                                "example": "2024-07-09T09:26:13.941+00:00"
                                             },
                                             "modified": {
                                                 "type": "string",
-                                                "example": "2024-06-25T15:20:23.285+00:00"
+                                                "example": "2024-07-09T09:26:13.941+00:00"
                                             }
                                         }
                                     }
@@ -99,22 +100,24 @@
             "description": "Delete",
             "parameters": [
                 {
-                    "description": "",
+                    "description": "ID in URL",
                     "in": "path",
                     "name": "eventID",
                     "required": true,
                     "schema": {
-                        "type": "integer"
-                    }
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
                 },
                 {
-                    "description": "",
+                    "description": "ID in URL",
                     "in": "path",
                     "name": "entity_id",
                     "required": true,
                     "schema": {
-                        "type": "integer"
-                    }
+                        "type": "string"
+                    },
+                    "example": "8fe6cd50c76d54a4e6c3b30e6b724a86703d8178"
                 },
                 {
                     "description": "Auth token",
