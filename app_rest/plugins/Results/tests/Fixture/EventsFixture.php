@@ -40,7 +40,7 @@ class EventsFixture extends RestApiFixture
                 'deleted' => null,
             ],
             [
-                'id' => self::EVENT_TODAY,
+                'id' => EventsFixture::EVENT_TODAY,
                 'description' => 'Today event',
                 'initial_date' => (new DateTime('now'))->format('Y-m-d'),
                 'final_date' => (new DateTime('now'))->format('Y-m-d'),

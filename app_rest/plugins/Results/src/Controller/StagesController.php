@@ -94,7 +94,7 @@ class StagesController extends ApiController
 
     private function _isUserAllowedInEvent(string $eventId): void
     {
-        $userId = $this->getLocalOauth()->verifyAuthorization();
+        $userId = $this->getLocalOauth()->verifyAuthorizationAndGetToken()->getUserId();
         $this->Stages->Events->getEventFromUser($eventId, $userId);
     }
 

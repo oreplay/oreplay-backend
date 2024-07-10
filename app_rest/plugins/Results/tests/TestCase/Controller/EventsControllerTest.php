@@ -280,4 +280,77 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $db = EventsTable::load()->getEventFromUser($bodyDecoded['data']['id'], UsersFixture::USER_ADMIN_ID);
         $this->assertEquals($data['description'], $db->description);
     }
+
+    public function testEdit()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $data = [
+            'is_hidden' => true,
+            'description' => 'Some description',
+            'scope' => 'local',
+            'location' => 'somewhere',
+            'country_code' => 'ES',
+            'website' => 'https://www.oreplay.es',
+            'picture' => 'https://www.oreplay.es/logo.svg',
+            'initial_date' => '2024-06-10',
+            'final_date' => '2024-06-10',
+        ];
+        $this->patch($this->_getEndpoint() . Event::FIRST_EVENT, $data);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals($data['is_hidden'], $bodyDecoded['data']['is_hidden']);
+        $this->assertEquals($data['description'], $bodyDecoded['data']['description']);
+        $this->assertEquals($data['scope'], $bodyDecoded['data']['scope']);
+        $this->assertEquals($data['location'], $bodyDecoded['data']['location']);
+        $this->assertEquals($data['country_code'], $bodyDecoded['data']['country_code']);
+        $this->assertEquals($data['website'], $bodyDecoded['data']['website']);
+        $this->assertEquals($data['picture'], $bodyDecoded['data']['picture']);
+        $this->assertEquals($data['initial_date'], $bodyDecoded['data']['initial_date']);
+        $this->assertEquals($data['final_date'], $bodyDecoded['data']['final_date']);
+    }
+
+    public function testEdit_shouldNotEditWithInvalidToken()
+    {
+        $this->loadAuthToken('bad_token');
+        $data = [
+            'description' => 'Some description',
+        ];
+        $this->patch($this->_getEndpoint() . Event::FIRST_EVENT, $data);
+
+        $this->assertResponseCode(401);
+    }
+
+    public function testEdit_shouldNotEditFromAnotherUser()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $data = [
+            'description' => 'Some description',
+        ];
+        $this->patch($this->_getEndpoint() . EventsFixture::EVENT_TODAY, $data);
+
+        $this->assertResponseCode(403);
+    }
+
+    public function testDelete()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $this->delete($this->_getEndpoint() . Event::FIRST_EVENT);
+        $this->assertResponse204NoContent();
+        $this->assertNull(EventsTable::load()->findById(Event::FIRST_EVENT)->first());
+    }
+
+    public function testDelete_shouldNotDeleteWithInvalidToken()
+    {
+        $this->loadAuthToken('bad_token');
+        $this->delete($this->_getEndpoint() . Event::FIRST_EVENT);
+        $this->assertResponseCode(401);
+        $this->assertNotNull(EventsTable::load()->findById(Event::FIRST_EVENT)->first());
+    }
+
+    public function testDelete_shouldNotDeleteFromAnotherUser()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $this->delete($this->_getEndpoint() . EventsFixture::EVENT_TODAY);
+        $this->assertResponseCode(403);
+    }
 }

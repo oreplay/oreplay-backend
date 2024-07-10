@@ -49,7 +49,7 @@
                     "description": "",
                     "in": "query",
                     "name": "initial_date:lte",
-                    "example": "2024-07-09",
+                    "example": "2024-07-10",
                     "required": false,
                     "schema": {
                         "type": "string"
@@ -59,7 +59,7 @@
                     "description": "",
                     "in": "query",
                     "name": "final_date:gte",
-                    "example": "2024-07-09",
+                    "example": "2024-07-10",
                     "required": false,
                     "schema": {
                         "type": "string"
@@ -117,11 +117,11 @@
                                                 },
                                                 "initial_date": {
                                                     "type": "string",
-                                                    "example": "2024-07-10"
+                                                    "example": "2024-07-11"
                                                 },
                                                 "final_date": {
                                                     "type": "string",
-                                                    "example": "2024-07-10"
+                                                    "example": "2024-07-11"
                                                 },
                                                 "federation_id": {
                                                     "type": "string",
@@ -198,7 +198,7 @@
                                         "properties": {
                                             "id": {
                                                 "type": "string",
-                                                "example": "a5a08628-7903-432d-9a13-3c512e0ef51e"
+                                                "example": "12034c77-ca1a-4d85-ad14-b82424cd3aa8"
                                             },
                                             "description": {
                                                 "type": "string",
@@ -246,7 +246,7 @@
                                                             "properties": {
                                                                 "event_id": {
                                                                     "type": "string",
-                                                                    "example": "a5a08628-7903-432d-9a13-3c512e0ef51e"
+                                                                    "example": "12034c77-ca1a-4d85-ad14-b82424cd3aa8"
                                                                 },
                                                                 "user_id": {
                                                                     "type": "string",
@@ -259,43 +259,22 @@
                                             },
                                             "created": {
                                                 "type": "string",
-                                                "example": "2024-07-09T09:26:14.184+00:00"
+                                                "example": "2024-07-10T15:55:10.444+00:00"
                                             },
                                             "modified": {
                                                 "type": "string",
-                                                "example": "2024-07-09T09:26:14.184+00:00"
+                                                "example": "2024-07-10T15:55:10.444+00:00"
                                             },
                                             "_links": {
                                                 "type": "object",
                                                 "properties": {
                                                     "self": {
                                                         "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/a5a08628-7903-432d-9a13-3c512e0ef51e"
+                                                        "example": "http://dev.example.com/api/v1/events/12034c77-ca1a-4d85-ad14-b82424cd3aa8"
                                                     }
                                                 }
                                             }
                                         }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "400": {
-                    "description": "Bad Request",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Post should throw bad request exception when empty body provided",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Bad Request"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 400
                                     }
                                 }
                             }
@@ -495,6 +474,328 @@
                                     "code": {
                                         "type": "number",
                                         "example": 401
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "patch": {
+            "operationId": 4,
+            "summary": "",
+            "description": "Edit",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "entity_id",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                }
+            ],
+            "tags": [
+                "Events"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Edit",
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string",
+                                                "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                            },
+                                            "is_hidden": {
+                                                "type": "boolean",
+                                                "example": true
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "Some description"
+                                            },
+                                            "picture": {
+                                                "type": "string",
+                                                "example": "https://www.oreplay.es/logo.svg"
+                                            },
+                                            "website": {
+                                                "type": "string",
+                                                "example": "https://www.oreplay.es"
+                                            },
+                                            "scope": {
+                                                "type": "string",
+                                                "example": "local"
+                                            },
+                                            "location": {
+                                                "type": "string",
+                                                "example": "somewhere"
+                                            },
+                                            "country_code": {
+                                                "type": "string",
+                                                "example": "ES"
+                                            },
+                                            "initial_date": {
+                                                "type": "string",
+                                                "example": "2024-06-10"
+                                            },
+                                            "final_date": {
+                                                "type": "string",
+                                                "example": "2024-06-10"
+                                            },
+                                            "federation_id": {
+                                                "type": "string",
+                                                "example": "FEDO"
+                                            },
+                                            "created": {
+                                                "type": "string",
+                                                "example": "2022-03-01T10:01:00.000+00:00"
+                                            },
+                                            "modified": {
+                                                "type": "string",
+                                                "example": "2024-07-10T15:55:10.469+00:00"
+                                            },
+                                            "_links": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "self": {
+                                                        "type": "string",
+                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Edit should not edit with invalid token",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Unauthorized"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 401
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "description": "Forbidden",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Edit should not edit from another user",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Forbidden"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 403
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Patch should throw bad request exception when no body provided",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Bad Request"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 400
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "405": {
+                    "description": "Method Not Allowed",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Patch should throw bad request exception when no id provided",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Method Not Allowed"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 405
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "description": "Edit",
+                            "properties": {
+                                "is_hidden": {
+                                    "type": "number",
+                                    "example": 1
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "example": "Some description"
+                                },
+                                "scope": {
+                                    "type": "string",
+                                    "example": "local"
+                                },
+                                "location": {
+                                    "type": "string",
+                                    "example": "somewhere"
+                                },
+                                "country_code": {
+                                    "type": "string",
+                                    "example": "ES"
+                                },
+                                "website": {
+                                    "type": "string",
+                                    "example": "https://www.oreplay.es"
+                                },
+                                "picture": {
+                                    "type": "string",
+                                    "example": "https://www.oreplay.es/logo.svg"
+                                },
+                                "initial_date": {
+                                    "type": "string",
+                                    "example": "2024-06-10"
+                                },
+                                "final_date": {
+                                    "type": "string",
+                                    "example": "2024-06-10"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "delete": {
+            "operationId": 5,
+            "summary": "",
+            "description": "Delete",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "entity_id",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                }
+            ],
+            "tags": [
+                "Events"
+            ],
+            "responses": {
+                "204": {
+                    "description": "No content. Successfully deleted."
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Delete should not delete with invalid token",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Unauthorized"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 401
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "description": "Forbidden",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Delete should not delete from another user",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Forbidden"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 403
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "405": {
+                    "description": "Method Not Allowed",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Delete should throw bad request exception when no id provided",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Method Not Allowed"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 405
                                     }
                                 }
                             }

@@ -70,4 +70,25 @@ class EventsController extends ApiController
         $event->users = [$this->Events->Users->get($userId)];
         $this->return = $this->Events->saveOrFail($event, ['associated' => true]);
     }
+
+    protected function edit($id, $data)
+    {
+        $event = $this->_getEventFromUser($id);
+        $event = $this->Events->patchEntity($event, $data);
+        $saved = $this->Events->saveOrFail($event);
+        $this->return = $this->Events->get($saved->id);
+    }
+
+    protected function delete($id)
+    {
+        $event = $this->_getEventFromUser($id);
+        $this->Events->softDelete($event->id);
+        $this->return = false;
+    }
+
+    private function _getEventFromUser($id): Event
+    {
+        $userId = $this->getLocalOauth()->verifyAuthorizationAndGetToken()->getUserId();
+        return $this->Events->getEventFromUser($id, $userId);
+    }
 }
