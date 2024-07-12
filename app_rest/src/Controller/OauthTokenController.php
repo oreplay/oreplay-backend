@@ -66,11 +66,13 @@ class AuthenticationController extends ApiController
 
         $token = $this->OauthAccessTokens->createBearerToken($usr->id, $clientId, $this->_secsToExpire($data));
 
-        $cookieHelper = new CookieHelper();
-        $cookie = $cookieHelper
+        $cookie = $this->CookieHelper
             ->writeApi2Remember($token['access_token'], $token['expires_in']);
         $this->response = $this->response->withCookie($cookie);
-        return $token;
+        $AuthorizationFlow = new AuthorizationCodeGrantPkceFlow();
+        list($this->response, $authorizationCode) = $AuthorizationFlow->getAuthorizationCode(
+            $data, $this->CookieHelper, $this->response, $this->OauthAccessTokens, $usr->id);
+        return array_merge($token, $authorizationCode);
     }
 
     protected function delete($id)
