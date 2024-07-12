@@ -18,7 +18,7 @@ All details from those machines are defined in the `docker-compose` file. Here a
 
 Run from [docker-compose](https://docs.docker.com/compose/install/):
 
-```
+```bash
 docker-compose -f ./docker-compose-dev.yml up -d
 ```
 
@@ -30,7 +30,7 @@ Connect as `root` to the database launched using docker-compose (e.g. you can ru
 
 Connect to the nginx container using exec and **run composer**
 
-```
+```bash
 cd /var/www/cplatform/public/app_rest/
 composer install
 ```
@@ -178,7 +178,11 @@ Seeds: Will define the initial state of development the database
 
 More info about [phinx](https://book.cakephp.org/phinx/0/en/migrations.html) and the migration plugin on [cake book](https://book.cakephp.org/migrations/3/en/index.html)
 
-```
+```bash
+#Go to the right folder
+cd /var/www/cplatform/public/app_rest/
+
+
 # create a new migration called 'CreateUsers'
 bin/cake bake migration CreateUsers
 # create a new migration called 'MyNewMigration' for the 'PluginName' (using -p for plugins)
@@ -198,11 +202,15 @@ bin/cake migrations seed
 
 # run specific seeder class
 bin/cake migrations seed --seed UsersSeed
+
+
+#Run composer install to get any new possible dependency
+composer install
 ```
 # Devops
 
 We will use sonarqube community edition (free). For that is needed to be installed as a docker container, with the following command:
 
-```
+```bash
 docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest
 ```
