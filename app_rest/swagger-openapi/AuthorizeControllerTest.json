@@ -1,0 +1,98 @@
+{
+    "/api/v1/authorize/": {
+        "get": {
+            "operationId": 1,
+            "summary": "",
+            "description": "Get list initializes the authorization code flow with pkce",
+            "parameters": [
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "response_type",
+                    "example": "code",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "client_id",
+                    "example": "2658",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "state",
+                    "example": "recommended_param_to_avoid_csrf",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "redirect_uri",
+                    "example": "https://domain.com/optional/URL/to/which/Auth0/will/redirect/the/browser/after/authorization/has/been/granted",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "code_challenge_method",
+                    "example": "S256",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "code_challenge",
+                    "example": "the_code_challenge",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "Authorize"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Get list initializes the authorization code flow with pkce",
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "login_challenge": {
+                                                "type": "string",
+                                                "example": "************************************************************************************************************************************************************************************************************************************************************************************************************"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

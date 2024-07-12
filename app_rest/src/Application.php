@@ -75,6 +75,13 @@ class Application extends BaseApplication
         return $middlewareQueue;
     }
 
+    public function services(\Cake\Core\ContainerInterface $container): void
+    {
+        $container->addShared(\RestApi\Lib\Helpers\CookieHelper::class);// addShared means singleton
+        $container->add(\App\Controller\OauthTokenController::class)
+            ->addArguments([\RestApi\Lib\Helpers\CookieHelper::class, \Cake\Http\ServerRequest::class]);
+    }
+
     /**
      * @return void
      */

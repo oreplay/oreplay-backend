@@ -6,7 +6,7 @@
             "description": "Add new login",
             "parameters": [],
             "tags": [
-                "Authentication"
+                "OauthToken"
             ],
             "responses": {
                 "200": {
@@ -35,6 +35,18 @@
                                             "scope": {
                                                 "type": "string",
                                                 "example": ""
+                                            },
+                                            "code": {
+                                                "type": "string",
+                                                "example": "fb33d5061fc77f14005e8f8a0fd3046467584370"
+                                            },
+                                            "redirect_uri": {
+                                                "type": "string",
+                                                "example": "https://domain.com/optional/URL/to/which/Auth0/will/redirect/the/browser/after/authorization/has/been/granted"
+                                            },
+                                            "state": {
+                                                "type": "string",
+                                                "example": "recommended_param_to_avoid_csrf"
                                             }
                                         }
                                     }
@@ -66,7 +78,7 @@
                 }
             },
             "requestBody": {
-                "description": "Request body can match to any of the 2 provided schemas",
+                "description": "Request body can match to any of the 3 provided schemas",
                 "content": {
                     "application/json": {
                         "schema": {
@@ -90,6 +102,10 @@
                                         "grant_type": {
                                             "type": "string",
                                             "example": "password"
+                                        },
+                                        "login_challenge": {
+                                            "type": "string",
+                                            "example": "************************************************************************************************************************************************************************************************************************************************************************************************************"
                                         }
                                     }
                                 },
@@ -118,6 +134,36 @@
                                             "example": 1
                                         }
                                     }
+                                },
+                                {
+                                    "type": "object",
+                                    "description": "Add new authorization code pkce flow",
+                                    "properties": {
+                                        "grant_type": {
+                                            "type": "string",
+                                            "example": "authorization_code"
+                                        },
+                                        "client_id": {
+                                            "type": "number",
+                                            "example": 2658
+                                        },
+                                        "code": {
+                                            "type": "string",
+                                            "example": "fake_test_authorization_code"
+                                        },
+                                        "code_verifier": {
+                                            "type": "string",
+                                            "example": "test_verifier_code"
+                                        },
+                                        "redirect_uri": {
+                                            "type": "string",
+                                            "example": "https://domain.com/optional/URL/to/which/Auth0/will/redirect/the/browser/after/authorization/has/been/granted"
+                                        },
+                                        "scope": {
+                                            "type": "string",
+                                            "example": "offline_access"
+                                        }
+                                    }
                                 }
                             ]
                         }
@@ -144,7 +190,7 @@
                 }
             ],
             "tags": [
-                "Authentication"
+                "OauthToken"
             ],
             "responses": {
                 "204": {

@@ -7,23 +7,39 @@ namespace App\Controller;
 use App\Controller\Component\OAuthServerComponent;
 use App\Model\Table\OauthAccessTokensTable;
 use App\Model\Table\UsersTable;
+use Cake\Controller\ComponentRegistry;
+use Cake\Event\EventManagerInterface;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Response;
+use Cake\Http\ServerRequest;
 use RestApi\Lib\Helpers\CookieHelper;
+use RestApi\Lib\Oauth\AuthorizationCodeGrantPkceFlow;
 
 /**
  * @property UsersTable $Users
  * @property OAuthServerComponent $OAuthServer
  * @property OauthAccessTokensTable $OauthAccessTokens
  */
-class AuthenticationController extends ApiController
+class OauthTokenController extends ApiController
 {
     public CookieHelper $CookieHelper;
+
+    public function __construct(
+        $cookieHelper,
+        ?ServerRequest $request = null,
+        ?Response $response = null,
+        ?string $name = null,
+        ?EventManagerInterface $eventManager = null,
+        ?ComponentRegistry $components = null
+    ) {
+        $this->CookieHelper = $cookieHelper;
+        parent::__construct($request, $response, $name, $eventManager, $components);
+    }
 
     public function initialize(): void
     {
         parent::initialize();
         $this->Users = UsersTable::load();
-        $this->CookieHelper = new CookieHelper();
         $this->OauthAccessTokens = OauthAccessTokensTable::load();
     }
 
@@ -32,47 +48,22 @@ class AuthenticationController extends ApiController
         return true;
     }
 
-    private function _secsToExpire($data)
-    {
-        $hasRemember = $data['remember_me'] ?? false;
-        $hours = 60 * 60;
-        if ($hasRemember) {
-            return 48 * $hours + 6;//172806
-        } else {
-            return 2 * $hours + 6;//7206
-        }
-    }
-
     protected function addNew($data)
     {
+        $AuthorizationFlow = new AuthorizationCodeGrantPkceFlow();
         switch ($data['grant_type'] ?? null) {
             case 'password':
-                $this->return = $this->_loginWithPassword($data);
+                $this->_logoutCookie();
+                list($this->response, $this->return) = $AuthorizationFlow->loginWithPassword(
+                    $data, $this->CookieHelper, $this->response, $this->OauthAccessTokens);
+                break;
+            case 'authorization_code':
+                $this->return = $AuthorizationFlow->authorizationCodePkceFlow(
+                    $data, $this->CookieHelper, $this->getRequest(), $this->OauthAccessTokens);
                 break;
             default:
                 throw new BadRequestException('Invalid grant_type');
         }
-    }
-
-    private function _loginWithPassword($data): array
-    {
-        $this->_logoutCookie();
-
-        $clientId = $data['client_id'] ?? false;
-        if (!$clientId) {
-            throw new BadRequestException('Client id is mandatory');
-        }
-        $usr = $this->Users->checkLogin($data);
-
-        $token = $this->OauthAccessTokens->createBearerToken($usr->id, $clientId, $this->_secsToExpire($data));
-
-        $cookie = $this->CookieHelper
-            ->writeApi2Remember($token['access_token'], $token['expires_in']);
-        $this->response = $this->response->withCookie($cookie);
-        $AuthorizationFlow = new AuthorizationCodeGrantPkceFlow();
-        list($this->response, $authorizationCode) = $AuthorizationFlow->getAuthorizationCode(
-            $data, $this->CookieHelper, $this->response, $this->OauthAccessTokens, $usr->id);
-        return array_merge($token, $authorizationCode);
     }
 
     protected function delete($id)
@@ -89,9 +80,8 @@ class AuthenticationController extends ApiController
 
     private function _logoutCookie()
     {
-        $cookieHelper = new CookieHelper();
-        $res = $cookieHelper->popApi2Remember($this->getRequest());
-        $this->response = $this->response->withCookie($cookieHelper->cookie);
+        $res = $this->CookieHelper->popApi2Remember($this->getRequest());
+        $this->response = $this->response->withCookie($this->CookieHelper->cookie);
         return $res;
     }
 }
