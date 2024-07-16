@@ -8,6 +8,11 @@ use RestApi\Lib\Swagger\SwaggerReader;
 
 class SwaggerJsonController extends \RestApi\Controller\SwaggerJsonController
 {
+    public static function version(): string
+    {
+        return '0.1.6';
+    }
+
     protected function getContent(SwaggerReader $reader, array $paths): array
     {
         $serverUrl = ($_SERVER['HTTP_HOST'] ?? '');
@@ -15,7 +20,7 @@ class SwaggerJsonController extends \RestApi\Controller\SwaggerJsonController
             $serverUrl = 'https://' . $serverUrl;
         }
         return [
-            'openapi' => '3.0.0',
+            'openapi' => SwaggerJsonController::version(),
             'info' => [
                 'version' => '0.1.6',
                 'title' => 'O-replay - OpenAPI 3.0',

@@ -24,11 +24,11 @@ class RootController extends ApiController
     protected function getList()
     {
         Cache::write('testingCachePing', 'hello-cache-ping');
-        $title = 'cake-rest-ct';
+        $title = 'O-replay cake-rest API';
         $toRet = [
             'title' => $title,
             'lang' => LegacyI18n::getLocale(),
-            'version' => '',
+            'version' => SwaggerJsonController::version(),
             '_links' => [
                 'self' => [
                     'title' => $title,
