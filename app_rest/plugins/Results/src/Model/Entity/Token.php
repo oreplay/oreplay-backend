@@ -26,6 +26,7 @@ class Token extends Entity
     ];
 
     protected $_hidden = [
+        'id',
         'foreign_model',
         'foreign_key',
         'modified',

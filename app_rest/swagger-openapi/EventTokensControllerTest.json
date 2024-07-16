@@ -41,21 +41,17 @@
                                     "data": {
                                         "type": "object",
                                         "properties": {
-                                            "id": {
-                                                "type": "string",
-                                                "example": "b2fae49f-9bc3-4920-b1a6-5b9a60066243"
-                                            },
                                             "expires": {
                                                 "type": "string",
                                                 "example": "2034-01-06T13:09:01.523+00:00"
                                             },
                                             "token": {
                                                 "type": "string",
-                                                "example": "7b63be6b9f353ae262fa7d865e7ea0c8fc17ca16"
+                                                "example": "6fad29184c28a3696d64f3f40f05bd02008bac75"
                                             },
                                             "created": {
                                                 "type": "string",
-                                                "example": "2024-07-16T13:06:55.350+00:00"
+                                                "example": "2024-07-16T13:14:17.067+00:00"
                                             }
                                         }
                                     }
@@ -131,10 +127,6 @@
                                         "items": {
                                             "type": "object",
                                             "properties": {
-                                                "id": {
-                                                    "type": "string",
-                                                    "example": "fa349e58-00b4-4db5-8e2e-ce25e7669adf"
-                                                },
                                                 "token": {
                                                     "type": "string",
                                                     "example": "8fe6cd50c76d54a4e6c3b30e6b724a86703d8178"
