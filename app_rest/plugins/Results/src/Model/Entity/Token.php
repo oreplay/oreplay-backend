@@ -28,5 +28,7 @@ class Token extends Entity
     protected $_hidden = [
         'foreign_model',
         'foreign_key',
+        'modified',
+        'deleted',
     ];
 }

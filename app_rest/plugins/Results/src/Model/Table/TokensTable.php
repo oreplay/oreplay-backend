@@ -33,6 +33,18 @@ class TokensTable extends AppTable
         return $token;
     }
 
+    public function findTokensForEvent(string $eventId)
+    {
+        return $this->find()->where([
+            'expires >' => new FrozenTime(),
+        ])
+            ->innerJoin(['Events' => 'events'], [
+                'Events.id = Tokens.foreign_key',
+                'Events.id' => $eventId,
+                'Tokens.foreign_model = "Event"',
+            ]);
+    }
+
     private function getTokenForEvent(string $token, string $eventId): Token
     {
         /** @var Token $token */

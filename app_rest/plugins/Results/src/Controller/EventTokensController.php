@@ -36,6 +36,12 @@ class EventTokensController extends ApiController
         $this->return = $this->EventTokens->createTokenForEvent($event->id, $data);
     }
 
+    protected function getList()
+    {
+        $event = $this->_checkIsOwnEvent();
+        $this->return = $this->EventTokens->findTokensForEvent($event->id)->all();
+    }
+
     protected function delete($id)
     {
         $event = $this->_checkIsOwnEvent();

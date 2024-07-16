@@ -43,7 +43,7 @@
                                         "properties": {
                                             "id": {
                                                 "type": "string",
-                                                "example": "7249105b-9177-47ee-87fe-b33021e56ae5"
+                                                "example": "b2fae49f-9bc3-4920-b1a6-5b9a60066243"
                                             },
                                             "expires": {
                                                 "type": "string",
@@ -51,15 +51,11 @@
                                             },
                                             "token": {
                                                 "type": "string",
-                                                "example": "58f4bfc851960fc876fc4aff4426d89f387de954"
+                                                "example": "7b63be6b9f353ae262fa7d865e7ea0c8fc17ca16"
                                             },
                                             "created": {
                                                 "type": "string",
-                                                "example": "2024-07-09T09:26:13.941+00:00"
-                                            },
-                                            "modified": {
-                                                "type": "string",
-                                                "example": "2024-07-09T09:26:13.941+00:00"
+                                                "example": "2024-07-16T13:06:55.350+00:00"
                                             }
                                         }
                                     }
@@ -91,11 +87,85 @@
                     }
                 }
             }
+        },
+        "get": {
+            "operationId": 2,
+            "summary": "",
+            "description": "Get list",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authentication",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "EventTokens"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Get list",
+                                "properties": {
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "fa349e58-00b4-4db5-8e2e-ce25e7669adf"
+                                                },
+                                                "token": {
+                                                    "type": "string",
+                                                    "example": "8fe6cd50c76d54a4e6c3b30e6b724a86703d8178"
+                                                },
+                                                "expires": {
+                                                    "type": "string",
+                                                    "example": "2036-05-05T10:00:08.000+00:00"
+                                                },
+                                                "created": {
+                                                    "type": "string",
+                                                    "example": "2024-05-05T10:00:08.000+00:00"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ]
         }
     },
     "/api/v1/events/{eventID}/tokens/{entity_id}": {
         "delete": {
-            "operationId": 2,
+            "operationId": 3,
             "summary": "",
             "description": "Delete",
             "parameters": [
