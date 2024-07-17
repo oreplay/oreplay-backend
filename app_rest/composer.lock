@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6c3361f775cb20198887412fa94847bd",
+    "content-hash": "ab5df6abb01ab3070f39e72ae227d80a",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
@@ -1022,16 +1022,16 @@
         },
         {
             "name": "freefri/cake-rest-api",
-            "version": "0.5.13",
+            "version": "0.5.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/freefri/cake-rest-api.git",
-                "reference": "cd8ac24f9cb3cc748b5705cfdb082ba780bb8b02"
+                "reference": "05482db69f037c7c272277234b1b522bee12b0f7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/freefri/cake-rest-api/zipball/cd8ac24f9cb3cc748b5705cfdb082ba780bb8b02",
-                "reference": "cd8ac24f9cb3cc748b5705cfdb082ba780bb8b02",
+                "url": "https://api.github.com/repos/freefri/cake-rest-api/zipball/05482db69f037c7c272277234b1b522bee12b0f7",
+                "reference": "05482db69f037c7c272277234b1b522bee12b0f7",
                 "shasum": ""
             },
             "require": {
@@ -1084,7 +1084,7 @@
                 "issues": "https://github.com/freefri/cake-rest-api/issues",
                 "source": "https://github.com/freefri/cake-rest-api"
             },
-            "time": "2024-07-12T15:30:50+00:00"
+            "time": "2024-07-17T08:36:31+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
