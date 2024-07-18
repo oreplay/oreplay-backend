@@ -83,6 +83,10 @@ return [
         'jsonDir' => ROOT . DS . 'tmp' . DS . 'swagger-openapi' . DS,
         'acceptLanguage' => false,
     ],
+    'RestOauthPlugin' => [
+        'tablePrefix' => '',
+        'routePath' => \App\Controller\ApiController::ROUTE_PREFIX,
+    ],
     'ResultsPlugin' => [
         'tablePrefix' => '',
         'routePath' => \App\Controller\ApiController::ROUTE_PREFIX,

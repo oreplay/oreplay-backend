@@ -41,6 +41,7 @@ class Application extends BaseApplication
     private function _loadCommonPlugins()
     {
         $this->addPlugin('Migrations');
+        $this->addPlugin(\RestOauth\RestOauthPlugin::class);
         $this->addPlugin(\Results\ResultsPlugin::class);
     }
 
@@ -73,13 +74,6 @@ class Application extends BaseApplication
             ->add(new RoutingMiddleware($this));
 
         return $middlewareQueue;
-    }
-
-    public function services(\Cake\Core\ContainerInterface $container): void
-    {
-        $container->addShared(\RestApi\Lib\Helpers\CookieHelper::class);// addShared means singleton
-        $container->add(\App\Controller\OauthTokenController::class)
-            ->addArguments([\RestApi\Lib\Helpers\CookieHelper::class, \Cake\Http\ServerRequest::class]);
     }
 
     /**
