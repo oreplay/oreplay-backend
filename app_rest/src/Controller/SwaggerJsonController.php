@@ -20,9 +20,9 @@ class SwaggerJsonController extends \RestApi\Controller\SwaggerJsonController
             $serverUrl = 'https://' . $serverUrl;
         }
         return [
-            'openapi' => SwaggerJsonController::version(),
+            'openapi' => '3.0.0',
             'info' => [
-                'version' => '0.1.6',
+                'version' => SwaggerJsonController::version(),
                 'title' => 'O-replay - OpenAPI 3.0',
                 'description' => 'O-replay Rest API',
                 'termsOfService' => 'https://github.com/oreplay',
