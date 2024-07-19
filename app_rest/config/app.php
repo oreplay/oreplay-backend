@@ -86,6 +86,8 @@ return [
     'RestOauthPlugin' => [
         'tablePrefix' => '',
         'routePath' => \App\Controller\ApiController::ROUTE_PREFIX,
+        'idpDomain' => '',
+        'idpLoginFormPath' => '/signin',
     ],
     'ResultsPlugin' => [
         'tablePrefix' => '',
