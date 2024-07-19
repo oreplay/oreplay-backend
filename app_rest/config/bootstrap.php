@@ -1,5 +1,6 @@
 <?php
-declare(strict_types=1);
+
+declare(strict_types = 1);
 
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
@@ -224,5 +225,6 @@ function migrationList(): array
     return [
         [],
         ['plugin' => (new \Results\ResultsPlugin)->getName()],
+        ['plugin' => (new \RestOauth\RestOauthPlugin)->getName()],
     ];
 }
