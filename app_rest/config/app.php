@@ -76,6 +76,7 @@ return [
                 'http://localhost:8080',
                 'http://localhost:8081',
                 'http://localhost:8083',
+                'http://localhost:4173',
             ],
         ]
     ],
@@ -87,7 +88,7 @@ return [
         'tablePrefix' => '',
         'routePath' => \App\Controller\ApiController::ROUTE_PREFIX,
         'idpDomain' => '',
-        'idpLoginFormPath' => '/signin',
+        'idpLoginFormPath' => '/signin/form',
     ],
     'ResultsPlugin' => [
         'tablePrefix' => '',
