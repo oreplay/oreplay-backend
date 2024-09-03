@@ -36,7 +36,7 @@ class OAuthServerComponent extends Component
         }
         $this->server->setupOauth($controller);
         if (!$this->_skipAuth) {
-            $this->server->verifyAuthorization();
+            $this->server->verifyAuthorizationAndGetToken();
             $this->_verifyAdminAction($controller);
             $this->_parseRequestParamIDs($controller);
         }
