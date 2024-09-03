@@ -25,7 +25,7 @@ class EventsTable extends AppTable
         $this->addBehavior(TimestampBehavior::class);
         FederationsTable::addHasMany($this);
         StagesTable::addBelongsTo($this);
-        $this->belongsToMany('Users', [
+        $this->belongsToMany(UsersTable::name(), [
             'joinTable' => 'users_events',
         ]);
     }
@@ -69,6 +69,15 @@ class EventsTable extends AppTable
 
         $query = $query->handleTimeFilter($filters, 'initial_date');
         $query = $query->handleTimeFilter($filters, 'final_date');
+
+        $userId = $filters['user_id'] ?? null;
+        if ($userId) {
+            $query->innerJoinWith(UsersTable::name(), function (Query $query) use ($userId) {
+                return $query->where([
+                    'Users.id' => $userId,
+                ]);
+            });
+        }
 
         // Return query
         return $query->orderDesc('initial_date');

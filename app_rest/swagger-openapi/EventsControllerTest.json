@@ -8,6 +8,16 @@
                 {
                     "description": "",
                     "in": "query",
+                    "name": "user_id",
+                    "example": "8186ef35-e8c1-4e5c-bcc4-42bb362f050b",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
                     "name": "page",
                     "example": "3",
                     "required": false,
