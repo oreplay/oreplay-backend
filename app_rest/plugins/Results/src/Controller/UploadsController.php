@@ -109,7 +109,7 @@ class UploadsController extends ApiController
             $now = new FrozenTime();
             $message = $e->getMessage();
             $code = $e->getCode();
-            $this->response = $this->response->withStatus(200); // TODO change to 202 after desktop-client 0.2.5
+            $this->response = $this->response->withStatus(202);
             $this->return = [
                 'data' => null,
                 'meta' => [
