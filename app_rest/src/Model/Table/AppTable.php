@@ -21,7 +21,25 @@ abstract class AppTable extends RestApiTable
         return $this->patchEntity($entity, $data);
     }
 
+    public function patchNewWithStage(array $data, string $eventId, string $stageId)
+    {
+        $res = $this->patchFromNewWithUuid($data);
+        $res->event_id = $eventId;
+        $res->stage_id = $stageId;
+        $shortName = $data['short_name'] ?? null;
+        if ($shortName) {
+            list($cacheKey) = $this->getShortNameCacheKey($eventId, $stageId, $shortName);
+            Cache::write($cacheKey, $res);
+        }
+        return $res;
+    }
+
     protected function getByShortName(string $eventId, string $stageId, string $shortName): ?Entity
+    {
+        return $this->getFromCache($this->getShortNameCacheKey($eventId, $stageId, $shortName));
+    }
+
+    protected function getShortNameCacheKey(string $eventId, string $stageId, string $shortName): array
     {
         $conditions = [
             $this->_alias . '.event_id' => $eventId,
@@ -29,6 +47,12 @@ abstract class AppTable extends RestApiTable
             $this->_alias . '.short_name' => $shortName
         ];
         $cacheKey = 'getByShortName_' . md5(json_encode($conditions));
+        return [$cacheKey, $conditions];
+    }
+
+    protected function getFromCache(array $array)
+    {
+        list($cacheKey, $conditions) = $array;
         $res = Cache::read($cacheKey);
         if ($res) {
             return $res;
@@ -45,9 +69,7 @@ abstract class AppTable extends RestApiTable
     {
         $entity = $this->getByShortName($eventId, $stageId, $data['short_name']);
         if (!$entity) {
-            $entity = $this->patchFromNewWithUuid($data);
-            $entity->event_id = $eventId;
-            $entity->stage_id = $stageId;
+            $entity = $this->patchNewWithStage($data, $eventId, $stageId);
         }
         return $entity;
     }

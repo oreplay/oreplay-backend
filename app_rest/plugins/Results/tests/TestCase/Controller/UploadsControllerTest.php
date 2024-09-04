@@ -13,10 +13,17 @@ use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
+use Results\Model\Table\AnswersTable;
+use Results\Model\Table\ClassesControlsTable;
 use Results\Model\Table\ClassesTable;
+use Results\Model\Table\ClubsTable;
+use Results\Model\Table\ControlsTable;
 use Results\Model\Table\CoursesTable;
 use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\RunnersTable;
+use Results\Model\Table\SplitsTable;
+use Results\Model\Table\TeamResultsTable;
+use Results\Model\Table\TeamsTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\ControlsFixture;
@@ -27,6 +34,7 @@ use Results\Test\Fixture\RunnerResultsFixture;
 use Results\Test\Fixture\RunnersFixture;
 use Results\Test\Fixture\SplitsFixture;
 use Results\Test\Fixture\StagesFixture;
+use Results\Test\Fixture\StageTypesFixture;
 use Results\Test\Fixture\TokensFixture;
 
 class UploadsControllerTest extends ApiCommonErrorsTest
@@ -43,6 +51,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         ControlsFixture::LOAD,
         ControlTypesFixture::LOAD,
         TokensFixture::LOAD,
+        StageTypesFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -116,6 +125,17 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals(ResultType::STAGE,
                 $value->runner_results[0]->result_type_id);
         }
+        $this->assertEquals(3, ClubsTable::load()->find()->all()->count());
+        $this->assertEquals(2, CoursesTable::load()->find()->all()->count());
+        $this->assertEquals(2, ClassesTable::load()->find()->all()->count());
+        $this->assertEquals(0, TeamsTable::load()->find()->all()->count());
+        $this->assertEquals(6, RunnersTable::load()->find()->all()->count());
+        $this->assertEquals(1, ControlsTable::load()->find()->all()->count());
+        $this->assertEquals(0, ClassesControlsTable::load()->find()->all()->count());
+        $this->assertEquals(5, RunnerResultsTable::load()->find()->all()->count());
+        $this->assertEquals(0, TeamResultsTable::load()->find()->all()->count());
+        $this->assertEquals(1, SplitsTable::load()->find()->all()->count());
+        $this->assertEquals(0, AnswersTable::load()->find()->all()->count());
     }
 
     public function testAddNew_shouldRequireAuthenticatedToken()

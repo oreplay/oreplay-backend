@@ -118,10 +118,8 @@ class RunnersTable extends AppTable
             $runner = $this->matchRunner($eventId, $stageId, $runnerData, $class);
         } catch (NotFoundException $e) {
             /** @var Runner $runner */
-            $runner = $this->patchFromNewWithUuid($runnerData);
+            $runner = $this->patchNewWithStage($runnerData, $eventId, $stageId);
         }
-        $runner->event_id = $eventId;
-        $runner->stage_id = $stageId;
         return $runner;
     }
 

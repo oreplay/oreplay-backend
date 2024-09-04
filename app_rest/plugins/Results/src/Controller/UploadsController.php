@@ -56,14 +56,12 @@ class UploadsController extends ApiController
             $class->course = $course;
             $runners = [];
             foreach ($classObj['runners'] as $runnerData) {
-                $runner = $this->Classes->Runners->createRunnerIfNotExists(
+                $runner = $this->runnersTable()->createRunnerIfNotExists(
                     $eventId, $stageId, $runnerData, $class);
                 $results = $runnerData['runner_results'] ?? [];
                 foreach ($results as $resultData) {
                     /** @var RunnerResult $result */
-                    $result = $this->runnersTable()->RunnerResults->patchFromNewWithUuid($resultData);
-                    $result->event_id = $eventId;
-                    $result->stage_id = $stageId;
+                    $result = $this->runnersTable()->RunnerResults->patchNewWithStage($resultData, $eventId, $stageId);
                     if ($checker->isStartLists()) {
                         $typeId = ResultType::STAGE;
                     } else {
@@ -80,8 +78,7 @@ class UploadsController extends ApiController
                 }
                 $runnerClub = $runnerData['club'] ?? null;
                 if ($runnerClub) {
-                    $runner->club = $this->Classes->Runners->Clubs
-                        ->createIfNotExists($eventId, $stageId, $runnerClub);
+                    $runner->club = $this->runnersTable()->Clubs->createIfNotExists($eventId, $stageId, $runnerClub);
                 }
                 $runners[] = $runner;
                 $runnerCount++;
@@ -151,7 +148,7 @@ class UploadsController extends ApiController
     private function _validateStageInEvent($eventId, string $stageId): void
     {
         try {
-            StagesTable::load()->getByEvent($eventId, $stageId);
+            StagesTable::load()->getByEvent($stageId, $eventId);
         } catch (RecordNotFoundException $e) {
             throw new DetailedException("The stage $stageId is not from the event $eventId");
         }

@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Test\TestCase\Controller;
 
+use Results\Model\Entity\Event;
 use Results\Test\Fixture\StagesFixture;
 
 class UploadsControllerHelper
@@ -18,7 +19,7 @@ class UploadsControllerHelper
                 'results_type' => 'Other',
             ],
             'event' => [
-                'id' => '8f3b542c-23b9-4790-a113-b83d476c0ad9',
+                'id' => Event::FIRST_EVENT,
                 'description' => 'Demo - 5 days of Italy 2014',
                 'stages' => [
                     (int) 0 => [
@@ -92,9 +93,9 @@ class UploadsControllerHelper
                                         'club' => [
                                             'id' => '',
                                             'uuid' => '',
-                                            'oe_key' => '21715',
-                                            'short_name' => 'Bredaryds SOK',
-                                            'long_name' => 'Bredaryds SOK'
+                                            'oe_key' => '24738',
+                                            'short_name' => 'BRIGHTNET',
+                                            'long_name' => 'BRIGHTNET'
                                         ]
                                     ]
                                 ]
@@ -138,7 +139,7 @@ class UploadsControllerHelper
                                         'club' => [
                                             'id' => '',
                                             'uuid' => '',
-                                            'oe_key' => '28026',
+                                            'oe_key' => '',
                                             'short_name' => 'Tullinge SK',
                                             'long_name' => 'Tullinge SK'
                                         ]
@@ -166,9 +167,9 @@ class UploadsControllerHelper
                                         'club' => [
                                             'id' => '',
                                             'uuid' => '',
-                                            'oe_key' => '30303',
-                                            'short_name' => 'Hana Orienteering',
-                                            'long_name' => 'Hana Orienteering'
+                                            'oe_key' => '',
+                                            'short_name' => 'Tullinge SK',
+                                            'long_name' => 'Tullinge SK'
                                         ]
                                     ]
                                 ]
