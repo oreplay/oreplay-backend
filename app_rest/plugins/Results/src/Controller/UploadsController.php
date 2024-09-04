@@ -11,6 +11,7 @@ use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\UploadConfigChecker;
 use Results\Model\Entity\ClassEntity;
+use Results\Model\Entity\ResultType;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\RunnersTable;
@@ -63,7 +64,11 @@ class UploadsController extends ApiController
                     $result = $this->runnersTable()->RunnerResults->patchFromNewWithUuid($resultData);
                     $result->event_id = $eventId;
                     $result->stage_id = $stageId;
-                    $typeId = $resultData['result_type']['id'] ?? null;
+                    if ($checker->isStartLists()) {
+                        $typeId = ResultType::STAGE;
+                    } else {
+                        $typeId = $resultData['result_type']['id'] ?? null;
+                    }
                     if (!$typeId) {
                         throw new InvalidPayloadException('runner_results.result_type.id is mandatory');
                     }
@@ -86,6 +91,7 @@ class UploadsController extends ApiController
         }
         $this->Classes->saveManyOrFail($classes);
         $classCount = count($classes);
+        $now = new FrozenTime();
         return [
             'data' => $classes,
             'meta' => [
@@ -95,7 +101,7 @@ class UploadsController extends ApiController
                 ],
                 'human' => [
                     "Updated $classCount classes",
-                    "Updated $runnerCount runners",
+                    "Updated $runnerCount runners ($now)",
                 ]
             ]
         ];

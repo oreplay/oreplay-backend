@@ -64,6 +64,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $jsonDecoded = $this->assertJsonResponseOK();
         $decodedData = $jsonDecoded['data'];
+        $now = new FrozenTime();
         $expectedMeta = [
             'updated' => [
                 'classes' => 2,
@@ -71,7 +72,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ],
             'human' => [
                 'Updated 2 classes',
-                'Updated 4 runners',
+                "Updated 4 runners ($now)",
             ]
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
