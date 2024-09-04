@@ -23,11 +23,11 @@ class StagesTable extends AppTable
         StageTypesTable::addHasMany($this);
     }
 
-    public function getByEvent(string $id, string $eventId): Stage
+    public function getByEvent(string $stageId, string $eventId): Stage
     {
         /** @var Stage $res */
         $res = $this->find()
-            ->where([$this->_alias . '.id' => $id, 'event_id' => $eventId])
+            ->where([$this->_alias . '.id' => $stageId, 'event_id' => $eventId])
             ->contain('StageTypes')
             ->firstOrFail();
         return $res;

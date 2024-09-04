@@ -22,6 +22,8 @@ class UploadConfigChecker
     private const SPLITS = 'res_splits';
 
     private array $_data;
+    private array $_firstStage;
+
     public function __construct(array $data)
     {
         $this->_data = $data;
@@ -32,38 +34,41 @@ class UploadConfigChecker
         return $this->preCheckType() === self::START_LIST;
     }
 
-    public function validateStructure(string $eventId): array
+    public function validateStructure(string $eventId): self
     {
         $data = $this->_getDataTransferred();
         if (!isset($data['event']['id'])) {
             throw new InvalidPayloadException('Invalid payload structure event.id');
         }
         if ($data['event']['id'] !== $eventId) {
-            throw new InvalidPayloadException('Event id must match');
+            throw new InvalidPayloadException('Event.id must match. Found: ' . $data['event']['id']);
         }
 
-        $firstStage = $data['event']['stages'][0] ?? null;
-        if ($firstStage) {
-            $data = $firstStage;
-        } else {
-            throw new InvalidPayloadException('Invalid payload structure event.stages.0');
-        }
-        $stageId = $firstStage['id'] ?? null;
-        if (!$stageId) {
-            throw new InvalidPayloadException('Invalid payload structure event.stages.0.id');
-        }
-        $data = $this->_validateClasses($data);
-        return [$data, $stageId];
+        $this->_firstStage = $data['event']['stages'][0] ?? [];
+        $this->getStageId();
+        $this->getClasses();
         return $this;
     }
 
-    private function _validateClasses($data): array
+    public function getStageId()
     {
-        $data = $data['classes'] ?? null;
-        if (!is_array($data)) {
+        if (!$this->_firstStage) {
+            throw new InvalidPayloadException('Invalid payload structure event.stages.0');
+        }
+        $stageId = $this->_firstStage['id'] ?? null;
+        if (!$stageId) {
+            throw new InvalidPayloadException('Invalid payload structure event.stages.0.id');
+        }
+        return $stageId;
+    }
+
+    public function getClasses(): array
+    {
+        $classes = $this->_firstStage['classes'] ?? null;
+        if (!is_array($classes)) {
             throw new InvalidPayloadException('Invalid payload structure event.stages.0.classes');
         }
-        return $data;
+        return $classes;
     }
 
     private function _getDataTransferred()
