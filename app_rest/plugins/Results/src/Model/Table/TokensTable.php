@@ -76,9 +76,6 @@ class TokensTable extends AppTable
         if (!$token) {
             return false;
         }
-        if ($token === 'fake_token') {// TODO remove this
-            return true;
-        }
         try {
             $this->getTokenForEvent($token, $eventId);
             return true;
