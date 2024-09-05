@@ -116,7 +116,11 @@ class UploadsController extends ApiController
         $this->flatResponse = true;
         try {
             $this->return = $this->_addNew($data);
+        } catch (\PDOException $e) {
+            $this->log('Uploads PDOException: ' . $e->getMessage() . " \n" . json_encode($data));
+            throw $e;
         } catch (DetailedException $e) {
+            $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . json_encode($data));
             $now = new FrozenTime();
             $message = $e->getMessage();
             $code = $e->getCode();
