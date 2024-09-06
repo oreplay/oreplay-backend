@@ -137,7 +137,7 @@ class UploadsController extends ApiController
         }
     }
 
-    private function respondError(string $message, int $code): array
+    private function respondError(string $message, $code): array
     {
         $now = new FrozenTime();
         $this->response = $this->response->withStatus(202);

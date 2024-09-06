@@ -53,6 +53,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         ControlTypesFixture::LOAD,
         TokensFixture::LOAD,
         StageTypesFixture::LOAD,
+        CoursesFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -127,7 +128,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 $value->runner_results[0]->result_type_id);
         }
         $this->assertEquals(3, ClubsTable::load()->find()->all()->count());
-        $this->assertEquals(2, CoursesTable::load()->find()->all()->count());
+        $this->assertEquals(3, CoursesTable::load()->find()->all()->count());
         $this->assertEquals(2, ClassesTable::load()->find()->all()->count());
         $this->assertEquals(0, TeamsTable::load()->find()->all()->count());
         $this->assertEquals(6, RunnersTable::load()->find()->all()->count());
