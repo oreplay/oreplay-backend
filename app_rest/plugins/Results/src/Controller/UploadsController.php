@@ -4,7 +4,9 @@ declare(strict_types = 1);
 
 namespace Results\Controller;
 
+use App\Lib\Consts\CacheGrp;
 use App\Lib\Exception\InvalidPayloadException;
+use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
@@ -29,8 +31,14 @@ class UploadsController extends ApiController
         return true;
     }
 
+    private function _clearUploadCache()
+    {
+        Cache::clear(CacheGrp::UPLOAD);
+    }
+
     private function _addNew($data): array
     {
+        $this->_clearUploadCache();
         $eventId = $this->request->getParam('eventID');
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($eventId, $token);
@@ -86,7 +94,7 @@ class UploadsController extends ApiController
             $class->runners = $runners;
             $classes[] = $class;
         }
-        $this->Classes->saveManyOrFail($classes);
+        $this->_clearUploadCache();
         $classCount = count($classes);
         $now = new FrozenTime();
         return [
@@ -116,28 +124,35 @@ class UploadsController extends ApiController
         $this->flatResponse = true;
         try {
             $this->return = $this->_addNew($data);
+            $this->Classes->saveManyOrFail($this->return['data']);
         } catch (\PDOException $e) {
-            $this->log('Uploads PDOException: ' . $e->getMessage() . " \n" . json_encode($data));
-            throw $e;
+            $this->log('Uploads PDOException: ' . $e->getMessage()
+                . " \n\n" . json_encode($data)
+                . " \n\n" . json_encode($this->return)
+            );
+            $this->return = $this->respondError($e->getMessage(), $e->getCode());
         } catch (DetailedException $e) {
             $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . json_encode($data));
-            $now = new FrozenTime();
-            $message = $e->getMessage();
-            $code = $e->getCode();
-            $this->response = $this->response->withStatus(202);
-            $this->return = [
-                'data' => null,
-                'meta' => [
-                    'updated' => [
-                        'classes' => 0,
-                        'runners' => 0,
-                    ],
-                    'human' => [
-                        "[Error - $code] ($now) $message",
-                    ]
-                ]
-            ];
+            $this->return = $this->respondError($e->getMessage(), $e->getCode());
         }
+    }
+
+    private function respondError(string $message, int $code): array
+    {
+        $now = new FrozenTime();
+        $this->response = $this->response->withStatus(202);
+        return [
+            'data' => null,
+            'meta' => [
+                'updated' => [
+                    'classes' => 0,
+                    'runners' => 0,
+                ],
+                'human' => [
+                    "[Error - $code] ($now) $message",
+                ]
+            ]
+        ];
     }
 
     private function _getBearer(): ?string

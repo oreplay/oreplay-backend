@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Model\Table;
 
+use App\Lib\Consts\CacheGrp;
 use App\Model\Table\AppTable;
 use Cake\Cache\Cache;
 use Cake\ORM\Behavior\TimestampBehavior;
@@ -37,7 +38,7 @@ class ClubsTable extends AppTable
             $club = $this->patchNewWithStage($data, $eventId, $stageId);
             if ($oeKey) {
                 list($cacheKey) = $this->getOeKeyCacheKey($eventId, $stageId, $oeKey);
-                Cache::write($cacheKey, $club);
+                Cache::write($cacheKey, $club, CacheGrp::UPLOAD);
             }
         }
         return $club;

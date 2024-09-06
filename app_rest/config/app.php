@@ -137,6 +137,13 @@ return [
             'path' => CACHE,
             'url' => env('CACHE_DEFAULT_URL', null),
         ],
+        CacheGrp::UPLOAD => [
+            'className' => MemcachedEngine::class,
+            'prefix' => env('TAG_VERSION', ''). '_' . CacheGrp::UPLOAD . '_',
+            'duration' => '+10 seconds',
+            'path' => CACHE,
+            'url' => env('CACHE_DEFAULT_URL', null),
+        ],
         CacheGrp::ACL => [
             'className' => MemcachedEngine::class,
             'prefix' => env('TAG_VERSION', ''). '_' . CacheGrp::ACL . '_',

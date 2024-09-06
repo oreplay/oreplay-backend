@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Model\Table;
 
+use App\Lib\Consts\CacheGrp;
 use Cake\Cache\Cache;
 use Cake\ORM\Entity;
 use Cake\Utility\Text;
@@ -29,7 +30,7 @@ abstract class AppTable extends RestApiTable
         $shortName = $data['short_name'] ?? null;
         if ($shortName) {
             list($cacheKey) = $this->getShortNameCacheKey($eventId, $stageId, $shortName);
-            Cache::write($cacheKey, $res);
+            Cache::write($cacheKey, $res, CacheGrp::UPLOAD);
         }
         return $res;
     }
@@ -46,14 +47,14 @@ abstract class AppTable extends RestApiTable
             $this->_alias . '.stage_id' => $stageId,
             $this->_alias . '.short_name' => $shortName
         ];
-        $cacheKey = 'getByShortName_' . md5(json_encode($conditions));
+        $cacheKey = 'getByShortName_' . $this->_alias . '_' . md5(json_encode($conditions));
         return [$cacheKey, $conditions];
     }
 
     protected function getFromCache(array $array)
     {
         list($cacheKey, $conditions) = $array;
-        $res = Cache::read($cacheKey);
+        $res = Cache::read($cacheKey, CacheGrp::UPLOAD);
         if ($res) {
             return $res;
         }
@@ -61,7 +62,7 @@ abstract class AppTable extends RestApiTable
         $res = $this->find()
             ->where($conditions)
             ->first();
-        Cache::write($cacheKey, $res);
+        Cache::write($cacheKey, $res, CacheGrp::UPLOAD);
         return $res;
     }
 
