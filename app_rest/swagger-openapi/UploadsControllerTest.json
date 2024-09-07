@@ -155,7 +155,7 @@
                                                 "type": "array",
                                                 "items": {
                                                     "type": "string",
-                                                    "example": "Updated 2 classes"
+                                                    "example": "Updated 4 runners, 2 classes (9/7/24, 3:05 PM - start_list)"
                                                 }
                                             }
                                         }
@@ -180,6 +180,48 @@
                                     "code": {
                                         "type": "number",
                                         "example": 403
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "202": {
+                    "description": "Accepted",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Add new should not update start list when there are finish times",
+                                "properties": {
+                                    "data": {
+                                        "type": "string",
+                                        "example": ""
+                                    },
+                                    "meta": {
+                                        "type": "object",
+                                        "properties": {
+                                            "updated": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "classes": {
+                                                        "type": "number",
+                                                        "example": 0
+                                                    },
+                                                    "runners": {
+                                                        "type": "number",
+                                                        "example": 0
+                                                    }
+                                                }
+                                            },
+                                            "human": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string",
+                                                    "example": "[Error - 400] (9/7/24, 3:05 PM) Cannot add start times when there are already finish times"
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }

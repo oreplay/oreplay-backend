@@ -96,6 +96,7 @@ class UploadsController extends ApiController
         }
         $this->_clearUploadCache();
         $classCount = count($classes);
+        $type = $checker->preCheckType();
         $now = new FrozenTime();
         return [
             'data' => $classes,
@@ -105,8 +106,7 @@ class UploadsController extends ApiController
                     'runners' => $runnerCount,
                 ],
                 'human' => [
-                    "Updated $classCount classes",
-                    "Updated $runnerCount runners ($now)",
+                    "Updated $runnerCount runners, $classCount classes ($now - $type)",
                 ]
             ]
         ];

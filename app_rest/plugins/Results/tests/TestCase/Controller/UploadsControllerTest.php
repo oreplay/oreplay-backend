@@ -82,8 +82,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 'runners' => 4,
             ],
             'human' => [
-                'Updated 2 classes',
-                "Updated 4 runners ($now)",
+                "Updated 4 runners, 2 classes ($now - start_list)",
             ]
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);

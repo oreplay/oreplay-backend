@@ -80,7 +80,7 @@ class UploadConfigChecker
         return $data;
     }
 
-    private function preCheckType(): string
+    public function preCheckType(): string
     {
         $contents = $this->_getDataTransferred()['configuration']['contents'] ?? null;
         $resultsType = $this->_getDataTransferred()['configuration']['results_type'] ?? null;
