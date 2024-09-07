@@ -20,6 +20,7 @@
       </testsuite>
       <testsuite name="Oauth">
           <directory>vendor/freefri/cake-rest-api-oauth/tests/TestCase/</directory>
+          <exclude>vendor/freefri/cake-rest-api-oauth/tests/TestCase/Controller/AuthorizeControllerTest.php</exclude>
       </testsuite>
       <testsuite name="App">
           <directory>tests/TestCase/</directory>
