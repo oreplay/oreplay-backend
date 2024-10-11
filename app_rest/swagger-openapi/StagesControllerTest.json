@@ -271,8 +271,215 @@
                 }
             }
         },
-        "delete": {
+        "patch": {
             "operationId": 4,
+            "summary": "",
+            "description": "Edit",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "entity_id",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "entity_id",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                }
+            ],
+            "tags": [
+                "Stages"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Add new",
+                                "properties": {
+                                    "data": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string",
+                                                "example": "9f6edcad-1036-4d12-96b0-b3d77feaf31a"
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "example": "My new test stage"
+                                            },
+                                            "stage_type": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "example": "29d5050b-4769-4be5-ace4-7e5973f68e3c"
+                                                    },
+                                                    "description": {
+                                                        "type": "string",
+                                                        "example": "Foot-O, MTBO, Ski-O"
+                                                    }
+                                                }
+                                            },
+                                            "_links": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "self": {
+                                                        "type": "string",
+                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9f6edcad-1036-4d12-96b0-b3d77feaf31a"
+                                                    },
+                                                    "results": {
+                                                        "type": "string",
+                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9f6edcad-1036-4d12-96b0-b3d77feaf31a/runners/"
+                                                    },
+                                                    "classes": {
+                                                        "type": "string",
+                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9f6edcad-1036-4d12-96b0-b3d77feaf31a/classes/"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "401": {
+                    "description": "Unauthorized",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Edit should not edit with invalid token",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Unauthorized"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 401
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "403": {
+                    "description": "Forbidden",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Edit should not edit from another user",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Forbidden"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 403
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Patch should throw bad request exception when no body provided",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Bad Request"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 400
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "405": {
+                    "description": "Method Not Allowed",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Patch should throw bad request exception when no id provided",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Method Not Allowed"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 405
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "requestBody": {
+                "description": "Request body can match to any of the 2 provided schemas",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "oneOf": [
+                                {
+                                    "type": "object",
+                                    "description": "Add new",
+                                    "properties": {
+                                        "description": {
+                                            "type": "string",
+                                            "example": "My new test stage"
+                                        }
+                                    }
+                                },
+                                {
+                                    "type": "object",
+                                    "description": "Add new including optional stage type",
+                                    "properties": {
+                                        "description": {
+                                            "type": "string",
+                                            "example": "My other test stage"
+                                        },
+                                        "stage_type_id": {
+                                            "type": "string",
+                                            "example": "ce5e95ea-9f2b-4a98-86e1-2b43651adfee"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "delete": {
+            "operationId": 5,
             "summary": "",
             "description": "Delete with clean param should not remove stage but empty contents",
             "parameters": [
