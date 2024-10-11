@@ -92,6 +92,17 @@ class StagesController extends ApiController
         $this->return = false;
     }
 
+    protected function edit($id, $data)
+    {
+        $eventId = $this->request->getParam('eventID');
+        $this->_isUserAllowedInStage($eventId, $id);
+        
+        $stage =$this->Stages->get($id);
+        $stage = $this->Stages->patchEntity($stage, $data);
+        $saved = $this->Stages->saveOrFail($stage);
+        $this->return = $this->Stages->get($saved->id);
+    }
+
     private function _isUserAllowedInEvent(string $eventId): void
     {
         $userId = $this->getLocalOauth()->verifyAuthorizationAndGetToken()->getUserId();

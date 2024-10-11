@@ -116,6 +116,18 @@ class StagesControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(StageType::MASS_START, $bodyDecoded['stage_type']['id']);
     }
 
+    public function testEdit()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $data = [
+            'description' => 'Some stage',
+        ];
+        $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, $data);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals($data['description'], $bodyDecoded['data']['description']);
+    }
+
     public function testDelete_withCleanParamShouldNotRemoveStageButEmptyContents()
     {
         $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE . '?clean=1');
