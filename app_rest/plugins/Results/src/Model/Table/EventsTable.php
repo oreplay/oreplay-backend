@@ -88,6 +88,10 @@ class EventsTable extends AppTable
         $query = $this->find()
             ->contain(FederationsTable::name())
             ->contain(StagesTable::name())
+            ->contain(['Stages' => [
+                'StageTypes'
+                ]
+            ])
             ->where(['Events.id' => $id]);
         /** @var Event $res */
         $res = $query->firstOrFail();
