@@ -5,11 +5,16 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Controller\Model\Table;
 
 use Cake\TestSuite\TestCase;
+use Results\Model\Entity\Event;
+use Results\Model\Entity\Federation;
+use Results\Model\Entity\Stage;
+use Results\Model\Entity\StageType;
 use Results\Model\Table\EventsTable;
 use Results\Model\Table\RunnersTable;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
 use Results\Test\Fixture\StagesFixture;
+use Results\Test\Fixture\StageTypesFixture;
 
 class EventsTableTest extends TestCase
 {
@@ -17,6 +22,7 @@ class EventsTableTest extends TestCase
         EventsFixture::LOAD,
         FederationsFixture::LOAD,
         StagesFixture::LOAD,
+        StageTypesFixture::LOAD,
     ];
     /** @var RunnersTable Runners */
     private $Events;
@@ -25,6 +31,22 @@ class EventsTableTest extends TestCase
     {
         parent::setUp();
         $this->Events = EventsTable::load();
+    }
+
+    public function testGetEventWithRelations()
+    {
+        /** @var Event $res */
+        $res = $this->Events->getEventWithRelations(Event::FIRST_EVENT);
+        $this->assertEquals(Event::FIRST_EVENT, $res->id);
+        $this->assertEquals('Test Foot-o', $res->description);
+        $this->assertEquals(Federation::FEDO, $res->federation->id);
+        $this->assertEquals('FEDO SICO', $res->federation->description);
+        $this->assertEquals(Stage::FIRST_STAGE, $res->stages[0]->id);
+        $stage = $res->stages[0];
+        $this->assertEquals('First stage', $stage->description);
+        $this->assertEquals(StageType::CLASSIC, $stage->stage_type_id);
+        $this->assertEquals(StageType::CLASSIC, $stage->stage_type->id);
+        $this->assertEquals('Foot-O, MTBO, Ski-O', $stage->stage_type->description);
     }
 
     public function testFindPaginatedEvents(): void
