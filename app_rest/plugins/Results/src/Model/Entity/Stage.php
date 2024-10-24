@@ -12,6 +12,7 @@ use Cake\ORM\Entity;
  * @property string $event_id
  * @property integer $stage_type_id
  * @property StageType $stage_type
+ * @property string $description
  */
 class Stage extends Entity
 {

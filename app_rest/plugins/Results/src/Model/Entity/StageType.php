@@ -6,6 +6,9 @@ namespace Results\Model\Entity;
 
 use Cake\ORM\Entity;
 
+/**
+ * @property string $description
+ */
 class StageType extends Entity
 {
     public const CLASSIC = '29d5050b-4769-4be5-ace4-7e5973f68e3c';

@@ -6,6 +6,9 @@ namespace Results\Model\Entity;
 
 use Cake\ORM\Entity;
 
+/**
+ * @property string $description
+ */
 class Federation extends Entity
 {
     public const FEDO = 'FEDO';

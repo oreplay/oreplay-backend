@@ -11,6 +11,9 @@ use Cake\ORM\Entity;
 
 /**
  * @property User[] $users
+ * @property mixed $description
+ * @property Federation $federation
+ * @property Stage[] $stages
  */
 class Event extends Entity
 {
