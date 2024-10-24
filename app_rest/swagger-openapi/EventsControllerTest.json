@@ -420,6 +420,19 @@
                                                             "type": "string",
                                                             "example": "First stage"
                                                         },
+                                                        "stage_type": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "string",
+                                                                    "example": "29d5050b-4769-4be5-ace4-7e5973f68e3c"
+                                                                },
+                                                                "description": {
+                                                                    "type": "string",
+                                                                    "example": "Foot-O, MTBO, Ski-O"
+                                                                }
+                                                            }
+                                                        },
                                                         "_links": {
                                                             "type": "object",
                                                             "properties": {

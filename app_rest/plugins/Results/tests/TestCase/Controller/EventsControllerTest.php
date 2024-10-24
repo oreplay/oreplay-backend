@@ -16,6 +16,7 @@ use Results\Model\Table\EventsTable;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
 use Results\Test\Fixture\StagesFixture;
+use Results\Test\Fixture\StageTypesFixture;
 use Results\Test\Fixture\TokensFixture;
 use Results\Test\Fixture\UsersEventsFixture;
 
@@ -29,6 +30,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
         UsersFixture::LOAD,
         UsersEventsFixture::LOAD,
         TokensFixture::LOAD,
+        StageTypesFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -139,6 +141,10 @@ class EventsControllerTest extends ApiCommonErrorsTest
             [
                 'id' => Stage::FIRST_STAGE,
                 'description' => 'First stage',
+                'stage_type' => [
+                    'id' => '29d5050b-4769-4be5-ace4-7e5973f68e3c',
+                    'description' => 'Foot-O, MTBO, Ski-O',
+                ],
                 '_links' => [
                     'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed',
                     'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/runners/',
@@ -148,6 +154,10 @@ class EventsControllerTest extends ApiCommonErrorsTest
             [
                 'id' => StagesFixture::STAGE_FEDO_2,
                 'description' => 'Second stage',
+                'stage_type' => [
+                    'id' => '29d5050b-4769-4be5-ace4-7e5973f68e3c',
+                    'description' => 'Foot-O, MTBO, Ski-O',
+                ],
                 '_links' => [
                     'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964',
                     'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/runners/',
@@ -217,6 +227,10 @@ class EventsControllerTest extends ApiCommonErrorsTest
             [
                 'id' => StagesFixture::STAGE_RAID,
                 'description' => 'Stage raid',
+                'stage_type' => [
+                    'id' => 'a30b2db1-5649-491a-b5a8-ca53e4e58461',
+                    'description' => 'Raid',
+                ],
                 '_links' => [
                     'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3',
                     'results' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/teams/',
