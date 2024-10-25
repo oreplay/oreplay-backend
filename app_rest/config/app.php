@@ -87,8 +87,9 @@ return [
     'RestOauthPlugin' => [
         'tablePrefix' => '',
         'routePath' => \App\Controller\ApiController::ROUTE_PREFIX,
-        'idpDomain' => '',
+        'idpDomain' => 'https://www.oreplay.es',
         'idpLoginFormPath' => '/signin/form',
+        'tokenDirectlyFromPasswordGrant' => false,
     ],
     'ResultsPlugin' => [
         'tablePrefix' => '',
