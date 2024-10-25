@@ -75,7 +75,7 @@ class RunnersControllerTest extends ApiCommonErrorsTest
             'id' => Runner::FIRST_RUNNER,
             'first_name' => 'First',
             'last_name' => 'Runner',
-            'sicard' => 2009933,
+            'sicard' => '2009933',
             'bib_number' => '4444',
             'club' => [
                 'id' => ClubsFixture::CLUB_1,
@@ -96,6 +96,14 @@ class RunnersControllerTest extends ApiCommonErrorsTest
                     'status_code' => null,
                     'time_behind' => 0,
                     'points_final' => null,
+                    'time_neutralization' => null,
+                    'time_adjusted' => null,
+                    'time_penalty' => null,
+                    'time_bonus' => null,
+                    'points_adjusted' => null,
+                    'points_penalty' => null,
+                    'points_bonus' => null,
+                    'leg_number' => null,
                     'splits' => [
                         [
                             'id' => SplitsFixture::SPLIT_1,

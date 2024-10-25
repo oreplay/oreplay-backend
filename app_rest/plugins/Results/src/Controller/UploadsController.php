@@ -38,6 +38,7 @@ class UploadsController extends ApiController
 
     private function _addNew($data): array
     {
+        //$this->log('Uploading data: ' . " \n\n" . json_encode($data));
         $this->_clearUploadCache();
         $eventId = $this->request->getParam('eventID');
         $token = $this->_getBearer();

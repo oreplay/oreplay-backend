@@ -194,4 +194,93 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $this->assertEquals(0, count($res), 'Runner count in db');
     }
+
+    public function testAddNew_shouldAddFinishTimes()
+    {
+        Cache::clear();
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = ['oreplay_data_transfer' => UploadsControllerHelper::exampleSimpleFinishTime()];
+        $this->post($this->_getEndpoint(), $data);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $decodedData = $jsonDecoded['data'];
+        $now = new FrozenTime();
+        $expectedRunnerAmount = 2;
+        $expectedMeta = [
+            'updated' => [
+                'classes' => 1,
+                'runners' => $expectedRunnerAmount,
+            ],
+            'human' => [
+                "Updated $expectedRunnerAmount runners, 1 classes ($now - res_finish)",
+            ]
+        ];
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+
+        $addedClasses = $ClassesTable->find()
+            ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->contain(CoursesTable::name())
+            ->orderAsc('Classes.oe_key')
+            ->all();
+        $this->assertEquals(2, count($addedClasses));
+        $expectedClasses = ['ME', '10 Mas30F'];
+        foreach ($addedClasses as $k => $class) {
+            $this->assertEquals($expectedClasses[$k], $class->short_name);
+        }
+
+        $res = RunnersTable::load()
+            ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
+            ->orderAsc('last_name')
+            ->all();
+
+        $this->assertEquals($expectedRunnerAmount, count($res), 'Runner count in db');
+        $this->assertEquals($expectedRunnerAmount, count($decodedData[0]['runners']));
+        $firstRunner = $decodedData[0]['runners'][0];
+        $this->assertEquals('Ballesteros', $firstRunner['last_name']);
+        $this->assertEquals('125', $firstRunner['bib_number']);
+        $this->assertEquals('4440522', $firstRunner['sicard']);
+        $this->assertEquals('Independiente', $firstRunner['club']['short_name']);
+        $this->assertEquals('Stage', $firstRunner['runner_results'][0]['result_type']['description']);
+        $this->assertEquals('1', $firstRunner['runner_results'][0]['position']);
+        $this->assertEquals('2024-09-29T11:00:00.000+00:00', $firstRunner['runner_results'][0]['start_time']);
+        $this->assertEquals('2024-09-29T12:26:54.000+00:00', $firstRunner['runner_results'][0]['finish_time']);
+        //$this->assertEquals(5214, $firstRunner['runner_results'][0]['time_seconds']);
+        $this->assertEquals('0', $firstRunner['runner_results'][0]['status_code']);
+        $this->assertEquals(0, $firstRunner['runner_results'][0]['time_behind']);
+        $this->assertEquals(0, $firstRunner['runner_results'][0]['time_neutralization']);
+        $this->assertEquals(0, $firstRunner['runner_results'][0]['time_adjusted']);
+        $this->assertEquals(0, $firstRunner['runner_results'][0]['time_penalty']);
+        $this->assertEquals(0, $firstRunner['runner_results'][0]['time_bonus']);
+        $this->assertEquals(0, $firstRunner['runner_results'][0]['points_final']);
+        $this->assertEquals(0, $firstRunner['runner_results'][0]['points_adjusted']);
+        $this->assertEquals(0, $firstRunner['runner_results'][0]['points_penalty']);
+        $this->assertEquals(0, $firstRunner['runner_results'][0]['points_bonus']);
+        $this->assertEquals(1, $firstRunner['runner_results'][0]['leg_number']);
+        $secondRunner = $decodedData[0]['runners'][1];
+        $this->assertEquals('Velazquez', $secondRunner['last_name']);
+        $this->assertEquals('105', $secondRunner['bib_number']);
+        $this->assertEquals('4540555', $secondRunner['sicard']);
+        $this->assertEquals('Independiente', $secondRunner['club']['short_name']);
+        $this->assertEquals('Stage', $secondRunner['runner_results'][0]['result_type']['description']);
+        $this->assertEquals('2', $secondRunner['runner_results'][0]['position']);
+        $this->assertEquals('2024-09-29T11:00:00.000+00:00', $secondRunner['runner_results'][0]['start_time']);
+        $this->assertEquals('2024-09-29T11:48:49.000+00:00', $secondRunner['runner_results'][0]['finish_time']);
+        //$this->assertEquals(2929, $secondRunner['runner_results'][0]['time_seconds']);
+        $this->assertEquals('0', $secondRunner['runner_results'][0]['status_code']);
+        $this->assertEquals(44, $secondRunner['runner_results'][0]['time_behind']);
+        $this->assertEquals(0, $secondRunner['runner_results'][0]['time_neutralization']);
+        $this->assertEquals(0, $secondRunner['runner_results'][0]['time_adjusted']);
+        $this->assertEquals(0, $secondRunner['runner_results'][0]['time_penalty']);
+        $this->assertEquals(0, $secondRunner['runner_results'][0]['time_bonus']);
+        $this->assertEquals(0, $secondRunner['runner_results'][0]['points_final']);
+        $this->assertEquals(0, $secondRunner['runner_results'][0]['points_adjusted']);
+        $this->assertEquals(0, $secondRunner['runner_results'][0]['points_penalty']);
+        $this->assertEquals(0, $secondRunner['runner_results'][0]['points_bonus']);
+        $this->assertEquals(1, $secondRunner['runner_results'][0]['leg_number']);
+    }
 }

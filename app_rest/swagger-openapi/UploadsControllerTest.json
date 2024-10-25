@@ -3,7 +3,7 @@
         "post": {
             "operationId": 1,
             "summary": "",
-            "description": "Add new should add start dates",
+            "description": "Add new should add finish times",
             "parameters": [
                 {
                     "description": "ID in URL",
@@ -26,7 +26,7 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "description": "Add new should add start dates",
+                                "description": "Add new should add finish times",
                                 "properties": {
                                     "data": {
                                         "type": "array",
@@ -35,26 +35,26 @@
                                             "properties": {
                                                 "id": {
                                                     "type": "string",
-                                                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
+                                                    "example": "b6898d22-f082-4e92-90c3-fb8bd51aa602"
                                                 },
                                                 "short_name": {
                                                     "type": "string",
-                                                    "example": "ME"
+                                                    "example": "10 Mas30F"
                                                 },
                                                 "course": {
                                                     "type": "object",
                                                     "properties": {
                                                         "id": {
                                                             "type": "string",
-                                                            "example": "90b998ca-0b44-4132-95fc-0e33cdfcd43a"
+                                                            "example": "179b53de-550d-4c68-983e-37934db7362b"
                                                         },
                                                         "oe_key": {
                                                             "type": "number",
-                                                            "example": 10
+                                                            "example": 1
                                                         },
                                                         "short_name": {
                                                             "type": "string",
-                                                            "example": "ME"
+                                                            "example": "10 Mas30F"
                                                         }
                                                     }
                                                 },
@@ -65,23 +65,23 @@
                                                         "properties": {
                                                             "id": {
                                                                 "type": "string",
-                                                                "example": "0c77ea56-0d2b-4706-b54a-4915d514b13e"
+                                                                "example": "aa2ac7b3-2993-4dd0-a6df-eccdbead2ec8"
                                                             },
                                                             "sicard": {
                                                                 "type": "number",
-                                                                "example": 889818
+                                                                "example": 4440522
                                                             },
                                                             "first_name": {
                                                                 "type": "string",
-                                                                "example": "Carlos"
+                                                                "example": "Maria"
                                                             },
                                                             "last_name": {
                                                                 "type": "string",
-                                                                "example": "Alonso"
+                                                                "example": "Ballesteros"
                                                             },
                                                             "bib_number": {
                                                                 "type": "number",
-                                                                "example": 359
+                                                                "example": 125
                                                             },
                                                             "runner_results": {
                                                                 "type": "array",
@@ -90,11 +90,63 @@
                                                                     "properties": {
                                                                         "id": {
                                                                             "type": "string",
-                                                                            "example": "4cb6c563-e29f-4329-ab32-b75c2245f227"
+                                                                            "example": "f9004b7c-b5ad-42be-9bad-01b38cc7617f"
+                                                                        },
+                                                                        "position": {
+                                                                            "type": "number",
+                                                                            "example": 1
                                                                         },
                                                                         "start_time": {
                                                                             "type": "string",
-                                                                            "example": "2014-07-06T13:09:01.523+00:00"
+                                                                            "example": "2024-09-29T11:00:00.000+00:00"
+                                                                        },
+                                                                        "finish_time": {
+                                                                            "type": "string",
+                                                                            "example": "2024-09-29T12:26:54.000+00:00"
+                                                                        },
+                                                                        "status_code": {
+                                                                            "type": "number",
+                                                                            "example": 0
+                                                                        },
+                                                                        "time_behind": {
+                                                                            "type": "number",
+                                                                            "example": 0
+                                                                        },
+                                                                        "time_neutralization": {
+                                                                            "type": "number",
+                                                                            "example": 0
+                                                                        },
+                                                                        "time_adjusted": {
+                                                                            "type": "number",
+                                                                            "example": 0
+                                                                        },
+                                                                        "time_penalty": {
+                                                                            "type": "number",
+                                                                            "example": 0
+                                                                        },
+                                                                        "time_bonus": {
+                                                                            "type": "number",
+                                                                            "example": 0
+                                                                        },
+                                                                        "points_final": {
+                                                                            "type": "number",
+                                                                            "example": 0
+                                                                        },
+                                                                        "points_adjusted": {
+                                                                            "type": "number",
+                                                                            "example": 0
+                                                                        },
+                                                                        "points_penalty": {
+                                                                            "type": "number",
+                                                                            "example": 0
+                                                                        },
+                                                                        "points_bonus": {
+                                                                            "type": "number",
+                                                                            "example": 0
+                                                                        },
+                                                                        "leg_number": {
+                                                                            "type": "number",
+                                                                            "example": 1
                                                                         },
                                                                         "result_type": {
                                                                             "type": "object",
@@ -121,11 +173,11 @@
                                                                 "properties": {
                                                                     "id": {
                                                                         "type": "string",
-                                                                        "example": "d05fb747-e25a-4ab5-8f41-ad00ea82b2d6"
+                                                                        "example": "a3b82684-d245-45f3-855a-d6bcec012210"
                                                                     },
                                                                     "short_name": {
                                                                         "type": "string",
-                                                                        "example": "BRIGHTNET"
+                                                                        "example": "Independiente"
                                                                     }
                                                                 }
                                                             }
@@ -143,11 +195,11 @@
                                                 "properties": {
                                                     "classes": {
                                                         "type": "number",
+                                                        "example": 1
+                                                    },
+                                                    "runners": {
+                                                        "type": "number",
                                                         "example": 2
-                                                    },
-                                                    "runners": {
-                                                        "type": "number",
-                                                        "example": 4
                                                     }
                                                 }
                                             },
@@ -155,94 +207,10 @@
                                                 "type": "array",
                                                 "items": {
                                                     "type": "string",
-                                                    "example": "Updated 4 runners, 2 classes (9/7/24, 3:05 PM - start_list)"
+                                                    "example": "Updated 2 runners, 1 classes (10/25/24, 7:47 AM - res_finish)"
                                                 }
                                             }
                                         }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "403": {
-                    "description": "Forbidden",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Add new should require authenticated token",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Forbidden"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 403
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "202": {
-                    "description": "Accepted",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Add new should not update start list when there are finish times",
-                                "properties": {
-                                    "data": {
-                                        "type": "string",
-                                        "example": ""
-                                    },
-                                    "meta": {
-                                        "type": "object",
-                                        "properties": {
-                                            "updated": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "classes": {
-                                                        "type": "number",
-                                                        "example": 0
-                                                    },
-                                                    "runners": {
-                                                        "type": "number",
-                                                        "example": 0
-                                                    }
-                                                }
-                                            },
-                                            "human": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "string",
-                                                    "example": "[Error - 400] (9/7/24, 3:05 PM) Cannot add start times when there are already finish times"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "400": {
-                    "description": "Bad Request",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Post should throw bad request exception when empty body provided",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Bad Request"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 400
                                     }
                                 }
                             }
@@ -251,66 +219,111 @@
                 }
             },
             "requestBody": {
-                "description": "Request body can match to any of the 2 provided schemas",
+                "description": "",
                 "content": {
                     "application/json": {
                         "schema": {
-                            "oneOf": [
-                                {
+                            "type": "object",
+                            "description": "Add new should add finish times",
+                            "properties": {
+                                "oreplay_data_transfer": {
                                     "type": "object",
-                                    "description": "Add new should add start dates",
                                     "properties": {
-                                        "oreplay_data_transfer": {
+                                        "configuration": {
                                             "type": "object",
                                             "properties": {
-                                                "configuration": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "source": {
-                                                            "type": "string",
-                                                            "example": "OE2010"
-                                                        },
-                                                        "iof_version": {
-                                                            "type": "number",
-                                                            "example": 3
-                                                        },
-                                                        "contents": {
-                                                            "type": "string",
-                                                            "example": "StartList"
-                                                        },
-                                                        "results_type": {
-                                                            "type": "string",
-                                                            "example": "Other"
-                                                        }
-                                                    }
+                                                "file": {
+                                                    "type": "string",
+                                                    "example": "/path/tmp/Test-FinalResults-jWRMC1Ia-106.xml"
                                                 },
-                                                "event": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "string",
-                                                            "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                                                        },
-                                                        "description": {
-                                                            "type": "string",
-                                                            "example": "Demo - 5 days of Italy 2014"
-                                                        },
-                                                        "stages": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "id": {
-                                                                        "type": "string",
-                                                                        "example": "8f45d409-72bc-4cdc-96e9-0a2c4504d964"
-                                                                    },
-                                                                    "order_number": {
-                                                                        "type": "number",
-                                                                        "example": 1
-                                                                    },
-                                                                    "classes": {
-                                                                        "type": "array",
-                                                                        "items": {
+                                                "extension": {
+                                                    "type": "string",
+                                                    "example": "XML"
+                                                },
+                                                "utf": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "known_data": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "contents": {
+                                                    "type": "string",
+                                                    "example": "ResultList"
+                                                },
+                                                "results_type": {
+                                                    "type": "string",
+                                                    "example": "Totals"
+                                                },
+                                                "one_stage": {
+                                                    "type": "number",
+                                                    "example": 1
+                                                },
+                                                "source": {
+                                                    "type": "string",
+                                                    "example": "OEv12"
+                                                },
+                                                "iof_version": {
+                                                    "type": "number",
+                                                    "example": 3
+                                                }
+                                            }
+                                        },
+                                        "event": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                                },
+                                                "description": {
+                                                    "type": "string",
+                                                    "example": "la prueba de adri"
+                                                },
+                                                "is_hidden": {
+                                                    "type": "number",
+                                                    "example": 0
+                                                },
+                                                "stages": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "string",
+                                                                "example": "8f45d409-72bc-4cdc-96e9-0a2c4504d964"
+                                                            },
+                                                            "description": {
+                                                                "type": "string",
+                                                                "example": "adri 1 stage"
+                                                            },
+                                                            "classes": {
+                                                                "type": "array",
+                                                                "items": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "id": {
+                                                                            "type": "string",
+                                                                            "example": ""
+                                                                        },
+                                                                        "uuid": {
+                                                                            "type": "string",
+                                                                            "example": ""
+                                                                        },
+                                                                        "oe_key": {
+                                                                            "type": "number",
+                                                                            "example": 1
+                                                                        },
+                                                                        "short_name": {
+                                                                            "type": "string",
+                                                                            "example": "10 Mas30F"
+                                                                        },
+                                                                        "long_name": {
+                                                                            "type": "string",
+                                                                            "example": "10 km Master 30 F"
+                                                                        },
+                                                                        "course": {
                                                                             "type": "object",
                                                                             "properties": {
                                                                                 "id": {
@@ -321,274 +334,147 @@
                                                                                     "type": "string",
                                                                                     "example": ""
                                                                                 },
+                                                                                "distance": {
+                                                                                    "type": "number",
+                                                                                    "example": 10000
+                                                                                },
+                                                                                "climb": {
+                                                                                    "type": "string",
+                                                                                    "example": ""
+                                                                                },
+                                                                                "controls": {
+                                                                                    "type": "number",
+                                                                                    "example": 4
+                                                                                },
                                                                                 "oe_key": {
                                                                                     "type": "number",
-                                                                                    "example": 10
+                                                                                    "example": 2
                                                                                 },
                                                                                 "short_name": {
                                                                                     "type": "string",
-                                                                                    "example": "ME"
-                                                                                },
-                                                                                "long_name": {
-                                                                                    "type": "string",
-                                                                                    "example": "M Elite"
-                                                                                },
-                                                                                "course": {
-                                                                                    "type": "object",
-                                                                                    "properties": {
-                                                                                        "id": {
-                                                                                            "type": "string",
-                                                                                            "example": ""
-                                                                                        },
-                                                                                        "uuid": {
-                                                                                            "type": "string",
-                                                                                            "example": ""
-                                                                                        },
-                                                                                        "distance": {
-                                                                                            "type": "number",
-                                                                                            "example": 5660
-                                                                                        },
-                                                                                        "climb": {
-                                                                                            "type": "number",
-                                                                                            "example": 280
-                                                                                        },
-                                                                                        "controls": {
-                                                                                            "type": "number",
-                                                                                            "example": 22
-                                                                                        },
-                                                                                        "oe_key": {
-                                                                                            "type": "number",
-                                                                                            "example": 26
-                                                                                        },
-                                                                                        "short_name": {
-                                                                                            "type": "string",
-                                                                                            "example": "ME"
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                "runners": {
-                                                                                    "type": "array",
-                                                                                    "items": {
-                                                                                        "type": "object",
-                                                                                        "properties": {
-                                                                                            "id": {
-                                                                                                "type": "string",
-                                                                                                "example": ""
-                                                                                            },
-                                                                                            "uuid": {
-                                                                                                "type": "string",
-                                                                                                "example": ""
-                                                                                            },
-                                                                                            "sicard": {
-                                                                                                "type": "number",
-                                                                                                "example": 889818
-                                                                                            },
-                                                                                            "first_name": {
-                                                                                                "type": "string",
-                                                                                                "example": "Carlos"
-                                                                                            },
-                                                                                            "last_name": {
-                                                                                                "type": "string",
-                                                                                                "example": "Alonso"
-                                                                                            },
-                                                                                            "bib_number": {
-                                                                                                "type": "number",
-                                                                                                "example": 359
-                                                                                            },
-                                                                                            "runner_results": {
-                                                                                                "type": "array",
-                                                                                                "items": {
+                                                                                    "example": "10 km F"
+                                                                                }
+                                                                            }
+                                                                        },
+                                                                        "runners": {
+                                                                            "type": "array",
+                                                                            "items": {
+                                                                                "type": "object",
+                                                                                "properties": {
+                                                                                    "id": {
+                                                                                        "type": "string",
+                                                                                        "example": ""
+                                                                                    },
+                                                                                    "uuid": {
+                                                                                        "type": "string",
+                                                                                        "example": ""
+                                                                                    },
+                                                                                    "sicard": {
+                                                                                        "type": "number",
+                                                                                        "example": 4440522
+                                                                                    },
+                                                                                    "sex": {
+                                                                                        "type": "string",
+                                                                                        "example": "F"
+                                                                                    },
+                                                                                    "first_name": {
+                                                                                        "type": "string",
+                                                                                        "example": "Maria"
+                                                                                    },
+                                                                                    "last_name": {
+                                                                                        "type": "string",
+                                                                                        "example": "Ballesteros"
+                                                                                    },
+                                                                                    "bib_number": {
+                                                                                        "type": "number",
+                                                                                        "example": 125
+                                                                                    },
+                                                                                    "runner_results": {
+                                                                                        "type": "array",
+                                                                                        "items": {
+                                                                                            "type": "object",
+                                                                                            "properties": {
+                                                                                                "id": {
+                                                                                                    "type": "string",
+                                                                                                    "example": ""
+                                                                                                },
+                                                                                                "position": {
+                                                                                                    "type": "number",
+                                                                                                    "example": 1
+                                                                                                },
+                                                                                                "start_time": {
+                                                                                                    "type": "string",
+                                                                                                    "example": "2024-09-29T11:00:00.000"
+                                                                                                },
+                                                                                                "finish_time": {
+                                                                                                    "type": "string",
+                                                                                                    "example": "2024-09-29T12:26:54.000"
+                                                                                                },
+                                                                                                "time_seconds": {
+                                                                                                    "type": "number",
+                                                                                                    "example": 5214
+                                                                                                },
+                                                                                                "status_code": {
+                                                                                                    "type": "number",
+                                                                                                    "example": 0
+                                                                                                },
+                                                                                                "time_behind": {
+                                                                                                    "type": "number",
+                                                                                                    "example": 0
+                                                                                                },
+                                                                                                "time_neutralization": {
+                                                                                                    "type": "number",
+                                                                                                    "example": 0
+                                                                                                },
+                                                                                                "time_adjusted": {
+                                                                                                    "type": "number",
+                                                                                                    "example": 0
+                                                                                                },
+                                                                                                "time_penalty": {
+                                                                                                    "type": "number",
+                                                                                                    "example": 0
+                                                                                                },
+                                                                                                "time_bonus": {
+                                                                                                    "type": "number",
+                                                                                                    "example": 0
+                                                                                                },
+                                                                                                "points_final": {
+                                                                                                    "type": "number",
+                                                                                                    "example": 0
+                                                                                                },
+                                                                                                "points_adjusted": {
+                                                                                                    "type": "number",
+                                                                                                    "example": 0
+                                                                                                },
+                                                                                                "points_penalty": {
+                                                                                                    "type": "number",
+                                                                                                    "example": 0
+                                                                                                },
+                                                                                                "points_bonus": {
+                                                                                                    "type": "number",
+                                                                                                    "example": 0
+                                                                                                },
+                                                                                                "leg_number": {
+                                                                                                    "type": "number",
+                                                                                                    "example": 1
+                                                                                                },
+                                                                                                "result_type": {
                                                                                                     "type": "object",
                                                                                                     "properties": {
                                                                                                         "id": {
                                                                                                             "type": "string",
-                                                                                                            "example": ""
+                                                                                                            "example": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e"
                                                                                                         },
-                                                                                                        "stage_order": {
-                                                                                                            "type": "number",
-                                                                                                            "example": 1
-                                                                                                        },
-                                                                                                        "start_time": {
+                                                                                                        "description": {
                                                                                                             "type": "string",
-                                                                                                            "example": "2014-07-06T13:09:01.523"
-                                                                                                        },
-                                                                                                        "status_code": {
-                                                                                                            "type": "number",
-                                                                                                            "example": 0
-                                                                                                        },
-                                                                                                        "leg_number": {
-                                                                                                            "type": "number",
-                                                                                                            "example": 1
-                                                                                                        },
-                                                                                                        "result_type": {
-                                                                                                            "type": "object",
-                                                                                                            "properties": {
-                                                                                                                "id": {
-                                                                                                                    "type": "string",
-                                                                                                                    "example": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e"
-                                                                                                                },
-                                                                                                                "description": {
-                                                                                                                    "type": "string",
-                                                                                                                    "example": "Stage"
-                                                                                                                }
-                                                                                                            }
+                                                                                                            "example": "Stage"
                                                                                                         }
-                                                                                                    }
-                                                                                                }
-                                                                                            },
-                                                                                            "club": {
-                                                                                                "type": "object",
-                                                                                                "properties": {
-                                                                                                    "id": {
-                                                                                                        "type": "string",
-                                                                                                        "example": ""
-                                                                                                    },
-                                                                                                    "uuid": {
-                                                                                                        "type": "string",
-                                                                                                        "example": ""
-                                                                                                    },
-                                                                                                    "oe_key": {
-                                                                                                        "type": "number",
-                                                                                                        "example": 24738
-                                                                                                    },
-                                                                                                    "short_name": {
-                                                                                                        "type": "string",
-                                                                                                        "example": "BRIGHTNET"
-                                                                                                    },
-                                                                                                    "long_name": {
-                                                                                                        "type": "string",
-                                                                                                        "example": "BRIGHTNET"
                                                                                                     }
                                                                                                 }
                                                                                             }
                                                                                         }
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                },
-                                {
-                                    "type": "object",
-                                    "description": "Add new should not update start list when there are finish times",
-                                    "properties": {
-                                        "oreplay_data_transfer": {
-                                            "type": "object",
-                                            "properties": {
-                                                "configuration": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "source": {
-                                                            "type": "string",
-                                                            "example": "OE2010"
-                                                        },
-                                                        "iof_version": {
-                                                            "type": "number",
-                                                            "example": 3
-                                                        },
-                                                        "contents": {
-                                                            "type": "string",
-                                                            "example": "StartList"
-                                                        },
-                                                        "results_type": {
-                                                            "type": "string",
-                                                            "example": "Other"
-                                                        }
-                                                    }
-                                                },
-                                                "event": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "string",
-                                                            "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                                                        },
-                                                        "description": {
-                                                            "type": "string",
-                                                            "example": "Demo - 5 days of Italy 2014"
-                                                        },
-                                                        "stages": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "id": {
-                                                                        "type": "string",
-                                                                        "example": "8f45d409-72bc-4cdc-96e9-0a2c4504d964"
-                                                                    },
-                                                                    "order_number": {
-                                                                        "type": "number",
-                                                                        "example": 1
-                                                                    },
-                                                                    "classes": {
-                                                                        "type": "array",
-                                                                        "items": {
-                                                                            "type": "object",
-                                                                            "properties": {
-                                                                                "id": {
-                                                                                    "type": "string",
-                                                                                    "example": ""
-                                                                                },
-                                                                                "uuid": {
-                                                                                    "type": "string",
-                                                                                    "example": ""
-                                                                                },
-                                                                                "oe_key": {
-                                                                                    "type": "number",
-                                                                                    "example": 10
-                                                                                },
-                                                                                "short_name": {
-                                                                                    "type": "string",
-                                                                                    "example": "ME"
-                                                                                },
-                                                                                "long_name": {
-                                                                                    "type": "string",
-                                                                                    "example": "M Elite"
-                                                                                },
-                                                                                "course": {
-                                                                                    "type": "object",
-                                                                                    "properties": {
-                                                                                        "id": {
-                                                                                            "type": "string",
-                                                                                            "example": ""
-                                                                                        },
-                                                                                        "uuid": {
-                                                                                            "type": "string",
-                                                                                            "example": ""
-                                                                                        },
-                                                                                        "distance": {
-                                                                                            "type": "number",
-                                                                                            "example": 5660
-                                                                                        },
-                                                                                        "climb": {
-                                                                                            "type": "number",
-                                                                                            "example": 280
-                                                                                        },
-                                                                                        "controls": {
-                                                                                            "type": "number",
-                                                                                            "example": 22
-                                                                                        },
-                                                                                        "oe_key": {
-                                                                                            "type": "number",
-                                                                                            "example": 26
-                                                                                        },
-                                                                                        "short_name": {
-                                                                                            "type": "string",
-                                                                                            "example": "ME"
-                                                                                        }
-                                                                                    }
-                                                                                },
-                                                                                "runners": {
-                                                                                    "type": "array",
-                                                                                    "items": {
+                                                                                    },
+                                                                                    "club": {
                                                                                         "type": "object",
                                                                                         "properties": {
                                                                                             "id": {
@@ -599,87 +485,17 @@
                                                                                                 "type": "string",
                                                                                                 "example": ""
                                                                                             },
-                                                                                            "sicard": {
+                                                                                            "oe_key": {
                                                                                                 "type": "number",
-                                                                                                "example": 889818
+                                                                                                "example": 12
                                                                                             },
-                                                                                            "first_name": {
+                                                                                            "short_name": {
                                                                                                 "type": "string",
-                                                                                                "example": "Carlos"
+                                                                                                "example": "Independiente"
                                                                                             },
-                                                                                            "last_name": {
+                                                                                            "long_name": {
                                                                                                 "type": "string",
-                                                                                                "example": "Alonso"
-                                                                                            },
-                                                                                            "bib_number": {
-                                                                                                "type": "number",
-                                                                                                "example": 359
-                                                                                            },
-                                                                                            "runner_results": {
-                                                                                                "type": "array",
-                                                                                                "items": {
-                                                                                                    "type": "object",
-                                                                                                    "properties": {
-                                                                                                        "id": {
-                                                                                                            "type": "string",
-                                                                                                            "example": ""
-                                                                                                        },
-                                                                                                        "stage_order": {
-                                                                                                            "type": "number",
-                                                                                                            "example": 1
-                                                                                                        },
-                                                                                                        "start_time": {
-                                                                                                            "type": "string",
-                                                                                                            "example": "2014-07-06T13:09:01.523"
-                                                                                                        },
-                                                                                                        "status_code": {
-                                                                                                            "type": "number",
-                                                                                                            "example": 0
-                                                                                                        },
-                                                                                                        "leg_number": {
-                                                                                                            "type": "number",
-                                                                                                            "example": 1
-                                                                                                        },
-                                                                                                        "result_type": {
-                                                                                                            "type": "object",
-                                                                                                            "properties": {
-                                                                                                                "id": {
-                                                                                                                    "type": "string",
-                                                                                                                    "example": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e"
-                                                                                                                },
-                                                                                                                "description": {
-                                                                                                                    "type": "string",
-                                                                                                                    "example": "Stage"
-                                                                                                                }
-                                                                                                            }
-                                                                                                        }
-                                                                                                    }
-                                                                                                }
-                                                                                            },
-                                                                                            "club": {
-                                                                                                "type": "object",
-                                                                                                "properties": {
-                                                                                                    "id": {
-                                                                                                        "type": "string",
-                                                                                                        "example": ""
-                                                                                                    },
-                                                                                                    "uuid": {
-                                                                                                        "type": "string",
-                                                                                                        "example": ""
-                                                                                                    },
-                                                                                                    "oe_key": {
-                                                                                                        "type": "number",
-                                                                                                        "example": 24738
-                                                                                                    },
-                                                                                                    "short_name": {
-                                                                                                        "type": "string",
-                                                                                                        "example": "BRIGHTNET"
-                                                                                                    },
-                                                                                                    "long_name": {
-                                                                                                        "type": "string",
-                                                                                                        "example": "BRIGHTNET"
-                                                                                                    }
-                                                                                                }
+                                                                                                "example": "Independiente"
                                                                                             }
                                                                                         }
                                                                                     }
@@ -696,7 +512,7 @@
                                         }
                                     }
                                 }
-                            ]
+                            }
                         }
                     }
                 }

@@ -9,6 +9,134 @@ use Results\Test\Fixture\StagesFixture;
 
 class UploadsControllerHelper
 {
+    public static function exampleSimpleFinishTime(): array
+    {
+        return [
+            'configuration' => [
+                'file' => '/path/tmp/Test-FinalResults-jWRMC1Ia-106.xml',
+                'extension' => 'XML',
+                'utf' => true,
+                'known_data' => true,
+                'contents' => 'ResultList',
+                'results_type' => 'Totals',
+                'one_stage' => true,
+                'source' => 'OEv12',
+                'iof_version' => '3.0'
+            ],
+            'event' => [
+                'id' => Event::FIRST_EVENT,
+                'description' => 'la prueba de adri',
+                'is_hidden' => false,
+                'stages' => [
+                    [
+                        'id' => StagesFixture::STAGE_FEDO_2,
+                        'description' => 'adri 1 stage',
+                        'classes' => [
+                            [
+                                'id' => '',
+                                'uuid' => '',
+                                'oe_key' => '1',
+                                'short_name' => '10 Mas30F',
+                                'long_name' => '10 km Master 30 F',
+                                'course' => [
+                                    'id' => '',
+                                    'uuid' => '',
+                                    'distance' => '10000.0',
+                                    'climb' => '',
+                                    'controls' => (int) 4,
+                                    'oe_key' => '2',
+                                    'short_name' => '10 km F'
+                                ],
+                                'runners' => [
+                                    [
+                                        'id' => '',
+                                        'uuid' => '',
+                                        'sicard' => '4440522',
+                                        'sex' => 'F',
+                                        'first_name' => 'Maria',
+                                        'last_name' => 'Ballesteros',
+                                        'bib_number' => '125',
+                                        'runner_results' => [
+                                            [
+                                                'id' => '',
+                                                'position' => (int) 1,
+                                                'start_time' => '2024-09-29T11:00:00.000',
+                                                'finish_time' => '2024-09-29T12:26:54.000',
+                                                'time_seconds' => (int) 5214,
+                                                'status_code' => '0',
+                                                'time_behind' => (int) 0,
+                                                'time_neutralization' => (int) 0,
+                                                'time_adjusted' => (int) 0,
+                                                'time_penalty' => (int) 0,
+                                                'time_bonus' => (int) 0,
+                                                'points_final' => (int) 0,
+                                                'points_adjusted' => (int) 0,
+                                                'points_penalty' => (int) 0,
+                                                'points_bonus' => (int) 0,
+                                                'leg_number' => (int) 1,
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ]
+                                        ],
+                                        'club' => [
+                                            'id' => '',
+                                            'uuid' => '',
+                                            'oe_key' => '12',
+                                            'short_name' => 'Independiente',
+                                            'long_name' => 'Independiente'
+                                        ]
+                                    ],
+                                    [
+                                        'id' => '',
+                                        'uuid' => '',
+                                        'sicard' => '4540555',
+                                        'sex' => 'M',
+                                        'first_name' => 'Antonio',
+                                        'last_name' => 'Velazquez',
+                                        'bib_number' => '105',
+                                        'runner_results' => [
+                                            (int) 0 => [
+                                                'id' => '',
+                                                'position' => (int) 2,
+                                                'start_time' => '2024-09-29T11:00:00.000',
+                                                'finish_time' => '2024-09-29T11:48:49.000',
+                                                'time_seconds' => (int) 2929,
+                                                'status_code' => '0',
+                                                'time_behind' => (int) 44,
+                                                'time_neutralization' => (int) 0,
+                                                'time_adjusted' => (int) 0,
+                                                'time_penalty' => (int) 0,
+                                                'time_bonus' => (int) 0,
+                                                'points_final' => (int) 0,
+                                                'points_adjusted' => (int) 0,
+                                                'points_penalty' => (int) 0,
+                                                'points_bonus' => (int) 0,
+                                                'leg_number' => (int) 1,
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ]
+                                        ],
+                                        'club' => [
+                                            'id' => '',
+                                            'uuid' => '',
+                                            'oe_key' => '12',
+                                            'short_name' => 'Independiente',
+                                            'long_name' => 'Independiente'
+                                        ]
+                                    ],
+                                ]
+                            ],
+                        ]
+                    ]
+                ]
+            ]
+        ];
+    }
+
     public static function exampleImportSmall(): array
     {
         return [

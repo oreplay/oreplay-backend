@@ -10,11 +10,14 @@ use Cake\ORM\Entity;
 /**
  * @property integer $position
  * @property integer $time_seconds
+ * @property integer $status_code
+ * @property integer $time_behind
  * @property Split[] $splits
  * @property string $event_id
  * @property string $stage_id
  * @property string $result_type_id
  * @property FrozenTime $start_time
+ * @property FrozenTime $finish_time
  * @property ResultType $result_type
  */
 class RunnerResult extends Entity
@@ -25,6 +28,18 @@ class RunnerResult extends Entity
         '*' => false,
         'id' => false,
         'start_time' => true,
+        'finish_time' => true,
+        'position' => true,
+        'status_code' => true,
+        'time_behind' => true,
+        'time_adjusted' => true,
+        'time_penalty' => true,
+        'time_bonus' => true,
+        'time_neutralization' => true,
+        'points_final' => true,
+        'points_adjusted' => true,
+        'points_penalty' => true,
+        'points_bonus' => true,
         'stage_order' => true,
         'leg_number' => true,
     ];
@@ -41,14 +56,6 @@ class RunnerResult extends Entity
         'runner_uuid',
         'class_uuid',
         'check_time',
-        'time_neutralization',
-        'time_adjusted',
-        'time_penalty',
-        'time_bonus',
-        'points_adjusted',
-        'points_penalty',
-        'points_bonus',
-        'leg_number',
         'created',
         'modified',
         'deleted',
