@@ -473,7 +473,7 @@ CREATE TABLE runner_results (
         check_time           TIMESTAMP(3) NULL,
         start_time           TIMESTAMP(3) NULL,
         finish_time          TIMESTAMP(3) NULL,
-        time_seconds         INTEGER DEFAULT 0,
+        time_seconds         INTEGER DEFAULT 0,# maybe time_seconds NUMERIC(9, 3)
         position             INTEGER DEFAULT 0,
         status_code          CHAR(1) DEFAULT '0',
         time_behind          INTEGER DEFAULT 0,
