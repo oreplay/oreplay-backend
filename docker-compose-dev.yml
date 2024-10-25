@@ -2,10 +2,10 @@ version: '3.9'
 
 services:
   nginx:
-    image: freefri/oreplay:0.1.9
-    #build:
-    #  context: .
-    #  dockerfile: docker/Dockerfile
+    image: freefri/oreplay:0.1.10
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
     command: bash -c "php-fpm7.4 && nginx -g 'daemon off;'"
     ports:
       - '80:80'

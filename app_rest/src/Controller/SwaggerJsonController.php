@@ -10,7 +10,7 @@ class SwaggerJsonController extends \RestApi\Controller\SwaggerJsonController
 {
     public static function version(): string
     {
-        return '0.1.9';
+        return '0.1.10';
     }
 
     protected function getContent(SwaggerReader $reader, array $paths): array
