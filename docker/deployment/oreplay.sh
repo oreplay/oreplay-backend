@@ -24,5 +24,6 @@ helm upgrade -i ct-frontend ./ct-frontend -n oreplay --set image.tag=0.1.8 \
 # helm uninstall ct-frontend -n oreplay
 helm upgrade -i cakeapi ./nginx -n oreplay --set image.tag=0.1.7 \
   --set replicaCount=1 \
+  --set container.envTimezone=UTC \
   --set image.repository=freefri/oreplay
 # helm uninstall cakeapi -n oreplay
