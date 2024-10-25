@@ -47,6 +47,11 @@ ConnectionManager::setConfig('test_debug_kit', [
     'cacheMetadata' => true,
     'quoteIdentifiers' => false,
 ]);
+//Configure::write('RestOauthPlugin', [
+//    'idpDomain' => 'https://www.oreplay.es',
+//    'idpLoginFormPath' => '/path/login',
+//    'tokenDirectlyFromPasswordGrant' => false,
+//]);
 
 ConnectionManager::alias('test_debug_kit', 'debug_kit');
 
