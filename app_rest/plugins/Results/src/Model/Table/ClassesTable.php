@@ -35,6 +35,8 @@ class ClassesTable extends AppTable
         return $this->find()->where([
             'event_id' => $eventId,
             'stage_id' => $stageId,
-        ]);
+            ])
+            // ->orderAsc('oe_key')
+            ->orderAsc('short_name');
     }
 }
