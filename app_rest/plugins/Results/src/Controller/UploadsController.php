@@ -123,19 +123,19 @@ class UploadsController extends ApiController
     protected function addNew($data)
     {
         $this->flatResponse = true;
-        try {
+        // try {
             $this->return = $this->_addNew($data);
             $this->Classes->saveManyOrFail($this->return['data']);
-        } catch (\PDOException $e) {
-            $this->log('Uploads PDOException: ' . $e->getMessage()
-                . " \n\n" . json_encode($data)
-                . " \n\n" . json_encode($this->return)
-            );
-            $this->return = $this->respondError($e->getMessage(), $e->getCode());
-        } catch (DetailedException $e) {
-            $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . json_encode($data));
-            $this->return = $this->respondError($e->getMessage(), $e->getCode());
-        }
+        // } catch (\PDOException $e) {
+        //     $this->log('Uploads PDOException: ' . $e->getMessage()
+        //         . " \n\n" . json_encode($data)
+        //         . " \n\n" . json_encode($this->return)
+        //     );
+        //     $this->return = $this->respondError($e->getMessage(), $e->getCode());
+        // } catch (DetailedException $e) {
+        //     $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . json_encode($data));
+        //     $this->return = $this->respondError($e->getMessage(), $e->getCode());
+        // }
     }
 
     private function respondError(string $message, $code): array
