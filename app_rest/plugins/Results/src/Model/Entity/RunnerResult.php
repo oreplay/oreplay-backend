@@ -31,6 +31,7 @@ class RunnerResult extends Entity
         'finish_time' => true,
         'position' => true,
         'status_code' => true,
+        'time_seconds' => true,
         'time_behind' => true,
         'time_adjusted' => true,
         'time_penalty' => true,

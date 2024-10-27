@@ -29,6 +29,9 @@ class ClubsTable extends AppTable
         if ($oeKey) {
             $club = $this->getByOeKey($eventId, $stageId, $oeKey);
         } else {
+            if(!($data['short_name']??null)){
+                $data['short_name']=$data['long_name'];
+            }
             if (!($data['short_name'] ?? ($data['long_name']??""))) {
                 throw new DetailedException('Clubs must have short_name or oe_key for identification');
             }

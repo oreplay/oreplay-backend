@@ -68,6 +68,9 @@ abstract class AppTable extends RestApiTable
 
     public function createIfNotExists(string $eventId, string $stageId, array $data)
     {
+        if(!($data['short_name']??null)){
+            $data['short_name']=$data['long_name'];
+        }
         $entity = $this->getByShortName($eventId, $stageId, $data['short_name']??($data['long_name']??""));
         if (!$entity) {
             $entity = $this->patchNewWithStage($data, $eventId, $stageId);
