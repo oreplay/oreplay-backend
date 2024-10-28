@@ -10,6 +10,7 @@ use Cake\Cache\Cache;
 use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
+use Psr\Log\LogLevel;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\UploadConfigChecker;
 use Results\Model\Entity\ClassEntity;
@@ -38,7 +39,7 @@ class UploadsController extends ApiController
 
     private function _addNew($data): array
     {
-        //$this->log('Uploading data: ' . " \n\n" . json_encode($data));
+        //$this->log('Uploading data: ' . " \n\n" . json_encode($data), LogLevel::DEBUG);
         $this->_clearUploadCache();
         $eventId = $this->request->getParam('eventID');
         $token = $this->_getBearer();
