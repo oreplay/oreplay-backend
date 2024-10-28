@@ -44,8 +44,9 @@ class UploadsControllerHelper
                                     'distance' => '10000.0',
                                     'climb' => '',
                                     'controls' => (int) 4,
-                                    'oe_key' => '2',
-                                    'short_name' => '10 km F'
+                                    //'oe_key' => '2',
+                                    //'short_name' => '10 km F',
+                                    'long_name' => '10 km F',
                                 ],
                                 'runners' => [
                                     [
@@ -83,8 +84,8 @@ class UploadsControllerHelper
                                         'club' => [
                                             'id' => '',
                                             'uuid' => '',
-                                            'oe_key' => '12',
-                                            'short_name' => 'Independiente',
+                                            //'oe_key' => '12',
+                                            //'short_name' => 'Independiente',
                                             'long_name' => 'Independiente'
                                         ]
                                     ],
