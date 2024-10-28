@@ -22,6 +22,7 @@ return static function (RouteBuilder $routes) {
 
     $routes->setRouteClass(DashedRoute::class);
     $routes->scope('/', function (RouteBuilder $builder) {
+        $builder->connect('/api/v1', \App\Controller\RootController::route());
         $builder->connect('/api', \App\Controller\RootController::route());
         $builder->connect('/', \App\Controller\RootController::route());
         $builder->fallbacks();
