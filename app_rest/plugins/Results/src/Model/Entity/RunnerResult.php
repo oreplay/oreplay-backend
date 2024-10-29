@@ -12,9 +12,9 @@ use Cake\ORM\Entity;
  * @property integer $time_seconds
  * @property integer $status_code
  * @property integer $time_behind
- * @property Split[] $splits
  * @property string $event_id
  * @property string $stage_id
+ * @property string $runner_id
  * @property string $result_type_id
  * @property FrozenTime $start_time
  * @property FrozenTime $finish_time
@@ -61,4 +61,12 @@ class RunnerResult extends Entity
         'modified',
         'deleted',
     ];
+
+    /**
+     * @return Split[]
+     */
+    public function getSplits()
+    {
+        return $this->splits;
+    }
 }

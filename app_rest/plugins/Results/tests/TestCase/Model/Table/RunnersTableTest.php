@@ -52,7 +52,7 @@ class RunnersTableTest extends TestCase
         $this->assertEquals(RunnerResult::FIRST_RES, $runnerResult->id);
         $this->assertEquals(1, $runnerResult->position);
         $this->assertEquals(310, $runnerResult->time_seconds);
-        $split = $runnerResult->splits[0];
+        $split = $runnerResult->getSplits()[0];
         $this->assertEquals(SplitsFixture::SPLIT_1, $split->id);
         $this->assertEquals(new FrozenTime('2024-01-02T10:00:10.321+00:00'), $split->reading_time);
     }
