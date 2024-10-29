@@ -16,6 +16,7 @@ use Cake\ORM\Entity;
  * @property string $stage_id
  * @property string $runner_id
  * @property string $result_type_id
+ * @property mixed $leg_number
  * @property FrozenTime $start_time
  * @property FrozenTime $finish_time
  * @property ResultType $result_type
@@ -68,5 +69,14 @@ class RunnerResult extends Entity
     public function getSplits()
     {
         return $this->splits;
+    }
+
+    public function isSameResult(Runner $runner, RunnerResult $runnerResultToSave): bool
+    {
+        $isSameRunner = $this->runner_id == $runner->id;
+        $isSameLeg = $this->leg_number == $runnerResultToSave->leg_number;
+        $isSameResultType = $this->result_type_id == $runnerResultToSave->result_type->id;
+
+        return $isSameRunner && $isSameResultType && $isSameLeg;
     }
 }

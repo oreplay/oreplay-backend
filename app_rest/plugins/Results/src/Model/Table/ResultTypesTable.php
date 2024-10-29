@@ -4,8 +4,10 @@ declare(strict_types = 1);
 
 namespace Results\Model\Table;
 
+use App\Lib\Exception\InvalidPayloadException;
 use App\Model\Table\AppTable;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Results\Lib\UploadConfigChecker;
 use Results\Model\Entity\ResultType;
 
 /**
@@ -29,5 +31,17 @@ class ResultTypesTable extends AppTable
     private function getCached(string $id): ResultType
     {
         return $this->find()->where(['id' => $id])->cache('getCached_' . $id)->firstOrFail();
+    }
+
+    public function getCachedWithDefault(UploadConfigChecker $checker, $typeId): ResultType
+    {
+        if ($checker->isStartLists()) {
+            $typeId = ResultType::STAGE;
+        }
+        if (!$typeId) {
+            throw new InvalidPayloadException('runner_results.result_type.id is mandatory');
+        }
+        return $this->getCached($typeId);
+
     }
 }

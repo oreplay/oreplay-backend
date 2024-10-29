@@ -7,18 +7,13 @@ namespace Results\Controller;
 use App\Lib\Consts\CacheGrp;
 use App\Lib\Exception\InvalidPayloadException;
 use Cake\Cache\Cache;
-use Cake\Datasource\Exception\RecordNotFoundException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
-use Psr\Log\LogLevel;
 use RestApi\Lib\Exception\DetailedException;
-use Results\Lib\UploadConfigChecker;
+use Results\Lib\UploadHelper;
 use Results\Model\Entity\ClassEntity;
-use Results\Model\Entity\ResultType;
-use Results\Model\Entity\RunnerResult;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\RunnersTable;
-use Results\Model\Table\StagesTable;
 use Results\Model\Table\TokensTable;
 
 /**
@@ -37,68 +32,40 @@ class UploadsController extends ApiController
         Cache::clear(CacheGrp::UPLOAD);
     }
 
-    private function _addNew($data): array
+    private function _addNew(UploadHelper $helper): array
     {
-        //$this->log('Uploading data: ' . " \n\n" . json_encode($data), LogLevel::DEBUG);
-        $this->_clearUploadCache();
-        $eventId = $this->request->getParam('eventID');
+        //$this->log('Uploading data: ' . " \n\n" . json_encode($helper->getData()), LogLevel::DEBUG);
         $token = $this->_getBearer();
-        $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($eventId, $token);
+        $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($helper->getEventId(), $token);
         if (!$isDesktopClientAuthenticated) {
             throw new ForbiddenException('Invalid Bearer token');
         }
         $this->Classes = ClassesTable::load();
-        $checker = new UploadConfigChecker($data);
-        $stageId = $checker->validateStructure($eventId)->getStageId();
-        $this->_validateStageInEvent($eventId, $stageId);
-        if ($checker->isStartLists()) {
-            if ($this->runnersTable()->RunnerResults->hasFinishTimes($eventId, $stageId)) {
+
+        $configChecker = $helper->validateConfigChecker();
+        $stageId = $helper->getStageId();
+
+        $helper->setExistingRunnerResults($this->runnersTable()->RunnerResults->getAllResults($helper));
+
+        if ($configChecker->isStartLists()) {
+            if ($helper->hasAlreadyFinishTimes()) {
                 throw new InvalidPayloadException('Cannot add start times when there are already finish times');
             }
         }
 
         $runnerCount = 0;
         $classes = [];
-        foreach ($checker->getClasses() as $classObj) {
-            /** @var ClassEntity $class */
-            $class = $this->Classes->createIfNotExists($eventId, $stageId, $classObj);
-            $course = $this->Classes->Courses->createIfNotExists($eventId, $stageId, $classObj);
+        foreach ($configChecker->getClasses() as $classObj) {
+            $class = $this->Classes->createIfNotExists($helper->getEventId(), $stageId, $classObj);
+            $course = $this->Classes->Courses->createIfNotExists($helper->getEventId(), $stageId, $classObj);
             $class->course = $course;
-            $runners = [];
-            foreach ($classObj['runners'] as $runnerData) {
-                $runner = $this->runnersTable()->createRunnerIfNotExists(
-                    $eventId, $stageId, $runnerData, $class);
-                $results = $runnerData['runner_results'] ?? [];
-                foreach ($results as $resultData) {
-                    /** @var RunnerResult $result */
-                    $result = $this->runnersTable()->RunnerResults->patchNewWithStage($resultData, $eventId, $stageId);
-                    if ($checker->isStartLists()) {
-                        $typeId = ResultType::STAGE;
-                    } else {
-                        $typeId = $resultData['result_type']['id'] ?? null;
-                    }
-                    if (!$typeId) {
-                        throw new InvalidPayloadException('runner_results.result_type.id is mandatory');
-                    }
-                    $result->result_type = $this->runnersTable()->RunnerResults->ResultTypes->getCached($typeId);
-                    if (!isset($runner->runner_results)) {
-                        $runner->runner_results = [];
-                    }
-                    $runner->runner_results[] = $result;
-                }
-                $runnerClub = $runnerData['club'] ?? null;
-                if ($runnerClub) {
-                    $runner->club = $this->runnersTable()->Clubs->createIfNotExists($eventId, $stageId, $runnerClub);
-                }
-                $runners[] = $runner;
-                $runnerCount++;
-            }
-            $class->runners = $runners;
+            $class = $this->_addAllRunnersInClass($classObj, $class, $helper);
+            $runnerCount += count($class->runners);
             $classes[] = $class;
         }
-        $this->_clearUploadCache();
+
         $classCount = count($classes);
-        $type = $checker->preCheckType();
+        $type = $configChecker->preCheckType();
         $now = new FrozenTime();
         return [
             'data' => $classes,
@@ -113,6 +80,17 @@ class UploadsController extends ApiController
             ]
         ];
     }
+
+    private function _addAllRunnersInClass(array $classArray, ClassEntity $class, UploadHelper $helper): ClassEntity
+    {
+        $runners = [];
+        foreach ($classArray['runners'] as $runnerData) {
+            $runners[] = $this->runnersTable()->createRunnerWithResults($runnerData, $class, $helper);
+        }
+        $class->runners = $runners;
+        return $class;
+    }
+
     /**
      * @return RunnersTable
      */
@@ -125,7 +103,10 @@ class UploadsController extends ApiController
     {
         $this->flatResponse = true;
         try {
-            $this->return = $this->_addNew($data);
+            $this->_clearUploadCache();
+            $helper = new UploadHelper($data, $this->request->getParam('eventID'));
+            $this->return = $this->_addNew($helper);
+            $this->_clearUploadCache();
             $this->Classes->saveManyOrFail($this->return['data']);
         } catch (\PDOException $e) {
             $this->log('Uploads PDOException: ' . $e->getMessage()
@@ -164,14 +145,5 @@ class UploadsController extends ApiController
             return null;
         }
         return substr($auth, strlen('Bearer '));
-    }
-
-    private function _validateStageInEvent($eventId, string $stageId): void
-    {
-        try {
-            StagesTable::load()->getByEvent($stageId, $eventId);
-        } catch (RecordNotFoundException $e) {
-            throw new DetailedException("The stage $stageId is not from the event $eventId");
-        }
     }
 }

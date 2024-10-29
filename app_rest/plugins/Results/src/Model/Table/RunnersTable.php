@@ -10,6 +10,7 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
 use RestApi\Model\ORM\RestApiSelectQuery;
+use Results\Lib\UploadHelper;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Runner;
 
@@ -141,7 +142,7 @@ class RunnersTable extends AppTable
     {
         /** @var RestApiSelectQuery $res */
         $res = $this->find()
-            ->where(['Runners.event_id' => $eventId, 'Runners.stage_id' => $stageId]);
+            ->where([$this->_alias . '.event_id' => $eventId, $this->_alias . '.stage_id' => $stageId]);
         return $res;
     }
 
@@ -159,6 +160,21 @@ class RunnersTable extends AppTable
                 . '.' . ControlsTable::name()
                 . '.' . ControlTypesTable::name()
             );
+    }
 
+    public function createRunnerWithResults(array $runnerData, ClassEntity $class, UploadHelper $helper): Runner
+    {
+        $runner = $this->createRunnerIfNotExists($helper->getEventId(), $helper->getStageId(), $runnerData, $class);
+
+        $results = $runnerData['runner_results'] ?? [];
+        foreach ($results as $resultData) {
+            $runner = $this->RunnerResults->createRunnerResult($resultData, $runner, $helper);
+        }
+
+        $runnerClub = $runnerData['club'] ?? null;
+        if ($runnerClub) {
+            $runner->club = $this->Clubs->createIfNotExists($helper->getEventId(), $helper->getStageId(), $runnerClub);
+        }
+        return $runner;
     }
 }

@@ -240,11 +240,30 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $this->assertEquals($expectedRunnerAmount, count($res), 'Runner count in db');
         $this->assertEquals($expectedRunnerAmount, count($decodedData[0]['runners']));
+        $this->_assertRunnersWithFinishTimes($decodedData);
+
+        // second upload should not add again results
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $data = ['oreplay_data_transfer' => UploadsControllerHelper::exampleSimpleFinishTime()];
+        $this->post($this->_getEndpoint(), $data);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $decodedData = $jsonDecoded['data'];
+        $this->assertEquals($expectedRunnerAmount, count($res), 'Runner count in db');
+        $this->assertEquals($expectedRunnerAmount, count($decodedData[0]['runners']));
+        $this->_assertRunnersWithFinishTimes($decodedData);
+    }
+
+    private function _assertRunnersWithFinishTimes($decodedData)
+    {
+        $Table = RunnerResultsTable::load();
         $firstRunner = $decodedData[0]['runners'][0];
         $this->assertEquals('Ballesteros', $firstRunner['last_name']);
         $this->assertEquals('125', $firstRunner['bib_number']);
         $this->assertEquals('4440522', $firstRunner['sicard']);
         $this->assertEquals('Independiente', $firstRunner['club']['short_name']);
+        $this->assertEquals(1, count($firstRunner['runner_results']));
+        $this->assertEquals(1, $Table->find()->where(['runner_id' => $firstRunner['id']])->all()->count());
         $this->assertEquals('Stage', $firstRunner['runner_results'][0]['result_type']['description']);
         $this->assertEquals('1', $firstRunner['runner_results'][0]['position']);
         $this->assertEquals('2024-09-29T11:00:00.000+00:00', $firstRunner['runner_results'][0]['start_time']);
@@ -266,6 +285,8 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('105', $secondRunner['bib_number']);
         $this->assertEquals('4540555', $secondRunner['sicard']);
         $this->assertEquals('Independiente', $secondRunner['club']['short_name']);
+        $this->assertEquals(1, count($secondRunner['runner_results']));
+        $this->assertEquals(1, $Table->find()->where(['runner_id' => $secondRunner['id']])->all()->count());
         $this->assertEquals('Stage', $secondRunner['runner_results'][0]['result_type']['description']);
         $this->assertEquals('2', $secondRunner['runner_results'][0]['position']);
         $this->assertEquals('2024-09-29T11:00:00.000+00:00', $secondRunner['runner_results'][0]['start_time']);

@@ -7,8 +7,10 @@ namespace App\Model\Table;
 use App\Lib\Consts\CacheGrp;
 use Cake\Cache\Cache;
 use Cake\ORM\Entity;
+use Cake\ORM\Query;
 use Cake\Utility\Text;
 use RestApi\Model\Table\RestApiTable;
+use Results\Lib\UploadHelper;
 
 abstract class AppTable extends RestApiTable
 {
@@ -20,6 +22,14 @@ abstract class AppTable extends RestApiTable
         $entity = $this->newEmptyEntity();
         $entity->id = Text::uuid();
         return $this->patchEntity($entity, $data);
+    }
+
+    public function findWhereEventAndStage(UploadHelper $helper): Query
+    {
+        return $this->find()->where([
+            'event_id' => $helper->getEventId(),
+            'stage_id' => $helper->getStageId()
+        ]);
     }
 
     public function patchNewWithStage(array $data, string $eventId, string $stageId)

@@ -5,7 +5,9 @@ declare(strict_types = 1);
 namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
+use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Results\Lib\UploadHelper;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 
@@ -39,5 +41,32 @@ class RunnerResultsTable extends AppTable
             'finish_time is not null'
         ])->first();
         return !!$res;
+    }
+
+    public function getAllResults(UploadHelper $helper): ResultSetInterface
+    {
+        return $this->findWhereEventAndStage($helper)->all();
+    }
+
+    public function createRunnerResult($resultData, Runner $runner, UploadHelper $helper): Runner
+    {
+        $eventId = $helper->getEventId();
+        $stageId = $helper->getStageId();
+
+        /** @var RunnerResult $runnerResultToSave */
+        $runnerResultToSave = $this->patchNewWithStage($resultData, $eventId, $stageId);
+        $runnerResultToSave->result_type = $this
+            ->ResultTypes
+            ->getCachedWithDefault($helper->getChecker(), $resultData['result_type']['id'] ?? null);
+
+        $existingRunnerResults = $helper->getExistingResultsForThisRunner($runner, $runnerResultToSave);
+        if ($existingRunnerResults->count() === 1) {
+            $runnerResultToSave->id = $existingRunnerResults->first()->id;
+        } else {
+            foreach ($existingRunnerResults as $existingResult) {
+                $runner = $runner->addRunnerResult($existingResult);
+            }
+        }
+        return $runner->addRunnerResult($runnerResultToSave);
     }
 }

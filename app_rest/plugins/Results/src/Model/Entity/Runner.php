@@ -58,4 +58,13 @@ class Runner extends Entity
         'modified',
         'deleted',
     ];
+
+    public function addRunnerResult(RunnerResult $runnerResult): Runner
+    {
+        if (!isset($this->runner_results)) {
+            $this->runner_results = [];
+        }
+        $this->runner_results[] = $runnerResult;
+        return $this;
+    }
 }
