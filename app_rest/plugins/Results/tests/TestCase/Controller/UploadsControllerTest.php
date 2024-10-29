@@ -117,14 +117,14 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals($runnersJson[$key]['id'], $value->id);
             $this->assertEquals($runnersJson[$key]['club']['short_name'], $value->club->short_name);
             $this->assertEquals($runnersJson[$key]['runner_results'][0]['start_time'],
-                $value->runner_results[0]->start_time->jsonSerialize());
+                $value->getRunnerResults()[0]->start_time->jsonSerialize());
             if ($key === 0) {
                 $this->assertEquals('2014-07-06T13:09:01.523+00:00', $runnersJson[$key]['runner_results'][0]['start_time']);
             }
             $this->assertEquals($runnersJson[$key]['runner_results'][0]['id'],
-                $value->runner_results[0]->id);
+                $value->getRunnerResults()[0]->id);
             $this->assertEquals(ResultType::STAGE,
-                $value->runner_results[0]->result_type_id);
+                $value->getRunnerResults()[0]->result_type_id);
         }
         $this->assertEquals(3, ClubsTable::load()->find()->all()->count());
         $this->assertEquals(3, CoursesTable::load()->find()->all()->count());

@@ -47,7 +47,7 @@ class RunnersTableTest extends TestCase
         $this->assertEquals(Runner::FIRST_RUNNER, $runner->id);
         $this->assertEquals('First', $runner->first_name);
         $this->assertEquals('Runner', $runner->last_name);
-        $runnerResult = $runner->runner_results[0];
+        $runnerResult = $runner->getRunnerResults()[0];
         $this->assertNull($runner->team_results);
         $this->assertEquals(RunnerResult::FIRST_RES, $runnerResult->id);
         $this->assertEquals(1, $runnerResult->position);
