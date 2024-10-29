@@ -70,7 +70,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
             ['id' => ClassEntity::ME]);
 
-        $data = ['oreplay_data_transfer' => UploadsControllerHelper::exampleImportSmall()];
+        $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleImportSmall()];
         $this->post($this->_getEndpoint(), $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
@@ -146,7 +146,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
             ['id' => ClassEntity::ME]);
 
-        $data = ['oreplay_data_transfer' => UploadsControllerHelper::exampleImportSmall()];
+        $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleImportSmall()];
         $this->post($this->_getEndpoint(), $data);
         $this->assertException('Forbidden', 403, 'Invalid Bearer token');
     }
@@ -164,7 +164,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
             ['id' => ClassEntity::ME]);
 
-        $data = ['oreplay_data_transfer' => UploadsControllerHelper::exampleImportSmall()];
+        $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleImportSmall()];
         $this->post($this->_getEndpoint(), $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
@@ -204,7 +204,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
             ['id' => ClassEntity::ME]);
 
-        $data = ['oreplay_data_transfer' => UploadsControllerHelper::exampleSimpleFinishTime()];
+        $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleSimpleFinishTime()];
         $this->post($this->_getEndpoint(), $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
@@ -244,7 +244,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         // second upload should not add again results
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
-        $data = ['oreplay_data_transfer' => UploadsControllerHelper::exampleSimpleFinishTime()];
+        $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleSimpleFinishTime()];
         $this->post($this->_getEndpoint(), $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();

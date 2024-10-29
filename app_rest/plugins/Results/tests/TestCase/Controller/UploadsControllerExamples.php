@@ -7,7 +7,7 @@ namespace Results\Test\TestCase\Controller;
 use Results\Model\Entity\Event;
 use Results\Test\Fixture\StagesFixture;
 
-class UploadsControllerHelper
+class UploadsControllerExamples
 {
     public static function exampleSimpleFinishTime(): array
     {
