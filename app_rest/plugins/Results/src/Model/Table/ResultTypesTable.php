@@ -19,7 +19,14 @@ class ResultTypesTable extends AppTable
         RunnerResultsTable::addBelongsTo($this);
     }
 
-    public function getCached(string $id): ResultType
+    public static function load(): self
+    {
+        /** @var ResultTypesTable $table */
+        $table = parent::load();
+        return $table;
+    }
+
+    private function getCached(string $id): ResultType
     {
         return $this->find()->where(['id' => $id])->cache('getCached_' . $id)->firstOrFail();
     }

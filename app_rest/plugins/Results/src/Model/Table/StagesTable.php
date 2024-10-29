@@ -6,6 +6,7 @@ namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Cake\ORM\Query;
 use Results\Model\Entity\Stage;
 
 /**
@@ -23,12 +24,24 @@ class StagesTable extends AppTable
         StageTypesTable::addHasMany($this);
     }
 
+    public static function load(): self
+    {
+        /** @var StagesTable $table */
+        $table = parent::load();
+        return $table;
+    }
+
+    public function findByEvent(string $stageId, string $eventId): Query
+    {
+        return $this->find()
+            ->where([$this->_alias . '.id' => $stageId, 'event_id' => $eventId])
+            ->contain('StageTypes');
+    }
+
     public function getByEvent(string $stageId, string $eventId): Stage
     {
         /** @var Stage $res */
-        $res = $this->find()
-            ->where([$this->_alias . '.id' => $stageId, 'event_id' => $eventId])
-            ->contain('StageTypes')
+        $res = $this->findByEvent($stageId, $eventId)
             ->firstOrFail();
         return $res;
     }

@@ -23,6 +23,20 @@ class ClassesTable extends AppTable
         CoursesTable::addHasMany($this);
     }
 
+    public static function load(): self
+    {
+        /** @var ClassesTable $table */
+        $table = parent::load();
+        return $table;
+    }
+
+    public function createIfNotExists(string $eventId, string $stageId, array $data): ClassEntity
+    {
+        /** @var ClassEntity $class */
+        $class = parent::createIfNotExists($eventId, $stageId, $data);
+        return $class;
+    }
+
     public function getByShortName(string $eventId, string $stageId, string $shortName): ?ClassEntity
     {
         /** @var ClassEntity $res */

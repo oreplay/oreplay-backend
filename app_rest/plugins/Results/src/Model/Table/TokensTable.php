@@ -22,6 +22,13 @@ class TokensTable extends AppTable
         EventsTable::addHasMany($this);
     }
 
+    public static function load(): self
+    {
+        /** @var TokensTable $table */
+        $table = parent::load();
+        return $table;
+    }
+
     public function createTokenForEvent(string $eventId, array $data): Token
     {
         /** @var Token $token */

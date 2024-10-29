@@ -34,6 +34,20 @@ class RunnersTable extends AppTable
         TeamsTable::addHasMany($this);
     }
 
+    public static function load(): self
+    {
+        /** @var RunnersTable $table */
+        $table = parent::load();
+        return $table;
+    }
+
+    public function createIfNotExists(string $eventId, string $stageId, array $data): Runner
+    {
+        /** @var Runner $class */
+        $class = parent::createIfNotExists($eventId, $stageId, $data);
+        return $class;
+    }
+
     private function _findRunnersInStageBy(
         string $field,
         string $eventId,
