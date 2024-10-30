@@ -56,6 +56,7 @@ class Stage extends Entity
 
     private function isTeam(): bool
     {
+        return in_array($this->stage_type_id, [StageType::RAID]);
         return in_array($this->stage_type_id, [StageType::RAID, StageType::ROGAINE]);
     }
 }
