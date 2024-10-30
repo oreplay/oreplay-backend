@@ -9,6 +9,7 @@ use Cake\Database\Driver\Mysql;
 use Cake\Log\Engine\FileLog;
 use Cake\Mailer\Transport\MailTransport;
 
+$isDebug = filter_var(env('DEBUG', false), FILTER_VALIDATE_BOOLEAN);
 return [
     /*
      * Debug Level:
@@ -19,7 +20,7 @@ return [
      * Development Mode:
      * true: Errors and warnings shown.
      */
-    'debug' => filter_var(env('DEBUG', false), FILTER_VALIDATE_BOOLEAN),
+    'debug' => $isDebug,
 
     /*
      * Configure basic information about the application.
@@ -87,7 +88,7 @@ return [
     'RestOauthPlugin' => [
         'tablePrefix' => '',
         'routePath' => \App\Controller\ApiController::ROUTE_PREFIX,
-        'idpDomain' => 'https://www.oreplay.es',
+        'idpDomain' => $isDebug ? '' : 'https://www.oreplay.es',
         'idpLoginFormPath' => '/signin/form',
         'tokenDirectlyFromPasswordGrant' => false,
     ],
