@@ -34,6 +34,7 @@ class UploadsController extends ApiController
 
     private function _addNew(UploadHelper $helper): array
     {
+        $startsTime = microtime(true);
         //$this->log('Uploading data: ' . " \n\n" . json_encode($helper->getData()), LogLevel::DEBUG);
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($helper->getEventId(), $token);
@@ -67,6 +68,7 @@ class UploadsController extends ApiController
         $classCount = count($classes);
         $type = $configChecker->preCheckType();
         $now = new FrozenTime();
+        $duration = round(microtime(true) - $startsTime, 2);
         return [
             'data' => $classes,
             'meta' => [
@@ -75,7 +77,7 @@ class UploadsController extends ApiController
                     'runners' => $runnerCount,
                 ],
                 'human' => [
-                    "Updated $runnerCount runners, $classCount classes ($now - $type)",
+                    "Updated $runnerCount runners, $classCount classes ($now - $type) in $duration secs.",
                 ]
             ]
         ];

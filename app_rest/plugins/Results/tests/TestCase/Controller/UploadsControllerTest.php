@@ -76,13 +76,14 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $jsonDecoded = $this->assertJsonResponseOK();
         $decodedData = $jsonDecoded['data'];
         $now = new FrozenTime();
+        $seconds = substr($jsonDecoded['meta']['human'][0], -13);
         $expectedMeta = [
             'updated' => [
                 'classes' => 2,
                 'runners' => 4,
             ],
             'human' => [
-                "Updated 4 runners, 2 classes ($now - start_list)",
+                "Updated 4 runners, 2 classes ($now - start_list) $seconds",
             ]
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
@@ -211,13 +212,14 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $decodedData = $jsonDecoded['data'];
         $now = new FrozenTime();
         $expectedRunnerAmount = 2;
+        $seconds = substr($jsonDecoded['meta']['human'][0], -13);
         $expectedMeta = [
             'updated' => [
                 'classes' => 1,
                 'runners' => $expectedRunnerAmount,
             ],
             'human' => [
-                "Updated $expectedRunnerAmount runners, 1 classes ($now - res_finish)",
+                "Updated $expectedRunnerAmount runners, 1 classes ($now - res_finish) $seconds",
             ]
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
