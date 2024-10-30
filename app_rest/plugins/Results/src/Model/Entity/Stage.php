@@ -22,6 +22,7 @@ class Stage extends Entity
         '*' => false,
         'id' => false,
         'description' => true,
+        'stage_type_id' => true,
     ];
 
     protected $_virtual = [
