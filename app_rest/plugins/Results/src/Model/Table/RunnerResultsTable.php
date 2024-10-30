@@ -48,13 +48,10 @@ class RunnerResultsTable extends AppTable
         return $this->findWhereEventAndStage($helper)->all();
     }
 
-    public function createRunnerResult($resultData, Runner $runner, UploadHelper $helper): Runner
+    public function createRunnerResult(array $resultData, Runner $runner, UploadHelper $helper): Runner
     {
-        $eventId = $helper->getEventId();
-        $stageId = $helper->getStageId();
-
         /** @var RunnerResult $runnerResultToSave */
-        $runnerResultToSave = $this->patchNewWithStage($resultData, $eventId, $stageId);
+        $runnerResultToSave = $this->patchNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
         $runnerResultToSave->result_type = $this
             ->ResultTypes
             ->getCachedWithDefault($helper->getChecker(), $resultData['result_type']['id'] ?? null);
@@ -67,6 +64,9 @@ class RunnerResultsTable extends AppTable
                 $runner = $runner->addRunnerResult($existingResult);
             }
         }
+
+        $splits = $resultData['splits'] ?? [];
+        $runnerResultToSave = $this->Splits->uploadSplits($runnerResultToSave, $splits, $helper);
         return $runner->addRunnerResult($runnerResultToSave);
     }
 }

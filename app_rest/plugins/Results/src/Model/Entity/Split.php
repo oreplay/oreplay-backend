@@ -16,6 +16,11 @@ class Split extends Entity
     protected $_accessible = [
         '*' => false,
         'id' => false,
+        'sicard' => true,
+        'station' => true,
+        'points' => true,
+        'reading_time' => true,
+        'order_number' => true,
     ];
 
     protected $_virtual = [
@@ -26,7 +31,6 @@ class Split extends Entity
         'stage_id',
         'stage_order',
         'sicard',
-        'station',
         'reading_milli',
         'runner_result_id',
         'team_result_id',
@@ -39,7 +43,6 @@ class Split extends Entity
         'bib_runner',
         'bib_team',
         'club_id',
-        'order_number',
         'battery_perc',
         'battery_time',
         'raw_value',

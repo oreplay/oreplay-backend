@@ -23,7 +23,7 @@ class SplitsFixture extends RestApiFixture
             'stage_id' => Stage::FIRST_STAGE,
             'stage_order' => null,
             'sicard' => null,
-            'station' => null,
+            'station' => 81,
             'reading_time' => '2024-01-02 10:00:10.321',
             'reading_milli' => null,
             'points' => null,

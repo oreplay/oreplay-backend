@@ -244,7 +244,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         // second upload should not add again results
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
-        $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleSimpleFinishTime()];
         $this->post($this->_getEndpoint(), $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
@@ -280,6 +279,13 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(0, $firstRunner['runner_results'][0]['points_penalty']);
         $this->assertEquals(0, $firstRunner['runner_results'][0]['points_bonus']);
         $this->assertEquals(1, $firstRunner['runner_results'][0]['leg_number']);
+        $this->assertEquals(2, count($firstRunner['runner_results'][0]['splits']));
+        $this->assertEquals(31, $firstRunner['runner_results'][0]['splits'][0]['station']);
+        $this->assertEquals(1, $firstRunner['runner_results'][0]['splits'][0]['order_number']);
+        $this->assertEquals('2024-01-28T10:15:05.000+00:00', $firstRunner['runner_results'][0]['splits'][0]['reading_time']);
+        $this->assertEquals(33, $firstRunner['runner_results'][0]['splits'][1]['station']);
+        $this->assertEquals(2, $firstRunner['runner_results'][0]['splits'][1]['order_number']);
+        $this->assertEquals('2024-01-28T10:18:37.000+00:00', $firstRunner['runner_results'][0]['splits'][1]['reading_time']);
         $secondRunner = $decodedData[0]['runners'][1];
         $this->assertEquals('Velazquez', $secondRunner['last_name']);
         $this->assertEquals('105', $secondRunner['bib_number']);
@@ -303,5 +309,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(0, $secondRunner['runner_results'][0]['points_penalty']);
         $this->assertEquals(0, $secondRunner['runner_results'][0]['points_bonus']);
         $this->assertEquals(1, $secondRunner['runner_results'][0]['leg_number']);
+        $this->assertArrayNotHasKey('splits', $secondRunner['runner_results'][0]);
     }
 }

@@ -109,6 +109,7 @@ class RunnersControllerTest extends ApiCommonErrorsTest
                             'id' => SplitsFixture::SPLIT_1,
                             'points' => null,
                             'reading_time' => '2024-01-02T10:00:10.321+00:00',
+                            'order_number' => null,
                             //'position' => 0,
                             //'time_behind' => 0,
                             'control' => [

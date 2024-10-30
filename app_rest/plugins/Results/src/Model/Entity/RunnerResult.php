@@ -63,12 +63,19 @@ class RunnerResult extends Entity
         'deleted',
     ];
 
+    public function addSplit(Split $split)
+    {
+        if (!($this->_fields['splits'] ?? null)) {
+            $this->_fields['splits'] = [];
+        }
+        $this->_fields['splits'][] = $split;
+    }
     /**
      * @return Split[]
      */
     public function getSplits()
     {
-        return $this->splits;
+        return $this->_fields['splits'];
     }
 
     public function isSameResult(Runner $runner, RunnerResult $runnerResultToSave): bool
