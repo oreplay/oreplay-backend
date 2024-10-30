@@ -31,6 +31,7 @@ class Split extends Entity
         'stage_id',
         'stage_order',
         'sicard',
+        'station',
         'reading_milli',
         'runner_result_id',
         'team_result_id',
@@ -50,4 +51,10 @@ class Split extends Entity
         'modified',
         'deleted',
     ];
+
+    public function addControl(Control $control): self
+    {
+        $this->_fields['control'] = $control;
+        return $this;
+    }
 }

@@ -8,6 +8,7 @@ use Cake\ORM\Entity;
 
 /**
  * @property mixed $station
+ * @property string $control_type_id
  * @property ControlType $control_type
  */
 class Control extends Entity
@@ -38,4 +39,11 @@ class Control extends Entity
         'modified',
         'deleted',
     ];
+
+    public function setTypeNormalIfNotDefined()
+    {
+        if (!$this->control_type_id) {
+            $this->control_type_id = ControlType::NORMAL;
+        }
+    }
 }

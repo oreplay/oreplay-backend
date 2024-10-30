@@ -35,7 +35,6 @@ class SplitsTableTest extends TestCase
         $expected = [
             'id' => SplitsFixture::SPLIT_1,
             'reading_time' => '2024-01-02T10:00:10.321+00:00',
-            'station' => 81,
             'points' => null,
             'order_number' => null
         ];

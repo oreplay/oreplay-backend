@@ -241,6 +241,8 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($expectedRunnerAmount, count($res), 'Runner count in db');
         $this->assertEquals($expectedRunnerAmount, count($decodedData[0]['runners']));
         $this->_assertRunnersWithFinishTimes($decodedData);
+        $expectedControlAmount = 3;
+        $this->assertEquals($expectedControlAmount, ControlsTable::load()->find()->all()->count());
 
         // second upload should not add again results
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
@@ -251,6 +253,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($expectedRunnerAmount, count($res), 'Runner count in db');
         $this->assertEquals($expectedRunnerAmount, count($decodedData[0]['runners']));
         $this->_assertRunnersWithFinishTimes($decodedData);
+        $this->assertEquals($expectedControlAmount, ControlsTable::load()->find()->all()->count());
     }
 
     private function _assertRunnersWithFinishTimes($decodedData)
@@ -280,10 +283,10 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(0, $firstRunner['runner_results'][0]['points_bonus']);
         $this->assertEquals(1, $firstRunner['runner_results'][0]['leg_number']);
         $this->assertEquals(2, count($firstRunner['runner_results'][0]['splits']));
-        $this->assertEquals(31, $firstRunner['runner_results'][0]['splits'][0]['station']);
+        $this->assertEquals(31, $firstRunner['runner_results'][0]['splits'][0]['control']['station']);
         $this->assertEquals(1, $firstRunner['runner_results'][0]['splits'][0]['order_number']);
         $this->assertEquals('2024-01-28T10:15:05.000+00:00', $firstRunner['runner_results'][0]['splits'][0]['reading_time']);
-        $this->assertEquals(33, $firstRunner['runner_results'][0]['splits'][1]['station']);
+        $this->assertEquals(33, $firstRunner['runner_results'][0]['splits'][1]['control']['station']);
         $this->assertEquals(2, $firstRunner['runner_results'][0]['splits'][1]['order_number']);
         $this->assertEquals('2024-01-28T10:18:37.000+00:00', $firstRunner['runner_results'][0]['splits'][1]['reading_time']);
         $secondRunner = $decodedData[0]['runners'][1];

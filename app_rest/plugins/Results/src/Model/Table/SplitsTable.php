@@ -13,7 +13,7 @@ use Results\Model\Entity\Split;
 /**
  * @property RunnerResultsTable $RunnerResults
  * @property TeamResultsTable $TeamResults
- * @property ControlsTable $ControlsTable
+ * @property ControlsTable $Controls
  */
 class SplitsTable extends AppTable
 {
@@ -50,6 +50,10 @@ class SplitsTable extends AppTable
             $this->deleteAllByRunnerId($resultToSave->id);
             foreach ($splits as $split) {
                 $splitToSave = $this->createIfNotExists($helper->getEventId(), $helper->getStageId(), $split);
+                if ($split['station'] ?? null) {
+                    $control = $this->Controls->createIfNotExists($helper->getEventId(), $helper->getStageId(), $split);
+                    $splitToSave->addControl($control);
+                }
                 $resultToSave->addSplit($splitToSave);
             }
         }
