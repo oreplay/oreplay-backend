@@ -28,7 +28,7 @@ class Club extends Entity
         'stage_id',
         'uuid',
         'oe_key',
-        'long_name',
+        'long_name',// maybe display if needed in frontend
         'city',
         'logo',
         'created',

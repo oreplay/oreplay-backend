@@ -47,6 +47,16 @@ class ClubsTable extends AppTable
         return $club;
     }
 
+    public function patchNewWithStage(array $data, string $eventId, string $stageId)
+    {
+        /** @var Club $res */
+        $res = parent::patchNewWithStage($data, $eventId, $stageId);
+        if (!$res->short_name && $res->long_name) {
+            $res->short_name = $res->long_name;
+        }
+        return $res;
+    }
+
     protected function getOeKeyCacheKey(string $eventId, string $stageId, string $oeKey): array
     {
         $conditions = [
