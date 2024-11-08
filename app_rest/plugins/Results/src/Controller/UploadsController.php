@@ -35,7 +35,7 @@ class UploadsController extends ApiController
     private function _addNew(UploadHelper $helper): array
     {
         $startsTime = microtime(true);
-        //$this->log('Uploading data: ' . " \n\n" . json_encode($helper->getData()), LogLevel::DEBUG);
+        //$this->log('Uploading data: ' . " \n\n" . json_encode($helper->getData()), \Psr\Log\LogLevel::DEBUG);
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($helper->getEventId(), $token);
         if (!$isDesktopClientAuthenticated) {
