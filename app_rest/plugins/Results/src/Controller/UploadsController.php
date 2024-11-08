@@ -55,22 +55,22 @@ class UploadsController extends ApiController
         }
 
         $runnerCount = 0;
-        $classes = [];
+        $classesToSave = [];
         foreach ($configChecker->getClasses() as $classObj) {
             $class = $this->Classes->createIfNotExists($helper->getEventId(), $stageId, $classObj);
             $course = $this->Classes->Courses->createIfNotExists($helper->getEventId(), $stageId, $classObj);
             $class->course = $course;
             $class = $this->_addAllRunnersInClass($classObj, $class, $helper);
             $runnerCount += count($class->runners);
-            $classes[] = $class;
+            $classesToSave[] = $class;
         }
 
-        $classCount = count($classes);
+        $classCount = count($classesToSave);
         $type = $configChecker->preCheckType();
         $now = new FrozenTime();
         $duration = round(microtime(true) - $startsTime, 2);
         return [
-            'data' => $classes,
+            'data' => $classesToSave,
             'meta' => [
                 'updated' => [
                     'classes' => $classCount,
