@@ -9,6 +9,7 @@ use App\Model\Table\UsersTable;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
+use RestApi\Lib\Exception\DetailedException;
 use RestApi\Model\ORM\RestApiSelectQuery;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\ClassEntity;
@@ -119,8 +120,9 @@ class RunnersTable extends AppTable
                     throw new NotFoundException('Not found runner by name' . $err);
                 }
             }
+        } else {
+            throw new DetailedException('Fields sicard, first_name and last_name cannot be empty');
         }
-        throw new NotFoundException('Runner not found');
     }
 
     public function createRunnerIfNotExists(
