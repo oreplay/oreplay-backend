@@ -7,6 +7,7 @@ namespace Results\Test\TestCase\Controller\Model\Table;
 use Cake\Http\Exception\NotFoundException;
 use Cake\I18n\FrozenTime;
 use Cake\TestSuite\TestCase;
+use RestApi\Lib\Exception\DetailedException;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Runner;
@@ -161,9 +162,9 @@ class RunnersTableTest extends TestCase
         $exception = 'not rised';
         try {
             $this->Runners->matchRunner(Event::FIRST_EVENT, Stage::FIRST_STAGE, $data);
-        } catch (NotFoundException $e) {
+        } catch (DetailedException $e) {
             $exception = $e->getMessage();
         }
-        $this->assertEquals('Runner not found', $exception);
+        $this->assertEquals('Fields sicard, first_name and last_name cannot be empty', $exception);
     }
 }
