@@ -69,6 +69,7 @@ class RunnersTable extends AppTable
         }
         return null;
     }
+    // matchRunner() could go to runners entity
 
     public function matchRunner(
         string $eventId,
