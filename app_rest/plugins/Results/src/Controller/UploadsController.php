@@ -41,7 +41,6 @@ class UploadsController extends ApiController
         if (!$isDesktopClientAuthenticated) {
             throw new ForbiddenException('Invalid Bearer token');
         }
-        $this->Classes = ClassesTable::load();
 
         $configChecker = $helper->validateConfigChecker();
         $stageId = $helper->getStageId();
@@ -105,6 +104,7 @@ class UploadsController extends ApiController
 
     protected function addNew($data)
     {
+        $this->Classes = ClassesTable::load();
         $this->flatResponse = true;
         try {
             $this->_clearUploadCache();

@@ -66,7 +66,9 @@ class RunnerResultsTable extends AppTable
         }
 
         $splits = $resultData['splits'] ?? [];
-        $runnerResultToSave = $this->Splits->uploadSplits($runnerResultToSave, $splits, $helper);
+        if ($splits) {
+            $runnerResultToSave = $this->Splits->uploadForEachSplit($runnerResultToSave, $splits, $helper);
+        }
         return $runner->addRunnerResult($runnerResultToSave);
     }
 }

@@ -44,7 +44,7 @@ class SplitsTable extends AppTable
         return $this->deleteAll(['runner_id' => $runnerId]);
     }
 
-    public function uploadSplits(RunnerResult $resultToSave, array $splits, UploadHelper $helper): RunnerResult
+    public function uploadForEachSplit(RunnerResult $resultToSave, array $splits, UploadHelper $helper): RunnerResult
     {
         if ($splits) {
             $this->deleteAllByRunnerId($resultToSave->id);
