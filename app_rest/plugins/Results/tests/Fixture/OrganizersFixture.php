@@ -19,8 +19,8 @@ class OrganizersFixture extends RestApiFixture
             'name' => OrganizersFixture::ORGANIZER_1_NAME,
             'country' => 'Spain',
             'region' => 'Region',
-            'created' => $now,
-            'modified' => $now,
+            'created' => '2022-03-01 10:01:00',
+            'modified' => '2022-03-01 10:01:00',
             'deleted' => null,
         ],
     ];
