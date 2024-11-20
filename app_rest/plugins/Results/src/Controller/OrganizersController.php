@@ -9,7 +9,7 @@ use Results\Model\Table\OrganizersTable;
 /**
  * @property OrganizersTable $Organizers
  */
-class OrganizerController extends ApiController
+class OrganizersController extends ApiController
 {
     public function isPublicController(): bool
     {
