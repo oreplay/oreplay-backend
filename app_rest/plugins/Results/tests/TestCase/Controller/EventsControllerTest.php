@@ -176,6 +176,9 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $expected['organizer'] = [
             'id' => OrganizersFixture::ORGANIZER_1_ID,
             'name' => OrganizersFixture::ORGANIZER_1_NAME,
+            'uuid' => null,
+            'country' => 'Spain',
+            'region' => 'Region',
         ];
         $this->assertEquals($expected, $bodyDecoded['data']);
     }
@@ -255,6 +258,9 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $expected['organizer'] = [
             'id' => OrganizersFixture::ORGANIZER_1_ID,
             'name' => OrganizersFixture::ORGANIZER_1_NAME,
+            'uuid' => null,
+            'country' => 'Spain',
+            'region' => 'Region',
         ];
         $this->assertEquals($expected, $bodyDecoded['data']);
     }
