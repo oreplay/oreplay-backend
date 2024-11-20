@@ -5,6 +5,8 @@ declare(strict_types = 1);
 use Migrations\AbstractSeed;
 use Results\Model\Entity\Federation;
 use Results\Model\Entity\Event;
+use Results\Model\Entity\Organizer;
+
 
 class EventsSeed extends AbstractSeed
 {
@@ -29,7 +31,7 @@ class EventsSeed extends AbstractSeed
                 'initial_date' => '2024-01-25',
                 'final_date' => '2024-01-25',
                 'federation_id' => Federation::FEDO,
-                'organizer_id' => '1',
+                'organizer_id' => Organizer::ID,
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
@@ -40,7 +42,7 @@ class EventsSeed extends AbstractSeed
                 'initial_date' => '2025-01-01',
                 'final_date' => '2025-12-31',
                 'federation_id' => Federation::FEDO,
-                'organizer_id' => '1',
+                'organizer_id' => Organizer::ID,
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
@@ -51,7 +53,7 @@ class EventsSeed extends AbstractSeed
                 'initial_date' => '2024-01-01',
                 'final_date' => '2024-12-31',
                 'federation_id' => Federation::FEDO,
-                'organizer_id' => '1',
+                'organizer_id' => Organizer::ID,
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
@@ -62,7 +64,7 @@ class EventsSeed extends AbstractSeed
                 'initial_date' => '2024-01-02',
                 'final_date' => '2024-12-31',
                 'federation_id' => Federation::FEDO,
-                'organizer_id' => '1',
+                'organizer_id' => Organizer::ID,
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
@@ -73,7 +75,7 @@ class EventsSeed extends AbstractSeed
                 'initial_date' => '2024-01-02',
                 'final_date' => '2024-12-31',
                 'federation_id' => Federation::FEDO,
-                'organizer_id' => '1',
+                'organizer_id' => Organizer::ID,
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,

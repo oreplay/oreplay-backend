@@ -3,7 +3,8 @@
 declare(strict_types = 1);
 
 use Migrations\AbstractSeed;
-
+use Cake\Utility\Text;
+use Results\Model\Entity\Organizer;
 
 class OrganizersSeed extends AbstractSeed
 {
@@ -183,8 +184,8 @@ class OrganizersSeed extends AbstractSeed
         $now = date('Y-m-d H:i:00');
         $data = array_map(function ($option) use ($now) {
             return [
-                'id' => $option['value'],
-                'uuid' => uniqid(),
+                'id' => Text::uuid(),
+                'external_id' => $option['value'],
                 'name' => $option['name'],
                 'country' => 'Spain',
                 'region' => $option['region'],
@@ -194,9 +195,20 @@ class OrganizersSeed extends AbstractSeed
             ];
         }, $options);
 
+        $data_const = [
+            'id' => Organizer::ID,
+            'external_id' => null,
+            'name' => Organizer::NAME,
+            'country' => null,
+            'region' => null,
+            'created' => $now,
+            'modified' => $now,
+            'deleted' => null,
+        ];
+
         $table = $this->table('organizers');
         if ($table->getAdapter()->fetchAll('SELECT * from ' . $table->getName() . ' LIMIT 1') === []) {
-            $table->insert($data)->save();
+            $table->insert($data)->insert($data_const)->save();
         }
     }
 }

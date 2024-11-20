@@ -57,13 +57,13 @@ class EventsTable extends AppTable
             if ($when === 'today') {
                 $filters['initial_date:lte'] = $today;
                 $filters['final_date:gte'] = $today;
-            // case past
+                // case past
             } elseif ($when === 'past') {
                 $filters['final_date:lt'] = $today;
-            // case future
+                // case future
             } elseif ($when === 'future') {
                 $filters['initial_date:gt'] = $today;
-            // sorry man, it was not meant to be
+                // sorry man, it was not meant to be
             } else {
                 throw new BadRequestException("?when must be either null or a literal 'today', 'future, or 'past'.");
             }
@@ -82,7 +82,8 @@ class EventsTable extends AppTable
         }
 
         // Return query
-        return $query->orderDesc('initial_date');
+        return $query->orderDesc('initial_date')
+            ->contain(OrganizersTable::name());
     }
 
     public function getEventWithRelations(string $id): Event
@@ -90,7 +91,7 @@ class EventsTable extends AppTable
         $query = $this->find()
             ->contain(FederationsTable::name())
             ->contain(OrganizersTable::name())
-            ->contain(StagesTable::name().'.'.StageTypesTable::name())
+            ->contain(StagesTable::name() . '.' . StageTypesTable::name())
             ->where(['Events.id' => $id]);
         /** @var Event $res */
         $res = $query->firstOrFail();

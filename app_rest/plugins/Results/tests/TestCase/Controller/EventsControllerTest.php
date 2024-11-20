@@ -11,6 +11,7 @@ use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use DateTime;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Federation;
+use Results\Model\Entity\Organizer;
 use Results\Model\Entity\Stage;
 use Results\Model\Table\EventsTable;
 use Results\Test\Fixture\EventsFixture;
@@ -81,7 +82,6 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => $today,
             'final_date' => $today,
             'federation_id' => 'IOF',
-            'organizer_id' => '1',
             'picture' => null,
             'website' => null,
             'scope' => null,
@@ -92,6 +92,11 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'modified' => '2022-03-10T10:01:00.000+00:00',
             '_links' => [
                 'self' => 'http://dev.example.com/api/v1/events/' . EventsFixture::EVENT_TODAY
+            ],
+            'organizer' => [
+                'name' => Organizer::NAME,
+                'country' => 'Spain',
+                'region' => 'Region',
             ]
         ];
 
@@ -110,7 +115,6 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => $tomorrow,
             'final_date' => $tomorrow,
             'federation_id' => 'IOF',
-            'organizer_id' => '1',
             'picture' => null,
             'website' => null,
             'scope' => null,
@@ -121,6 +125,11 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'modified' => '2022-03-13T10:01:00.000+00:00',
             '_links' => [
                 'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow'
+            ],
+            'organizer' => [
+                'name' => Organizer::NAME,
+                'country' => 'Spain',
+                'region' => 'Region',
             ]
         ];
         $this->assertEquals($expected, $bodyDecoded['data'][0]);
@@ -174,9 +183,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'description' => 'FEDO SICO',
         ];
         $expected['organizer'] = [
-            'id' => OrganizersFixture::ORGANIZER_1_ID,
-            'name' => OrganizersFixture::ORGANIZER_1_NAME,
-            'uuid' => null,
+            'name' => Organizer::NAME,
             'country' => 'Spain',
             'region' => 'Region',
         ];
@@ -191,7 +198,6 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => '2024-01-25',
             'final_date' => '2024-01-25',
             'federation_id' => Federation::FEDO,
-            'organizer_id' => '1',
             'picture' => null,
             'website' => null,
             'scope' => null,
@@ -202,6 +208,11 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'modified' => '2022-03-01T10:01:00.000+00:00',
             '_links' => [
                 'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9'
+            ],
+            'organizer' => [
+                'name' => Organizer::NAME,
+                'country' => 'Spain',
+                'region' => 'Region',
             ]
         ];
     }
@@ -214,7 +225,6 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => '2024-01-26',
             'final_date' => '2024-01-26',
             'federation_id' => Federation::IOF,
-            'organizer_id' => '1',
             'picture' => null,
             'website' => null,
             'scope' => null,
@@ -225,6 +235,11 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'modified' => '2022-03-07T10:01:00.000+00:00',
             '_links' => [
                 'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00'
+            ],
+            'organizer' => [
+                'name' => Organizer::NAME,
+                'country' => 'Spain',
+                'region' => 'Region',
             ]
         ];
     }
@@ -256,9 +271,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'description' => 'IOF OEVENTOR',
         ];
         $expected['organizer'] = [
-            'id' => OrganizersFixture::ORGANIZER_1_ID,
-            'name' => OrganizersFixture::ORGANIZER_1_NAME,
-            'uuid' => null,
+            'name' => Organizer::NAME,
             'country' => 'Spain',
             'region' => 'Region',
         ];

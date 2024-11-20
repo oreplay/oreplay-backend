@@ -15,7 +15,7 @@ class CreateOrganizersTable extends AbstractMigration
                 'null' => false,
             ])
             ->addPrimaryKey(['id'])
-            ->addColumn('uuid', 'string', [
+            ->addColumn('external_id', 'string', [
                 'limit' => 36,
                 'null' => true,
             ])
