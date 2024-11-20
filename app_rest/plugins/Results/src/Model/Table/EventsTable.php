@@ -15,6 +15,7 @@ use Results\Model\Entity\Event;
 
 /**
  * @property FederationsTable $Federations
+ * @property OrganizersTable $Organizers
  * @property UsersTable $Users
  * @property StagesTable $Stages
  */
@@ -24,6 +25,7 @@ class EventsTable extends AppTable
     {
         $this->addBehavior(TimestampBehavior::class);
         FederationsTable::addHasMany($this);
+        OrganizersTable::addHasMany($this);
         StagesTable::addBelongsTo($this);
         $this->belongsToMany(UsersTable::name(), [
             'joinTable' => 'users_events',
@@ -87,6 +89,7 @@ class EventsTable extends AppTable
     {
         $query = $this->find()
             ->contain(FederationsTable::name())
+            ->contain(OrganizersTable::name())
             ->contain(StagesTable::name().'.'.StageTypesTable::name())
             ->where(['Events.id' => $id]);
         /** @var Event $res */

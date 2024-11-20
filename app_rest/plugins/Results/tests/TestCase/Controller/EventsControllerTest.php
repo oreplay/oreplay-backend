@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Results\Test\TestCase\Controller;
 
@@ -15,6 +15,7 @@ use Results\Model\Entity\Stage;
 use Results\Model\Table\EventsTable;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
+use Results\Test\Fixture\OrganizersFixture;
 use Results\Test\Fixture\StagesFixture;
 use Results\Test\Fixture\StageTypesFixture;
 use Results\Test\Fixture\TokensFixture;
@@ -24,6 +25,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
 {
     protected $fixtures = [
         FederationsFixture::LOAD,
+        OrganizersFixture::LOAD,
         EventsFixture::LOAD,
         StagesFixture::LOAD,
         OauthAccessTokensFixture::LOAD,
@@ -79,6 +81,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => $today,
             'final_date' => $today,
             'federation_id' => 'IOF',
+            'organizer_id' => '1',
             'picture' => null,
             'website' => null,
             'scope' => null,
@@ -107,6 +110,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => $tomorrow,
             'final_date' => $tomorrow,
             'federation_id' => 'IOF',
+            'organizer_id' => '1',
             'picture' => null,
             'website' => null,
             'scope' => null,
@@ -169,6 +173,10 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'id' => Federation::FEDO,
             'description' => 'FEDO SICO',
         ];
+        $expected['organizer'] = [
+            'id' => OrganizersFixture::ORGANIZER_1_ID,
+            'name' => OrganizersFixture::ORGANIZER_1_NAME,
+        ];
         $this->assertEquals($expected, $bodyDecoded['data']);
     }
 
@@ -180,6 +188,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => '2024-01-25',
             'final_date' => '2024-01-25',
             'federation_id' => Federation::FEDO,
+            'organizer_id' => '1',
             'picture' => null,
             'website' => null,
             'scope' => null,
@@ -202,6 +211,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => '2024-01-26',
             'final_date' => '2024-01-26',
             'federation_id' => Federation::IOF,
+            'organizer_id' => '1',
             'picture' => null,
             'website' => null,
             'scope' => null,
@@ -241,6 +251,10 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $expected['federation'] = [
             'id' => Federation::IOF,
             'description' => 'IOF OEVENTOR',
+        ];
+        $expected['organizer'] = [
+            'id' => OrganizersFixture::ORGANIZER_1_ID,
+            'name' => OrganizersFixture::ORGANIZER_1_NAME,
         ];
         $this->assertEquals($expected, $bodyDecoded['data']);
     }

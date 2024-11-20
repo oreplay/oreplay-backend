@@ -3,10 +3,9 @@
 declare(strict_types=1);
 
 use Migrations\AbstractSeed;
-use Results\Model\Entity\Organizer;
 
 
-class FederationsSeed extends AbstractSeed
+class OrganizersSeed extends AbstractSeed
 {
     public function run(): void
     {

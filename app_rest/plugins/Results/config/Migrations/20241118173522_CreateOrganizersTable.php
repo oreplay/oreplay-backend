@@ -8,11 +8,13 @@ class CreateOrganizersTable extends AbstractMigration
 {
     public function change(): void
     {
-        $table = $this->table('organizers', ['id' => false, 'primary_key' => ['id']]);
-        $table->addColumn('id', 'string', [
-            'limit' => 36,
-            'null' => false,
-        ])
+        $table = $this->table('organizers', ['id' => false]);
+        $table
+            ->addColumn('id', 'string', [
+                'length' => 36,
+                'null' => false,
+            ])
+            ->addPrimaryKey(['id'])
             ->addColumn('uuid', 'string', [
                 'limit' => 36,
                 'null' => true,

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 use Migrations\AbstractSeed;
 use Results\Model\Entity\Federation;
@@ -10,6 +10,7 @@ class EventsSeed extends AbstractSeed
 {
     protected $seedClasses = [
         FederationsSeed::class,
+        OrganizersSeed::class,
     ];
 
     public function run(): void
@@ -28,6 +29,7 @@ class EventsSeed extends AbstractSeed
                 'initial_date' => '2024-01-25',
                 'final_date' => '2024-01-25',
                 'federation_id' => Federation::FEDO,
+                'organizer_id' => '1',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
@@ -38,6 +40,7 @@ class EventsSeed extends AbstractSeed
                 'initial_date' => '2025-01-01',
                 'final_date' => '2025-12-31',
                 'federation_id' => Federation::FEDO,
+                'organizer_id' => '1',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
@@ -48,6 +51,7 @@ class EventsSeed extends AbstractSeed
                 'initial_date' => '2024-01-01',
                 'final_date' => '2024-12-31',
                 'federation_id' => Federation::FEDO,
+                'organizer_id' => '1',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
@@ -58,6 +62,7 @@ class EventsSeed extends AbstractSeed
                 'initial_date' => '2024-01-02',
                 'final_date' => '2024-12-31',
                 'federation_id' => Federation::FEDO,
+                'organizer_id' => '1',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
@@ -68,6 +73,7 @@ class EventsSeed extends AbstractSeed
                 'initial_date' => '2024-01-02',
                 'final_date' => '2024-12-31',
                 'federation_id' => Federation::FEDO,
+                'organizer_id' => '1',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
