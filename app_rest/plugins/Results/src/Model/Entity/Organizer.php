@@ -22,7 +22,6 @@ class Organizer extends Entity
     ];
 
     protected $_hidden = [
-        'id',
         'external_id',
         'created',
         'modified',

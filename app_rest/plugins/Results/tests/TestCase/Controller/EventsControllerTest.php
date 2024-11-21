@@ -93,11 +93,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             '_links' => [
                 'self' => 'http://dev.example.com/api/v1/events/' . EventsFixture::EVENT_TODAY
             ],
-            'organizer' => [
-                'name' => Organizer::NAME,
-                'country' => 'Spain',
-                'region' => 'Region',
-            ]
+            'organizer' => $this->_organizer(),
         ];
 
         $this->assertEquals($expected, $bodyDecoded['data'][0]);
@@ -126,11 +122,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             '_links' => [
                 'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow'
             ],
-            'organizer' => [
-                'name' => Organizer::NAME,
-                'country' => 'Spain',
-                'region' => 'Region',
-            ]
+            'organizer' => $this->_organizer(),
         ];
         $this->assertEquals($expected, $bodyDecoded['data'][0]);
     }
@@ -182,12 +174,18 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'id' => Federation::FEDO,
             'description' => 'FEDO SICO',
         ];
-        $expected['organizer'] = [
+        $expected['organizer'] = $this->_organizer();
+        $this->assertEquals($expected, $bodyDecoded['data']);
+    }
+
+    private function _organizer(): array
+    {
+        return [
+            'id' => Organizer::ID,
             'name' => Organizer::NAME,
             'country' => 'Spain',
             'region' => 'Region',
         ];
-        $this->assertEquals($expected, $bodyDecoded['data']);
     }
 
     private function _getFirstEvent(): array
@@ -209,11 +207,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             '_links' => [
                 'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9'
             ],
-            'organizer' => [
-                'name' => Organizer::NAME,
-                'country' => 'Spain',
-                'region' => 'Region',
-            ]
+            'organizer' => $this->_organizer(),
         ];
     }
 
@@ -236,11 +230,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             '_links' => [
                 'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00'
             ],
-            'organizer' => [
-                'name' => Organizer::NAME,
-                'country' => 'Spain',
-                'region' => 'Region',
-            ]
+            'organizer' => $this->_organizer(),
         ];
     }
 
@@ -270,11 +260,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'id' => Federation::IOF,
             'description' => 'IOF OEVENTOR',
         ];
-        $expected['organizer'] = [
-            'name' => Organizer::NAME,
-            'country' => 'Spain',
-            'region' => 'Region',
-        ];
+        $expected['organizer'] = $this->_organizer();
         $this->assertEquals($expected, $bodyDecoded['data']);
     }
 
