@@ -11,7 +11,7 @@ class OrganizersSeed extends AbstractSeed
     public function run(): void
     {
         $options = [
-            ['value' => '1', 'name' => 'ADCON', 'region' => 'Comunidad Valenciana'],
+            ['value' => '1', 'name' => Organizer::NAME, 'region' => 'Comunidad Valenciana'],
             ['value' => '185', 'name' => 'ADC_ARNELA', 'region' => 'Galicia'],
             ['value' => '2', 'name' => 'ADOL', 'region' => 'Andalucía'],
             ['value' => '219', 'name' => 'ADVENTURE_BIKE_HELLIN', 'region' => null],
@@ -183,8 +183,13 @@ class OrganizersSeed extends AbstractSeed
 
         $now = date('Y-m-d H:i:00');
         $data = array_map(function ($option) use ($now) {
+            if ($option['name'] === Organizer::NAME) {
+                $id = Organizer::ID;
+            } else {
+                $id = Text::uuid();
+            }
             return [
-                'id' => Text::uuid(),
+                'id' => $id,
                 'external_id' => $option['value'],
                 'name' => $option['name'],
                 'country' => 'Spain',
@@ -195,20 +200,9 @@ class OrganizersSeed extends AbstractSeed
             ];
         }, $options);
 
-        $data_const = [
-            'id' => Organizer::ID,
-            'external_id' => null,
-            'name' => Organizer::NAME,
-            'country' => null,
-            'region' => null,
-            'created' => $now,
-            'modified' => $now,
-            'deleted' => null,
-        ];
-
         $table = $this->table('organizers');
         if ($table->getAdapter()->fetchAll('SELECT * from ' . $table->getName() . ' LIMIT 1') === []) {
-            $table->insert($data)->insert($data_const)->save();
+            $table->insert($data)->save();
         }
     }
 }
