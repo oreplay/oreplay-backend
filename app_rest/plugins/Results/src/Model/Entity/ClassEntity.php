@@ -35,8 +35,16 @@ class ClassEntity extends Entity
         'uuid',
         'oe_key',
         'long_name',
+        'upload_hash',
         'created',
         'modified',
         'deleted',
     ];
+
+    public function isSameUploadHash(array $compareArray): bool
+    {
+        $uploadHash = md5(json_encode($compareArray));
+        $existingHash = $this->_fields['upload_hash'] ?? 'hash_does_not_exist';
+        return $existingHash == $uploadHash;
+    }
 }

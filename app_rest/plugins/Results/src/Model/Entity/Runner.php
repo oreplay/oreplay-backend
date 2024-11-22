@@ -52,6 +52,7 @@ class Runner extends Entity
         'club_id',
         'team_id',
         'leg_number',
+        'upload_hash',
         'created',
         'modified',
         'deleted',

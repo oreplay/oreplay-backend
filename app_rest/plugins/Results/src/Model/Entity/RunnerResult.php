@@ -58,6 +58,7 @@ class RunnerResult extends Entity
         'runner_uuid',
         'class_uuid',
         'check_time',
+        'upload_hash',
         'created',
         'modified',
         'deleted',

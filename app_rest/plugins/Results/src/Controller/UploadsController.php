@@ -58,11 +58,13 @@ class UploadsController extends ApiController
         $classesToSave = [];
         foreach ($configChecker->getClasses() as $classObj) {
             $class = $this->Classes->createIfNotExists($helper->getEventId(), $stageId, $classObj);
-            $course = $this->Classes->Courses->createIfNotExists($helper->getEventId(), $stageId, $classObj);
-            $class->course = $course;
-            $class = $this->_addAllRunnersInClass($classObj, $class, $helper);
-            $runnerCount += count($class->runners);
-            $classesToSave[] = $class;
+            if (!$class->isSameUploadHash($classObj)) {
+                $course = $this->Classes->Courses->createIfNotExists($helper->getEventId(), $stageId, $classObj);
+                $class->course = $course;
+                $class = $this->_addAllRunnersInClass($classObj, $class, $helper);
+                $runnerCount += count($class->runners);
+                $classesToSave[] = $class;
+            }
         }
 
         $classCount = count($classesToSave);
