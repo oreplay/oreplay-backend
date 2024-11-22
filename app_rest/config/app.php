@@ -88,6 +88,8 @@ return [
     'RestOauthPlugin' => [
         'tablePrefix' => '',
         'routePath' => \App\Controller\ApiController::ROUTE_PREFIX,
+        // empty string needed to log-in in full stack developement
+        // (this will break log-in in production when debug is on)
         'idpDomain' => $isDebug ? '' : 'https://www.oreplay.es',
         'idpLoginFormPath' => '/signin/form',
         'tokenDirectlyFromPasswordGrant' => false,
