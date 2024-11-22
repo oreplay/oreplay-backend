@@ -89,11 +89,11 @@ class RunnersTable extends AppTable
         $sicard = $runnerData['sicard'] ?? null;
         $stName = $runnerData['first_name'] ?? null;
         $lastName = $runnerData['last_name'] ?? null;
-        if ($stName && $lastName) {
+        if ($sicard && $stName && $lastName) {
             $q->where([
-                'sicard' => $sicard,
-                'first_name' => $stName,
-                'last_name' => $lastName
+                'sicard' => $runnerData['sicard'],
+                'first_name' => $runnerData['first_name'],
+                'last_name' => $runnerData['last_name']
             ]);
             if ($class) {
                 $q->where(['class_id' => $class->id]);
@@ -104,8 +104,8 @@ class RunnersTable extends AppTable
             } else {
                 $q = $this->_findRunnersInStage($eventId, $stageId);
                 $q->where([
-                    'first_name' => $stName,
-                    'last_name' => $lastName
+                    'first_name' => $runnerData['first_name'],
+                    'last_name' => $runnerData['last_name']
                 ]);
                 $err = '';
                 if ($class) {
