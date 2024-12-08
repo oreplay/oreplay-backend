@@ -86,12 +86,12 @@ class RunnersTable extends AppTable
         if ($runnerData['bib_number'] ?? null) {
             throw new NotFoundException('Not found runner by bib_number');
         }
-        foreach ($this->_getStoredRunnersInClass() as $runner) {
-            $matchedRunner = $runner->getMatchedRunnerWithoutSportIdent($runnerData, $class);
-            if ($matchedRunner) {
-                return $matchedRunner;
-            }
-        }
+        //foreach ($this->_getStoredRunnersInClass() as $runner) {
+        //    $matchedRunner = $runner->getMatchedRunnerWithoutSportIdent($runnerData, $class);
+        //    if ($matchedRunner) {
+        //        return $matchedRunner;
+        //    }
+        //}
         throw new NotFoundException('Not found runner by name');
     }
 

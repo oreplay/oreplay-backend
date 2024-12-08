@@ -86,11 +86,10 @@ class Runner extends AppEntity
         if ($this->bib_number && $this->bib_number == $bibNumber) {
             return $this;
         }
-        $siCard = $runnerData['sicard'] ?? null;
         $stName = $runnerData['first_name'] ?? null;
         $lastName = $runnerData['last_name'] ?? null;
-        if ($siCard && $stName && $lastName) {
-            if ($this->first_name == $stName && $this->last_name == $lastName && $this->sicard == $siCard) {
+        if ($stName && $lastName) {
+            if ($this->first_name == $stName && $this->last_name == $lastName) {
                 if ($class) {
                     if ($this->class_id == $class->id) {
                         return $this;
@@ -104,28 +103,28 @@ class Runner extends AppEntity
                 return null;
             }
         } else {
-            $msg = "Fields sicard <$siCard>, first_name <$stName> and last_name <$lastName> cannot be empty";
+            $msg = "Fields first_name <$stName> and last_name <$lastName> cannot be empty";
             throw new DetailedException($msg);
         }
     }
 
-    public function getMatchedRunnerWithoutSportIdent(array $runnerData, ClassEntity $class = null): ?Runner
-    {
-        $stName = $runnerData['first_name'] ?? null;
-        $lastName = $runnerData['last_name'] ?? null;
-        if ($this->first_name == $stName && $this->last_name == $lastName) {
-            // If not found by name and SportIdent, we match without SI (in case runner changed SI) #37 bHrt3cTU
-            if ($class) {
-                if ($this->class_id == $class->id) {
-                    return $this;
-                } else {
-                    return null;
-                }
-            } else {
-                return $this;
-            }
-        } else {
-            return null;
-        }
-    }
+    //public function getMatchedRunnerWithoutSportIdent(array $runnerData, ClassEntity $class = null): ?Runner
+    //{
+    //    $stName = $runnerData['first_name'] ?? null;
+    //    $lastName = $runnerData['last_name'] ?? null;
+    //    if ($this->first_name == $stName && $this->last_name == $lastName) {
+    //        // If not found by name and SportIdent, we match without SI (in case runner changed SI) #37 bHrt3cTU
+    //        if ($class) {
+    //            if ($this->class_id == $class->id) {
+    //                return $this;
+    //            } else {
+    //                return null;
+    //            }
+    //        } else {
+    //            return $this;
+    //        }
+    //    } else {
+    //        return null;
+    //    }
+    //}
 }

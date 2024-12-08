@@ -222,7 +222,7 @@ class UploadsControllerExamples
                                     (int) 1 => [
                                         'id' => '',
                                         'uuid' => '',
-                                        'sicard' => '820100',
+                                        'sicard' => '',
                                         'first_name' => 'Francisco',
                                         'last_name' => 'Alvarez',
                                         'bib_number' => '255',

@@ -174,6 +174,6 @@ class RunnersTableTest extends TestCase
         } catch (DetailedException $e) {
             $exception = $e->getMessage();
         }
-        $this->assertEquals('Fields sicard, first_name and last_name cannot be empty', $exception);
+        $this->assertEquals('Fields first_name <> and last_name <> cannot be empty', $exception);
     }
 }
