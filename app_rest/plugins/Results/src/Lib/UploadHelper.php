@@ -4,10 +4,10 @@ declare(strict_types = 1);
 
 namespace Results\Lib;
 
-use Cake\Collection\CollectionInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Http\Exception\InternalErrorException;
 use RestApi\Lib\Exception\DetailedException;
+use Results\Model\Entity\Control;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Table\RunnerResultsTable;
@@ -19,6 +19,7 @@ class UploadHelper
     private string $_eventId;
     private UploadConfigChecker $_checker;
     private array $_existingRunnerResults;
+    private array $_existingControls;
     private UploadMetrics $_metrics;
 
     public function __construct(array $data, string $eventID)
@@ -77,6 +78,13 @@ class UploadHelper
         }
     }
 
+    public function setExistingData($RunnerResults)
+    {
+        /** @var RunnerResultsTable $RunnerResults */
+        $this->setExistingRunnerResults($RunnerResults->getAllResults($this));
+        $this->setExistingControls($RunnerResults->Splits->Controls->getAllControls($this));
+    }
+
     public function setExistingRunnerResults(ResultSetInterface $existingRunnerResults): UploadHelper
     {
         $this->_existingRunnerResults = [];
@@ -85,6 +93,27 @@ class UploadHelper
             $this->_existingRunnerResults[$runnerResult->runner_id][] = $runnerResult;
         }
         return $this;
+    }
+
+    public function setExistingControls(ResultSetInterface $existingRunnerResults): UploadHelper
+    {
+        $this->_existingControls = [];
+        /** @var Control $control */
+        foreach ($existingRunnerResults as $control) {
+            $this->storeControlByStation($control);
+        }
+        return $this;
+    }
+
+    public function getExistingControlByStation($stationNumber): ?Control
+    {
+        return $this->_existingControls[$stationNumber] ?? null;
+    }
+
+    public function storeControlByStation(Control $control): void
+    {
+        $stationNumber = $control->station;
+        $this->_existingControls[$stationNumber] = $control;
     }
 
     /**

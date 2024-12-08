@@ -58,7 +58,7 @@ class SplitsTable extends AppTable
             foreach ($splits as $split) {
                 $splitToSave = $this->fillNewWithStage($split, $helper->getEventId(), $helper->getStageId());
                 if ($split['station'] ?? null) {
-                    $control = $this->Controls->createIfNotExists($helper->getEventId(), $helper->getStageId(), $split);
+                    $control = $this->Controls->createControlIfNotExists($helper, $split);
                     $splitToSave->addControl($control);
                 }
                 $helper->getMetrics()->addOneSplit();

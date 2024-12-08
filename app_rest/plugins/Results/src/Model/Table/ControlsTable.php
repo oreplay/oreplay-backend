@@ -5,8 +5,10 @@ declare(strict_types = 1);
 namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
+use Cake\Datasource\ResultSetInterface;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Results\Lib\UploadHelper;
 use Results\Model\Entity\Control;
 
 /**
@@ -22,27 +24,31 @@ class ControlsTable extends AppTable
         ControlTypesTable::addHasMany($this);
     }
 
-    protected function getByStation(string $eventId, string $stageId, string $station): ?Control
-    {
-        $conditions = [
-            $this->_alias . '.event_id' => $eventId,
-            $this->_alias . '.stage_id' => $stageId,
-            $this->_alias . '.station' => $station
-        ];
-        $cacheKey = 'getByStation_' . $this->_alias . '_' . md5(json_encode($conditions));
-        return $this->getFromCache([$cacheKey, $conditions]);
-    }
-
-    public function createIfNotExists(string $eventId, string $stageId, array $data): Control
+    public function createControlIfNotExists(UploadHelper $helper, array $data): Control
     {
         if (!($data['station'] ?? null)) {
             throw new InternalErrorException('Station number is needed to create control ' . json_encode($data));
         }
-        $entity = $this->getByStation($eventId, $stageId, $data['station']);
+        $entity = $helper->getExistingControlByStation($data['station']);
         if (!$entity) {
-            $entity = $this->fillNewWithStage($data, $eventId, $stageId);
+            $entity = $this->fillNewWithStage($data, $helper->getEventId(), $helper->getStageId());
+            $helper->storeControlByStation($entity);
         }
         $entity->setTypeNormalIfNotDefined();
         return $entity;
+    }
+
+    public function fillNewWithStage(array $data, string $eventId, string $stageId): Control
+    {
+        /** @var Control $res */
+        $res = parent::fillNewWithStage($data, $eventId, $stageId);
+        return $res;
+    }
+
+    public function getAllControls(UploadHelper $helper): ResultSetInterface
+    {
+        return $this->findWhereEventAndStage($helper)
+            ->orderAsc('station')
+            ->all();
     }
 }

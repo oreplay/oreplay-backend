@@ -11,7 +11,6 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\UploadHelper;
-use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\RunnersTable;
@@ -48,7 +47,7 @@ class UploadsController extends ApiController
         $configChecker = $helper->validateConfigChecker();
         $stageId = $helper->getStageId();
 
-        $helper->setExistingRunnerResults($this->runnersTable()->RunnerResults->getAllResults($helper));
+        $helper->setExistingData($this->runnersTable()->RunnerResults);
 
         if ($configChecker->isStartLists()) {
             if ($helper->hasAlreadyFinishTimes()) {
@@ -113,8 +112,18 @@ class UploadsController extends ApiController
             );
             $this->return = $this->respondError($e->getMessage(), $e->getCode());
         } catch (DetailedException $e) {
-            $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . json_encode($data));
+            $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . json_encode($data)
+                . " \n" . $e->getTraceAsString());
             $this->return = $this->respondError($e->getMessage(), $e->getCode());
+        } catch (\Exception $e) {
+            $this->log('Uploads GeneralException: ' . $e->getMessage() . " \n" . json_encode($data)
+                . " \n" . $e->getTraceAsString());
+            $exploded = explode('\\', get_class($e));
+            $exceptionName = array_pop($exploded);
+            if (!$exceptionName) {
+                $exceptionName = array_pop($exploded);
+            }
+            $this->return = $this->respondError($exceptionName, $e->getCode());
         }
     }
 
@@ -130,7 +139,7 @@ class UploadsController extends ApiController
                     'runners' => 0,
                 ],
                 'human' => [
-                    "[Error - $code] ($now) $message",
+                    "\n    [ERROR - $code] ($now) $message \n",
                 ]
             ]
         ];
