@@ -19,6 +19,7 @@ class UploadHelper
     private string $_eventId;
     private UploadConfigChecker $_checker;
     private array $_existingRunnerResults;
+    private UploadMetrics $_metrics;
 
     public function __construct(array $data, string $eventID)
     {
@@ -30,6 +31,12 @@ class UploadHelper
         }
         $this->_data = $data;
         $this->_eventId = $eventID;
+        $this->_metrics = new UploadMetrics();
+    }
+
+    public function getMetrics(): UploadMetrics
+    {
+        return $this->_metrics;
     }
 
     public function getData(): array

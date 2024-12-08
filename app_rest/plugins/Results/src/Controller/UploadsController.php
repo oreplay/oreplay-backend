@@ -37,8 +37,7 @@ class UploadsController extends ApiController
     private function _addNew(UploadHelper $helper): array
     {
         $this->_clearUploadCache();
-        $metrics = new UploadMetrics();
-        $metrics->startProcessing();
+        $metrics = $helper->getMetrics();
         //$this->log('Uploading data: ' . " \n\n" . json_encode($helper->getData()), \Psr\Log\LogLevel::DEBUG);
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($helper->getEventId(), $token);
@@ -57,7 +56,6 @@ class UploadsController extends ApiController
             }
         }
 
-        $classesToSave = [];
         foreach ($configChecker->getClasses() as $classObj) {
             $class = $this->Classes->createIfNotExists($helper->getEventId(), $stageId, $classObj);
             if (!$class->isSameUploadHash($classObj)) {
@@ -66,15 +64,14 @@ class UploadsController extends ApiController
                 $class->course = $course;
                 $class = $this->_addAllRunnersInClass($classObj, $class, $helper);
                 $metrics->addToRunnerCounter(count($class->runners));
-                $classesToSave[] = $class;
+                $classesToSave = $metrics->saveManyOrFail($this->Classes, $class);
             }
         }
 
-        $metrics->addSplitsMetrics($this->runnersTable()->RunnerResults->Splits);
         $metrics->addRunnerMetrics($this->runnersTable());
         $this->_clearUploadCache();
 
-        $metrics->saveManyOrFail($this->Classes, $classesToSave);
+        $metrics->endTotalTimer();
 
         $develop = $this->getRequest()->getQuery('develop');
         if (!$develop || $develop < 301) {

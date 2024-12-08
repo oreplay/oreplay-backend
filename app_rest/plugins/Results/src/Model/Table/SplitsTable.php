@@ -51,30 +51,20 @@ class SplitsTable extends AppTable
         return $this->deleteAll(['runner_id' => $runnerId]);
     }
 
-    private int $_splitAmount = 0;
-    private float $_splitTime = 0;
-    public function getSplitAmount(): int
-    {
-        return $this->_splitAmount;
-    }
-    public function getSplitTime(): float
-    {
-        return $this->_splitTime;
-    }
     public function uploadForEachSplit(RunnerResult $resultToSave, array $splits, UploadHelper $helper): RunnerResult
     {
         if ($splits) {
-            $startsTimeSplits = microtime(true);
+            $helper->getMetrics()->startSplitsTime();
             foreach ($splits as $split) {
                 $splitToSave = $this->fillNewWithStage($split, $helper->getEventId(), $helper->getStageId());
                 if ($split['station'] ?? null) {
                     $control = $this->Controls->createIfNotExists($helper->getEventId(), $helper->getStageId(), $split);
                     $splitToSave->addControl($control);
                 }
-                $this->_splitAmount++;
+                $helper->getMetrics()->addOneSplit();
                 $resultToSave->addSplit($splitToSave);
             }
-            $this->_splitTime += round(microtime(true) - $startsTimeSplits, 2);
+            $helper->getMetrics()->endSplitsTime();
         }
         return $resultToSave;
     }

@@ -5,50 +5,67 @@ declare(strict_types = 1);
 namespace Results\Lib;
 
 use Cake\I18n\FrozenTime;
+use Results\Model\Entity\ClassEntity;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\RunnersTable;
-use Results\Model\Table\SplitsTable;
 
 class UploadMetrics
 {
-    private array $_classesToSave;
+    private array $_classesToSave = [];
     private int $classCount = 0;
     private int $runnerCount = 0;
     private int $splitAmount = 0;
     private int $runnerResultsCount = 0;
+    private float $_startTimeTotal = 0.0;
     private float $_startTimeProcessing = 0.0;
     private float $_processingDuration = 0.0;
     private float $_savingDuration = 0.0;
     private float $_totalDuration = 0.0;
     private float $_splitDuration = 0.0;
     private float $_runnersDuration = 0.0;
+    private float $_startsTimeSplits = 0.0;
+
+    public function __construct()
+    {
+        $this->startTotal();
+        $this->startProcessing();
+    }
 
     private function _roundUp(float $value, int $precision = 2): float
     {
         return round($value, $precision);
     }
-
-    public function startProcessing()
+    private function startTotal()
+    {
+        $this->_startTimeTotal = microtime(true);
+    }
+    private function startProcessing()
     {
         $this->_startTimeProcessing = microtime(true);
     }
 
     private function endProcessing()
     {
-        $this->_processingDuration = $this->_roundUp(microtime(true) - $this->_startTimeProcessing);
+        $this->_processingDuration += $this->_roundUp(microtime(true) - $this->_startTimeProcessing);
     }
 
-    public function saveManyOrFail(ClassesTable $classes, array $classesToSave)
+    public function saveManyOrFail(ClassesTable $classes, ClassEntity $singleClassToSave)
     {
-        $this->_classesToSave = $classesToSave;
-        $this->classCount = count($classesToSave);
+        $this->_classesToSave[] = $singleClassToSave;
+        $this->classCount = count($this->_classesToSave);
         $this->endProcessing();
 
         $startTimeSaving = microtime(true);
-        $classes->saveManyOrFail($classesToSave);
+        $classes->saveManyOrFail([$singleClassToSave]);
         $end = microtime(true);
-        $this->_savingDuration = $this->_roundUp($end - $startTimeSaving);
-        $this->_totalDuration = $this->_roundUp($end - $this->_startTimeProcessing);
+        $this->_savingDuration += $this->_roundUp($end - $startTimeSaving);
+        $this->startProcessing();
+        return $this->_classesToSave;
+    }
+    public function endTotalTimer()
+    {
+        $end = microtime(true);
+        $this->_totalDuration = $this->_roundUp($end - $this->_startTimeTotal);
     }
 
     public function addToRunnerCounter(int $toAdd)
@@ -56,11 +73,19 @@ class UploadMetrics
         $this->runnerCount += $toAdd;
     }
 
-    public function addSplitsMetrics($splits)
+    public function startSplitsTime()
     {
-        /** @var SplitsTable $splits */
-        $this->splitAmount = $splits->getSplitAmount();
-        $this->_splitDuration = $this->_roundUp($splits->getSplitTime());
+        $this->_startsTimeSplits = microtime(true);
+    }
+
+    public function endSplitsTime()
+    {
+        $this->_splitDuration += round(microtime(true) - $this->_startsTimeSplits, 2);
+    }
+
+    public function addOneSplit()
+    {
+        $this->splitAmount++;
     }
 
     public function addRunnerMetrics($Runners)
@@ -97,14 +122,16 @@ class UploadMetrics
                 ],
                 'humanColor' => '#FF0000',
                 'human' => [
-                    "\n *** Updated $this->runnerCount runners "
+                    "\n *** Updated $this->classCount classes, $this->runnerCount runners "
                     . "[$this->_runnersDuration secs processing runners], "
                     //. "[$runnersDuration1 + $runnersDuration2 + $runnersDuration3], "
-                    . "$this->classCount classes, $newLine"
+                    . "$newLine"
                     . "$this->runnerResultsCount runner_results, $this->splitAmount splits "
                     . "[$this->_splitDuration secs processing splits], $newLine"
-                    . "($now - $type) $newLine   in $this->_totalDuration secs "
-                    . "(processing $this->_processingDuration + saving $this->_savingDuration).\n",
+                    . "   in $this->_processingDuration secs processing $newLine"
+                    . "   + $this->_savingDuration secs saving $newLine"
+                    . "   = $this->_totalDuration total seconds. $newLine",
+                    "($now - $type)\n" . 'second line for testing',
                 ]
             ],
             'data' => $this->_classesToSave,
@@ -119,12 +146,14 @@ class UploadMetrics
         unset($res['meta']['updated']['runnerResults']);
         unset($res['meta']['timings']);
         unset($res['meta']['humanColor']);
+        unset($res['meta']['human'][1]);
         $res['meta']['human'] = [
             "Updated $this->runnerCount runners, "
             . "$this->classCount classes, "
             . "$this->splitAmount splits [$this->_splitDuration], "
             . "($now - $type) in $this->_processingDuration secs.",
         ];
+        //*/
         return $res;
     }
 }
