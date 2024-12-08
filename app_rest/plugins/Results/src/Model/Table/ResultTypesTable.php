@@ -30,7 +30,9 @@ class ResultTypesTable extends AppTable
 
     private function getCached(string $id): ResultType
     {
-        return $this->find()->where(['id' => $id])->cache('getCached_' . $id)->firstOrFail();
+        /** @var ResultType $res */
+        $res = $this->find()->where(['id' => $id])->cache('getCached_' . $id)->firstOrFail();
+        return $res;
     }
 
     public function getCachedWithDefault(UploadConfigChecker $checker, $typeId): ResultType

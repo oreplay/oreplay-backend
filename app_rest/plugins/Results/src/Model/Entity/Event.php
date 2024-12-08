@@ -7,7 +7,6 @@ namespace Results\Model\Entity;
 use App\Controller\ApiController;
 use App\Lib\FullBaseUrl;
 use App\Model\Entity\User;
-use Cake\ORM\Entity;
 
 /**
  * @property User[] $users
@@ -15,7 +14,7 @@ use Cake\ORM\Entity;
  * @property Federation $federation
  * @property Stage[] $stages
  */
-class Event extends Entity
+class Event extends AppEntity
 {
     public const FIRST_EVENT  = '8f3b542c-23b9-4790-a113-b83d476c0ad9';
     public const SECOND_EVENT = 'f8f3ad2c-23b9-4790-a114-b83d47jl0ad9';

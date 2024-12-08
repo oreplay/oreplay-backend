@@ -83,7 +83,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 'runners' => 4,
             ],
             'human' => [
-                "Updated 4 runners, 2 classes ($now - start_list) $seconds",
+                "Updated 4 runners, 2 classes, 0 splits [0], ($now - start_list) $seconds",
             ]
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
@@ -219,7 +219,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 'runners' => $expectedRunnerAmount,
             ],
             'human' => [
-                "Updated $expectedRunnerAmount runners, 1 classes ($now - res_finish) $seconds",
+                "Updated $expectedRunnerAmount runners, 1 classes, 2 splits [0.01], ($now - res_finish) $seconds",
             ]
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
@@ -261,18 +261,20 @@ class UploadsControllerTest extends ApiCommonErrorsTest
     private function _assertRunnersWithFinishTimes($decodedData)
     {
         $Table = RunnerResultsTable::load();
+        $this->assertEquals(1, count($decodedData));
+        $this->assertEquals(2, count($decodedData[0]['runners']));
         $firstRunner = $decodedData[0]['runners'][0];
         $this->assertEquals('Ballesteros', $firstRunner['last_name']);
         $this->assertEquals('125', $firstRunner['bib_number']);
         $this->assertEquals('4440522', $firstRunner['sicard']);
         $this->assertEquals('Independiente', $firstRunner['club']['short_name']);
-        $this->assertEquals(1, count($firstRunner['runner_results']));
+        $this->assertEquals(1, count($firstRunner['runner_results']), 'Amount of 1st runner_results');
         $this->assertEquals(1, $Table->find()->where(['runner_id' => $firstRunner['id']])->all()->count());
         $this->assertEquals('Stage', $firstRunner['runner_results'][0]['result_type']['description']);
         $this->assertEquals('1', $firstRunner['runner_results'][0]['position']);
         $this->assertEquals('2024-09-29T11:00:00.000+00:00', $firstRunner['runner_results'][0]['start_time']);
         $this->assertEquals('2024-09-29T12:26:54.000+00:00', $firstRunner['runner_results'][0]['finish_time']);
-        //$this->assertEquals(5214, $firstRunner['runner_results'][0]['time_seconds']);
+        $this->assertEquals(5214, $firstRunner['runner_results'][0]['time_seconds']);
         $this->assertEquals('0', $firstRunner['runner_results'][0]['status_code']);
         $this->assertEquals(0, $firstRunner['runner_results'][0]['time_behind']);
         $this->assertEquals(0, $firstRunner['runner_results'][0]['time_neutralization']);

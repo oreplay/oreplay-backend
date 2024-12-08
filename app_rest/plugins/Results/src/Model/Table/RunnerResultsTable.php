@@ -4,12 +4,14 @@ declare(strict_types = 1);
 
 namespace Results\Model\Table;
 
+use App\Lib\Helper\HashHelper;
 use App\Model\Table\AppTable;
 use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
+use Results\Model\Traits\TimingTrait;
 
 /**
  * @property ResultTypesTable $ResultTypes
@@ -18,6 +20,13 @@ use Results\Model\Entity\RunnerResult;
  */
 class RunnerResultsTable extends AppTable
 {
+    use TimingTrait;
+
+    private const RUNNER_TIME = 'runnerTime';
+    private const RUNNER_TIME_1 = 'runnerTime2';
+    private const RUNNER_TIME_2 = 'runnerTime3';
+    private const RUNNER_TIME3 = 'runnerTime4';
+
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
@@ -33,6 +42,13 @@ class RunnerResultsTable extends AppTable
         return $table;
     }
 
+    public function patchNewWithStage(array $data, string $eventId, string $stageId): RunnerResult
+    {
+        /** @var RunnerResult $res */
+        $res = parent::patchNewWithStage($data, $eventId, $stageId);
+        return $res;
+    }
+
     public function hasFinishTimes(string $eventId, string $stageId): bool
     {
         $res = $this->find()->where([
@@ -45,30 +61,77 @@ class RunnerResultsTable extends AppTable
 
     public function getAllResults(UploadHelper $helper): ResultSetInterface
     {
-        return $this->findWhereEventAndStage($helper)->all();
+        return $this->findWhereEventAndStage($helper)
+            ->orderAsc('runner_id')
+            ->all();
     }
 
-    public function createRunnerResult(array $resultData, Runner $runner, UploadHelper $helper): Runner
+    public function getRunnerTime(): float
     {
-        /** @var RunnerResult $runnerResultToSave */
+        return $this->getTime(self::RUNNER_TIME);
+    }
+
+    public function getRunnerTime1(): float
+    {
+        return $this->getTime(self::RUNNER_TIME_1);
+    }
+
+    public function getRunnerTime2(): float
+    {
+        return $this->getTime(self::RUNNER_TIME_2);
+    }
+
+    public function getRunnerTime3(): float
+    {
+        return $this->getTime(self::RUNNER_TIME3);
+    }
+
+    private function _newResultWithType(array $resultData, UploadHelper $helper): RunnerResult
+    {
         $runnerResultToSave = $this->patchNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
+        $runnerResultToSave->setHash($resultData);
+
         $runnerResultToSave->result_type = $this
             ->ResultTypes
             ->getCachedWithDefault($helper->getChecker(), $resultData['result_type']['id'] ?? null);
 
-        $existingRunnerResults = $helper->getExistingResultsForThisRunner($runner, $runnerResultToSave);
-        if ($existingRunnerResults->count() === 1) {
-            $runnerResultToSave->id = $existingRunnerResults->first()->id;
-        } else {
-            foreach ($existingRunnerResults as $existingResult) {
-                $runner = $runner->addRunnerResult($existingResult);
+        return $runnerResultToSave;
+    }
+
+    public function createRunnerResult(array $resultData, Runner $runner, UploadHelper $helper): Runner
+    {
+        $this->startTimer(self::RUNNER_TIME);
+        $this->startTimer(self::RUNNER_TIME_1);
+
+        $runnerResultToSave = $this->_newResultWithType($resultData, $helper);
+
+        $existingRunnerResults = $helper->getExistingDbResultsForThisRunner($runner, $runnerResultToSave);
+        $existingRunnerResultsAmount = count($existingRunnerResults);
+        if ($existingRunnerResultsAmount) {
+            if ($existingRunnerResultsAmount === 1) {
+                // if there is only one existing result, we reuse the ID to replace the db row
+                $runnerResultToSave->setIdToUpdate($existingRunnerResults[0]->id);
+            } else {
+                // if there is more than one result, we keep them all in the runner
+                foreach ($existingRunnerResults as $existingResult) {
+                    $runner = $runner->addRunnerResult($existingResult);
+                }
             }
         }
+        $this->endTimer(self::RUNNER_TIME);
 
         $splits = $resultData['splits'] ?? [];
+        $this->startTimer(self::RUNNER_TIME3);
         if ($splits) {
+            $this->Splits->deleteAllByRunnerId($runnerResultToSave->id);
+            $this->startTimer(self::RUNNER_TIME_2);
             $runnerResultToSave = $this->Splits->uploadForEachSplit($runnerResultToSave, $splits, $helper);
+            $this->endTimer(self::RUNNER_TIME_2);
         }
-        return $runner->addRunnerResult($runnerResultToSave);
+        $this->endTimer(self::RUNNER_TIME3);
+        // add the new runner result to the runner
+        $res = $runner->addRunnerResult($runnerResultToSave);
+        $this->endTimer(self::RUNNER_TIME_1);
+        return $res;
     }
 }

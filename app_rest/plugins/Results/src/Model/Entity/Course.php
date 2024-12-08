@@ -4,8 +4,6 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
-use Cake\ORM\Entity;
-
 /**
  * @property RunnerResult[] $runner_results
  * @property TeamResult[] $team_results
@@ -17,7 +15,7 @@ use Cake\ORM\Entity;
  * @property mixed $sicard
  * @property mixed $bib_number
  */
-class Course extends Entity
+class Course extends AppEntity
 {
     protected $_accessible = [
         '*' => false,

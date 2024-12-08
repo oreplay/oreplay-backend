@@ -4,12 +4,10 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
-use Cake\ORM\Entity;
-
 /**
  * @property string $description
  */
-class Federation extends Entity
+class Federation extends AppEntity
 {
     public const FEDO = 'FEDO';
     public const IOF = 'IOF';

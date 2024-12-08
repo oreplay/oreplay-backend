@@ -34,6 +34,27 @@ class RunnerResultsTableTest extends TestCase
         $this->RunnerResults = RunnerResultsTable::load();
     }
 
+    public function testPatchNewWithStage()
+    {
+        $data = [
+            'id' => '',
+            'stage_order' => '1',
+            'start_time' => '2014-07-06T13:09:01.523',
+            'status_code' => '0',
+            'leg_number' => '1',
+            'result_type' => [
+                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                'description' => 'Stage'
+            ]
+        ];
+        $res = $this->RunnerResults->patchNewWithStage($data, Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2);
+        $this->assertEquals($data['stage_order'], $res->stage_order);
+        $this->assertEquals($data['leg_number'], $res->leg_number);
+        $this->assertEquals($data['status_code'], $res->status_code);
+        $this->assertEquals('2014-07-06T13:09:01+00:00', $res->start_time->toIso8601String());
+        //$this->assertEquals('2014-07-06T13:09:01+00:00', $res->start_time->toIso8601String());
+    }
+
     public function testHasFinishTimes(): void
     {
         $runners = $this->RunnerResults->hasFinishTimes(Event::FIRST_EVENT, Stage::FIRST_STAGE);

@@ -4,7 +4,6 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
-use Cake\ORM\Entity;
 use RestApi\Lib\Exception\DetailedException;
 
 /**
@@ -18,7 +17,7 @@ use RestApi\Lib\Exception\DetailedException;
  * @property mixed $sicard
  * @property mixed $bib_number
  */
-class Runner extends Entity
+class Runner extends AppEntity
 {
     public const FIRST_RUNNER = 'd08fa43b-ddf8-47f6-9a59-2f1828881765';
 
@@ -79,10 +78,12 @@ class Runner extends Entity
 
     public function getMatchedRunner(array $runnerData, ClassEntity $class = null): ?Runner
     {
-        if ($this->db_id == $runnerData['db_id']) {
+        $dbId = $runnerData['db_id'] ?? null;
+        if ($this->db_id && $this->db_id == $dbId) {
             return $this;
         }
-        if ($this->bib_number == $runnerData['bib_number']) {
+        $bibNumber = $runnerData['bib_number'] ?? null;
+        if ($this->bib_number && $this->bib_number == $bibNumber) {
             return $this;
         }
         $siCard = $runnerData['sicard'] ?? null;
@@ -103,7 +104,8 @@ class Runner extends Entity
                 return null;
             }
         } else {
-            throw new DetailedException('Fields sicard, first_name and last_name cannot be empty');
+            $msg = "Fields sicard <$siCard>, first_name <$stName> and last_name <$lastName> cannot be empty";
+            throw new DetailedException($msg);
         }
     }
 

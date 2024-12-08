@@ -4,9 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
-use Cake\ORM\Entity;
-
-class ResultType extends Entity
+class ResultType extends AppEntity
 {
     public const OVERALL = '5542d38b-8bd3-40f4-913d-2c38048a0b04';
     public const STAGE = 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e';

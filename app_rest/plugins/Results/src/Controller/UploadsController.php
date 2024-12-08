@@ -11,6 +11,7 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\UploadHelper;
+use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\RunnersTable;
@@ -30,11 +31,14 @@ class UploadsController extends ApiController
     private function _clearUploadCache()
     {
         Cache::clear(CacheGrp::UPLOAD);
+        $this->runnersTable()->emptyStoredList();
     }
 
     private function _addNew(UploadHelper $helper): array
     {
-        $startsTime = microtime(true);
+        $this->_clearUploadCache();
+        $metrics = new UploadMetrics();
+        $metrics->startProcessing();
         //$this->log('Uploading data: ' . " \n\n" . json_encode($helper->getData()), \Psr\Log\LogLevel::DEBUG);
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($helper->getEventId(), $token);
@@ -53,39 +57,35 @@ class UploadsController extends ApiController
             }
         }
 
-        $runnerCount = 0;
         $classesToSave = [];
         foreach ($configChecker->getClasses() as $classObj) {
             $class = $this->Classes->createIfNotExists($helper->getEventId(), $stageId, $classObj);
             if (!$class->isSameUploadHash($classObj)) {
+                // if no change is done in the whole class, we could totally skip processing it
                 $course = $this->Classes->Courses->createIfNotExists($helper->getEventId(), $stageId, $classObj);
                 $class->course = $course;
                 $class = $this->_addAllRunnersInClass($classObj, $class, $helper);
-                $runnerCount += count($class->runners);
+                $metrics->addToRunnerCounter(count($class->runners));
                 $classesToSave[] = $class;
             }
         }
 
-        $classCount = count($classesToSave);
-        $type = $configChecker->preCheckType();
-        $now = new FrozenTime();
-        $duration = round(microtime(true) - $startsTime, 2);
-        return [
-            'data' => $classesToSave,
-            'meta' => [
-                'updated' => [
-                    'classes' => $classCount,
-                    'runners' => $runnerCount,
-                ],
-                'human' => [
-                    "Updated $runnerCount runners, $classCount classes ($now - $type) in $duration secs.",
-                ]
-            ]
-        ];
+        $metrics->addSplitsMetrics($this->runnersTable()->RunnerResults->Splits);
+        $metrics->addRunnerMetrics($this->runnersTable());
+        $this->_clearUploadCache();
+
+        $metrics->saveManyOrFail($this->Classes, $classesToSave);
+
+        $develop = $this->getRequest()->getQuery('develop');
+        if (!$develop || $develop < 301) {
+            return $metrics->toArrayLegacy($configChecker->preCheckType());
+        }
+        return $metrics->toArray($configChecker->preCheckType());
     }
 
     private function _addAllRunnersInClass(array $classArray, ClassEntity $class, UploadHelper $helper): ClassEntity
     {
+        $this->runnersTable()->ifDifferentClassEmptyStoredList($class->id);
         $runners = [];
         foreach ($classArray['runners'] as $runnerData) {
             $runners[] = $this->runnersTable()->createRunnerWithResults($runnerData, $class, $helper);
@@ -107,11 +107,8 @@ class UploadsController extends ApiController
         $this->Classes = ClassesTable::load();
         $this->flatResponse = true;
         try {
-            $this->_clearUploadCache();
             $helper = new UploadHelper($data, $this->request->getParam('eventID'));
             $this->return = $this->_addNew($helper);
-            $this->_clearUploadCache();
-            $this->Classes->saveManyOrFail($this->return['data']);
         } catch (\PDOException $e) {
             $this->log('Uploads PDOException: ' . $e->getMessage()
                 . " \n\n" . json_encode($data)

@@ -4,12 +4,10 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
-use Cake\ORM\Entity;
-
 /**
  * @property string $description
  */
-class StageType extends Entity
+class StageType extends AppEntity
 {
     public const CLASSIC = '29d5050b-4769-4be5-ace4-7e5973f68e3c';
     public const MASS_START = 'ce5e95ea-9f2b-4a98-86e1-2b43651adfee';

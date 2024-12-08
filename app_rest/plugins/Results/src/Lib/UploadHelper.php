@@ -18,7 +18,7 @@ class UploadHelper
     private array $_data;
     private string $_eventId;
     private UploadConfigChecker $_checker;
-    private ResultSetInterface $_existingRunnerResults;
+    private array $_existingRunnerResults;
 
     public function __construct(array $data, string $eventID)
     {
@@ -47,6 +47,11 @@ class UploadHelper
         return $this->_checker->getStageId();
     }
 
+    public static function md5Encode(array $array): string
+    {
+        return md5(json_encode($array));
+    }
+
     public function validateConfigChecker(): UploadConfigChecker
     {
         $this->_checker = new UploadConfigChecker($this->_data);
@@ -65,21 +70,36 @@ class UploadHelper
         }
     }
 
-    public function setExistingRunnerResults(ResultSetInterface $existingRunnerResults)
+    public function setExistingRunnerResults(ResultSetInterface $existingRunnerResults): UploadHelper
     {
-        $this->_existingRunnerResults = $existingRunnerResults;
+        $this->_existingRunnerResults = [];
+        /** @var RunnerResult $runnerResult */
+        foreach ($existingRunnerResults as $runnerResult) {
+            $this->_existingRunnerResults[$runnerResult->runner_id][] = $runnerResult;
+        }
         return $this;
     }
 
-    public function getExistingResultsForThisRunner(
+    /**
+     * @return RunnerResult[]
+     */
+    private function _getExistingResultsByRunner(Runner $runner): array
+    {
+        return $this->_existingRunnerResults[$runner->id] ?? [];
+    }
+
+    public function getExistingDbResultsForThisRunner(
         Runner $runner,
         RunnerResult $runnerResultToSave
-    ): CollectionInterface {
-        return $this->_existingRunnerResults
-            ->filter(function ($row) use ($runner, $runnerResultToSave) {
-                /** @var RunnerResult $row */
-                return $row->isSameResult($runner, $runnerResultToSave);
-            });
+    ): array {
+        $toRet = [];
+        $resForRunner = $this->_getExistingResultsByRunner($runner);
+        foreach ($resForRunner as $runnerResult) {
+            if ($runnerResult->isSameResult($runnerResultToSave)) {
+                $toRet[] = $runnerResult;
+            }
+        }
+        return $toRet;
     }
 
     public function getChecker(): UploadConfigChecker

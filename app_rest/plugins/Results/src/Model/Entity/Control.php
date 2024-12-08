@@ -4,14 +4,12 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
-use Cake\ORM\Entity;
-
 /**
  * @property mixed $station
  * @property string $control_type_id
  * @property ControlType $control_type
  */
-class Control extends Entity
+class Control extends AppEntity
 {
     protected $_accessible = [
         '*' => false,

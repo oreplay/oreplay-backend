@@ -4,16 +4,18 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
-use Cake\ORM\Entity;
+use Results\Lib\UploadHelper;
 
 /**
+ * @property mixed $oe_key
  * @property string $short_name
+ * @property string $long_name
  * @property string $event_id
  * @property string $stage_id
  * @property Runner[] $runners
  * @property Course $course
  */
-class ClassEntity extends Entity
+class ClassEntity extends AppEntity
 {
     public const ME = 'd8a87faf-68a4-487b-8f28-6e0ead6c1a57';
 
@@ -43,8 +45,14 @@ class ClassEntity extends Entity
 
     public function isSameUploadHash(array $compareArray): bool
     {
-        $uploadHash = md5(json_encode($compareArray));
+        $uploadHash = UploadHelper::md5Encode($compareArray);
         $existingHash = $this->_fields['upload_hash'] ?? 'hash_does_not_exist';
         return $existingHash == $uploadHash;
+    }
+
+    public function setHash(array $resultData)
+    {
+        $hash = UploadHelper::md5Encode($resultData);
+        //$this->_fields['upload_hash'] = $hash;
     }
 }

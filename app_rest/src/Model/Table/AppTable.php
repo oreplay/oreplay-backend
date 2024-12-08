@@ -11,6 +11,7 @@ use Cake\ORM\Query;
 use Cake\Utility\Text;
 use RestApi\Model\Table\RestApiTable;
 use Results\Lib\UploadHelper;
+use Results\Model\Entity\AppEntity;
 
 abstract class AppTable extends RestApiTable
 {
@@ -24,6 +25,15 @@ abstract class AppTable extends RestApiTable
         return $this->patchEntity($entity, $data);
     }
 
+    public function fillNewWithUuid(array $data)
+    {
+        /** @var AppEntity $entity */
+        $entity = $this->newEmptyEntity();
+        $entity->id = Text::uuid();
+        $schema = $this->getSchema();
+        return $entity->fastPatch($data, $schema);
+    }
+
     public function findWhereEventAndStage(UploadHelper $helper): Query
     {
         return $this->find()->where([
@@ -34,7 +44,7 @@ abstract class AppTable extends RestApiTable
 
     public function patchNewWithStage(array $data, string $eventId, string $stageId)
     {
-        $res = $this->patchFromNewWithUuid($data);
+        $res = $this->fillNewWithUuid($data);
         $res->event_id = $eventId;
         $res->stage_id = $stageId;
         $shortName = $data['short_name'] ?? null;

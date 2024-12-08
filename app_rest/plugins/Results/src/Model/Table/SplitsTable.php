@@ -25,6 +25,13 @@ class SplitsTable extends AppTable
         ControlsTable::addHasMany($this);
     }
 
+    public function patchNewWithStage(array $data, string $eventId, string $stageId)
+    {
+        /** @var Split $split */
+        $split = parent::patchNewWithStage($data, $eventId, $stageId);
+        return $split;
+    }
+
     public function createIfNotExists(string $eventId, string $stageId, array $data): Split
     {
         $conditions = $data;
@@ -44,18 +51,30 @@ class SplitsTable extends AppTable
         return $this->deleteAll(['runner_id' => $runnerId]);
     }
 
+    private int $_splitAmount = 0;
+    private float $_splitTime = 0;
+    public function getSplitAmount(): int
+    {
+        return $this->_splitAmount;
+    }
+    public function getSplitTime(): float
+    {
+        return $this->_splitTime;
+    }
     public function uploadForEachSplit(RunnerResult $resultToSave, array $splits, UploadHelper $helper): RunnerResult
     {
         if ($splits) {
-            $this->deleteAllByRunnerId($resultToSave->id);
+            $startsTimeSplits = microtime(true);
             foreach ($splits as $split) {
-                $splitToSave = $this->createIfNotExists($helper->getEventId(), $helper->getStageId(), $split);
+                $splitToSave = $this->patchNewWithStage($split, $helper->getEventId(), $helper->getStageId());
                 if ($split['station'] ?? null) {
                     $control = $this->Controls->createIfNotExists($helper->getEventId(), $helper->getStageId(), $split);
                     $splitToSave->addControl($control);
                 }
+                $this->_splitAmount++;
                 $resultToSave->addSplit($splitToSave);
             }
+            $this->_splitTime += round(microtime(true) - $startsTimeSplits, 2);
         }
         return $resultToSave;
     }
