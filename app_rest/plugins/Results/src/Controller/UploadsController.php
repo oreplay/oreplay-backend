@@ -58,16 +58,16 @@ class UploadsController extends ApiController
         foreach ($configChecker->getClasses() as $classObj) {
             $class = $this->Classes->createIfNotExists($helper->getEventId(), $stageId, $classObj);
             if (!$class->isSameUploadHash($classObj)) {
+                $helper->getMetrics()->startCoursesTime();
                 // if no change is done in the whole class, we could totally skip processing it
                 $course = $this->Classes->Courses->createIfNotExists($helper->getEventId(), $stageId, $classObj);
                 $class->course = $course;
+                $helper->getMetrics()->endCoursesTime();
                 $class = $this->_addAllRunnersInClass($classObj, $class, $helper);
-                $metrics->addToRunnerCounter(count($class->runners));
-                $classesToSave = $metrics->saveManyOrFail($this->Classes, $class);
+                $metrics->saveManyOrFail($this->Classes, $class);
             }
         }
 
-        $metrics->addRunnerMetrics($this->runnersTable());
         $this->_clearUploadCache();
 
         $metrics->endTotalTimer();
@@ -83,9 +83,16 @@ class UploadsController extends ApiController
     {
         $this->runnersTable()->ifDifferentClassEmptyStoredList($class->id);
         $runners = [];
-        foreach ($classArray['runners'] as $runnerData) {
+        $runnerArray = $classArray['runners'];
+        $runnerCount = count($runnerArray);
+        $helper->getMetrics()->startRunnersOutLoopTime();
+        for ($i = 0; $i < $runnerCount; $i++) {
+            $helper->getMetrics()->startRunnersInLoopTime();
+            $runnerData = $runnerArray[$i];
             $runners[] = $this->runnersTable()->createRunnerWithResults($runnerData, $class, $helper);
+            $helper->getMetrics()->endRunnersInLoopTime();
         }
+        $helper->getMetrics()->endRunnersOutLoopTime();
         $class->runners = $runners;
         return $class;
     }

@@ -7,7 +7,6 @@ namespace Results\Lib;
 use Cake\I18n\FrozenTime;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Table\ClassesTable;
-use Results\Model\Table\RunnersTable;
 
 class UploadMetrics
 {
@@ -16,14 +15,24 @@ class UploadMetrics
     private int $runnerCount = 0;
     private int $splitAmount = 0;
     private int $runnerResultsCount = 0;
+    private int $coursesCount = 0;
     private float $_startTimeTotal = 0.0;
     private float $_startTimeProcessing = 0.0;
     private float $_processingDuration = 0.0;
     private float $_savingDuration = 0.0;
     private float $_totalDuration = 0.0;
     private float $_splitDuration = 0.0;
-    private float $_runnersDuration = 0.0;
+    private float $_runnerResultsDuration = 0.0;
     private float $_startsTimeSplits = 0.0;
+    private float $_startRunnerTime = 0.0;
+    private float $_startsCoursesTime = 0.0;
+    private float $_coursesDuration = 0.0;
+    private float $_startClubsTime = 0.0;
+    private float $_clubsDuration = 0.0;
+    private float $_startRunnerOutLoopTime = 0.0;
+    private float $_runnersOutLoopDuration = 0.0;
+    private float $_startRunnerInLoopTime = 0.0;
+    private float $_runnersInLoopDuration = 0.0;
 
     public function __construct()
     {
@@ -33,7 +42,7 @@ class UploadMetrics
 
     private function _roundUp(float $value, int $precision = 2): float
     {
-        return round($value, $precision);
+        return $value;
     }
     private function startTotal()
     {
@@ -49,8 +58,12 @@ class UploadMetrics
         $this->_processingDuration += $this->_roundUp(microtime(true) - $this->_startTimeProcessing);
     }
 
-    public function saveManyOrFail(ClassesTable $classes, ClassEntity $singleClassToSave)
+    /**
+     * @return ClassEntity[]
+     */
+    public function saveManyOrFail(ClassesTable $classes, ClassEntity $singleClassToSave): array
     {
+        $this->addToRunnerCounter(count($singleClassToSave->runners));
         $this->_classesToSave[] = $singleClassToSave;
         $this->classCount = count($this->_classesToSave);
         $this->endProcessing();
@@ -68,7 +81,7 @@ class UploadMetrics
         $this->_totalDuration = $this->_roundUp($end - $this->_startTimeTotal);
     }
 
-    public function addToRunnerCounter(int $toAdd)
+    private function addToRunnerCounter(int $toAdd)
     {
         $this->runnerCount += $toAdd;
     }
@@ -76,6 +89,53 @@ class UploadMetrics
     public function startSplitsTime()
     {
         $this->_startsTimeSplits = microtime(true);
+    }
+
+    public function startRunnerResultsTime()
+    {
+        $this->_startRunnerTime = microtime(true);
+    }
+    public function endRunnerResultsTime()
+    {
+        $this->_runnerResultsDuration += round(microtime(true) - $this->_startRunnerTime, 2);
+    }
+
+    public function startCoursesTime()
+    {
+        $this->_startsCoursesTime = microtime(true);
+    }
+    public function endCoursesTime()
+    {
+        $this->_coursesDuration += round(microtime(true) - $this->_startsCoursesTime, 2);
+        $this->coursesCount++;
+    }
+
+    public function startRunnersOutLoopTime()
+    {
+        $this->_startRunnerOutLoopTime = microtime(true);
+    }
+
+    public function endRunnersOutLoopTime()
+    {
+        $this->_runnersOutLoopDuration += round(microtime(true) - $this->_startRunnerOutLoopTime, 2);
+    }
+
+    public function startRunnersInLoopTime()
+    {
+        $this->_startRunnerInLoopTime = microtime(true);
+    }
+    public function endRunnersInLoopTime()
+    {
+        $this->_runnersInLoopDuration += round(microtime(true) - $this->_startRunnerInLoopTime, 2);
+    }
+
+    public function startClubsTime()
+    {
+        $this->_startClubsTime = microtime(true);
+    }
+    public function endClubsTime()
+    {
+        $this->_clubsDuration += round(microtime(true) - $this->_startClubsTime, 2);
     }
 
     public function endSplitsTime()
@@ -88,49 +148,58 @@ class UploadMetrics
         $this->splitAmount++;
     }
 
-    public function addRunnerMetrics($Runners)
+    public function addOneRunnerToCounter()
     {
-        /** @var RunnersTable $Runners */
-        $this->_runnersDuration = $Runners->RunnerResults->getRunnerTime();
-        $this->runnerResultsCount = $Runners->runnerResultsCount;
-        $runnersDuration1 = $Runners->RunnerResults->getRunnerTime1();
-        $runnersDuration2 = $Runners->RunnerResults->getRunnerTime2();
-        $runnersDuration3 = $Runners->RunnerResults->getRunnerTime3();
+        $this->runnerResultsCount++;
     }
 
     public function toArray(string $type): array
     {
         $now = new FrozenTime();
         $newLine = "\n       ";
+        $runnersInLoop = $this->_runnersInLoopDuration;
+        $loopingTime = $this->_runnersOutLoopDuration - $runnersInLoop;
+        $processingDuration = round($this->_processingDuration, 2);
+        $savingDuration = round($this->_savingDuration, 2);
+        $resultsTotal = round($this->_runnersOutLoopDuration, 2);
+        $total = round($this->_totalDuration, 2);
         return [
             'meta' => [
                 'updated' => [
                     'classes' => $this->classCount,
+                    'courses' => $this->coursesCount,
                     'runners' => $this->runnerCount,
                     'splits' => $this->splitAmount,
                     'runnerResults' => $this->runnerResultsCount,
                 ],
                 'timings' => [
                     'processing' => [
-                        'splits' => $this->_splitDuration,
-                        'total' => $this->_processingDuration
+                        'courses' => $this->_coursesDuration,
+                        'runners' => [
+                            'runnerLoop' => $loopingTime,
+                            'runnersInLoop' => $runnersInLoop,
+                            'clubs' => $this->_clubsDuration,
+                            'runnerResults' => $this->_runnerResultsDuration,
+                            'splits' => $this->_splitDuration,
+                            'total' => $resultsTotal,
+                        ],
+                        'total' => $processingDuration
                     ],
                     'saving' => [
-                        'total' => $this->_savingDuration
+                        'total' => $savingDuration
                     ],
-                    'total' => $this->_totalDuration,
+                    'total' => $total,
                 ],
                 'humanColor' => '#FF0000',
                 'human' => [
-                    "\n *** Updated $this->classCount classes, $this->runnerCount runners "
-                    . "[$this->_runnersDuration secs processing runners], "
-                    //. "[$runnersDuration1 + $runnersDuration2 + $runnersDuration3], "
-                    . "$newLine"
-                    . "$this->runnerResultsCount runner_results, $this->splitAmount splits "
-                    . "[$this->_splitDuration secs processing splits], $newLine"
-                    . "   in $this->_processingDuration secs processing $newLine"
-                    . "   + $this->_savingDuration secs saving $newLine"
-                    . "   = $this->_totalDuration total seconds. $newLine",
+                    "\n *** Updated $this->classCount classes, "
+                    . "$this->coursesCount courses ($this->_coursesDuration s) $newLine"
+                    . "$this->runnerCount runners "
+                    . "(and $this->runnerResultsCount results in $resultsTotal s "
+                    . "[$loopingTime looping + $runnersInLoop s + $this->_clubsDuration clubs + "
+                    . "$this->_runnerResultsDuration results]), $newLine"
+                    . "$this->splitAmount splits (in $this->_splitDuration s), $newLine"
+                    . "   in $total seconds ($processingDuration processing + $savingDuration saving) $newLine",
                     "($now - $type)\n" . 'second line for testing',
                 ]
             ],
@@ -142,6 +211,7 @@ class UploadMetrics
     {
         $now = new FrozenTime();
         $res = $this->toArray($type);
+        unset($res['meta']['updated']['courses']);
         unset($res['meta']['updated']['splits']);
         unset($res['meta']['updated']['runnerResults']);
         unset($res['meta']['timings']);

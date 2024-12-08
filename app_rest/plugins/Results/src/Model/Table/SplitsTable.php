@@ -54,7 +54,6 @@ class SplitsTable extends AppTable
     public function uploadForEachSplit(RunnerResult $resultToSave, array $splits, UploadHelper $helper): RunnerResult
     {
         if ($splits) {
-            $helper->getMetrics()->startSplitsTime();
             foreach ($splits as $split) {
                 $splitToSave = $this->fillNewWithStage($split, $helper->getEventId(), $helper->getStageId());
                 if ($split['station'] ?? null) {
@@ -64,7 +63,6 @@ class SplitsTable extends AppTable
                 $helper->getMetrics()->addOneSplit();
                 $resultToSave->addSplit($splitToSave);
             }
-            $helper->getMetrics()->endSplitsTime();
         }
         return $resultToSave;
     }

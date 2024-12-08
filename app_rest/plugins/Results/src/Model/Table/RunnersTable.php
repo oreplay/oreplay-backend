@@ -136,21 +136,24 @@ class RunnersTable extends AppTable
             );
     }
 
-    public $runnerResultsCount = 0;
     public function createRunnerWithResults(array $runnerData, ClassEntity $class, UploadHelper $helper): Runner
     {
+        $helper->getMetrics()->startClubsTime();
         $runner = $this->createRunnerIfNotExists($helper->getEventId(), $helper->getStageId(), $runnerData, $class);
+        $helper->getMetrics()->endClubsTime();
 
         $results = $runnerData['runner_results'] ?? [];
         foreach ($results as $resultData) {
-            $this->runnerResultsCount++;
+            $helper->getMetrics()->addOneRunnerToCounter();
             $runner = $this->RunnerResults->createRunnerResult($resultData, $runner, $helper);
         }
 
+        $helper->getMetrics()->startClubsTime();
         $runnerClub = $runnerData['club'] ?? null;
         if ($runnerClub) {
             $runner->club = $this->Clubs->createIfNotExists($helper->getEventId(), $helper->getStageId(), $runnerClub);
         }
+        $helper->getMetrics()->endClubsTime();
         return $runner;
     }
 }
