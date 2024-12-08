@@ -25,10 +25,10 @@ class SplitsTable extends AppTable
         ControlsTable::addHasMany($this);
     }
 
-    public function patchNewWithStage(array $data, string $eventId, string $stageId)
+    public function fillNewWithStage(array $data, string $eventId, string $stageId)
     {
         /** @var Split $split */
-        $split = parent::patchNewWithStage($data, $eventId, $stageId);
+        $split = parent::fillNewWithStage($data, $eventId, $stageId);
         return $split;
     }
 
@@ -41,7 +41,7 @@ class SplitsTable extends AppTable
         /** @var Split $entity */
         $entity = $this->getFromCache([$cacheKey, $conditions]);
         if (!$entity) {
-            $entity = $this->patchNewWithStage($data, $eventId, $stageId);
+            $entity = $this->fillNewWithStage($data, $eventId, $stageId);
         }
         return $entity;
     }
@@ -66,7 +66,7 @@ class SplitsTable extends AppTable
         if ($splits) {
             $startsTimeSplits = microtime(true);
             foreach ($splits as $split) {
-                $splitToSave = $this->patchNewWithStage($split, $helper->getEventId(), $helper->getStageId());
+                $splitToSave = $this->fillNewWithStage($split, $helper->getEventId(), $helper->getStageId());
                 if ($split['station'] ?? null) {
                     $control = $this->Controls->createIfNotExists($helper->getEventId(), $helper->getStageId(), $split);
                     $splitToSave->addControl($control);

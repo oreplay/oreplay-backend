@@ -40,7 +40,7 @@ class ControlsTable extends AppTable
         }
         $entity = $this->getByStation($eventId, $stageId, $data['station']);
         if (!$entity) {
-            $entity = $this->patchNewWithStage($data, $eventId, $stageId);
+            $entity = $this->fillNewWithStage($data, $eventId, $stageId);
         }
         $entity->setTypeNormalIfNotDefined();
         return $entity;

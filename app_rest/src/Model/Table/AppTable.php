@@ -42,7 +42,7 @@ abstract class AppTable extends RestApiTable
         ]);
     }
 
-    public function patchNewWithStage(array $data, string $eventId, string $stageId)
+    public function fillNewWithStage(array $data, string $eventId, string $stageId)
     {
         $res = $this->fillNewWithUuid($data);
         $res->event_id = $eventId;
@@ -93,7 +93,7 @@ abstract class AppTable extends RestApiTable
         }
         $entity = $this->getByShortName($eventId, $stageId, $data['short_name'] ?? '');
         if (!$entity) {
-            $entity = $this->patchNewWithStage($data, $eventId, $stageId);
+            $entity = $this->fillNewWithStage($data, $eventId, $stageId);
         }
         return $entity;
     }

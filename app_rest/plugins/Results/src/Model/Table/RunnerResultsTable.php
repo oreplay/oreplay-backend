@@ -42,10 +42,10 @@ class RunnerResultsTable extends AppTable
         return $table;
     }
 
-    public function patchNewWithStage(array $data, string $eventId, string $stageId): RunnerResult
+    public function fillNewWithStage(array $data, string $eventId, string $stageId): RunnerResult
     {
         /** @var RunnerResult $res */
-        $res = parent::patchNewWithStage($data, $eventId, $stageId);
+        $res = parent::fillNewWithStage($data, $eventId, $stageId);
         return $res;
     }
 
@@ -88,7 +88,7 @@ class RunnerResultsTable extends AppTable
 
     private function _newResultWithType(array $resultData, UploadHelper $helper): RunnerResult
     {
-        $runnerResultToSave = $this->patchNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
+        $runnerResultToSave = $this->fillNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
         $runnerResultToSave->setHash($resultData);
 
         $runnerResultToSave->result_type = $this

@@ -47,7 +47,7 @@ class RunnerResultsTableTest extends TestCase
                 'description' => 'Stage'
             ]
         ];
-        $res = $this->RunnerResults->patchNewWithStage($data, Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2);
+        $res = $this->RunnerResults->fillNewWithStage($data, Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2);
         $this->assertEquals($data['stage_order'], $res->stage_order);
         $this->assertEquals($data['leg_number'], $res->leg_number);
         $this->assertEquals($data['status_code'], $res->status_code);
