@@ -145,6 +145,27 @@
                                                     "type": "string",
                                                     "example": "2022-03-13T10:01:00.000+00:00"
                                                 },
+                                                "organizer": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "string",
+                                                            "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "ADCON"
+                                                        },
+                                                        "country": {
+                                                            "type": "string",
+                                                            "example": "Spain"
+                                                        },
+                                                        "region": {
+                                                            "type": "string",
+                                                            "example": "Region"
+                                                        }
+                                                    }
+                                                },
                                                 "_links": {
                                                     "type": "object",
                                                     "properties": {
@@ -450,6 +471,27 @@
                                                                 }
                                                             }
                                                         }
+                                                    }
+                                                }
+                                            },
+                                            "organizer": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "ADCON"
+                                                    },
+                                                    "country": {
+                                                        "type": "string",
+                                                        "example": "Spain"
+                                                    },
+                                                    "region": {
+                                                        "type": "string",
+                                                        "example": "Region"
                                                     }
                                                 }
                                             },

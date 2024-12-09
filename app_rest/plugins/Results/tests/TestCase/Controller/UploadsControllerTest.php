@@ -71,22 +71,21 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['id' => ClassEntity::ME]);
 
         $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleImportSmall()];
-        $this->post($this->_getEndpoint(), $data);
+        $this->post($this->_getEndpoint() . '?version=300', $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
         $decodedData = $jsonDecoded['data'];
-        $now = new FrozenTime();
-        $seconds = substr($jsonDecoded['meta']['human'][0], -13);
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
             'updated' => [
                 'classes' => 2,
                 'runners' => 4,
             ],
-            'human' => [
-                "Updated 4 runners, 2 classes, 0 splits [0], ($now - start_list) $seconds",
-            ]
+            'human' => ['']
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+        $this->assertStringStartsWith('Updated 4 runners, 2 classes, 0 splits', $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -148,8 +147,21 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['id' => ClassEntity::ME]);
 
         $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleImportSmall()];
-        $this->post($this->_getEndpoint(), $data);
-        $this->assertException('Forbidden', 403, 'Invalid Bearer token');
+        $this->post($this->_getEndpoint() . '?version=300', $data);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $now = new FrozenTime();
+        $expectedMeta = [
+            'updated' => [
+                'classes' => 0,
+                'runners' => 0,
+            ],
+            'human' => [
+                "\n    [ERROR - 403] ($now) ForbiddenException \n"
+            ]
+        ];
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+
     }
 
     public function testAddNew_shouldNotUpdateStartListWhenThereAreFinishTimes()
@@ -166,7 +178,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['id' => ClassEntity::ME]);
 
         $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleImportSmall()];
-        $this->post($this->_getEndpoint(), $data);
+        $this->post($this->_getEndpoint() . '?version=300', $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
         $now = new FrozenTime();
@@ -176,7 +188,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 'runners' => 0,
             ],
             'human' => [
-                "[Error - 400] ($now) Cannot add start times when there are already finish times"
+                "\n    [ERROR - 400] ($now) Cannot add start times when there are already finish times \n"
             ]
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
@@ -206,23 +218,22 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['id' => ClassEntity::ME]);
 
         $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleSimpleFinishTime()];
-        $this->post($this->_getEndpoint(), $data);
+        $this->post($this->_getEndpoint() . '?version=300', $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
         $decodedData = $jsonDecoded['data'];
-        $now = new FrozenTime();
         $expectedRunnerAmount = 2;
-        $seconds = substr($jsonDecoded['meta']['human'][0], -13);
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
             'updated' => [
                 'classes' => 1,
                 'runners' => $expectedRunnerAmount,
             ],
-            'human' => [
-                "Updated $expectedRunnerAmount runners, 1 classes, 2 splits [0.01], ($now - res_finish) $seconds",
-            ]
+            'human' => ['']
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+        $this->assertStringStartsWith("Updated $expectedRunnerAmount runners, 1 classes, 2 splits", $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -248,7 +259,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         // second upload should not add again results
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
-        $this->post($this->_getEndpoint(), $data);
+        $this->post($this->_getEndpoint() . '?version=300', $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
         $decodedData = $jsonDecoded['data'];

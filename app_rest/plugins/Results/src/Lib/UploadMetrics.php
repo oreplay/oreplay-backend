@@ -159,9 +159,9 @@ class UploadMetrics
         $newLine = "\n       ";
         $runnersInLoop = $this->_runnersInLoopDuration;
         $loopingTime = $this->_runnersOutLoopDuration - $runnersInLoop;
+        $resultsTotal = round($this->_runnersOutLoopDuration, 2);
         $processingDuration = round($this->_processingDuration, 2);
         $savingDuration = round($this->_savingDuration, 2);
-        $resultsTotal = round($this->_runnersOutLoopDuration, 2);
         $total = round($this->_totalDuration, 2);
         return [
             'meta' => [
@@ -209,6 +209,9 @@ class UploadMetrics
 
     public function toArrayLegacy(string $type): array
     {
+        $processingDuration = round($this->_processingDuration, 2);
+        $savingDuration = round($this->_savingDuration, 2);
+        $total = round($this->_totalDuration, 2);
         $now = new FrozenTime();
         $res = $this->toArray($type);
         unset($res['meta']['updated']['courses']);
@@ -220,8 +223,8 @@ class UploadMetrics
         $res['meta']['human'] = [
             "Updated $this->runnerCount runners, "
             . "$this->classCount classes, "
-            . "$this->splitAmount splits [$this->_splitDuration], "
-            . "($now - $type) in $this->_processingDuration secs.",
+            . "$this->splitAmount splits, "
+            . "($now - $type) in $total seconds ($processingDuration processing + $savingDuration saving)",
         ];
         //*/
         return $res;

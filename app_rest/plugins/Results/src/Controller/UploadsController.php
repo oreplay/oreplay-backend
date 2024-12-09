@@ -72,8 +72,8 @@ class UploadsController extends ApiController
 
         $metrics->endTotalTimer();
 
-        $develop = $this->getRequest()->getQuery('develop');
-        if (!$develop || $develop < 301) {
+        $queryParam = $this->getRequest()->getQuery('version');
+        if (!$queryParam || $queryParam < 301) {
             return $metrics->toArrayLegacy($configChecker->preCheckType());
         }
         return $metrics->toArray($configChecker->preCheckType());

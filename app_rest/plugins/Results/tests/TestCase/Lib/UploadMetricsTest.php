@@ -7,9 +7,7 @@ namespace Lib;
 use App\Controller\ApiController;
 use Cake\TestSuite\TestCase;
 use Results\Lib\UploadMetrics;
-use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
-use Results\Model\Table\ClassesTable;
 
 class UploadMetricsTest extends TestCase
 {
@@ -24,7 +22,6 @@ class UploadMetricsTest extends TestCase
     public function testToArray()
     {
         $metrics = new UploadMetrics();
-        $metrics->saveManyOrFail(ClassesTable::load(), new ClassEntity());
 
         $res = $metrics->toArray('fake_test_type');
         $this->assertEquals(['meta', 'data'], array_keys($res));
@@ -36,16 +33,16 @@ class UploadMetricsTest extends TestCase
             'runners' => 0,
             'splits' => 0,
             'runnerResults' => 0,
+            'courses' => 0,
         ], $res['meta']['updated']);
         $this->assertEquals(['processing', 'saving', 'total'], array_keys($res['meta']['timings']));
-        $this->assertEquals(['splits', 'total'], array_keys($res['meta']['timings']['processing']));
+        $this->assertEquals(['courses', 'runners', 'total'], array_keys($res['meta']['timings']['processing']));
         $this->assertEquals(['total'], array_keys($res['meta']['timings']['saving']));
     }
 
     public function testToArrayLegacy()
     {
         $metrics = new UploadMetrics();
-        $metrics->saveManyOrFail(ClassesTable::load(), new ClassEntity());
 
         $res = $metrics->toArrayLegacy('fake_test_type');
         $this->assertEquals(['meta', 'data'], array_keys($res));
