@@ -22,6 +22,8 @@ use Results\Model\Table\TokensTable;
  */
 class UploadsController extends ApiController
 {
+    private UploadHelper $_helper;
+
     public function isPublicController(): bool
     {
         return true;
@@ -110,8 +112,8 @@ class UploadsController extends ApiController
         $this->Classes = ClassesTable::load();
         $this->flatResponse = true;
         try {
-            $helper = new UploadHelper($data, $this->request->getParam('eventID'));
-            $this->return = $this->_addNew($helper);
+            $this->_helper = new UploadHelper($data, $this->request->getParam('eventID'));
+            $this->return = $this->_addNew($this->_helper);
         } catch (\PDOException $e) {
             $this->log('Uploads PDOException: ' . $e->getMessage()
                 . " \n\n" . json_encode($data)
@@ -138,18 +140,8 @@ class UploadsController extends ApiController
     {
         $now = new FrozenTime();
         $this->response = $this->response->withStatus(202);
-        return [
-            'data' => null,
-            'meta' => [
-                'updated' => [
-                    'classes' => 0,
-                    'runners' => 0,
-                ],
-                'human' => [
-                    "\n    [ERROR - $code] ($now) $message \n",
-                ]
-            ]
-        ];
+        return $this->_helper->getMetrics()
+            ->toArrayError(["\n    [ERROR - $code] ($now) $message \n"]);
     }
 
     private function _getBearer(): ?string

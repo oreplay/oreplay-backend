@@ -153,6 +153,20 @@ class UploadMetrics
         $this->runnerResultsCount++;
     }
 
+    public function toArrayError(array $human): array
+    {
+        return [
+            'data' => null,
+            'meta' => [
+                'updated' => [
+                    'classes' => 0,
+                    'runners' => 0,
+                ],
+                'human' => $human
+            ]
+        ];
+    }
+
     public function toArray(string $type): array
     {
         $now = new FrozenTime();
