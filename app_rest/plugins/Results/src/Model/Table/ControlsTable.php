@@ -34,8 +34,8 @@ class ControlsTable extends AppTable
             $entity = $this->fillNewWithStage($data, $helper->getEventId(), $helper->getStageId());
             $helper->storeControlByStation($entity);
         }
-        $entity->setTypeNormalIfNotDefined();
         $entity->setAsNew();
+        $entity->setTypeNormalIfNotDefined();
         return $entity;
     }
 

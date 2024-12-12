@@ -70,6 +70,7 @@ class RunnerResult extends AppEntity
         if (!($this->_fields['splits'] ?? null)) {
             $this->_fields['splits'] = [];
         }
+        $this->setDirty('splits');
         $this->_fields['splits'][] = $split;
     }
     /**

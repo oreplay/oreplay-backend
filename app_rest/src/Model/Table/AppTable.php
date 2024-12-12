@@ -47,6 +47,7 @@ abstract class AppTable extends RestApiTable
         $res = $this->fillNewWithUuid($data);
         $res->event_id = $eventId;
         $res->stage_id = $stageId;
+        $res->setDirty('event_id');
         $shortName = $data['short_name'] ?? null;
         if ($shortName) {
             list($cacheKey) = $this->getShortNameCacheKey($eventId, $stageId, $shortName);

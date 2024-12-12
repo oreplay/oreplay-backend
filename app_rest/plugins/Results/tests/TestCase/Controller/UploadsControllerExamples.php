@@ -340,4 +340,298 @@ class UploadsControllerExamples
             ]
         ];
     }
+
+    public static function exampleImport2CategoriesStarts()
+    {
+        return [
+            'configuration' => [
+                'file' => '/home/freefri/Dropbox/Descargas/OReplayExamples/StartsCEO-Media-FE.xml',
+                'extension' => 'XML',
+                'utf' => true,
+                'known_data' => true,
+                'contents' => 'ResultList',
+                'results_type' => 'Breakdown',
+                'one_stage' => true,
+                'source' => 'OEv12',
+                'iof_version' => '3.0',
+                'include_score' => false
+            ],
+            'event' => [
+                'id' => Event::FIRST_EVENT,
+                'description' => 'Test_Event',
+                'is_hidden' => false,
+                'stages' => [
+                    (int) 0 => [
+                        'id' => StagesFixture::STAGE_FEDO_2,
+                        'description' => 'Test_Stage',
+                        'base_date' => '2024-02-01',
+                        'base_time' => '11:00:00.000',
+                        'order_number' => (int) 1,
+                        'classes' => [
+                            (int) 0 => [
+                                'id' => '',
+                                'uuid' => '',
+                                'oe_key' => '1',
+                                'short_name' => 'U-10',
+                                'long_name' => 'U-10',
+                                'teams' => [],
+                                'course' => [
+                                    'id' => '',
+                                    'uuid' => '',
+                                    'distance' => '1850.0',
+                                    'climb' => '30.0',
+                                    'controls' => (int) 9,
+                                    'oe_key' => '9007',
+                                    'short_name' => 'R07'
+                                ],
+                                'runners' => [
+                                    (int) 0 => [
+                                        'id' => '',
+                                        'uuid' => '',
+                                        'sicard' => '8502455',
+                                        'sex' => 'F',
+                                        'first_name' => 'Maria',
+                                        'last_name' => 'Alvarez',
+                                        'bib_number' => '3874',
+                                        'runner_results' => [
+                                            [
+                                                'id' => '',
+                                                'stage_order' => (int) 1,
+                                                'start_time' => '2024-10-18T09:56:00.000',
+                                                'status_code' => '0',
+                                                'leg_number' => (int) 1,
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ],
+                                        ],
+                                        'club' => [
+                                            'id' => '',
+                                            'uuid' => '',
+                                            'oe_key' => '200',
+                                            'short_name' => 'Valencia VERD3',
+                                            'long_name' => 'Valencia VERD3'
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            (int) 1 => [
+                                'id' => '',
+                                'uuid' => '',
+                                'oe_key' => '42',
+                                'short_name' => 'O ROJO F',
+                                'long_name' => 'OPEN ROJO F',
+                                'teams' => [],
+                                'course' => [
+                                    'id' => '',
+                                    'uuid' => '',
+                                    'distance' => '2675.0',
+                                    'climb' => '85.0',
+                                    'controls' => (int) 14,
+                                    'oe_key' => '9003',
+                                    'short_name' => 'R03'
+                                ],
+                                'runners' => [
+                                    (int) 0 => [
+                                        'id' => '',
+                                        'uuid' => '',
+                                        'sicard' => '2063133',
+                                        'sex' => 'F',
+                                        'first_name' => 'Ana',
+                                        'last_name' => 'Rodriguez',
+                                        'bib_number' => '1329',
+                                        'runner_results' => [
+                                            [
+                                                'id' => '',
+                                                'stage_order' => (int) 1,
+                                                'start_time' => '2024-10-18T09:56:00.000',
+                                                'status_code' => '0',
+                                                'leg_number' => (int) 1,
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ],
+                                        ],
+                                        'club' => [
+                                            'id' => '',
+                                            'uuid' => '',
+                                            'oe_key' => '51',
+                                            'short_name' => 'Sevilla MONTELLANO',
+                                            'long_name' => 'Sevilla MONTELLANO'
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    public static function exampleImport2CategoriesSplits()
+    {
+        return [
+            'configuration' => [
+                'file' => '/home/freefri/Dropbox/Descargas/OReplayExamples/ParcialesCEO-Media-FE.xml',
+                'extension' => 'XML',
+                'utf' => true,
+                'known_data' => true,
+                'contents' => 'ResultList',
+                'results_type' => 'Breakdown',
+                'one_stage' => true,
+                'source' => 'OEv12',
+                'iof_version' => '3.0',
+                'include_score' => false
+            ],
+            'event' => [
+                'id' => Event::FIRST_EVENT,
+                'description' => 'Test_Event',
+                'is_hidden' => false,
+                'stages' => [
+                    (int) 0 => [
+                        'id' => StagesFixture::STAGE_FEDO_2,
+                        'description' => 'Test_Stage',
+                        'base_date' => '2024-02-01',
+                        'base_time' => '11:00:00.000',
+                        'order_number' => (int) 1,
+                        'classes' => [
+                            (int) 0 => [
+                                'id' => '',
+                                'uuid' => '',
+                                'oe_key' => '1',
+                                'short_name' => 'U-10',
+                                'long_name' => 'U-10',
+                                'teams' => [],
+                                'course' => [
+                                    'id' => '',
+                                    'uuid' => '',
+                                    'distance' => '1850.0',
+                                    'climb' => '30.0',
+                                    'controls' => (int) 9,
+                                    'oe_key' => '9007',
+                                    'short_name' => 'R07'
+                                ],
+                                'runners' => [
+                                    (int) 0 => [
+                                        'id' => '',
+                                        'uuid' => '',
+                                        'sicard' => '8502455',
+                                        'sex' => 'F',
+                                        'first_name' => 'Maria',
+                                        'last_name' => 'Alvarez',
+                                        'bib_number' => '3874',
+                                        'runner_results' => [
+                                            (int) 0 => [
+                                                'id' => '',
+                                                'position' => (int) 1,
+                                                'stage_order' => (int) 1,
+                                                'start_time' => '2024-10-18T09:56:00.000',
+                                                'finish_time' => '2024-10-18T10:09:40.000',
+                                                'time_seconds' => (int) 820,
+                                                'status_code' => '0',
+                                                'time_behind' => (int) 0,
+                                                'time_neutralization' => (int) 0,
+                                                'time_adjusted' => (int) 0,
+                                                'time_penalty' => (int) 0,
+                                                'time_bonus' => (int) 0,
+                                                'leg_number' => (int) 1,
+                                                'splits' => [
+                                                    (int) 0 => [
+                                                        'sicard' => '8502455',
+                                                        'station' => '89',
+                                                        'points' => (int) 0,
+                                                        'stage_order' => (int) 1,
+                                                        'reading_time' => '2024-10-18T10:09:26.000',
+                                                        'reading_milli' => (int) 1729238966000,
+                                                        'time_seconds' => (int) 806,
+                                                        'bib_runner' => '3874',
+                                                        'order_number' => (int) 9
+                                                    ]
+                                                ],
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ]
+                                        ],
+                                        'club' => [
+                                            'id' => '',
+                                            'uuid' => '',
+                                            'oe_key' => '200',
+                                            'short_name' => 'Valencia VERD3',
+                                            'long_name' => 'Valencia VERD3'
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            (int) 1 => [
+                                'id' => '',
+                                'uuid' => '',
+                                'oe_key' => '42',
+                                'short_name' => 'O ROJO F',
+                                'long_name' => 'OPEN ROJO F',
+                                'teams' => [],
+                                'course' => [
+                                    'id' => '',
+                                    'uuid' => '',
+                                    'distance' => '2675.0',
+                                    'climb' => '85.0',
+                                    'controls' => (int) 14,
+                                    'oe_key' => '9003',
+                                    'short_name' => 'R03'
+                                ],
+                                'runners' => [
+                                    (int) 0 => [
+                                        'id' => '',
+                                        'uuid' => '',
+                                        'sicard' => '2063133',
+                                        'sex' => 'F',
+                                        'first_name' => 'Ana',
+                                        'last_name' => 'Rodriguez',
+                                        'bib_number' => '1329',
+                                        'runner_results' => [
+                                            (int) 0 => [
+                                                'id' => '',
+                                                'stage_order' => (int) 1,
+                                                'status_code' => '1',
+                                                'time_neutralization' => (int) 0,
+                                                'time_adjusted' => (int) 0,
+                                                'time_penalty' => (int) 0,
+                                                'time_bonus' => (int) 0,
+                                                'leg_number' => (int) 1,
+                                                'splits' => [
+                                                    (int) 0 => [
+                                                        'sicard' => '2063133',
+                                                        'station' => '89',
+                                                        'points' => (int) 0,
+                                                        'stage_order' => (int) 1,
+                                                        'bib_runner' => '1329',
+                                                        'order_number' => (int) 14
+                                                    ]
+                                                ],
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ]
+                                        ],
+                                        'club' => [
+                                            'id' => '',
+                                            'uuid' => '',
+                                            'oe_key' => '51',
+                                            'short_name' => 'Sevilla MONTELLANO',
+                                            'long_name' => 'Sevilla MONTELLANO'
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+    }
 }

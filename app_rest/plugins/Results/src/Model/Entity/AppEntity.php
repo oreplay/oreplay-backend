@@ -19,6 +19,7 @@ class AppEntity extends Entity
                 $colType = $schema->getColumn($field)['type'] ?? '';
                 if ($colType === TableSchemaInterface::TYPE_TIMESTAMP_FRACTIONAL) {
                     $newFieldValue = new FrozenTime($newFieldValue);// convert frozen time
+                    $this->setDirty($field);
                 }
                 $this->_fields[$field] = $newFieldValue;
             }

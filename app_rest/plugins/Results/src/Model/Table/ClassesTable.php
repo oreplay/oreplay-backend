@@ -34,7 +34,6 @@ class ClassesTable extends AppTable
     {
         /** @var ClassEntity $class */
         $class = parent::createIfNotExists($eventId, $stageId, $data);
-        $class->setHash($data);
         return $class;
     }
 
