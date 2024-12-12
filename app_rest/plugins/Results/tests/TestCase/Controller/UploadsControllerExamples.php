@@ -135,6 +135,17 @@ class UploadsControllerExamples
                                                 'points_penalty' => (int) 0,
                                                 'points_bonus' => (int) 0,
                                                 'leg_number' => (int) 1,
+                                                'splits' => [
+                                                    [
+                                                        'sicard' => '4540555',
+                                                        'station' => '33',
+                                                        'points' => 0,
+                                                        'reading_time' => '2024-01-28T10:32:35.000',
+                                                        'reading_milli' => 1706433617000,
+                                                        'time_seconds' => 822,
+                                                        'order_number' => 1
+                                                    ],
+                                                ],
                                                 'result_type' => [
                                                     'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
                                                     'description' => 'Stage'

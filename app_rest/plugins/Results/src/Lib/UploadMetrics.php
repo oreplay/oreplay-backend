@@ -156,14 +156,14 @@ class UploadMetrics
     public function toArrayError(array $human): array
     {
         return [
-            'data' => null,
             'meta' => [
                 'updated' => [
                     'classes' => 0,
                     'runners' => 0,
                 ],
                 'human' => $human
-            ]
+            ],
+            'data' => $this->_classesToSave,
         ];
     }
 
@@ -235,7 +235,7 @@ class UploadMetrics
         unset($res['meta']['humanColor']);
         unset($res['meta']['human'][1]);
         $res['meta']['human'] = [
-            "Updated $this->runnerCount runners, "
+            " *** Updated $this->runnerCount runners, "
             . "$this->classCount classes, "
             . "$this->splitAmount splits, "
             . "($now - $type) in $total seconds ($processingDuration processing + $savingDuration saving)",

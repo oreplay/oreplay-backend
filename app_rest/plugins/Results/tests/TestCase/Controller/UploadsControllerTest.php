@@ -85,7 +85,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'human' => ['']
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-        $this->assertStringStartsWith('Updated 4 runners, 2 classes, 0 splits', $human);
+        $this->assertStringStartsWith(' *** Updated 4 runners, 2 classes, 0 splits', $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -233,7 +233,8 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'human' => ['']
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-        $this->assertStringStartsWith("Updated $expectedRunnerAmount runners, 1 classes, 2 splits", $human);
+        $expectedSplits = 3;
+        $this->assertStringStartsWith(" *** Updated $expectedRunnerAmount runners, 1 classes, $expectedSplits splits", $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -327,6 +328,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(0, $secondRunner['runner_results'][0]['points_penalty']);
         $this->assertEquals(0, $secondRunner['runner_results'][0]['points_bonus']);
         $this->assertEquals(1, $secondRunner['runner_results'][0]['leg_number']);
-        $this->assertArrayNotHasKey('splits', $secondRunner['runner_results'][0]);
+        $this->assertArrayHasKey('splits', $secondRunner['runner_results'][0]);
     }
 }
