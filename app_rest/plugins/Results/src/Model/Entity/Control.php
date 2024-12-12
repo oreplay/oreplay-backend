@@ -38,6 +38,11 @@ class Control extends AppEntity
         'deleted',
     ];
 
+    public function setAsNew()
+    {
+        $this->setNew(true);
+    }
+
     public function setTypeNormalIfNotDefined()
     {
         if (!$this->control_type_id) {

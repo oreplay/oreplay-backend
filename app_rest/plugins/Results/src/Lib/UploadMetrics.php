@@ -69,7 +69,7 @@ class UploadMetrics
         $this->endProcessing();
 
         $startTimeSaving = microtime(true);
-        $classes->saveManyOrFail([$singleClassToSave]);
+        $classes->saveManyWithRelations($singleClassToSave);
         $end = microtime(true);
         $this->_savingDuration += $this->_roundUp($end - $startTimeSaving);
         $this->startProcessing();

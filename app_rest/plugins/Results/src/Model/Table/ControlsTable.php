@@ -35,6 +35,7 @@ class ControlsTable extends AppTable
             $helper->storeControlByStation($entity);
         }
         $entity->setTypeNormalIfNotDefined();
+        $entity->setAsNew();
         return $entity;
     }
 
