@@ -53,7 +53,7 @@ class ClassEntity extends AppEntity
     public function setHash(array $resultData)
     {
         $hash = UploadHelper::md5Encode($resultData);
-        //$this->_fields['upload_hash'] = $hash;
+        $this->_fields['upload_hash'] = $hash;
         $this->setDirty('upload_hash');
     }
 }
