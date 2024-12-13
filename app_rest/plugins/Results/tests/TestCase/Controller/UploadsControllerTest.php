@@ -451,6 +451,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals($runnersJson[$key]['id'], $value->id);
             $this->assertEquals($runnersJson[$key]['club']['short_name'], $value->club->short_name);
             if ($key === 0) {
+                $resultId = $runnersJson[$key]['runner_results'][0]['id'];
                 $this->assertEquals('2024-10-18T09:56:00.000+00:00', $runnersJson[$key]['runner_results'][0]['start_time']);
             }
             $this->assertEquals($runnersJson[$key]['runner_results'][0]['id'],
@@ -461,6 +462,13 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->_assertNewOptionalTables(0, 0, 0, 0);
         $this->_assertNewBasicTables(2, 2, 2, 2, 2);
         $this->_assertNewResultsTables(2, 1);
+        /** @var RunnerResult $res */
+        $res = RunnerResultsTable::load()->get($resultId);
+        $this->assertEquals('"2024-10-18T09:56:00.000+00:00"', json_encode($res->start_time));
+        $this->assertEquals('"2024-10-18T10:09:40.000+00:00"', json_encode($res->finish_time));
+        $this->assertEquals(0, $res->time_behind);
+        $this->assertEquals(820, $res->time_seconds);
+        $this->assertEquals('', $res->upload_hash);
     }
 
     private function _assertNewOptionalTables($classesControls, $teams, $teamsResults, $answers): void

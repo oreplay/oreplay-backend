@@ -102,7 +102,7 @@ class RunnerResult extends AppEntity
     public function setHash(array $resultData)
     {
         $hash = UploadHelper::md5Encode($resultData);
-        //$this->_fields['upload_hash'] = $hash;// this is not properly saving
+        //$this->_fields['upload_hash'] = $hash;
         $this->setDirty('upload_hash');
     }
 
