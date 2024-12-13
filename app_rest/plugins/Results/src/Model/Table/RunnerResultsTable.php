@@ -81,7 +81,7 @@ class RunnerResultsTable extends AppTable
         if ($existingRunnerResultsAmount) {
             if ($existingRunnerResultsAmount === 1) {
                 // if there is only one existing result, we reuse the ID to replace the db row
-                $runnerResultToSave->setIdToUpdate($existingRunnerResults[0]->id);
+                $runnerResultToSave->setIDsToUpdate($existingRunnerResults[0]);
             } else {
                 // if there is more than one result, we keep them all in the runner
                 foreach ($existingRunnerResults as $existingResult) {

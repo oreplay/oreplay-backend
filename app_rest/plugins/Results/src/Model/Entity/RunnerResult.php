@@ -102,13 +102,15 @@ class RunnerResult extends AppEntity
     public function setHash(array $resultData)
     {
         $hash = UploadHelper::md5Encode($resultData);
-        //$this->_fields['upload_hash'] = $hash;
+        $this->_fields['upload_hash'] = $hash;
         $this->setDirty('upload_hash');
     }
 
-    public function setIdToUpdate(string $id): RunnerResult
+    public function setIDsToUpdate(RunnerResult $runnerResult): RunnerResult
     {
-        $this->id = $id;
+        $this->id = $runnerResult->id;
+        $this->upload_hash = $runnerResult->upload_hash;
+        $this->setDirty('upload_hash');
         return $this;
     }
 }

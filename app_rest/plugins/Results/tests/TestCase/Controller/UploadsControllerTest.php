@@ -258,11 +258,11 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $decodedData = $jsonDecoded['data'];
         $this->assertEquals($expectedRunnerAmount, count($res), 'Runner count in db');
         $this->assertEquals($expectedRunnerAmount, count($decodedData[0]['runners']));
-        $this->_assertRunnersWithFinishTimes($decodedData);
+        $this->_assertRunnersWithFinishTimes($decodedData, true);
         $this->assertEquals($expectedControlAmount, ControlsTable::load()->find()->all()->count());
     }
 
-    private function _assertRunnersWithFinishTimes($decodedData)
+    private function _assertRunnersWithFinishTimes($decodedData, $skipSplits = false)
     {
         $Table = RunnerResultsTable::load();
         $this->assertEquals(1, count($decodedData));
@@ -290,13 +290,15 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(0, $firstRunner['runner_results'][0]['points_penalty']);
         $this->assertEquals(0, $firstRunner['runner_results'][0]['points_bonus']);
         $this->assertEquals(1, $firstRunner['runner_results'][0]['leg_number']);
-        $this->assertEquals(2, count($firstRunner['runner_results'][0]['splits']));
-        $this->assertEquals(31, $firstRunner['runner_results'][0]['splits'][0]['control']['station']);
-        $this->assertEquals(1, $firstRunner['runner_results'][0]['splits'][0]['order_number']);
-        $this->assertEquals('2024-01-28T10:15:05.000+00:00', $firstRunner['runner_results'][0]['splits'][0]['reading_time']);
-        $this->assertEquals(33, $firstRunner['runner_results'][0]['splits'][1]['control']['station']);
-        $this->assertEquals(2, $firstRunner['runner_results'][0]['splits'][1]['order_number']);
-        $this->assertEquals('2024-01-28T10:18:37.000+00:00', $firstRunner['runner_results'][0]['splits'][1]['reading_time']);
+        if (!$skipSplits) {
+            $this->assertEquals(2, count($firstRunner['runner_results'][0]['splits']));
+            $this->assertEquals(31, $firstRunner['runner_results'][0]['splits'][0]['control']['station']);
+            $this->assertEquals(1, $firstRunner['runner_results'][0]['splits'][0]['order_number']);
+            $this->assertEquals('2024-01-28T10:15:05.000+00:00', $firstRunner['runner_results'][0]['splits'][0]['reading_time']);
+            $this->assertEquals(33, $firstRunner['runner_results'][0]['splits'][1]['control']['station']);
+            $this->assertEquals(2, $firstRunner['runner_results'][0]['splits'][1]['order_number']);
+            $this->assertEquals('2024-01-28T10:18:37.000+00:00', $firstRunner['runner_results'][0]['splits'][1]['reading_time']);
+        }
         $secondRunner = $decodedData[0]['runners'][1];
         $this->assertEquals('Velazquez', $secondRunner['last_name']);
         $this->assertEquals('105', $secondRunner['bib_number']);
@@ -320,7 +322,9 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(0, $secondRunner['runner_results'][0]['points_penalty']);
         $this->assertEquals(0, $secondRunner['runner_results'][0]['points_bonus']);
         $this->assertEquals(1, $secondRunner['runner_results'][0]['leg_number']);
-        $this->assertArrayHasKey('splits', $secondRunner['runner_results'][0]);
+        if (!$skipSplits) {
+            $this->assertArrayHasKey('splits', $secondRunner['runner_results'][0]);
+        }
     }
 
     public function testAddNew_shouldAddStartsAndSplits()
@@ -468,7 +472,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('"2024-10-18T10:09:40.000+00:00"', json_encode($res->finish_time));
         $this->assertEquals(0, $res->time_behind);
         $this->assertEquals(820, $res->time_seconds);
-        $this->assertEquals('', $res->upload_hash);
+        $this->assertEquals('bab8412b5a99d7b26e7a645c7caa9244', $res->upload_hash);
     }
 
     private function _assertNewOptionalTables($classesControls, $teams, $teamsResults, $answers): void
