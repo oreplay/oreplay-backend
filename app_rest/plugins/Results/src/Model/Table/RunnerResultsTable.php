@@ -63,7 +63,6 @@ class RunnerResultsTable extends AppTable
     private function _newResultWithType(array $resultData, UploadHelper $helper): RunnerResult
     {
         $runnerResultToSave = $this->fillNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
-        $runnerResultToSave->setHash($resultData);
 
         $runnerResultToSave->result_type = $this
             ->ResultTypes
@@ -94,7 +93,8 @@ class RunnerResultsTable extends AppTable
 
         $helper->getMetrics()->startSplitsTime();
         $splits = $resultData['splits'] ?? [];
-        if ($splits) {
+        if ($splits && !$runnerResultToSave->hasSameSplits($splits)) {
+            $runnerResultToSave->setHash($splits);
             $this->Splits->deleteAllByRunnerId($runnerResultToSave->id);
             $runnerResultToSave = $this->Splits->uploadForEachSplit($runnerResultToSave, $splits, $helper);
         }

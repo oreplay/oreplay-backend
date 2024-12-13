@@ -46,7 +46,7 @@ class ClassEntity extends AppEntity
     public function isSameUploadHash(array $compareArray): bool
     {
         $uploadHash = UploadHelper::md5Encode($compareArray);
-        $existingHash = $this->_fields['upload_hash'] ?? 'hash_does_not_exist';
+        $existingHash = $this->_fields['upload_hash'] ?? 'hash_class_does_not_exist';
         return $existingHash == $uploadHash;
     }
 

@@ -92,10 +92,18 @@ class RunnerResult extends AppEntity
         return true;
     }
 
+    public function hasSameSplits(array $compareArray): bool
+    {
+        $uploadHash = UploadHelper::md5Encode($compareArray);
+        $existingHash = $this->_fields['upload_hash'] ?? 'hash_run_res_does_not_exist';
+        return $existingHash == $uploadHash;
+    }
+
     public function setHash(array $resultData)
     {
         $hash = UploadHelper::md5Encode($resultData);
-        //$this->upload_hash = $hash;
+        //$this->_fields['upload_hash'] = $hash;// this is not properly saving
+        $this->setDirty('upload_hash');
     }
 
     public function setIdToUpdate(string $id): RunnerResult

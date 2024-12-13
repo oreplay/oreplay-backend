@@ -34,7 +34,7 @@ class RunnerResultsTableTest extends TestCase
         $this->RunnerResults = RunnerResultsTable::load();
     }
 
-    public function testPatchNewWithStage()
+    public function testFillNewWithStage()
     {
         $data = [
             'id' => '',
