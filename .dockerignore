@@ -1,0 +1,6 @@
+/.git
+/.github
+/app_rest/tmp
+!/app_rest/tmp/.empty
+/app_rest/logs
+!/app_rest/logs/.empty
