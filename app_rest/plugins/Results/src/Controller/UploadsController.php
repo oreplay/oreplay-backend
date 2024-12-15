@@ -39,6 +39,7 @@ class UploadsController extends ApiController
     {
         $this->_clearUploadCache();
         $metrics = $helper->getMetrics();
+        //$this->_writeLastUploadJson($helper->getData());
         //$this->log('Uploading data: ' . " \n\n" . json_encode($helper->getData()), \Psr\Log\LogLevel::DEBUG);
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($helper->getEventId(), $token);
@@ -152,5 +153,12 @@ class UploadsController extends ApiController
             return null;
         }
         return substr($auth, strlen('Bearer '));
+    }
+
+    private function _writeLastUploadJson(array $content)
+    {
+        $path = TMP . 'lastUpload.json';
+        $file = new \SplFileObject($path, 'a+');
+        $file->fwrite(json_encode($content));
     }
 }
