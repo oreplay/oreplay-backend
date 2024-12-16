@@ -31,7 +31,8 @@ abstract class AppTable extends RestApiTable
         $entity = $this->newEmptyEntity();
         $entity->id = Text::uuid();
         $schema = $this->getSchema();
-        return $entity->fastPatch($data, $schema);
+        $timezone = $this->getConnection()->config()['timezone'] ?? 'UTC';
+        return $entity->fastPatch($data, $schema, $timezone);
     }
 
     public function findWhereEventAndStage(UploadHelper $helper): Query

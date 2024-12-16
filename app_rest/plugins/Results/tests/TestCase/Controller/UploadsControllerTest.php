@@ -119,7 +119,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals($runnersJson[$key]['runner_results'][0]['start_time'],
                 $value->getRunnerResults()[0]->start_time->jsonSerialize());
             if ($key === 0) {
-                $this->assertEquals('2014-07-06T13:09:01.523+00:00', $runnersJson[$key]['runner_results'][0]['start_time']);
+                $this->assertEquals('2014-07-06T10:09:14.523+00:00', $runnersJson[$key]['runner_results'][0]['start_time']);
             }
             $this->assertEquals($runnersJson[$key]['runner_results'][0]['id'],
                 $value->getRunnerResults()[0]->id);

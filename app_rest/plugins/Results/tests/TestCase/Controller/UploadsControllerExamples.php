@@ -213,7 +213,7 @@ class UploadsControllerExamples
                                             [
                                                 'id' => '',
                                                 'stage_order' => (int) 1,
-                                                'start_time' => '2014-07-06T13:09:01.523',
+                                                'start_time' => '2014-07-06T11:09:14.523+01:00',
                                                 'status_code' => '0',
                                                 'leg_number' => (int) 1,
                                                 'result_type' => [

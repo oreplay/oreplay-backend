@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\RunnerResult;
@@ -23,6 +24,11 @@ class SplitsTable extends AppTable
         RunnerResultsTable::addHasMany($this);
         TeamResultsTable::addHasMany($this);
         ControlsTable::addHasMany($this);
+    }
+
+    protected function _insert(EntityInterface $entity, array $data)
+    {
+        return parent::_insert($entity, $data);
     }
 
     public function fillNewWithStage(array $data, string $eventId, string $stageId)

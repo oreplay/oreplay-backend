@@ -14,6 +14,7 @@ use Results\Model\Entity\Stage;
 use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\SplitsTable;
 use Results\Test\Fixture\EventsFixture;
+use Results\Test\Fixture\ResultTypesFixture;
 use Results\Test\Fixture\RunnerResultsFixture;
 use Results\Test\Fixture\RunnersFixture;
 use Results\Test\Fixture\SplitsFixture;
@@ -29,6 +30,7 @@ class RunnerResultsTableTest extends TestCase
         SplitsFixture::LOAD,
         EventsFixture::LOAD,
         StagesFixture::LOAD,
+        ResultTypesFixture::LOAD,
     ];
     /** @var RunnerResultsTable Runners */
     private $RunnerResults;
@@ -127,5 +129,51 @@ class RunnerResultsTableTest extends TestCase
             ],
         ];
         $this->assertEquals($expected, $array);
+    }
+
+    public function testFastPatch()
+    {
+        $timezone = $this->RunnerResults->getConnection()->config()['timezone'];
+        $data = [
+            'leg_number' => 3,
+            'start_time' => '2014-07-06T11:09:14.523+01:00'
+        ];
+        $runnerResult = new RunnerResult();
+        $runnerResult->id = 'newRunnerTest';
+        $runnerResult->event_id = Event::FIRST_EVENT;
+        $runnerResult->stage_id = Stage::FIRST_STAGE;
+        $runnerResult->runner_id = RunnersFixture::RUNNER_RAID_ID;
+        $runnerResult->result_type_id = ResultType::STAGE;
+        $res = $runnerResult->fastPatch($data, $this->RunnerResults->getSchema(), $timezone);
+        $this->assertEquals($data['leg_number'], $res->leg_number);
+        $this->assertEquals('2014-07-06T10:09:14+00:00', $res->start_time->toIso8601String());
+
+        $this->RunnerResults->save($runnerResult);
+
+        $db = $this->RunnerResults->get($runnerResult->id);
+        $this->assertEquals($data['leg_number'], $db->leg_number);
+        $this->assertEquals('2014-07-06T10:09:14+00:00', $db->start_time->toIso8601String());
+    }
+
+    public function testFillNewWithUuuid()
+    {
+        $data = [
+            'leg_number' => 3,
+            'start_time' => '2014-07-06T11:09:14.523+01:00'
+        ];
+        $runnerResult = $this->RunnerResults->fillNewWithUuid($data);
+        $runnerResult->id = 'newRunnerTest';
+        $runnerResult->event_id = Event::FIRST_EVENT;
+        $runnerResult->stage_id = Stage::FIRST_STAGE;
+        $runnerResult->runner_id = RunnersFixture::RUNNER_RAID_ID;
+        $runnerResult->result_type_id = ResultType::STAGE;
+        $this->assertEquals($data['leg_number'], $runnerResult->leg_number);
+        $this->assertEquals('2014-07-06T10:09:14+00:00', $runnerResult->start_time->toIso8601String());
+
+        $this->RunnerResults->save($runnerResult);
+
+        $db = $this->RunnerResults->get($runnerResult->id);
+        $this->assertEquals($data['leg_number'], $db->leg_number);
+        $this->assertEquals('2014-07-06T10:09:14+00:00', $db->start_time->toIso8601String());
     }
 }
