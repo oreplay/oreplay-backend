@@ -183,8 +183,8 @@ class EventsControllerTest extends ApiCommonErrorsTest
         return [
             'id' => Organizer::ID,
             'name' => Organizer::NAME,
-            'country' => 'Spain',
-            'region' => 'Region',
+            'country' => 'ES',
+            'region' => 'ES-VC',
         ];
     }
 
