@@ -4,14 +4,12 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
-use Cake\ORM\Entity;
-
 /**
  * @property mixed $reading_time
  * @property mixed $points
  * @property Control $control
  */
-class Split extends Entity
+class Split extends AppEntity
 {
     protected $_accessible = [
         '*' => false,

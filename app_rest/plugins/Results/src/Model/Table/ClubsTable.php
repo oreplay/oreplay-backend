@@ -38,7 +38,7 @@ class ClubsTable extends AppTable
             $club = $this->getByShortName($eventId, $stageId, $data['short_name']);
         }
         if (!$club) {
-            $club = $this->patchNewWithStage($data, $eventId, $stageId);
+            $club = $this->fillNewWithStage($data, $eventId, $stageId);
             if ($oeKey) {
                 list($cacheKey) = $this->getOeKeyCacheKey($eventId, $stageId, $oeKey);
                 Cache::write($cacheKey, $club, CacheGrp::UPLOAD);
@@ -47,10 +47,10 @@ class ClubsTable extends AppTable
         return $club;
     }
 
-    public function patchNewWithStage(array $data, string $eventId, string $stageId)
+    public function fillNewWithStage(array $data, string $eventId, string $stageId)
     {
         /** @var Club $res */
-        $res = parent::patchNewWithStage($data, $eventId, $stageId);
+        $res = parent::fillNewWithStage($data, $eventId, $stageId);
         if (!$res->short_name && $res->long_name) {
             $res->short_name = $res->long_name;
         }

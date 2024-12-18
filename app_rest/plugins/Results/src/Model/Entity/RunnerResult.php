@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace Results\Model\Entity;
 
 use Cake\I18n\FrozenTime;
-use Cake\ORM\Entity;
+use Results\Lib\UploadHelper;
 
 /**
  * @property integer $position
@@ -16,12 +16,13 @@ use Cake\ORM\Entity;
  * @property string $stage_id
  * @property string $runner_id
  * @property string $result_type_id
+ * @property string $upload_hash
  * @property mixed $leg_number
  * @property FrozenTime $start_time
  * @property FrozenTime $finish_time
  * @property ResultType $result_type
  */
-class RunnerResult extends Entity
+class RunnerResult extends AppEntity
 {
     public const FIRST_RES = '635af121-db7b-4c5e-82ab-79208e45568f';
 
@@ -58,6 +59,7 @@ class RunnerResult extends Entity
         'runner_uuid',
         'class_uuid',
         'check_time',
+        'upload_hash',
         'created',
         'modified',
         'deleted',
@@ -68,6 +70,7 @@ class RunnerResult extends Entity
         if (!($this->_fields['splits'] ?? null)) {
             $this->_fields['splits'] = [];
         }
+        $this->setDirty('splits');
         $this->_fields['splits'][] = $split;
     }
     /**
@@ -78,12 +81,36 @@ class RunnerResult extends Entity
         return $this->_fields['splits'];
     }
 
-    public function isSameResult(Runner $runner, RunnerResult $runnerResultToSave): bool
+    public function isSameResult(RunnerResult $runnerResultToSave): bool
     {
-        $isSameRunner = $this->runner_id == $runner->id;
-        $isSameLeg = $this->leg_number == $runnerResultToSave->leg_number;
-        $isSameResultType = $this->result_type_id == $runnerResultToSave->result_type->id;
+        if ($this->leg_number != $runnerResultToSave->leg_number) {
+            return false;
+        }
+        if ($this->result_type_id != $runnerResultToSave->result_type->id) {
+            return false;
+        }
+        return true;
+    }
 
-        return $isSameRunner && $isSameResultType && $isSameLeg;
+    public function hasSameSplits(array $compareArray): bool
+    {
+        $uploadHash = UploadHelper::md5Encode($compareArray);
+        $existingHash = $this->_fields['upload_hash'] ?? 'hash_run_res_does_not_exist';
+        return $existingHash == $uploadHash;
+    }
+
+    public function setHash(array $resultData)
+    {
+        $hash = UploadHelper::md5Encode($resultData);
+        $this->_fields['upload_hash'] = $hash;
+        $this->setDirty('upload_hash');
+    }
+
+    public function setIDsToUpdate(RunnerResult $runnerResult): RunnerResult
+    {
+        $this->id = $runnerResult->id;
+        $this->upload_hash = $runnerResult->upload_hash;
+        $this->setDirty('upload_hash');
+        return $this;
     }
 }

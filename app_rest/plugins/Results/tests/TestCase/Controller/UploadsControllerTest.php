@@ -71,22 +71,21 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['id' => ClassEntity::ME]);
 
         $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleImportSmall()];
-        $this->post($this->_getEndpoint(), $data);
+        $this->post($this->_getEndpoint() . '?version=300', $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
         $decodedData = $jsonDecoded['data'];
-        $now = new FrozenTime();
-        $seconds = substr($jsonDecoded['meta']['human'][0], -13);
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
             'updated' => [
                 'classes' => 2,
                 'runners' => 4,
             ],
-            'human' => [
-                "Updated 4 runners, 2 classes ($now - start_list) $seconds",
-            ]
+            'human' => ['']
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+        $this->assertStringStartsWith(' *** Updated 4 runners, 2 classes, 0 splits', $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -120,24 +119,16 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals($runnersJson[$key]['runner_results'][0]['start_time'],
                 $value->getRunnerResults()[0]->start_time->jsonSerialize());
             if ($key === 0) {
-                $this->assertEquals('2014-07-06T13:09:01.523+00:00', $runnersJson[$key]['runner_results'][0]['start_time']);
+                $this->assertEquals('2014-07-06T10:09:14.523+00:00', $runnersJson[$key]['runner_results'][0]['start_time']);
             }
             $this->assertEquals($runnersJson[$key]['runner_results'][0]['id'],
                 $value->getRunnerResults()[0]->id);
             $this->assertEquals(ResultType::STAGE,
                 $value->getRunnerResults()[0]->result_type_id);
         }
-        $this->assertEquals(3, ClubsTable::load()->find()->all()->count());
-        $this->assertEquals(3, CoursesTable::load()->find()->all()->count());
-        $this->assertEquals(2, ClassesTable::load()->find()->all()->count());
-        $this->assertEquals(0, TeamsTable::load()->find()->all()->count());
-        $this->assertEquals(6, RunnersTable::load()->find()->all()->count());
-        $this->assertEquals(1, ControlsTable::load()->find()->all()->count());
-        $this->assertEquals(0, ClassesControlsTable::load()->find()->all()->count());
-        $this->assertEquals(5, RunnerResultsTable::load()->find()->all()->count());
-        $this->assertEquals(0, TeamResultsTable::load()->find()->all()->count());
-        $this->assertEquals(1, SplitsTable::load()->find()->all()->count());
-        $this->assertEquals(0, AnswersTable::load()->find()->all()->count());
+        $this->_assertNewOptionalTables(0, 0, 0, 0);
+        $this->_assertNewBasicTables(2, 2, 1, 4, 4);
+        $this->_assertNewResultsTables(0, 0);
     }
 
     public function testAddNew_shouldRequireAuthenticatedToken()
@@ -148,8 +139,21 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['id' => ClassEntity::ME]);
 
         $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleImportSmall()];
-        $this->post($this->_getEndpoint(), $data);
-        $this->assertException('Forbidden', 403, 'Invalid Bearer token');
+        $this->post($this->_getEndpoint() . '?version=300', $data);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $now = new FrozenTime();
+        $expectedMeta = [
+            'updated' => [
+                'classes' => 0,
+                'runners' => 0,
+            ],
+            'human' => [
+                "\n    [ERROR - 403] ($now) ForbiddenException \n"
+            ]
+        ];
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+
     }
 
     public function testAddNew_shouldNotUpdateStartListWhenThereAreFinishTimes()
@@ -166,7 +170,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['id' => ClassEntity::ME]);
 
         $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleImportSmall()];
-        $this->post($this->_getEndpoint(), $data);
+        $this->post($this->_getEndpoint() . '?version=300', $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
         $now = new FrozenTime();
@@ -176,7 +180,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 'runners' => 0,
             ],
             'human' => [
-                "[Error - 400] ($now) Cannot add start times when there are already finish times"
+                "\n    [ERROR - 400] ($now) Cannot add start times when there are already finish times \n"
             ]
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
@@ -206,23 +210,23 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['id' => ClassEntity::ME]);
 
         $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleSimpleFinishTime()];
-        $this->post($this->_getEndpoint(), $data);
+        $this->post($this->_getEndpoint() . '?version=300', $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
         $decodedData = $jsonDecoded['data'];
-        $now = new FrozenTime();
         $expectedRunnerAmount = 2;
-        $seconds = substr($jsonDecoded['meta']['human'][0], -13);
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
             'updated' => [
                 'classes' => 1,
                 'runners' => $expectedRunnerAmount,
             ],
-            'human' => [
-                "Updated $expectedRunnerAmount runners, 1 classes ($now - res_finish) $seconds",
-            ]
+            'human' => ['']
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+        $expectedSplits = 3;
+        $this->assertStringStartsWith(" *** Updated $expectedRunnerAmount runners, 1 classes, $expectedSplits splits", $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -248,31 +252,33 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         // second upload should not add again results
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
-        $this->post($this->_getEndpoint(), $data);
+        $this->post($this->_getEndpoint() . '?version=300', $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
         $decodedData = $jsonDecoded['data'];
         $this->assertEquals($expectedRunnerAmount, count($res), 'Runner count in db');
         $this->assertEquals($expectedRunnerAmount, count($decodedData[0]['runners']));
-        $this->_assertRunnersWithFinishTimes($decodedData);
+        $this->_assertRunnersWithFinishTimes($decodedData, true);
         $this->assertEquals($expectedControlAmount, ControlsTable::load()->find()->all()->count());
     }
 
-    private function _assertRunnersWithFinishTimes($decodedData)
+    private function _assertRunnersWithFinishTimes($decodedData, $skipSplits = false)
     {
         $Table = RunnerResultsTable::load();
+        $this->assertEquals(1, count($decodedData));
+        $this->assertEquals(2, count($decodedData[0]['runners']));
         $firstRunner = $decodedData[0]['runners'][0];
         $this->assertEquals('Ballesteros', $firstRunner['last_name']);
         $this->assertEquals('125', $firstRunner['bib_number']);
         $this->assertEquals('4440522', $firstRunner['sicard']);
         $this->assertEquals('Independiente', $firstRunner['club']['short_name']);
-        $this->assertEquals(1, count($firstRunner['runner_results']));
+        $this->assertEquals(1, count($firstRunner['runner_results']), 'Amount of 1st runner_results');
         $this->assertEquals(1, $Table->find()->where(['runner_id' => $firstRunner['id']])->all()->count());
         $this->assertEquals('Stage', $firstRunner['runner_results'][0]['result_type']['description']);
         $this->assertEquals('1', $firstRunner['runner_results'][0]['position']);
         $this->assertEquals('2024-09-29T11:00:00.000+00:00', $firstRunner['runner_results'][0]['start_time']);
         $this->assertEquals('2024-09-29T12:26:54.000+00:00', $firstRunner['runner_results'][0]['finish_time']);
-        //$this->assertEquals(5214, $firstRunner['runner_results'][0]['time_seconds']);
+        $this->assertEquals(5214, $firstRunner['runner_results'][0]['time_seconds']);
         $this->assertEquals('0', $firstRunner['runner_results'][0]['status_code']);
         $this->assertEquals(0, $firstRunner['runner_results'][0]['time_behind']);
         $this->assertEquals(0, $firstRunner['runner_results'][0]['time_neutralization']);
@@ -284,13 +290,15 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(0, $firstRunner['runner_results'][0]['points_penalty']);
         $this->assertEquals(0, $firstRunner['runner_results'][0]['points_bonus']);
         $this->assertEquals(1, $firstRunner['runner_results'][0]['leg_number']);
-        $this->assertEquals(2, count($firstRunner['runner_results'][0]['splits']));
-        $this->assertEquals(31, $firstRunner['runner_results'][0]['splits'][0]['control']['station']);
-        $this->assertEquals(1, $firstRunner['runner_results'][0]['splits'][0]['order_number']);
-        $this->assertEquals('2024-01-28T10:15:05.000+00:00', $firstRunner['runner_results'][0]['splits'][0]['reading_time']);
-        $this->assertEquals(33, $firstRunner['runner_results'][0]['splits'][1]['control']['station']);
-        $this->assertEquals(2, $firstRunner['runner_results'][0]['splits'][1]['order_number']);
-        $this->assertEquals('2024-01-28T10:18:37.000+00:00', $firstRunner['runner_results'][0]['splits'][1]['reading_time']);
+        if (!$skipSplits) {
+            $this->assertEquals(2, count($firstRunner['runner_results'][0]['splits']));
+            $this->assertEquals(31, $firstRunner['runner_results'][0]['splits'][0]['control']['station']);
+            $this->assertEquals(1, $firstRunner['runner_results'][0]['splits'][0]['order_number']);
+            $this->assertEquals('2024-01-28T10:15:05.000+00:00', $firstRunner['runner_results'][0]['splits'][0]['reading_time']);
+            $this->assertEquals(33, $firstRunner['runner_results'][0]['splits'][1]['control']['station']);
+            $this->assertEquals(2, $firstRunner['runner_results'][0]['splits'][1]['order_number']);
+            $this->assertEquals('2024-01-28T10:18:37.000+00:00', $firstRunner['runner_results'][0]['splits'][1]['reading_time']);
+        }
         $secondRunner = $decodedData[0]['runners'][1];
         $this->assertEquals('Velazquez', $secondRunner['last_name']);
         $this->assertEquals('105', $secondRunner['bib_number']);
@@ -314,6 +322,196 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(0, $secondRunner['runner_results'][0]['points_penalty']);
         $this->assertEquals(0, $secondRunner['runner_results'][0]['points_bonus']);
         $this->assertEquals(1, $secondRunner['runner_results'][0]['leg_number']);
-        $this->assertArrayNotHasKey('splits', $secondRunner['runner_results'][0]);
+        if (!$skipSplits) {
+            $this->assertArrayHasKey('splits', $secondRunner['runner_results'][0]);
+        }
+    }
+
+    public function testAddNew_shouldAddStartsAndSplits()
+    {
+        Cache::clear();
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleImport2CategoriesStarts()];
+        $this->post($this->_getEndpoint() . '?version=301', $data);
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $this->_assertStartsTimesFrom2Classes($jsonDecoded);
+
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleImport2CategoriesSplits()];
+        $this->post($this->_getEndpoint() . '?version=301', $data);
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $this->_assertSplitsTimesFrom2Classes($jsonDecoded);
+    }
+
+    private function _assertStartsTimesFrom2Classes($jsonDecoded)
+    {
+        $ClassesTable = ClassesTable::load();
+        $decodedData = $jsonDecoded['data'];
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
+        $expectedMeta = [
+            'classes' => 2,
+            'runners' => 2,
+            'courses' => 2,
+            'splits' => 0,
+            'runnerResults' => 2,
+        ];
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
+        //$this->assertStringStartsWith(' *** Updated 2 runners, 2 classes, 0 splits', $human);
+
+        $addedClasses = $ClassesTable->find()
+            ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->contain(CoursesTable::name())
+            ->orderAsc('Classes.oe_key')
+            ->all();
+        $this->assertEquals(3, count($addedClasses));
+        $expectedClasses = ['ME', 'U-10', 'O ROJO F'];
+        foreach ($addedClasses as $k => $class) {
+            $this->assertEquals($expectedClasses[$k], $class->short_name);
+            //$this->assertEquals($expectedClasses[$k], $class->course->short_name);
+        }
+
+        $res = RunnersTable::load()
+            ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
+            ->orderAsc('last_name')
+            ->all();
+
+        $this->assertEquals(2, count($res), 'Runner count in db');
+        $this->assertEquals(1, count($decodedData[0]['runners']));
+        $this->assertEquals(1, count($decodedData[1]['runners']));
+        $runnersJson = array_merge($decodedData[0]['runners'], $decodedData[1]['runners']);
+        /** @var Runner $value */
+        foreach ($res as $key => $value) {
+            $this->assertEquals($runnersJson[$key]['last_name'], $value->last_name);
+            $this->assertEquals($runnersJson[$key]['first_name'], $value->first_name);
+            $this->assertEquals($runnersJson[$key]['sicard'], $value->sicard);
+            $this->assertEquals($runnersJson[$key]['bib_number'], $value->bib_number);
+            $this->assertEquals($runnersJson[$key]['id'], $value->id);
+            $this->assertEquals($runnersJson[$key]['club']['short_name'], $value->club->short_name);
+            $this->assertEquals($runnersJson[$key]['runner_results'][0]['start_time'],
+                $value->getRunnerResults()[0]->start_time->jsonSerialize());
+            if ($key === 0) {
+                $this->assertEquals('2024-10-18T09:56:00.000+00:00', $runnersJson[$key]['runner_results'][0]['start_time']);
+            }
+            $this->assertEquals($runnersJson[$key]['runner_results'][0]['id'],
+                $value->getRunnerResults()[0]->id);
+            $this->assertEquals(ResultType::STAGE,
+                $value->getRunnerResults()[0]->result_type_id);
+        }
+        $this->_assertNewOptionalTables(0, 0, 0, 0);
+        $this->_assertNewBasicTables(2, 2, 2, 2, 2);
+        $this->_assertNewResultsTables(0, 0);
+    }
+
+    private function _assertSplitsTimesFrom2Classes($jsonDecoded)
+    {
+        $ClassesTable = ClassesTable::load();
+
+        $decodedData = $jsonDecoded['data'];
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
+        $expectedMeta = [
+            'classes' => 2,
+            'runners' => 2,
+            'courses' => 2,
+            'splits' => 2,
+            'runnerResults' => 2,
+        ];
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
+        //$this->assertStringStartsWith(' *** Updated 2 runners, 2 classes, 0 splits', $human);
+
+        $addedClasses = $ClassesTable->find()
+            ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->contain(CoursesTable::name())
+            ->orderAsc('Classes.oe_key')
+            ->all();
+        $this->assertEquals(3, count($addedClasses));
+        $expectedClasses = ['ME', 'U-10', 'O ROJO F'];
+        foreach ($addedClasses as $k => $class) {
+            $this->assertEquals($expectedClasses[$k], $class->short_name);
+            //$this->assertEquals($expectedClasses[$k], $class->course->short_name);
+        }
+
+        $res = RunnersTable::load()
+            ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
+            ->orderAsc('last_name')
+            ->all();
+
+        $this->assertEquals(2, count($res), 'Runner count in db');
+        $this->assertEquals(1, count($decodedData[0]['runners']));
+        $this->assertEquals(1, count($decodedData[1]['runners']));
+        $runnersJson = array_merge($decodedData[0]['runners'], $decodedData[1]['runners']);
+        /** @var Runner $value */
+        foreach ($res as $key => $value) {
+            $this->assertEquals($runnersJson[$key]['last_name'], $value->last_name);
+            $this->assertEquals($runnersJson[$key]['first_name'], $value->first_name);
+            $this->assertEquals($runnersJson[$key]['sicard'], $value->sicard);
+            $this->assertEquals($runnersJson[$key]['bib_number'], $value->bib_number);
+            $this->assertEquals($runnersJson[$key]['id'], $value->id);
+            $this->assertEquals($runnersJson[$key]['club']['short_name'], $value->club->short_name);
+            if ($key === 0) {
+                $resultId = $runnersJson[$key]['runner_results'][0]['id'];
+                $this->assertEquals('2024-10-18T09:56:00.000+00:00', $runnersJson[$key]['runner_results'][0]['start_time']);
+            }
+            $this->assertEquals($runnersJson[$key]['runner_results'][0]['id'],
+                $value->getRunnerResults()[0]->id);
+            $this->assertEquals(ResultType::STAGE,
+                $value->getRunnerResults()[0]->result_type_id);
+        }
+        $this->_assertNewOptionalTables(0, 0, 0, 0);
+        $this->_assertNewBasicTables(2, 2, 2, 2, 2);
+        $this->_assertNewResultsTables(2, 1);
+        /** @var RunnerResult $res */
+        $res = RunnerResultsTable::load()->get($resultId);
+        $this->assertEquals('"2024-10-18T09:56:00.000+00:00"', json_encode($res->start_time));
+        $this->assertEquals('"2024-10-18T10:09:40.000+00:00"', json_encode($res->finish_time));
+        $this->assertEquals(0, $res->time_behind);
+        $this->assertEquals(820, $res->time_seconds);
+        $this->assertEquals('bab8412b5a99d7b26e7a645c7caa9244', $res->upload_hash);
+    }
+
+    private function _assertNewOptionalTables($classesControls, $teams, $teamsResults, $answers): void
+    {
+        $this->assertEquals($classesControls, ClassesControlsTable::load()->find()->all()->count());
+        $this->assertEquals($teams, TeamsTable::load()->find()->all()->count());
+        $this->assertEquals($teamsResults, TeamResultsTable::load()->find()->all()->count());
+        $this->assertEquals($answers, AnswersTable::load()->find()->all()->count());
+    }
+
+    private function _assertNewBasicTables($clubs, $courses, $classes, $runners, $runnerResults): void
+    {
+        $expected = [
+            'clubs' => $clubs,
+            'courses' => $courses,
+            'classes' => $classes,
+            'runners' => $runners,
+            'runnerResults' => $runnerResults,
+        ];
+        $db = [
+            'clubs' => ClubsTable::load()->find()->all()->count() - 1,
+            'courses' => CoursesTable::load()->find()->all()->count() - 1,
+            'classes' => ClassesTable::load()->find()->all()->count() - 1,
+            'runners' => RunnersTable::load()->find()->all()->count() - 2,
+            'runnerResults' => RunnerResultsTable::load()->find()->all()->count() - 1,
+        ];
+        $this->assertEquals($expected, $db, 'NewBasicTableAmounts');
+    }
+
+    private function _assertNewResultsTables($splits, $controls): void
+    {
+        $expected = [
+            'splits' => $splits,
+            'controls' => $controls,
+        ];
+        $db = [
+            'splits' => SplitsTable::load()->find()->all()->count() - 1,
+            'controls' => ControlsTable::load()->find()->all()->count() - 1,
+        ];
+        $this->assertEquals($expected, $db, 'NewResultsTableAmounts');
     }
 }

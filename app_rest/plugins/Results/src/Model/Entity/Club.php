@@ -4,8 +4,6 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
-use Cake\ORM\Entity;
-
 /**
  * @property string $event_id
  * @property string $stage_id
@@ -13,7 +11,7 @@ use Cake\ORM\Entity;
  * @property string $short_name
  * @property string $long_name
  */
-class Club extends Entity
+class Club extends AppEntity
 {
     protected $_accessible = [
         '*' => false,

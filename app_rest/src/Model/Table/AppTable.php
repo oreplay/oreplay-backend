@@ -11,6 +11,7 @@ use Cake\ORM\Query;
 use Cake\Utility\Text;
 use RestApi\Model\Table\RestApiTable;
 use Results\Lib\UploadHelper;
+use Results\Model\Entity\AppEntity;
 
 abstract class AppTable extends RestApiTable
 {
@@ -24,6 +25,16 @@ abstract class AppTable extends RestApiTable
         return $this->patchEntity($entity, $data);
     }
 
+    public function fillNewWithUuid(array $data)
+    {
+        /** @var AppEntity $entity */
+        $entity = $this->newEmptyEntity();
+        $entity->id = Text::uuid();
+        $schema = $this->getSchema();
+        $timezone = $this->getConnection()->config()['timezone'] ?? 'UTC';
+        return $entity->fastPatch($data, $schema, $timezone);
+    }
+
     public function findWhereEventAndStage(UploadHelper $helper): Query
     {
         return $this->find()->where([
@@ -32,11 +43,12 @@ abstract class AppTable extends RestApiTable
         ]);
     }
 
-    public function patchNewWithStage(array $data, string $eventId, string $stageId)
+    public function fillNewWithStage(array $data, string $eventId, string $stageId)
     {
-        $res = $this->patchFromNewWithUuid($data);
+        $res = $this->fillNewWithUuid($data);
         $res->event_id = $eventId;
         $res->stage_id = $stageId;
+        $res->setDirty('event_id');
         $shortName = $data['short_name'] ?? null;
         if ($shortName) {
             list($cacheKey) = $this->getShortNameCacheKey($eventId, $stageId, $shortName);
@@ -83,7 +95,7 @@ abstract class AppTable extends RestApiTable
         }
         $entity = $this->getByShortName($eventId, $stageId, $data['short_name'] ?? '');
         if (!$entity) {
-            $entity = $this->patchNewWithStage($data, $eventId, $stageId);
+            $entity = $this->fillNewWithStage($data, $eventId, $stageId);
         }
         return $entity;
     }

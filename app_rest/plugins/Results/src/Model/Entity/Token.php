@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace Results\Model\Entity;
 
 use Cake\I18n\FrozenTime;
-use Cake\ORM\Entity;
 
 /**
  * @property string $token
@@ -14,7 +13,7 @@ use Cake\ORM\Entity;
  * @property FrozenTime $expires
  * @property FrozenTime $deleted
  */
-class Token extends Entity
+class Token extends AppEntity
 {
     protected $_accessible = [
         '*' => false,

@@ -6,7 +6,6 @@ namespace Results\Model\Entity;
 
 use App\Controller\ApiController;
 use App\Lib\FullBaseUrl;
-use Cake\ORM\Entity;
 
 /**
  * @property string $event_id
@@ -14,7 +13,7 @@ use Cake\ORM\Entity;
  * @property StageType $stage_type
  * @property string $description
  */
-class Stage extends Entity
+class Stage extends AppEntity
 {
     public const FIRST_STAGE = '51d63e99-5d7c-4382-a541-8567015d8eed';
 

@@ -9,11 +9,11 @@ use App\Model\Table\UsersTable;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
-use RestApi\Lib\Exception\DetailedException;
 use RestApi\Model\ORM\RestApiSelectQuery;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Runner;
+use Results\Model\Traits\StoredRunnerTrait;
 
 /**
  * @property UsersTable $Users
@@ -25,6 +25,8 @@ use Results\Model\Entity\Runner;
  */
 class RunnersTable extends AppTable
 {
+    use StoredRunnerTrait;
+
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
@@ -70,72 +72,42 @@ class RunnersTable extends AppTable
         return null;
     }
 
-    public function matchRunner(
-        string $eventId,
-        string $stageId,
-        array $runnerData,
-        ClassEntity $class = null
-    ): Runner {
-        $runner = $this->_findRunnersInStageBy('db_id', $eventId, $stageId, $runnerData);
-        if ($runner) {
-            return $runner;
-        }
-        $runner = $this->_findRunnersInStageBy('bib_number', $eventId, $stageId, $runnerData);
-        if ($runner) {
-            return $runner;
-        }
-        /** @var Runner $potentialRunner */
-        $q = $this->_findRunnersInStage($eventId, $stageId);
-        $sicard = $runnerData['sicard'] ?? null;
-        $stName = $runnerData['first_name'] ?? null;
-        $lastName = $runnerData['last_name'] ?? null;
-        if ($stName && $lastName) {
-            $q->where([
-                'sicard' => $sicard,
-                'first_name' => $stName,
-                'last_name' => $lastName
-            ]);
-            if ($class) {
-                $q->where(['class_id' => $class->id]);
+    public function matchRunner(array $runnerData, ClassEntity $class): Runner
+    {
+        foreach ($this->_getStoredRunnersInClass() as $runner) {
+            $matchedRunner = $runner->getMatchedRunner($runnerData, $class);
+            if ($matchedRunner) {
+                return $matchedRunner;
             }
-            $potentialRunner = $q->first();
-            if ($potentialRunner) {
-                return $potentialRunner;
-            } else {
-                $q = $this->_findRunnersInStage($eventId, $stageId);
-                $q->where([
-                    'first_name' => $stName,
-                    'last_name' => $lastName
-                ]);
-                $err = '';
-                if ($class) {
-                    $err = ' in class';
-                    $q->where(['class_id' => $class->id]);
-                }
-                /** @var Runner $potentialRunner */
-                $potentialRunner = $q->first();
-                if ($potentialRunner) {
-                    return $potentialRunner;
-                } else {
-                    throw new NotFoundException('Not found runner by name' . $err);
-                }
-            }
-        } else {
-            throw new DetailedException('Fields sicard, first_name and last_name cannot be empty');
         }
+        if ($runnerData['db_id'] ?? null) {
+            throw new NotFoundException('Not found runner by db_id');
+        }
+        if ($runnerData['bib_number'] ?? null) {
+            throw new NotFoundException('Not found runner by bib_number');
+        }
+        //foreach ($this->_getStoredRunnersInClass() as $runner) {
+        //    $matchedRunner = $runner->getMatchedRunnerWithoutSportIdent($runnerData, $class);
+        //    if ($matchedRunner) {
+        //        return $matchedRunner;
+        //    }
+        //}
+        throw new NotFoundException('Not found runner by name');
     }
 
     public function createRunnerIfNotExists(
         string $eventId,
         string $stageId,
         array $runnerData,
-        ClassEntity $class = null
+        ClassEntity $class
     ): Runner {
+        $this->getStoredAllRunnersInClass($eventId, $stageId, $class->id);
         try {
-            $runner = $this->matchRunner($eventId, $stageId, $runnerData, $class);
+            $runner = $this->matchRunner($runnerData, $class);
         } catch (NotFoundException $e) {
             /** @var Runner $runner */
-            $runner = $this->patchNewWithStage($runnerData, $eventId, $stageId);
+            $runner = $this->fillNewWithStage($runnerData, $eventId, $stageId);
+            $this->addRunnerInClass($runner, $class->id);
         }
         return $runner;
     }
@@ -166,17 +138,22 @@ class RunnersTable extends AppTable
 
     public function createRunnerWithResults(array $runnerData, ClassEntity $class, UploadHelper $helper): Runner
     {
+        $helper->getMetrics()->startClubsTime();
         $runner = $this->createRunnerIfNotExists($helper->getEventId(), $helper->getStageId(), $runnerData, $class);
+        $helper->getMetrics()->endClubsTime();
 
         $results = $runnerData['runner_results'] ?? [];
         foreach ($results as $resultData) {
+            $helper->getMetrics()->addOneRunnerToCounter();
             $runner = $this->RunnerResults->createRunnerResult($resultData, $runner, $helper);
         }
 
+        $helper->getMetrics()->startClubsTime();
         $runnerClub = $runnerData['club'] ?? null;
         if ($runnerClub) {
             $runner->club = $this->Clubs->createIfNotExists($helper->getEventId(), $helper->getStageId(), $runnerClub);
         }
+        $helper->getMetrics()->endClubsTime();
         return $runner;
     }
 }

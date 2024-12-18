@@ -4,9 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
-use Cake\ORM\Entity;
-
-class ControlType extends Entity
+class ControlType extends AppEntity
 {
     public const NORMAL = 'f3cc5efa-065f-4ad6-844b-74e99612889b';
     public const START = '5570a504-4803-434a-a3b9-44d24e40c30b';

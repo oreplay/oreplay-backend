@@ -4,9 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
-use Cake\ORM\Entity;
-
-class TeamResult extends Entity
+class TeamResult extends AppEntity
 {
     protected $_accessible = [
         '*' => false,

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\RunnerResult;
@@ -25,6 +26,18 @@ class SplitsTable extends AppTable
         ControlsTable::addHasMany($this);
     }
 
+    protected function _insert(EntityInterface $entity, array $data)
+    {
+        return parent::_insert($entity, $data);
+    }
+
+    public function fillNewWithStage(array $data, string $eventId, string $stageId)
+    {
+        /** @var Split $split */
+        $split = parent::fillNewWithStage($data, $eventId, $stageId);
+        return $split;
+    }
+
     public function createIfNotExists(string $eventId, string $stageId, array $data): Split
     {
         $conditions = $data;
@@ -34,7 +47,7 @@ class SplitsTable extends AppTable
         /** @var Split $entity */
         $entity = $this->getFromCache([$cacheKey, $conditions]);
         if (!$entity) {
-            $entity = $this->patchNewWithStage($data, $eventId, $stageId);
+            $entity = $this->fillNewWithStage($data, $eventId, $stageId);
         }
         return $entity;
     }
@@ -44,16 +57,16 @@ class SplitsTable extends AppTable
         return $this->deleteAll(['runner_id' => $runnerId]);
     }
 
-    public function uploadSplits(RunnerResult $resultToSave, array $splits, UploadHelper $helper): RunnerResult
+    public function uploadForEachSplit(RunnerResult $resultToSave, array $splits, UploadHelper $helper): RunnerResult
     {
         if ($splits) {
-            $this->deleteAllByRunnerId($resultToSave->id);
             foreach ($splits as $split) {
-                $splitToSave = $this->createIfNotExists($helper->getEventId(), $helper->getStageId(), $split);
+                $splitToSave = $this->fillNewWithStage($split, $helper->getEventId(), $helper->getStageId());
                 if ($split['station'] ?? null) {
-                    $control = $this->Controls->createIfNotExists($helper->getEventId(), $helper->getStageId(), $split);
+                    $control = $this->Controls->createControlIfNotExists($helper, $split);
                     $splitToSave->addControl($control);
                 }
+                $helper->getMetrics()->addOneSplit();
                 $resultToSave->addSplit($splitToSave);
             }
         }

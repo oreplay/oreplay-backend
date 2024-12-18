@@ -14,9 +14,12 @@ use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Stage;
 use Results\Model\Table\RunnersTable;
+use Results\Test\Fixture\ClassesFixture;
+use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\RunnerResultsFixture;
 use Results\Test\Fixture\RunnersFixture;
 use Results\Test\Fixture\SplitsFixture;
+use Results\Test\Fixture\StagesFixture;
 use Results\Test\Fixture\TeamResultsFixture;
 
 class RunnersTableTest extends TestCase
@@ -26,6 +29,9 @@ class RunnersTableTest extends TestCase
         RunnerResultsFixture::LOAD,
         TeamResultsFixture::LOAD,
         SplitsFixture::LOAD,
+        ClassesFixture::LOAD,
+        EventsFixture::LOAD,
+        StagesFixture::LOAD,
     ];
     /** @var RunnersTable Runners */
     private $Runners;
@@ -60,18 +66,28 @@ class RunnersTableTest extends TestCase
 
     public function testMatchRunner()
     {
-        // db_id found
         $dbId = '984ur983u';
+        $this->Runners->updateAll([
+            'db_id' => 'first_db_id_not_matching',
+            'event_id' => Event::FIRST_EVENT,
+            'stage_id' => Stage::FIRST_STAGE,
+            'class_id' => ClassEntity::ME,
+        ], ['id' => RunnersFixture::RUNNER_RAID_ID]);
         $this->Runners->updateAll(['db_id' => $dbId], ['id' => Runner::FIRST_RUNNER]);
-        $data = ['db_id' => $dbId];
-        $runner = $this->Runners->matchRunner(Event::FIRST_EVENT, Stage::FIRST_STAGE, $data);
+        $class = new ClassEntity();
+        $class->id = ClassEntity::ME;
+        $this->Runners->getStoredAllRunnersInClass(Event::FIRST_EVENT, Stage::FIRST_STAGE, $class->id);
+
+        // db_id found
+        $data = ['db_id' => $dbId, 'sicard' => '9', 'first_name' => 'a', 'last_name' => 'b'];
+        $runner = $this->Runners->matchRunner($data, $class);
         $this->assertEquals(Runner::FIRST_RUNNER, $runner->id);
 
         // db_id not found
-        $data = ['db_id' => 'badDbId'];
+        $data = ['db_id' => 'badDbId', 'sicard' => '9', 'first_name' => 'a', 'last_name' => 'b'];
         $exception = 'not rised';
         try {
-            $this->Runners->matchRunner(Event::FIRST_EVENT, Stage::FIRST_STAGE, $data);
+            $this->Runners->matchRunner($data, $class);
         } catch (NotFoundException $e) {
             $exception = $e->getMessage();
         }
@@ -79,30 +95,27 @@ class RunnersTableTest extends TestCase
 
         // bib found
         $bib = '4444';
-        $data = ['bib_number' => $bib];
-        $runner = $this->Runners->matchRunner(Event::FIRST_EVENT, Stage::FIRST_STAGE, $data);
+        $data = ['bib_number' => $bib, 'sicard' => '9', 'first_name' => 'a', 'last_name' => 'b'];
+        $runner = $this->Runners->matchRunner($data, $class);
         $this->assertEquals(Runner::FIRST_RUNNER, $runner->id);
 
         // bib not found
-        $data = ['bib_number' => '$bib'];
+        $data = ['bib_number' => 'bad_bib', 'sicard' => '9', 'first_name' => 'a', 'last_name' => 'b'];
         $exception = 'not rised';
         try {
-            $this->Runners->matchRunner(Event::FIRST_EVENT, Stage::FIRST_STAGE, $data);
+            $this->Runners->matchRunner($data, $class);
         } catch (NotFoundException $e) {
             $exception = $e->getMessage();
         }
         $this->assertEquals('Not found runner by bib_number', $exception);
 
         // runner found with sicard
-        $class = new ClassEntity();
-        $class->id = ClassEntity::ME;
         $data = [
             'sicard' => '2009933',
             'first_name' => 'First',
             'last_name' => 'Runner',
         ];
-        $runner = $this->Runners->matchRunner(
-            Event::FIRST_EVENT, Stage::FIRST_STAGE, $data, $class);
+        $runner = $this->Runners->matchRunner($data, $class);
         $this->assertEquals(Runner::FIRST_RUNNER, $runner->id);
 
         // runner found without sicard
@@ -111,8 +124,7 @@ class RunnersTableTest extends TestCase
             'first_name' => 'First',
             'last_name' => 'Runner',
         ];
-        $runner = $this->Runners->matchRunner(
-            Event::FIRST_EVENT, Stage::FIRST_STAGE, $data, $class);
+        $runner = $this->Runners->matchRunner($data, $class);
         $this->assertEquals(Runner::FIRST_RUNNER, $runner->id);
 
         // runner not found with class
@@ -123,18 +135,16 @@ class RunnersTableTest extends TestCase
         ];
         $exception = 'not rised';
         try {
-            $this->Runners->matchRunner(
-                Event::FIRST_EVENT, Stage::FIRST_STAGE, $data, $class);
+            $this->Runners->matchRunner($data, $class);
         } catch (NotFoundException $e) {
             $exception = $e->getMessage();
         }
-        $this->assertEquals('Not found runner by name in class', $exception);
+        $this->assertEquals('Not found runner by name', $exception);
 
         // runner not found without class
         $exception = 'not rised';
         try {
-            $this->Runners->matchRunner(
-                Event::FIRST_EVENT, Stage::FIRST_STAGE, $data,);
+            $this->Runners->matchRunner($data, $class);
         } catch (NotFoundException $e) {
             $exception = $e->getMessage();
         }
@@ -150,21 +160,20 @@ class RunnersTableTest extends TestCase
         ];
         $exception = 'not rised';
         try {
-            $runner = $this->Runners->matchRunner(
-                Event::FIRST_EVENT, Stage::FIRST_STAGE, $data, $classNotMatched);
+            $runner = $this->Runners->matchRunner($data, $classNotMatched);
         } catch (NotFoundException $e) {
             $exception = $e->getMessage();
         }
-        $this->assertEquals('Not found runner by name in class', $exception);
+        $this->assertEquals('Not found runner by name', $exception);
 
         // runner not found
         $data = ['param' => 'badParam'];
         $exception = 'not rised';
         try {
-            $this->Runners->matchRunner(Event::FIRST_EVENT, Stage::FIRST_STAGE, $data);
+            $this->Runners->matchRunner($data, $class);
         } catch (DetailedException $e) {
             $exception = $e->getMessage();
         }
-        $this->assertEquals('Fields sicard, first_name and last_name cannot be empty', $exception);
+        $this->assertEquals('Fields first_name <> and last_name <> cannot be empty', $exception);
     }
 }

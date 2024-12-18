@@ -279,7 +279,7 @@
                 {
                     "description": "ID in URL",
                     "in": "path",
-                    "name": "entity_id",
+                    "name": "eventID",
                     "required": true,
                     "schema": {
                         "type": "string"
@@ -307,7 +307,7 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "description": "Add new",
+                                "description": "Edit",
                                 "properties": {
                                     "data": {
                                         "type": "object",
@@ -318,20 +318,7 @@
                                             },
                                             "description": {
                                                 "type": "string",
-                                                "example": "My new test stage"
-                                            },
-                                            "stage_type": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "string",
-                                                        "example": "29d5050b-4769-4be5-ace4-7e5973f68e3c"
-                                                    },
-                                                    "description": {
-                                                        "type": "string",
-                                                        "example": "Foot-O, MTBO, Ski-O"
-                                                    }
-                                                }
+                                                "example": "Some stage"
                                             },
                                             "_links": {
                                                 "type": "object",
@@ -351,48 +338,6 @@
                                                 }
                                             }
                                         }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "401": {
-                    "description": "Unauthorized",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Edit should not edit with invalid token",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Unauthorized"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 401
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "403": {
-                    "description": "Forbidden",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Edit should not edit from another user",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Forbidden"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 403
                                     }
                                 }
                             }
@@ -443,36 +388,22 @@
                 }
             },
             "requestBody": {
-                "description": "Request body can match to any of the 2 provided schemas",
+                "description": "",
                 "content": {
                     "application/json": {
                         "schema": {
-                            "oneOf": [
-                                {
-                                    "type": "object",
-                                    "description": "Add new",
-                                    "properties": {
-                                        "description": {
-                                            "type": "string",
-                                            "example": "My new test stage"
-                                        }
-                                    }
+                            "type": "object",
+                            "description": "Edit",
+                            "properties": {
+                                "description": {
+                                    "type": "string",
+                                    "example": "Some stage"
                                 },
-                                {
-                                    "type": "object",
-                                    "description": "Add new including optional stage type",
-                                    "properties": {
-                                        "description": {
-                                            "type": "string",
-                                            "example": "My other test stage"
-                                        },
-                                        "stage_type_id": {
-                                            "type": "string",
-                                            "example": "ce5e95ea-9f2b-4a98-86e1-2b43651adfee"
-                                        }
-                                    }
+                                "stage_type_id": {
+                                    "type": "string",
+                                    "example": "2b5de3d0-9bc9-435a-8bd9-2d4060b86e45"
                                 }
-                            ]
+                            }
                         }
                     }
                 }

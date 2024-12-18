@@ -4,9 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
-use Cake\ORM\Entity;
-
-class Team extends Entity
+class Team extends AppEntity
 {
     public const FIRST_TEAM = '8ea9f351-4141-4ff2-891d-9e2a904bc296';
 

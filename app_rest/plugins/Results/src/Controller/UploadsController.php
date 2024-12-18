@@ -22,6 +22,8 @@ use Results\Model\Table\TokensTable;
  */
 class UploadsController extends ApiController
 {
+    private UploadHelper $_helper;
+
     public function isPublicController(): bool
     {
         return true;
@@ -30,23 +32,25 @@ class UploadsController extends ApiController
     private function _clearUploadCache()
     {
         Cache::clear(CacheGrp::UPLOAD);
+        $this->runnersTable()->emptyStoredList();
     }
 
     private function _addNew(UploadHelper $helper): array
     {
-        $startsTime = microtime(true);
+        $this->_clearUploadCache();
+        $metrics = $helper->getMetrics();
+        //$this->_writeLastUploadJson($helper->getData());
         //$this->log('Uploading data: ' . " \n\n" . json_encode($helper->getData()), \Psr\Log\LogLevel::DEBUG);
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($helper->getEventId(), $token);
         if (!$isDesktopClientAuthenticated) {
             throw new ForbiddenException('Invalid Bearer token');
         }
-        $this->Classes = ClassesTable::load();
 
         $configChecker = $helper->validateConfigChecker();
         $stageId = $helper->getStageId();
 
-        $helper->setExistingRunnerResults($this->runnersTable()->RunnerResults->getAllResults($helper));
+        $helper->setExistingData($this->runnersTable()->RunnerResults);
 
         if ($configChecker->isStartLists()) {
             if ($helper->hasAlreadyFinishTimes()) {
@@ -54,41 +58,45 @@ class UploadsController extends ApiController
             }
         }
 
-        $runnerCount = 0;
-        $classesToSave = [];
         foreach ($configChecker->getClasses() as $classObj) {
             $class = $this->Classes->createIfNotExists($helper->getEventId(), $stageId, $classObj);
-            $course = $this->Classes->Courses->createIfNotExists($helper->getEventId(), $stageId, $classObj);
-            $class->course = $course;
-            $class = $this->_addAllRunnersInClass($classObj, $class, $helper);
-            $runnerCount += count($class->runners);
-            $classesToSave[] = $class;
+            if (!$class->isSameUploadHash($classObj)) {
+                $class->setHash($classObj);
+                $helper->getMetrics()->startCoursesTime();
+                // if no change is done in the whole class, we could totally skip processing it
+                $course = $this->Classes->Courses->createIfNotExists($helper->getEventId(), $stageId, $classObj);
+                $class->course = $course;
+                $helper->getMetrics()->endCoursesTime();
+                $class = $this->_addAllRunnersInClass($classObj, $class, $helper);
+                $metrics->saveManyOrFail($this->Classes, $class);
+            }
         }
 
-        $classCount = count($classesToSave);
-        $type = $configChecker->preCheckType();
-        $now = new FrozenTime();
-        $duration = round(microtime(true) - $startsTime, 2);
-        return [
-            'data' => $classesToSave,
-            'meta' => [
-                'updated' => [
-                    'classes' => $classCount,
-                    'runners' => $runnerCount,
-                ],
-                'human' => [
-                    "Updated $runnerCount runners, $classCount classes ($now - $type) in $duration secs.",
-                ]
-            ]
-        ];
+        $this->_clearUploadCache();
+
+        $metrics->endTotalTimer();
+
+        $queryParam = $this->getRequest()->getQuery('version');
+        if (!$queryParam || $queryParam < 301) {
+            return $metrics->toArrayLegacy($configChecker->preCheckType());
+        }
+        return $metrics->toArray($configChecker->preCheckType());
     }
 
     private function _addAllRunnersInClass(array $classArray, ClassEntity $class, UploadHelper $helper): ClassEntity
     {
+        $this->runnersTable()->ifDifferentClassEmptyStoredList($class->id);
         $runners = [];
-        foreach ($classArray['runners'] as $runnerData) {
+        $runnerArray = $classArray['runners'];
+        $runnerCount = count($runnerArray);
+        $helper->getMetrics()->startRunnersOutLoopTime();
+        for ($i = 0; $i < $runnerCount; $i++) {
+            $helper->getMetrics()->startRunnersInLoopTime();
+            $runnerData = $runnerArray[$i];
             $runners[] = $this->runnersTable()->createRunnerWithResults($runnerData, $class, $helper);
+            $helper->getMetrics()->endRunnersInLoopTime();
         }
+        $helper->getMetrics()->endRunnersOutLoopTime();
         $class->runners = $runners;
         return $class;
     }
@@ -103,13 +111,11 @@ class UploadsController extends ApiController
 
     protected function addNew($data)
     {
+        $this->Classes = ClassesTable::load();
         $this->flatResponse = true;
         try {
-            $this->_clearUploadCache();
-            $helper = new UploadHelper($data, $this->request->getParam('eventID'));
-            $this->return = $this->_addNew($helper);
-            $this->_clearUploadCache();
-            $this->Classes->saveManyOrFail($this->return['data']);
+            $this->_helper = new UploadHelper($data, $this->request->getParam('eventID'));
+            $this->return = $this->_addNew($this->_helper);
         } catch (\PDOException $e) {
             $this->log('Uploads PDOException: ' . $e->getMessage()
                 . " \n\n" . json_encode($data)
@@ -117,8 +123,18 @@ class UploadsController extends ApiController
             );
             $this->return = $this->respondError($e->getMessage(), $e->getCode());
         } catch (DetailedException $e) {
-            $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . json_encode($data));
+            $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . json_encode($data)
+                . " \n" . $e->getTraceAsString());
             $this->return = $this->respondError($e->getMessage(), $e->getCode());
+        } catch (\Exception $e) {
+            $this->log('Uploads GeneralException: ' . $e->getMessage() . " \n" . json_encode($data)
+                . " \n" . $e->getTraceAsString());
+            $exploded = explode('\\', get_class($e));
+            $exceptionName = array_pop($exploded);
+            if (!$exceptionName) {
+                $exceptionName = array_pop($exploded);
+            }
+            $this->return = $this->respondError($exceptionName, $e->getCode());
         }
     }
 
@@ -126,18 +142,8 @@ class UploadsController extends ApiController
     {
         $now = new FrozenTime();
         $this->response = $this->response->withStatus(202);
-        return [
-            'data' => null,
-            'meta' => [
-                'updated' => [
-                    'classes' => 0,
-                    'runners' => 0,
-                ],
-                'human' => [
-                    "[Error - $code] ($now) $message",
-                ]
-            ]
-        ];
+        return $this->_helper->getMetrics()
+            ->toArrayError(["\n    [ERROR - $code] ($now) $message \n"]);
     }
 
     private function _getBearer(): ?string
@@ -147,5 +153,12 @@ class UploadsController extends ApiController
             return null;
         }
         return substr($auth, strlen('Bearer '));
+    }
+
+    private function _writeLastUploadJson(array $content)
+    {
+        $path = TMP . 'lastUpload.json';
+        $file = new \SplFileObject($path, 'a+');
+        $file->fwrite(json_encode($content));
     }
 }

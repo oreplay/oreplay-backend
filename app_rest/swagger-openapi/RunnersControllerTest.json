@@ -110,7 +110,39 @@
                                                                 "type": "number",
                                                                 "example": 0
                                                             },
+                                                            "time_neutralization": {
+                                                                "type": "string",
+                                                                "example": ""
+                                                            },
+                                                            "time_adjusted": {
+                                                                "type": "string",
+                                                                "example": ""
+                                                            },
+                                                            "time_penalty": {
+                                                                "type": "string",
+                                                                "example": ""
+                                                            },
+                                                            "time_bonus": {
+                                                                "type": "string",
+                                                                "example": ""
+                                                            },
                                                             "points_final": {
+                                                                "type": "string",
+                                                                "example": ""
+                                                            },
+                                                            "points_adjusted": {
+                                                                "type": "string",
+                                                                "example": ""
+                                                            },
+                                                            "points_penalty": {
+                                                                "type": "string",
+                                                                "example": ""
+                                                            },
+                                                            "points_bonus": {
+                                                                "type": "string",
+                                                                "example": ""
+                                                            },
+                                                            "leg_number": {
                                                                 "type": "string",
                                                                 "example": ""
                                                             },
@@ -128,6 +160,10 @@
                                                                             "example": "2024-01-02T10:00:10.321+00:00"
                                                                         },
                                                                         "points": {
+                                                                            "type": "string",
+                                                                            "example": ""
+                                                                        },
+                                                                        "order_number": {
                                                                             "type": "string",
                                                                             "example": ""
                                                                         },

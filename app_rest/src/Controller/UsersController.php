@@ -33,7 +33,8 @@ class UsersController extends ApiController
         /** @var User $user */
         $user = $this->Users->newEmptyEntity();
         $user = $this->Users->patchEntity($user, $data);
-        $user->group_id = 5;
+        $user->is_admin = false;
+        $user->is_super = false;
         $saved = $this->Users->saveOrFail($user);
 
         $this->return = $this->Users->get($saved->id);

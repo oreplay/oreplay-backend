@@ -52,4 +52,13 @@ class ClassesTable extends AppTable
         ])
             ->orderAsc('oe_key');
     }
+
+    public function saveManyWithRelations(ClassEntity $singleClassToSave)
+    {
+        try {
+            return $this->saveManyOrFail([$singleClassToSave]);
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
 }
