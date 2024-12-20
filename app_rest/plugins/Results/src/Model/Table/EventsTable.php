@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Results\Model\Table;
 
@@ -96,6 +96,35 @@ class EventsTable extends AppTable
         /** @var Event $res */
         $res = $query->firstOrFail();
         return $res;
+    }
+
+    public function isHiddenById(string $id): ?bool
+    {
+        $event = $this->find()->where(['id' => $id])->first();
+        if (!$event) {
+            return null;
+        }
+        return $event->is_hidden;
+    }
+
+    public function getHiddenEventFromUser(string $eventId, string $userId): Event
+    {
+        /** @var Event $event */
+        $event = $this->find()
+            ->where(['id' => $eventId])
+            ->contain(FederationsTable::name())
+            ->contain(OrganizersTable::name())
+            ->contain(StagesTable::name() . '.' . StageTypesTable::name())
+            ->contain(UsersTable::name(), function (Query $query) use ($userId) {
+                return $query->where([
+                    'Users.id' => $userId,
+                ]);
+            })
+            ->firstOrFail();
+        if (!$event->getFirstUser()) {
+            throw new ForbiddenException('Event is hidden and not from this user');
+        }
+        return $event;
     }
 
     public function getEventFromUser(string $eventId, string $userId): Event

@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Results\Controller;
 
@@ -36,15 +36,23 @@ class EventsController extends ApiController
         $rootEntity = 'data';
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($id, $token);
+        $isHidden = $this->Events->isHiddenById($id);
         if ($token) {
             if ($isDesktopClientAuthenticated) {
                 $rootEntity = 'event';
+            }
+            else if ($isHidden) {
+                $userId = $this->getLocalOauth()->verifyAuthorizationAndGetToken()->getUserId();
             } else {
                 $this->getLocalOauth()->verifyAuthorizationAndGetToken();
             }
         }
         $this->flatResponse = true;
-        $res = $this->Events->getEventWithRelations($id);
+        if ($isHidden) {
+            $res = $this->Events->getEventFromUser($id, $userId);
+        } else {
+            $res = $this->Events->getEventWithRelations($id);
+        }
         if ($isDesktopClientAuthenticated) {
             $res = $res->getVerySimplified();
         }
