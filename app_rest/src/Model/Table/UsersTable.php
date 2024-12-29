@@ -38,6 +38,18 @@ class UsersTable extends AppTable
         return []; // $this->AdminUsers->getDependentUserIDs($uID);
     }
 
+    public function getUserByEmailOrNew(array $data)
+    {
+        $usr = $this->find()->where(['email' => $data['email']])->first();
+        if (!$usr) {
+            $usr = $this->newEmptyEntity();
+            $usr = $this->patchEntity($usr, $data);
+            $usr->is_admin = false;
+            $usr->is_super = false;
+        }
+        return $usr;
+    }
+
     private function _getFirst($uid): User
     {
         return $this->findById($uid)

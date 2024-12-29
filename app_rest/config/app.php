@@ -93,6 +93,15 @@ return [
         'idpDomain' => $isDebug ? '' : 'https://www.oreplay.es',
         'idpLoginFormPath' => '/signin/form',
         'tokenDirectlyFromPasswordGrant' => false,
+        /*
+        'externalOauth' => [
+            'loginUrl' => 'https://eu-central-1qlggwpudy.auth.eu-central-1.amazoncognito.com/login',
+            'tokenUrl' => 'https://eu-central-1qlggwpudy.auth.eu-central-1.amazoncognito.com/oauth2/token',
+            'clientId' => 'g2bb7ccli1t1949bio4p2nelp',
+            // phpcs:ignore
+            'tokenSigningKeyUrl' => 'https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_qlGGwpudY/.well-known/jwks.json',
+        ]
+        //*/
     ],
     'ResultsPlugin' => [
         'tablePrefix' => '',
