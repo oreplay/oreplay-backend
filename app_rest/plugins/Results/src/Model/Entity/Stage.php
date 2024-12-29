@@ -43,7 +43,7 @@ class Stage extends AppEntity
 
     public function _get_links(): array
     {
-        $resultsPath = $this->isTeam() ? '/teams/' : '/runners/';
+        $resultsPath = $this->isTeam() ? '/results/' : '/runners/';
         return [
             'self' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX
                 . '/events/' . $this->event_id . '/stages/' . $this->id,
@@ -57,6 +57,5 @@ class Stage extends AppEntity
     private function isTeam(): bool
     {
         return in_array($this->stage_type_id, [StageType::RAID]);
-        return in_array($this->stage_type_id, [StageType::RAID, StageType::ROGAINE]);
     }
 }

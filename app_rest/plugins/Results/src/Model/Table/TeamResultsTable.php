@@ -17,6 +17,6 @@ class TeamResultsTable extends AppTable
     {
         $this->addBehavior(TimestampBehavior::class);
         TeamsTable::addBelongsTo($this);
-        SplitsTable::addBelongsTo($this);
+        SplitsTable::addBelongsTo($this)->setSort(['order_number' => 'ASC', 'reading_time' => 'ASC']);
     }
 }

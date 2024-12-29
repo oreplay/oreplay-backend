@@ -10,6 +10,7 @@ use Results\Model\Entity\ClassEntity;
 
 /**
  * @property RunnersTable $Runners
+ * @property TeamsTable $Teams
  * @property CoursesTable $Courses
  */
 class ClassesTable extends AppTable
@@ -20,6 +21,7 @@ class ClassesTable extends AppTable
     {
         $this->addBehavior(TimestampBehavior::class);
         RunnersTable::addBelongsTo($this);
+        TeamsTable::addBelongsTo($this);
         CoursesTable::addHasMany($this);
     }
 
