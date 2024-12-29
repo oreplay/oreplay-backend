@@ -73,6 +73,7 @@ class RunnersControllerTest extends ApiCommonErrorsTest
     {
         return [
             'id' => Runner::FIRST_RUNNER,
+            'full_name' => 'First Runner',
             'first_name' => 'First',
             'last_name' => 'Runner',
             'sicard' => '2009933',
