@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
+use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
 
 /**
@@ -16,6 +17,7 @@ use RestApi\Lib\Exception\DetailedException;
  * @property string $db_id
  * @property mixed $sicard
  * @property mixed $bib_number
+ * @property FrozenTime $created
  */
 class Runner extends AppEntity
 {
@@ -31,6 +33,7 @@ class Runner extends AppEntity
     ];
 
     protected $_virtual = [
+        'full_name',
     ];
 
     protected $_hidden = [
@@ -55,6 +58,7 @@ class Runner extends AppEntity
         'team_id',
         'leg_number',
         'upload_hash',
+        'results',
         'created',
         'modified',
         'deleted',
@@ -74,6 +78,32 @@ class Runner extends AppEntity
     public function getRunnerResults()
     {
         return $this->runner_results;
+    }
+
+    private function isAnonymous(): bool
+    {
+        return $this->created && $this->created->lessThan(new FrozenTime('-1 year'));
+    }
+
+    public function _getFullName()
+    {
+        $isAnonymous = $this->isAnonymous();
+        $res = [];
+        if ($this->first_name) {
+            if ($isAnonymous) {
+                $res[] = mb_substr($this->first_name, 0, 1) . '.';
+            } else {
+                $res[] = $this->first_name;
+            }
+        }
+        if ($this->last_name) {
+            if ($isAnonymous) {
+                $res[] = mb_substr($this->last_name, 0, 1) . '.';
+            } else {
+                $res[] = $this->last_name;
+            }
+        }
+        return implode(' ', $res);
     }
 
     public function getMatchedRunner(array $runnerData, ClassEntity $class = null): ?Runner

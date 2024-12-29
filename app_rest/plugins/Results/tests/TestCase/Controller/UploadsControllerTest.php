@@ -61,7 +61,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         return ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/uploads/';
     }
 
-    public function testAddNew_shouldAddStartDates()
+    public function testAddNew_shouldAddStartTimes()
     {
         Cache::clear();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
@@ -509,7 +509,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'controls' => $controls,
         ];
         $db = [
-            'splits' => SplitsTable::load()->find()->all()->count() - 1,
+            'splits' => SplitsTable::load()->find()->all()->count() - 2,
             'controls' => ControlsTable::load()->find()->all()->count() - 1,
         ];
         $this->assertEquals($expected, $db, 'NewResultsTableAmounts');

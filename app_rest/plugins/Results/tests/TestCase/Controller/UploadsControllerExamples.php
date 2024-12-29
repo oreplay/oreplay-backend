@@ -345,7 +345,7 @@ class UploadsControllerExamples
     {
         return [
             'configuration' => [
-                'file' => '/home/freefri/Dropbox/Descargas/OReplayExamples/StartsCEO-Media-FE.xml',
+                'file' => '/OReplayExamples/StartsCEO-Media-FE.xml',
                 'extension' => 'XML',
                 'utf' => true,
                 'known_data' => true,
@@ -475,7 +475,7 @@ class UploadsControllerExamples
     {
         return [
             'configuration' => [
-                'file' => '/home/freefri/Dropbox/Descargas/OReplayExamples/ParcialesCEO-Media-FE.xml',
+                'file' => '/OReplayExamples/ParcialesCEO-Media-FE.xml',
                 'extension' => 'XML',
                 'utf' => true,
                 'known_data' => true,
