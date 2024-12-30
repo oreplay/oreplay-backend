@@ -7,6 +7,7 @@ namespace Results\Test\TestCase\Controller;
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Results\Model\Entity\ClassEntity;
+use Results\Model\Entity\Club;
 use Results\Model\Entity\ControlType;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
@@ -62,7 +63,6 @@ class ResultsControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals(2, count($bodyDecoded['data']));
-        $expected = $this->_getFirstRunner();
         $this->assertEquals($this->_getFirstRunner(), $bodyDecoded['data'][0]);
         $this->assertEquals($this->_getSecondRunner(), $bodyDecoded['data'][1]);
     }
@@ -71,6 +71,25 @@ class ResultsControllerTest extends ApiCommonErrorsTest
     {
         $this->skipNextRequestInSwagger();
         $this->get($this->_getEndpoint() . '?class_id=NOT_EXISTING_CLASS');
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals([], $bodyDecoded['data']);
+    }
+
+    public function testGetList_filteredByExistingClub()
+    {
+        $this->get($this->_getEndpoint() . '?club_id='.ClubsFixture::CLUB_1);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals(2, count($bodyDecoded['data']));
+        $this->assertEquals($this->_getFirstRunner(), $bodyDecoded['data'][0]);
+        $this->assertEquals($this->_getSecondRunner(), $bodyDecoded['data'][1]);
+    }
+
+    public function testGetList_filteredByNotExistingClub()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->get($this->_getEndpoint() . '?club_id=NOT_EXISTING_CLUB');
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals([], $bodyDecoded['data']);
