@@ -307,10 +307,11 @@ class EventsControllerTest extends ApiCommonErrorsTest
     public function testAddNew()
     {
         $data = [
+            'id' => '7f83e207-5a6e-456e-a08f-935eef54eca2',
             'description' => 'Test New Race',
             'initial_date' => '2024-03-26',
             'final_date' => '2024-03-26',
-            'federation_id' => null,
+            'federation_id' => Federation::FEDO,
         ];
         $this->post($this->_getEndpoint(), $data);
 
@@ -319,8 +320,11 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($data['initial_date'], $bodyDecoded['data']['initial_date']);
         $this->assertEquals($data['final_date'], $bodyDecoded['data']['final_date']);
 
+        /** @var Event $db */
         $db = EventsTable::load()->getEventFromUser($bodyDecoded['data']['id'], UsersFixture::USER_ADMIN_ID);
         $this->assertEquals($data['description'], $db->description);
+        $this->assertEquals($data['federation_id'], $db->federation_id);
+        $this->assertEquals($data['id'], $db->id);
     }
 
     public function testEdit()

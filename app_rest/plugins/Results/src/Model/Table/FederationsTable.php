@@ -18,12 +18,4 @@ class FederationsTable extends AppTable
         $this->addBehavior(TimestampBehavior::class);
         EventsTable::addBelongsTo($this);
     }
-
-    public function getEventWith($id): Event
-    {
-        $query = $this->find()->contain(FederationsTable::name())->where(['id' => $id]);
-        /** @var Event $res */
-        $res = $query->firstOrFail();
-        return $res;
-    }
 }

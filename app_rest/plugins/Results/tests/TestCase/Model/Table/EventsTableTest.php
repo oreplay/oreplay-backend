@@ -33,6 +33,25 @@ class EventsTableTest extends TestCase
         $this->Events = EventsTable::load();
     }
 
+    public function testPatchFromNewValidatingFederation()
+    {
+        $data = [
+            'description' => 'My new event',
+        ];
+        $res = $this->Events->patchFromNewValidatingFederation($data);
+        $this->assertEquals($data['description'], $res->description);
+        $this->assertEquals(36, strlen($res->id));
+        // with uuid
+        $data['id'] = '788a5cca-e93c-4a45-ba9d-a95cae6e5b19';
+        $res = $this->Events->patchFromNewValidatingFederation($data);
+        $this->assertEquals($data['description'], $res->description);
+        $this->assertEquals($data['id'], $res->id);
+        // with bad uuid
+        $data['id'] = 'bad_format_uuid';
+        $this->expectExceptionMessage('ID must be in UUID format ISO 9834 or not provided');
+        $this->Events->patchFromNewValidatingFederation($data);
+    }
+
     public function testGetEventWithRelations()
     {
         /** @var Event $res */
