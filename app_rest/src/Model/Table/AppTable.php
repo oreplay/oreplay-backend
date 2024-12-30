@@ -9,6 +9,7 @@ use Cake\Cache\Cache;
 use Cake\ORM\Entity;
 use Cake\ORM\Query;
 use Cake\Utility\Text;
+use RestApi\Lib\Exception\DetailedException;
 use RestApi\Model\Table\RestApiTable;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\AppEntity;
@@ -17,12 +18,25 @@ abstract class AppTable extends RestApiTable
 {
     const TABLE_PREFIX = '';
 
-
     public function patchFromNewWithUuid(array $data)
     {
         $entity = $this->newEmptyEntity();
-        $entity->id = Text::uuid();
+        $newId = $data['id'] ?? null;
+        if ($newId) {
+            $entity->id = $newId;
+        } else {
+            $entity->id = Text::uuid();
+        }
+        if (!$this->isValidUUID($entity->id)) {
+            throw new DetailedException('ID must be in UUID format ISO 9834 or not provided');
+        }
         return $this->patchEntity($entity, $data);
+    }
+
+    private function isValidUUID(string $uuid): bool
+    {
+        $regex = '/^[a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[89ab][a-f0-9]{3}-[a-f0-9]{12}$/i';
+        return 1 === preg_match($regex, $uuid);
     }
 
     public function fillNewWithUuid(array $data)

@@ -11,6 +11,7 @@ use App\Model\Entity\User;
 /**
  * @property User[] $users
  * @property mixed $description
+ * @property string $federation_id
  * @property Federation $federation
  * @property Stage[] $stages
  */

@@ -11,6 +11,7 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
 use DateTime;
+use RestApi\Lib\Exception\DetailedException;
 use Results\Model\Entity\Event;
 
 /**
@@ -30,6 +31,20 @@ class EventsTable extends AppTable
         $this->belongsToMany(UsersTable::name(), [
             'joinTable' => 'users_events',
         ]);
+    }
+
+    public function patchFromNewValidatingFederation(array $data): Event
+    {
+        /** @var Event $event */
+        $event = $this->patchFromNewWithUuid($data);
+        if ($data['federation_id'] ?? null) {
+            $federation = $this->Federations->findById($data['federation_id'])->first();
+            if (!$federation) {
+                throw new DetailedException('federation_id could not be found, contact support');
+            }
+            $event->federation_id = $data['federation_id'];
+        }
+        return $event;
     }
 
     /**
