@@ -40,6 +40,9 @@ class TeamsTable extends AppTable
         if ($filters['class_id'] ?? null) {
             $q->where(['class_id' => $filters['class_id']]);
         }
+        if ($filters['club_id'] ?? null) {
+            $q->where(['club_id' => $filters['club_id']]);
+        }
         return $q->contain(ClubsTable::name())
             ->contain(ClassesTable::name())
             ->contain(
