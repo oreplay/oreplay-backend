@@ -13,7 +13,7 @@ use RestApi\Model\ORM\RestApiSelectQuery;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Runner;
-use Results\Model\Traits\StoredRunnerTrait;
+use Results\Model\Traits\StoredParticipantTrait;
 
 /**
  * @property UsersTable $Users
@@ -25,7 +25,7 @@ use Results\Model\Traits\StoredRunnerTrait;
  */
 class RunnersTable extends AppTable
 {
-    use StoredRunnerTrait;
+    use StoredParticipantTrait;
 
     public function initialize(array $config): void
     {
@@ -74,7 +74,7 @@ class RunnersTable extends AppTable
 
     public function matchRunner(array $runnerData, ClassEntity $class): Runner
     {
-        foreach ($this->_getStoredRunnersInClass() as $runner) {
+        foreach ($this->_getStoredParticipantsInClass() as $runner) {
             $matchedRunner = $runner->getMatchedRunner($runnerData, $class);
             if ($matchedRunner) {
                 return $matchedRunner;
@@ -101,13 +101,13 @@ class RunnersTable extends AppTable
         array $runnerData,
         ClassEntity $class
     ): Runner {
-        $this->getStoredAllRunnersInClass($eventId, $stageId, $class->id);
+        $this->getStoredAllParticipantsInClass($eventId, $stageId, $class->id);
         try {
             $runner = $this->matchRunner($runnerData, $class);
         } catch (NotFoundException $e) {
             /** @var Runner $runner */
             $runner = $this->fillNewWithStage($runnerData, $eventId, $stageId);
-            $this->addRunnerInClass($runner, $class->id);
+            $this->addParticipantInClass($runner, $class->id);
         }
         return $runner;
     }
