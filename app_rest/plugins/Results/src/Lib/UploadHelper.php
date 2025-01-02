@@ -18,7 +18,7 @@ class UploadHelper
     private array $_data;
     private string $_eventId;
     private UploadConfigChecker $_checker;
-    private array $_existingRunnerResults;
+    private StorageHelper $_existingRunnerResults;
     private array $_existingControls;
     private UploadMetrics $_metrics;
 
@@ -81,18 +81,9 @@ class UploadHelper
     public function setExistingData($RunnerResults)
     {
         /** @var RunnerResultsTable $RunnerResults */
-        $this->setExistingRunnerResults($RunnerResults->getAllResults($this));
+        $this->_existingRunnerResults = new StorageHelper('runner_id');
+        $this->_existingRunnerResults->setExistingData($RunnerResults->getAllResults($this));
         $this->setExistingControls($RunnerResults->Splits->Controls->getAllControls($this));
-    }
-
-    public function setExistingRunnerResults(ResultSetInterface $existingRunnerResults): UploadHelper
-    {
-        $this->_existingRunnerResults = [];
-        /** @var RunnerResult $runnerResult */
-        foreach ($existingRunnerResults as $runnerResult) {
-            $this->_existingRunnerResults[$runnerResult->runner_id][] = $runnerResult;
-        }
-        return $this;
     }
 
     public function setExistingControls(ResultSetInterface $existingRunnerResults): UploadHelper
@@ -116,26 +107,11 @@ class UploadHelper
         $this->_existingControls[$stationNumber] = $control;
     }
 
-    /**
-     * @return RunnerResult[]
-     */
-    private function _getExistingResultsByRunner(Runner $runner): array
-    {
-        return $this->_existingRunnerResults[$runner->id] ?? [];
-    }
-
     public function getExistingDbResultsForThisRunner(
         Runner $runner,
         RunnerResult $runnerResultToSave
     ): array {
-        $toRet = [];
-        $resForRunner = $this->_getExistingResultsByRunner($runner);
-        foreach ($resForRunner as $runnerResult) {
-            if ($runnerResult->isSameResult($runnerResultToSave)) {
-                $toRet[] = $runnerResult;
-            }
-        }
-        return $toRet;
+        return $this->_existingRunnerResults->getExistingDbDataForThisId($runner->id, $runnerResultToSave);
     }
 
     public function getChecker(): UploadConfigChecker
