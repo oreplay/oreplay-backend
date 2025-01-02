@@ -14,6 +14,7 @@ use App\Model\Entity\User;
  * @property string $federation_id
  * @property Federation $federation
  * @property Stage[] $stages
+ * @property bool $is_hidden
  */
 class Event extends AppEntity
 {
@@ -61,6 +62,7 @@ class Event extends AppEntity
         foreach ($this->users as $usr) {
             return $usr;
         }
+        return null;
     }
 
     public function getVerySimplified(): array
