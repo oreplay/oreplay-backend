@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Test\Fixture;
 
+use Cake\I18n\FrozenTime;
 use RestApi\TestSuite\Fixture\RestApiFixture;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
@@ -17,8 +18,14 @@ class RunnersFixture extends RestApiFixture
     public const RUNNER_RAID_ID = '3c3b3cb5-1b86-491f-a6ef-f7d12e3d41b7';
     public const RUNNER_UUID = '7232f069-a361-474a-9ec4-5c51c2b4407e';
 
-    public $records = [
-        [
+    public $records = [];
+
+    public function __construct()
+    {
+        $now = new FrozenTime();
+        $year = $now->format('Y');
+
+        $this->records[] = [
             'id' => Runner::FIRST_RUNNER,
             'event_id' => Event::FIRST_EVENT,
             'stage_id' => Stage::FIRST_STAGE,
@@ -44,11 +51,11 @@ class RunnersFixture extends RestApiFixture
             'club_id' => ClubsFixture::CLUB_1,
             'team_id' => null,
             'leg_number' => null,
-            'created' => '2024-01-02 10:00:05',
-            'modified' => '2024-01-02 10:00:05',
+            'created' => $year . '-01-02 10:00:05',
+            'modified' => $year . '-01-02 10:00:05',
             'deleted' => null,
-        ],
-        [
+        ];
+        $this->records[] = [
             'id' => self::RUNNER_RAID_ID,
             'event_id' => EventsFixture::FIRST_RAID,
             'stage_id' => StagesFixture::STAGE_RAID,
@@ -74,9 +81,10 @@ class RunnersFixture extends RestApiFixture
             'club_id' => ClubsFixture::CLUB_1,
             'team_id' => null,
             'leg_number' => null,
-            'created' => '2024-01-03 10:00:05',
-            'modified' => '2024-01-03 10:00:05',
+            'created' => $year . '-01-03 10:00:05',
+            'modified' => $year . '-01-03 10:00:05',
             'deleted' => null,
-        ],
-    ];
+        ];
+        parent::__construct();
+    }
 }
