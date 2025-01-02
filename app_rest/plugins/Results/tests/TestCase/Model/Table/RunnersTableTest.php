@@ -76,7 +76,7 @@ class RunnersTableTest extends TestCase
         $this->Runners->updateAll(['db_id' => $dbId], ['id' => Runner::FIRST_RUNNER]);
         $class = new ClassEntity();
         $class->id = ClassEntity::ME;
-        $this->Runners->getStoredAllRunnersInClass(Event::FIRST_EVENT, Stage::FIRST_STAGE, $class->id);
+        $this->Runners->getStoredAllParticipantsInClass(Event::FIRST_EVENT, Stage::FIRST_STAGE, $class->id);
 
         // db_id found
         $data = ['db_id' => $dbId, 'sicard' => '9', 'first_name' => 'a', 'last_name' => 'b'];

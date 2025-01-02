@@ -70,8 +70,7 @@ class RunnerResultsTable extends AppTable
     {
         $runnerResultToSave = $this->fillNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
 
-        $runnerResultToSave->result_type = $this
-            ->ResultTypes
+        $runnerResultToSave->result_type = $this->ResultTypes
             ->getCachedWithDefault($helper->getChecker(), $resultData['result_type']['id'] ?? null);
 
         return $runnerResultToSave;
