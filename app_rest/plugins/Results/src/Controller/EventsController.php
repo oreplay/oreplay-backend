@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Controller;
 
 use App\Lib\FullBaseUrl;
+use Cake\Http\Exception\ForbiddenException;
 use RestApi\Lib\Helpers\PaginationHelper;
 use Results\Model\Entity\Event;
 use Results\Model\Table\EventsTable;
@@ -44,7 +45,11 @@ class EventsController extends ApiController
             }
         }
         $this->flatResponse = true;
+        /** @var Event $res */
         $res = $this->Events->getEventWithRelations($id);
+        if ($res->is_hidden === true) {
+            throw new ForbiddenException('Event is private');
+        }
         if ($isDesktopClientAuthenticated) {
             $res = $res->getVerySimplified();
         }
