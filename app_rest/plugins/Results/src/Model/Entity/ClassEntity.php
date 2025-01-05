@@ -13,6 +13,7 @@ use Results\Lib\UploadHelper;
  * @property string $event_id
  * @property string $stage_id
  * @property Runner[] $runners
+ * @property Team[] $teams
  * @property Course $course
  */
 class ClassEntity extends AppEntity

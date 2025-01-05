@@ -72,6 +72,17 @@ class Runner extends AppEntity
         $this->runner_results[] = $runnerResult;
         return $this;
     }
+
+    public function addClub(Club $club): Runner
+    {
+        $this->club = $club;
+        return $this;
+    }
+
+    public function _getOverall(): ?RunnerResult
+    {
+        return $this->team_results[0] ?? null;
+    }
     /**
      * @return RunnerResult[]
      */

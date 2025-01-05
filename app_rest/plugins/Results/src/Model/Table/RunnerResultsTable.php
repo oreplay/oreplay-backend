@@ -96,16 +96,8 @@ class RunnerResultsTable extends AppTable
         }
         $helper->getMetrics()->endRunnerResultsTime();
 
-        $helper->getMetrics()->startSplitsTime();
         $splits = $resultData['splits'] ?? [];
-        if ($splits && !$runnerResultToSave->hasSameSplits($splits)) {
-            $runnerResultToSave->setHash($splits);
-            $this->Splits->deleteAllByRunnerId($runnerResultToSave->id);
-            $runnerResultToSave = $this->Splits->uploadForEachSplit($runnerResultToSave, $splits, $helper);
-        }
-        // add the new runner result to the runner
-        $res = $runner->addRunnerResult($runnerResultToSave);
-        $helper->getMetrics()->endSplitsTime();
-        return $res;
+        $runnerResultToSave = $this->Splits->uploadAllSplits($splits, $runnerResultToSave, $helper);
+        return $runner->addRunnerResult($runnerResultToSave);
     }
 }

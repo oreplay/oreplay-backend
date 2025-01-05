@@ -5,18 +5,25 @@ declare(strict_types = 1);
 namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
+use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
 use RestApi\Model\ORM\RestApiSelectQuery;
+use Results\Lib\UploadHelper;
+use Results\Model\Entity\ClassEntity;
+use Results\Model\Entity\Team;
+use Results\Model\Traits\StoredParticipantTrait;
 
 /**
- * @property RunnersTable $Runner
+ * @property RunnersTable $Runners
  * @property ClassesTable $Classes
  * @property ClubsTable $Clubs
  * @property TeamResultsTable $TeamResults
  */
 class TeamsTable extends AppTable
 {
+    use StoredParticipantTrait;
+
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
@@ -51,5 +58,62 @@ class TeamsTable extends AppTable
                 . '.' . ControlsTable::name()
                 . '.' . ControlTypesTable::name()
             );
+    }
+
+    public function matchTeam(array $teamData, ClassEntity $class): Team
+    {
+        foreach ($this->_getStoredParticipantsInClass() as $team) {
+            $matchedTeam = $team->getMatchedTeam($teamData, $class);
+            if ($matchedTeam) {
+                return $matchedTeam;
+            }
+        }
+        if ($teamData['bib_number'] ?? null) {
+            throw new NotFoundException('Not found team by bib_number');
+        }
+        throw new NotFoundException('Not found team by name');
+    }
+
+    public function createTeamIfNotExists(
+        string $eventId,
+        string $stageId,
+        array $teamData,
+        ClassEntity $class
+    ): Team {
+        $this->getStoredAllParticipantsInClass($eventId, $stageId, $class->id);
+        try {
+            $team = $this->matchTeam($teamData, $class);
+        } catch (NotFoundException $e) {
+            /** @var Team $team */
+            $team = $this->fillNewWithStage($teamData, $eventId, $stageId);
+            $this->addParticipantInClass($team, $class->id);
+        }
+        return $team;
+    }
+
+    public function createTeamWithResults(array $teamData, ClassEntity $class, UploadHelper $helper): Team
+    {
+        $helper->getMetrics()->startClubsTime();
+        $team = $this->createTeamIfNotExists($helper->getEventId(), $helper->getStageId(), $teamData, $class);
+        $helper->getMetrics()->endClubsTime();
+
+        $results = $teamData['team_results'] ?? [];
+        foreach ($results as $resultData) {
+            $helper->getMetrics()->addOneTeamResultToCounter();
+            $team = $this->TeamResults->createTeamResult($resultData, $team, $helper);
+        }
+        $runners = $teamData['runners'] ?? [];
+        foreach ($runners as $runnerData) {
+            $team->addRunner($this->Runners->createRunnerWithResults($runnerData, $class, $helper));
+        }
+
+        $helper->getMetrics()->startClubsTime();
+        $club = $teamData['club'] ?? null;
+        if ($club) {
+            $team->addClub($this->Clubs->createIfNotExists($helper->getEventId(), $helper->getStageId(), $club));
+        }
+        $helper->getMetrics()->endClubsTime();
+        $helper->getMetrics()->addToTeamCounter(1);
+        return $team;
     }
 }

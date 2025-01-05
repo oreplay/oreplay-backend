@@ -13,8 +13,10 @@ class UploadMetrics
     private array $_classesToSave = [];
     private int $classCount = 0;
     private int $runnerCount = 0;
-    private int $splitAmount = 0;
+    private int $teamCount = 0;
+    private int $splitCount = 0;
     private int $runnerResultsCount = 0;
+    private int $teamResultsCount = 0;
     private int $coursesCount = 0;
     private float $_startTimeTotal = 0.0;
     private float $_startTimeProcessing = 0.0;
@@ -63,7 +65,8 @@ class UploadMetrics
      */
     public function saveManyOrFail(ClassesTable $classes, ClassEntity $singleClassToSave): array
     {
-        $this->addToRunnerCounter(count($singleClassToSave->runners));
+        //$this->addToRunnerCounter(count($singleClassToSave->runners));
+        //$this->addToTeamCounter(count($singleClassToSave->teams));
         $this->_classesToSave[] = $singleClassToSave;
         $this->classCount = count($this->_classesToSave);
         $this->endProcessing();
@@ -81,9 +84,14 @@ class UploadMetrics
         $this->_totalDuration = $this->_roundUp($end - $this->_startTimeTotal);
     }
 
-    private function addToRunnerCounter(int $toAdd)
+    public function addToRunnerCounter(int $toAdd)
     {
         $this->runnerCount += $toAdd;
+    }
+
+    public function addToTeamCounter(int $toAdd)
+    {
+        $this->teamCount += $toAdd;
     }
 
     public function startSplitsTime()
@@ -145,12 +153,17 @@ class UploadMetrics
 
     public function addOneSplit()
     {
-        $this->splitAmount++;
+        $this->splitCount++;
     }
 
-    public function addOneRunnerToCounter()
+    public function addOneRunnerResultToCounter()
     {
         $this->runnerResultsCount++;
+    }
+
+    public function addOneTeamResultToCounter()
+    {
+        $this->teamResultsCount++;
     }
 
     public function toArrayError(array $human): array
@@ -177,14 +190,16 @@ class UploadMetrics
         $processingDuration = round($this->_processingDuration, 2);
         $savingDuration = round($this->_savingDuration, 2);
         $total = round($this->_totalDuration, 2);
+        $participantResultsCount = $this->runnerResultsCount + $this->teamResultsCount;
+        $participantCount = $this->runnerCount + $this->teamCount;
         return [
             'meta' => [
                 'updated' => [
                     'classes' => $this->classCount,
                     'courses' => $this->coursesCount,
-                    'runners' => $this->runnerCount,
-                    'splits' => $this->splitAmount,
-                    'runnerResults' => $this->runnerResultsCount,
+                    'runners' => $participantCount,
+                    'splits' => $this->splitCount,
+                    'runnerResults' => $participantResultsCount,
                 ],
                 'timings' => [
                     'processing' => [
@@ -208,11 +223,11 @@ class UploadMetrics
                 'human' => [
                     "\n *** Updated $this->classCount classes, "
                     . "$this->coursesCount courses ($this->_coursesDuration s) $newLine"
-                    . "$this->runnerCount runners "
-                    . "(and $this->runnerResultsCount results in $resultsTotal s "
+                    . "$participantCount participants "
+                    . "(and $participantResultsCount results in $resultsTotal s "
                     . "[$loopingTime looping + $runnersInLoop s + $this->_clubsDuration clubs + "
                     . "$this->_runnerResultsDuration results]), $newLine"
-                    . "$this->splitAmount splits (in $this->_splitDuration s), $newLine"
+                    . "$this->splitCount splits (in $this->_splitDuration s), $newLine"
                     . "   in $total seconds ($processingDuration processing + $savingDuration saving) $newLine",
                     "($now - $type)\n" . 'second line for testing',
                 ]
@@ -234,10 +249,11 @@ class UploadMetrics
         unset($res['meta']['timings']);
         unset($res['meta']['humanColor']);
         unset($res['meta']['human'][1]);
+        $participantCount = $this->runnerCount + $this->teamCount;
         $res['meta']['human'] = [
-            " *** Updated $this->runnerCount runners, "
+            " *** Updated $participantCount participants, "
             . "$this->classCount classes, "
-            . "$this->splitAmount splits, "
+            . "$this->splitCount splits, "
             . "($now - $type) in $total seconds ($processingDuration processing + $savingDuration saving)",
         ];
         //*/

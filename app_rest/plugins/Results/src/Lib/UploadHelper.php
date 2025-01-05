@@ -10,8 +10,11 @@ use RestApi\Lib\Exception\DetailedException;
 use Results\Model\Entity\Control;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
+use Results\Model\Entity\Team;
+use Results\Model\Entity\TeamResult;
 use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\StagesTable;
+use Results\Model\Table\TeamResultsTable;
 
 class UploadHelper
 {
@@ -19,6 +22,7 @@ class UploadHelper
     private string $_eventId;
     private UploadConfigChecker $_checker;
     private StorageHelper $_existingRunnerResults;
+    private StorageHelper $_existingTeamResults;
     private array $_existingControls;
     private UploadMetrics $_metrics;
 
@@ -78,11 +82,14 @@ class UploadHelper
         }
     }
 
-    public function setExistingData($RunnerResults)
+    public function setExistingData($RunnerResults, $TeamResults)
     {
         /** @var RunnerResultsTable $RunnerResults */
         $this->_existingRunnerResults = new StorageHelper('runner_id');
         $this->_existingRunnerResults->setExistingData($RunnerResults->getAllResults($this));
+        /** @var TeamResultsTable $TeamResults */
+        $this->_existingTeamResults = new StorageHelper('team_id');
+        $this->_existingTeamResults->setExistingData($TeamResults->getAllResults($this));
         $this->setExistingControls($RunnerResults->Splits->Controls->getAllControls($this));
     }
 
@@ -112,6 +119,13 @@ class UploadHelper
         RunnerResult $runnerResultToSave
     ): array {
         return $this->_existingRunnerResults->getExistingDbDataForThisId($runner->id, $runnerResultToSave);
+    }
+
+    public function getExistingDbResultsForThisTeam(
+        Team $team,
+        TeamResult $teamResultToSave
+    ): array {
+        return $this->_existingTeamResults->getExistingDbDataForThisId($team->id, $teamResultToSave);
     }
 
     public function getChecker(): UploadConfigChecker

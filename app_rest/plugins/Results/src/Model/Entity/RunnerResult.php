@@ -22,7 +22,7 @@ use Results\Lib\UploadHelper;
  * @property FrozenTime $finish_time
  * @property ResultType $result_type
  */
-class RunnerResult extends AppEntity
+class RunnerResult extends AppEntity implements ParticipantResultsEntity
 {
     public const FIRST_RES = '635af121-db7b-4c5e-82ab-79208e45568f';
 

@@ -4,8 +4,12 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
+use RestApi\Lib\Exception\DetailedException;
+
 /**
  * @property string $team_name
+ * @property mixed $bib_number
+ * @property string $class_id
  */
 class Team extends AppEntity
 {
@@ -51,10 +55,31 @@ class Team extends AppEntity
         'deleted',
     ];
 
-    /**
-     * @return TeamResult
-     */
-    public function _getOverall()
+    public function addTeamResult(TeamResult $teamResult): Team
+    {
+        if (!isset($this->team_results)) {
+            $this->team_results = [];
+        }
+        $this->team_results[] = $teamResult;
+        return $this;
+    }
+
+    public function addRunner(Runner $runner): Team
+    {
+        if (!isset($this->runners)) {
+            $this->runners = [];
+        }
+        $this->runners[] = $runner;
+        return $this;
+    }
+
+    public function addClub(Club $club): Team
+    {
+        $this->club = $club;
+        return $this;
+    }
+
+    public function _getOverall(): ?TeamResult
     {
         return $this->team_results[0] ?? null;
     }
@@ -62,5 +87,32 @@ class Team extends AppEntity
     public function _getFullName()
     {
         return $this->team_name;
+    }
+
+    public function getMatchedTeam(array $runnerData, ClassEntity $class = null): ?Team
+    {
+        $bibNumber = $runnerData['bib_number'] ?? null;
+        if ($this->bib_number && $this->bib_number == $bibNumber) {
+            return $this;
+        }
+        $teamName = $runnerData['team_name'] ?? null;
+        if ($teamName) {
+            if ($this->team_name == $teamName) {
+                if ($class) {
+                    if ($this->class_id == $class->id) {
+                        return $this;
+                    } else {
+                        return null;
+                    }
+                } else {
+                    return $this;
+                }
+            } else {
+                return null;
+            }
+        } else {
+            $msg = "Fields team_name <$teamName> cannot be empty";
+            throw new DetailedException($msg);
+        }
     }
 }

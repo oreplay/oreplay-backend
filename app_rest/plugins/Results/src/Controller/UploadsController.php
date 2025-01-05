@@ -14,6 +14,7 @@ use Results\Lib\UploadHelper;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\RunnersTable;
+use Results\Model\Table\TeamsTable;
 use Results\Model\Table\TokensTable;
 
 /**
@@ -50,7 +51,7 @@ class UploadsController extends ApiController
         $configChecker = $helper->validateConfigChecker();
         $stageId = $helper->getStageId();
 
-        $helper->setExistingData($this->runnersTable()->RunnerResults);
+        $helper->setExistingData($this->runnersTable()->RunnerResults, $this->teamsTable()->TeamResults);
 
         if ($configChecker->isStartLists() && $helper->hasAlreadyFinishTimes()) {
             throw new InvalidPayloadException('Cannot add start times when there are already finish times');
@@ -66,6 +67,7 @@ class UploadsController extends ApiController
                 $class->course = $course;
                 $helper->getMetrics()->endCoursesTime();
                 $class = $this->_addAllRunnersInClass($classObj, $class, $helper);
+                $class = $this->_addAllTeamsInClass($classObj, $class, $helper);
                 $metrics->saveManyOrFail($this->Classes, $class);
             }
         }
@@ -85,7 +87,7 @@ class UploadsController extends ApiController
     {
         $this->runnersTable()->ifDifferentClassEmptyStoredList($class->id);
         $runners = [];
-        $runnerArray = $classArray['runners'];
+        $runnerArray = $classArray['runners'] ?? [];
         $runnerCount = count($runnerArray);
         $helper->getMetrics()->startRunnersOutLoopTime();
         for ($i = 0; $i < $runnerCount; $i++) {
@@ -99,12 +101,32 @@ class UploadsController extends ApiController
         return $class;
     }
 
-    /**
-     * @return RunnersTable
-     */
-    private function runnersTable()
+    private function _addAllTeamsInClass(array $classArray, ClassEntity $class, UploadHelper $helper): ClassEntity
     {
-        return $this->Classes->Runners;
+        $this->teamsTable()->ifDifferentClassEmptyStoredList($class->id);
+        $teams = [];
+        $runnerArray = $classArray['teams'] ?? [];
+        $runnerCount = count($runnerArray);
+        $helper->getMetrics()->startRunnersOutLoopTime();
+        for ($i = 0; $i < $runnerCount; $i++) {
+            $helper->getMetrics()->startRunnersInLoopTime();
+            $runnerData = $runnerArray[$i];
+            $teams[] = $this->teamsTable()->createTeamWithResults($runnerData, $class, $helper);
+            $helper->getMetrics()->endRunnersInLoopTime();
+        }
+        $helper->getMetrics()->endRunnersOutLoopTime();
+        $class->teams = $teams;
+        return $class;
+    }
+
+    private function teamsTable(): TeamsTable
+    {
+        return $this->Classes->Teams->getTarget();
+    }
+
+    private function runnersTable(): RunnersTable
+    {
+        return $this->Classes->Runners->getTarget();
     }
 
     protected function addNew($data)

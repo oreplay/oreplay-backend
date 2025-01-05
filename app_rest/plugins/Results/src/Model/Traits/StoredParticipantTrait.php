@@ -11,7 +11,7 @@ use Results\Model\Entity\Team;
 trait StoredParticipantTrait
 {
     /**
-     * @var Runner[]
+     * @var Runner[]|Team[]
      */
     private array $_storedParticipantsInClass = [];
     private string $_classIdForStoredParticipants = '';
@@ -57,7 +57,7 @@ trait StoredParticipantTrait
     }
 
     /**
-     * @return Runner[]
+     * @return Runner[]|Team[]
      */
     protected function _getStoredParticipantsInClass(): array
     {

@@ -4,7 +4,18 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
-class TeamResult extends AppEntity
+use Cake\I18n\FrozenTime;
+
+/**
+ * @property FrozenTime $start_time
+ * @property FrozenTime $finish_time
+ * @property mixed $position
+ * @property ResultType $result_type
+ * @property string $upload_hash
+ * @property string $result_type_id
+ * @property mixed $leg_number
+ */
+class TeamResult extends AppEntity implements ParticipantResultsEntity
 {
     protected $_accessible = [
         '*' => false,
@@ -46,4 +57,23 @@ class TeamResult extends AppEntity
         'team_id',
         'team_uuid',
     ];
+
+    public function setIDsToUpdate(TeamResult $teamResult): TeamResult
+    {
+        $this->id = $teamResult->id;
+        $this->upload_hash = $teamResult->upload_hash;
+        $this->setDirty('upload_hash');
+        return $this;
+    }
+
+    public function isSameResult(RunnerResult $runnerResultToSave): bool
+    {
+        if ($this->leg_number != $runnerResultToSave->leg_number) {
+            return false;
+        }
+        if ($this->result_type_id != $runnerResultToSave->result_type->id) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -121,16 +121,17 @@ class RunnersTable extends AppTable
 
         $results = $runnerData['runner_results'] ?? [];
         foreach ($results as $resultData) {
-            $helper->getMetrics()->addOneRunnerToCounter();
+            $helper->getMetrics()->addOneRunnerResultToCounter();
             $runner = $this->RunnerResults->createRunnerResult($resultData, $runner, $helper);
         }
 
         $helper->getMetrics()->startClubsTime();
-        $runnerClub = $runnerData['club'] ?? null;
-        if ($runnerClub) {
-            $runner->club = $this->Clubs->createIfNotExists($helper->getEventId(), $helper->getStageId(), $runnerClub);
+        $club = $runnerData['club'] ?? null;
+        if ($club) {
+            $runner->addClub($this->Clubs->createIfNotExists($helper->getEventId(), $helper->getStageId(), $club));
         }
         $helper->getMetrics()->endClubsTime();
+        $helper->getMetrics()->addToRunnerCounter(1);
         return $runner;
     }
 }

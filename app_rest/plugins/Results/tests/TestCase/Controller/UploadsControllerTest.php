@@ -13,6 +13,7 @@ use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
+use Results\Model\Entity\Team;
 use Results\Model\Table\AnswersTable;
 use Results\Model\Table\ClassesControlsTable;
 use Results\Model\Table\ClassesTable;
@@ -36,6 +37,8 @@ use Results\Test\Fixture\RunnersFixture;
 use Results\Test\Fixture\SplitsFixture;
 use Results\Test\Fixture\StagesFixture;
 use Results\Test\Fixture\StageTypesFixture;
+use Results\Test\Fixture\TeamResultsFixture;
+use Results\Test\Fixture\TeamsFixture;
 use Results\Test\Fixture\TokensFixture;
 
 class UploadsControllerTest extends ApiCommonErrorsTest
@@ -54,6 +57,8 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         TokensFixture::LOAD,
         StageTypesFixture::LOAD,
         CoursesFixture::LOAD,
+        TeamsFixture::LOAD,
+        TeamResultsFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -85,7 +90,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'human' => ['']
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-        $this->assertStringStartsWith(' *** Updated 4 runners, 2 classes, 0 splits', $human);
+        $this->assertStringStartsWith(' *** Updated 4 participants, 2 classes, 0 splits', $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -128,6 +133,88 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         }
         $this->_assertNewOptionalTables(0, 0, 0, 0);
         $this->_assertNewBasicTables(2, 2, 1, 4, 4);
+        $this->_assertNewResultsTables(0, 0);
+    }
+
+    public function testAddNew_shouldAddStartTimesWithTeams()
+    {
+        Cache::clear();
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = ['oreplay_data_transfer' => UploadsControllerExamples::startTimesWithOneRunnerAndOneTeam()];
+        $this->post($this->_getEndpoint() . '?version=300', $data);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $decodedData = $jsonDecoded['data'];
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
+        $expectedMeta = [
+            'updated' => [
+                'classes' => 2,
+                'runners' => 4,
+            ],
+            'human' => ['']
+        ];
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+        $this->assertStringStartsWith(' *** Updated 4 participants, 2 classes, 0 splits', $human);
+
+        $dbTeams = TeamsTable::load()->find()
+            ->where(['created >' => new FrozenTime('-1 minute')])
+            ->contain(TeamResultsTable::name())->all();
+        $this->assertEquals(1, $dbTeams->count());
+        /** @var Team $firstTeam */
+        $firstTeam = $dbTeams->first();
+        $this->assertEquals('Couupless', $firstTeam->team_name);
+        $this->assertEquals('2024-11-10T09:30:00+00:00', $firstTeam->_getOverall()->start_time->toIso8601String());
+
+        $addedClasses = $ClassesTable->find()
+            ->where([
+                'Classes.stage_id' => StagesFixture::STAGE_FEDO_2,
+                'Classes.created >' => new FrozenTime('-1 minute')
+            ])
+            ->contain(CoursesTable::name())
+            ->orderAsc('Classes.oe_key')
+            ->all();
+        $this->assertEquals(2, count($addedClasses));
+        $expectedClasses = ['Individual', 'DUAL.TEAM'];
+        foreach ($addedClasses as $k => $class) {
+            $this->assertEquals($expectedClasses[$k], $class->short_name);
+            $this->assertEquals($expectedClasses[$k], $class->course->short_name);
+        }
+
+        $res = RunnersTable::load()
+            ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
+            ->where(['Runners.created >' => new FrozenTime('-1 minute')])
+            ->orderAsc('last_name')
+            ->all();
+
+        $this->assertEquals(3, count($res), 'Runner count in db');
+        $this->assertEquals(1, count($decodedData[0]['runners']));
+        $this->assertEquals(1, count($decodedData[1]['teams']));
+        $this->assertEquals(2, count($decodedData[1]['teams'][0]['runners']));
+        $runnersJson = array_merge($decodedData[0]['runners'], $decodedData[1]['teams'][0]['runners']);
+        /** @var Runner $value */
+        foreach ($res as $key => $value) {
+            $currentRunner = $runnersJson[$key];
+            $this->assertEquals($currentRunner['last_name'], $value->last_name);
+            $this->assertEquals($currentRunner['first_name'], $value->first_name);
+            $this->assertEquals($currentRunner['sicard'], $value->sicard);
+            $this->assertEquals($currentRunner['id'], $value->id);
+            $this->assertEquals($currentRunner['club']['short_name'], $value->club->short_name);
+            $this->assertEquals($currentRunner['runner_results'][0]['start_time'],
+                $value->getRunnerResults()[0]->start_time->jsonSerialize());
+            $this->assertEquals('2024-11-10T09:30:00.000+00:00', $currentRunner['runner_results'][0]['start_time']);
+            $this->assertEquals($currentRunner['runner_results'][0]['id'],
+                $value->getRunnerResults()[0]->id);
+            $this->assertEquals(ResultType::STAGE,
+                $value->getRunnerResults()[0]->result_type_id);
+        }
+        $this->_assertNewOptionalTables(0, 1, 1, 0);
+        $this->_assertNewBasicTables(2, 2, 2, 3, 3);
         $this->_assertNewResultsTables(0, 0);
     }
 
@@ -226,7 +313,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
         $expectedSplits = 3;
-        $this->assertStringStartsWith(" *** Updated $expectedRunnerAmount runners, 1 classes, $expectedSplits splits", $human);
+        $this->assertStringStartsWith(" *** Updated $expectedRunnerAmount participants, 1 classes, $expectedSplits splits", $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -362,7 +449,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'runnerResults' => 2,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        //$this->assertStringStartsWith(' *** Updated 2 runners, 2 classes, 0 splits', $human);
+        //$this->assertStringStartsWith(' *** Updated 2 participants, 2 classes, 0 splits', $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -423,7 +510,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'runnerResults' => 2,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        //$this->assertStringStartsWith(' *** Updated 2 runners, 2 classes, 0 splits', $human);
+        //$this->assertStringStartsWith(' *** Updated 2 participants, 2 classes, 0 splits', $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -478,8 +565,8 @@ class UploadsControllerTest extends ApiCommonErrorsTest
     private function _assertNewOptionalTables($classesControls, $teams, $teamsResults, $answers): void
     {
         $this->assertEquals($classesControls, ClassesControlsTable::load()->find()->all()->count());
-        $this->assertEquals($teams, TeamsTable::load()->find()->all()->count());
-        $this->assertEquals($teamsResults, TeamResultsTable::load()->find()->all()->count());
+        $this->assertEquals($teams + 1, TeamsTable::load()->find()->all()->count(), 'Teams');
+        $this->assertEquals($teamsResults + 1, TeamResultsTable::load()->find()->all()->count(), 'TeamResults');
         $this->assertEquals($answers, AnswersTable::load()->find()->all()->count());
     }
 
