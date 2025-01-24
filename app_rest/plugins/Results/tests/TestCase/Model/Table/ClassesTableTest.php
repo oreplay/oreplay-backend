@@ -33,7 +33,8 @@ class ClassesTableTest extends TestCase
 
         $expected = [
             'id' => 'd8a87faf-68a4-487b-8f28-6e0ead6c1a57',
-            'short_name' => 'ME'
+            'short_name' => 'ME',
+            'long_name' => 'M Elite',
         ];
         $this->assertEquals($expected, $class->toArray());
 

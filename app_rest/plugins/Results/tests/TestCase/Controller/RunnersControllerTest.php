@@ -85,6 +85,7 @@ class RunnersControllerTest extends ApiCommonErrorsTest
             'class' => [
                 'id' => ClassEntity::ME,
                 'short_name' => 'ME',
+                'long_name' => 'M Elite',
             ],
             'runner_results' => [
                 [

@@ -32,8 +32,14 @@ class StageClassesControllerTest extends ApiCommonErrorsTest
         $bodyDecoded = $this->assertJsonResponseOK();
         $expected = [
             [
+                'id' => ClassEntity::FE,
+                'short_name' => 'FE',
+                'long_name' => 'F Elite',
+            ],
+            [
                 'id' => ClassEntity::ME,
                 'short_name' => 'ME',
+                'long_name' => 'M Elite',
             ],
         ];
         $this->assertEquals($expected, $bodyDecoded['data']);
