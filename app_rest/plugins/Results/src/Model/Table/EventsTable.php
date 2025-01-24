@@ -10,6 +10,7 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
+use Cake\Validation\Validator;
 use DateTime;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Model\Entity\Event;
@@ -128,5 +129,21 @@ class EventsTable extends AppTable
             throw new ForbiddenException('Event not from this user');
         }
         return $event;
+    }
+
+    public function validationDefault(Validator $validator): Validator
+    {
+        $validator
+            ->add('final_date', 'checkDates', [
+                'rule' => function ($value, $context) {
+                    if (isset($context['data']['initial_date']) && strtotime($value) < strtotime($context['data']['initial_date'])) {
+                        return false;
+                    }
+                    return true;
+                },
+                'message' => 'The final date cannot be earlier than the initial date.'
+            ]);
+
+        return $validator;
     }
 }
