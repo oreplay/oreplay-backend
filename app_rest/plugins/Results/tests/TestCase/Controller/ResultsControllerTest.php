@@ -109,6 +109,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'class' => [
                 'id' => ClassEntity::ME,
                 'short_name' => 'ME',
+                'long_name' => 'M Elite',
             ],
             'overall' => [
                 'id' => TeamResultsFixture::TEAM_RESULT_1,
@@ -166,6 +167,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'class' => [
                 'id' => ClassEntity::ME,
                 'short_name' => 'ME',
+                'long_name' => 'M Elite',
             ],
             'runner_results' => [
                 [

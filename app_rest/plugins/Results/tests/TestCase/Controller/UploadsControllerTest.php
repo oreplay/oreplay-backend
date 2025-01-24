@@ -495,7 +495,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $db = [
             'clubs' => ClubsTable::load()->find()->all()->count() - 1,
             'courses' => CoursesTable::load()->find()->all()->count() - 1,
-            'classes' => ClassesTable::load()->find()->all()->count() - 1,
+            'classes' => ClassesTable::load()->find()->all()->count() - 2,
             'runners' => RunnersTable::load()->find()->all()->count() - 2,
             'runnerResults' => RunnerResultsTable::load()->find()->all()->count() - 1,
         ];
