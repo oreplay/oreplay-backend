@@ -18,6 +18,7 @@ use Results\Lib\UploadHelper;
 class ClassEntity extends AppEntity
 {
     public const ME = 'd8a87faf-68a4-487b-8f28-6e0ead6c1a57';
+    public const FE = 'd8a87faf-68a4-487b-8f28-6e0ead6c1a56';
 
     protected $_accessible = [
         '*' => false,
@@ -36,7 +37,6 @@ class ClassEntity extends AppEntity
         'course_id',
         'uuid',
         'oe_key',
-        'long_name',
         'upload_hash',
         'created',
         'modified',
