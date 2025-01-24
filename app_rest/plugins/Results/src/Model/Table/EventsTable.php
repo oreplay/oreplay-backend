@@ -136,7 +136,10 @@ class EventsTable extends AppTable
         $validator
             ->add('final_date', 'checkDates', [
                 'rule' => function ($value, $context) {
-                    if (isset($context['data']['initial_date']) && strtotime($value) < strtotime($context['data']['initial_date'])) {
+                    if (
+                        isset($context['data']['initial_date']) &&
+                        strtotime($value) < strtotime($context['data']['initial_date'])
+                    ) {
                         return false;
                     }
                     return true;
