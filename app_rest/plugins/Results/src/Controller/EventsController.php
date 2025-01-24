@@ -72,6 +72,9 @@ class EventsController extends ApiController
         $userId = $this->getLocalOauth()->verifyAuthorizationAndGetToken()->getUserId();
         /** @var Event $event */
         $event = $this->Events->patchFromNewValidatingFederation($data);
+        if ($event->getErrors()) {
+            throw new \InvalidArgumentException('Validation failed: ' . json_encode($event->getErrors()));
+        }
         $event->users = [$this->Events->Users->get($userId)];
         $this->return = $this->Events->saveOrFail($event, ['associated' => true]);
     }

@@ -327,6 +327,20 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($data['id'], $db->id);
     }
 
+    public function testAddNew_shouldNotAddFinalDateBefaoreInitialDate()
+    {
+        $data = [
+            'id' => '7f83e207-5a6e-456e-a08f-935eef54eca1',
+            'description' => 'Test New Race',
+            'initial_date' => '2024-03-26',
+            'final_date' => '2024-03-25',
+            'federation_id' => Federation::FEDO,
+        ];
+        $this->post($this->_getEndpoint(), $data);
+
+        $this->assertResponseCode(400);
+    }
+
     public function testEdit()
     {
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
@@ -375,6 +389,17 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->patch($this->_getEndpoint() . EventsFixture::EVENT_TODAY, $data);
 
         $this->assertResponseCode(403);
+    }
+
+    public function testEdit_shouldNotEditFinalDateBefaoreInitialDate()
+    {
+        $data = [
+            'initial_date' => '2024-03-26',
+            'final_date' => '2024-03-25',
+        ];
+        $this->patch($this->_getEndpoint() . Event::FIRST_EVENT, $data);
+
+        $this->assertResponseCode(400);
     }
 
     public function testDelete()
