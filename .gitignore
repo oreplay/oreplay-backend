@@ -41,3 +41,4 @@ nbproject/*
 .sass-cache/
 #sonarqube
 sonar-project.properties
+build/
