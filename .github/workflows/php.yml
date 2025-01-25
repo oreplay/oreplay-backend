@@ -74,21 +74,3 @@ jobs:
           COOKIE_ENCRYPT_CONFIG: 'restCookie:6584945321164241:5833546516543654'
         run: |
           composer run-script test -d app_rest
-  Analysis:
-    runs-on: ubuntu-20.04
-
-    steps:
-      - name: Analyze with SonarCloud
-
-        # You can pin the exact commit or the version.
-        # uses: SonarSource/sonarcloud-github-action@v2.2.0
-        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Generate a token on Sonarcloud.io, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)
-        with:
-          projectBaseDir: ../../app_rest
-          args: |
-            -Dsonar.projectKey=oreplay_oreplaysonarqube
-            -Dsonar.organization=oreplay
-            -Dsonar.sources=src
-            -Dsonar.tests=tests/TestCase
