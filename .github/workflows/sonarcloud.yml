@@ -23,7 +23,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}   # Generate a token on Sonarcloud.io, add it to the secrets of this repo with the name SONAR_TOKEN (Settings > Secrets > Actions > add new repository secret)
         with:
-          projectBaseDir: ../app_rest
+          projectBaseDir: ../../app_rest
           args: |
             -Dsonar.projectKey=oreplay_oreplaysonarqube
             -Dsonar.organization=oreplay
