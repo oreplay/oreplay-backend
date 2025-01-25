@@ -27,7 +27,7 @@ jobs:
           # mandatory
           args: |
             -Dsonar.projectKey=oreplay_oreplaysonarqube
-            -Dsonar.projectBaseDir=app_rest
+            -Dsonar.projectBaseDir=./app_rest
             -Dsonar.organization=oreplay
             -Dsonar.sources=src
             -Dsonar.tests=tests/TestCase
