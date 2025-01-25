@@ -31,7 +31,7 @@ jobs:
       with:
         projectBaseDir: /home/runner/work/oreplay-backend/oreplay-backend/app_rest
         args: |
-          -Dsonar.projectKey=oreplay_oreplaysonarqube
+          -Dsonar.projectKey=oreplay_oreplay_backend
           -Dsonar.organization=oreplay
           -Dsonar.sources=src
           -Dsonar.tests=tests/TestCase
