@@ -21,11 +21,11 @@ jobs:
     - name: Print working directory
       run: pwd
 
-    - name: List files in workspace
-      run: ls -la /github/workspace
-
     - name: List parent directory
       run: ls -la ..
+
+    - name: List files in workspace
+      run: ls
 
 
     # steps:
