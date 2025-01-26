@@ -36,6 +36,7 @@ class Event extends AppEntity
         'picture' => true,
         'initial_date' => true,
         'final_date' => true,
+        'organizer_id' => true,
     ];
 
     protected $_virtual = [
@@ -43,7 +44,6 @@ class Event extends AppEntity
     ];
 
     protected $_hidden = [
-        'organizer_id',
         'deleted',
     ];
 
