@@ -82,6 +82,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => $today,
             'final_date' => $today,
             'federation_id' => 'IOF',
+            'organizer_id' => Organizer::ID,
             'picture' => null,
             'website' => null,
             'scope' => null,
@@ -111,6 +112,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => $tomorrow,
             'final_date' => $tomorrow,
             'federation_id' => 'IOF',
+            'organizer_id' => Organizer::ID,
             'picture' => null,
             'website' => null,
             'scope' => null,
@@ -196,6 +198,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => '2024-01-25',
             'final_date' => '2024-01-25',
             'federation_id' => Federation::FEDO,
+            'organizer_id' => Organizer::ID,
             'picture' => null,
             'website' => null,
             'scope' => null,
@@ -219,6 +222,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => '2024-01-26',
             'final_date' => '2024-01-26',
             'federation_id' => Federation::IOF,
+            'organizer_id' => Organizer::ID,
             'picture' => null,
             'website' => null,
             'scope' => null,
@@ -312,6 +316,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'initial_date' => '2024-03-26',
             'final_date' => '2024-03-26',
             'federation_id' => Federation::FEDO,
+            'organizer_id' => Organizer::ID,
         ];
         $this->post($this->_getEndpoint(), $data);
 
@@ -324,6 +329,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $db = EventsTable::load()->getEventFromUser($bodyDecoded['data']['id'], UsersFixture::USER_ADMIN_ID);
         $this->assertEquals($data['description'], $db->description);
         $this->assertEquals($data['federation_id'], $db->federation_id);
+        $this->assertEquals($data['organizer_id'], $db->organizer_id);
         $this->assertEquals($data['id'], $db->id);
     }
 
