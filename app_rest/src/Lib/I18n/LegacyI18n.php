@@ -57,11 +57,6 @@ class LegacyI18n extends I18n
 
     private static function getDefaultName($name): string
     {
-        //if ($name === 'default') {
-        //    if (is_dir(self::getPluginLocaleDir())) {
-        //        return Inflector::underscore(getPluginNameWithCt());
-        //    }
-        //}
         return $name;
     }
 

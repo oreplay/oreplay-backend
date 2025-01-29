@@ -7,15 +7,6 @@ namespace App\Lib\Consts;
 class CacheGrp
 {
     const DEFAULT = 'default';
-    //const VIEW = 'view';
-    //const SEO = 'seoCache';
-    //const GEOCODE = 'geocode';
-    //const SHORT = 'short';
-    //const SEARCH = 'search';
-    //const MEDIUM = 'medium';
-    //const LONG = 'long';
-    //const SESSION = 'session';
-    //const REINDEX = 'reindex';
     const ACL = 'acl';
     const UPLOAD = 'upload';
     const EXTRALONG = 'extralong';
