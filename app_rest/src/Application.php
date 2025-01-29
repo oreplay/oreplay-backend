@@ -35,10 +35,10 @@ class Application extends BaseApplication
         if (Configure::read('debug')) {
             //$this->addPlugin(\DebugKit\Plugin::class);
         }
-        $this->_loadCommonPlugins();
+        $this->loadCommonPlugins();
     }
 
-    private function _loadCommonPlugins()
+    private function loadCommonPlugins()
     {
         $this->addPlugin('Migrations');
         $this->addPlugin(\RestOauth\RestOauthPlugin::class);
@@ -86,6 +86,6 @@ class Application extends BaseApplication
         } catch (MissingPluginException $e) {
             // Do not halt if the plugin is missing
         }
-        $this->_loadCommonPlugins();
+        $this->loadCommonPlugins();
     }
 }
