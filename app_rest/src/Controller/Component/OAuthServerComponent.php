@@ -58,10 +58,8 @@ class OAuthServerComponent extends Component
     private function _verifyAdminAction(ApiController $controller)
     {
         $path = explode('/', $controller->getRequest()->getPath());
-        if ($path[3] === 'admin') {
-            if (!$this->server->isAdminUser()) {
-                throw new ForbiddenException('Only admins allowed for this action');
-            }
+        if ($path[3] === 'admin' && !$this->server->isAdminUser()) {
+            throw new ForbiddenException('Only admins allowed for this action');
         }
     }
 

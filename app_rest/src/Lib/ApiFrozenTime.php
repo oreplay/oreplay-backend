@@ -72,6 +72,7 @@ class ApiFrozenTime extends FrozenTime
                 $pattern
             );
             if (empty($formatter)) {
+                // NOSONAR
                 throw new RuntimeException(
                     'Your version of icu does not support creating a date formatter for ' .
                     "`$key`. You should try to upgrade libicu and the intl extension."

@@ -122,6 +122,7 @@ class Installer
                 if (in_array($arg, ['Y', 'y', 'N', 'n'])) {
                     return $arg;
                 }
+                // NOSONAR
                 throw new Exception('This is not a valid answer. Please choose Y or n.');
             };
             $setFolderPermissions = $io->askAndValidate(
@@ -137,20 +138,7 @@ class Installer
         }
 
         // Change the permissions on a path and output the results.
-        $changePerms = function ($path) use ($io) {
-            $currentPerms = fileperms($path) & 0777;
-            $worldWritable = $currentPerms | 0007;
-            if ($worldWritable == $currentPerms) {
-                return;
-            }
-
-            $res = chmod($path, $worldWritable);
-            if ($res) {
-                $io->write('Permissions set on ' . $path);
-            } else {
-                $io->write('Failed to set permissions on ' . $path);
-            }
-        };
+        $changePerms = self::getChangePerms($io);
 
         $walker = function ($dir) use (&$walker, $changePerms) {
             $files = array_diff(scandir($dir), ['.', '..']);
@@ -169,6 +157,25 @@ class Installer
         $walker($dir . '/tmp');
         $changePerms($dir . '/tmp');
         $changePerms($dir . '/logs');
+    }
+
+    private static function getChangePerms(\Composer\IO\IOInterface $io): \Closure
+    {
+        $changePerms = function ($path) use ($io) {
+            $currentPerms = fileperms($path) & 0777;
+            $worldWritable = $currentPerms | 0007;
+            if ($worldWritable == $currentPerms) {
+                return;
+            }
+
+            $res = chmod($path, $worldWritable);
+            if ($res) {
+                $io->write('Permissions set on ' . $path);
+            } else {
+                $io->write('Failed to set permissions on ' . $path);
+            }
+        };
+        return $changePerms;
     }
 
     /**
