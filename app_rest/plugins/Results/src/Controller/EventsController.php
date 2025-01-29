@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Controller;
 
 use App\Lib\FullBaseUrl;
+use App\Lib\Validator\ValidationException;
 use Cake\Http\Exception\ForbiddenException;
 use RestApi\Lib\Helpers\PaginationHelper;
 use Results\Model\Entity\Event;
@@ -73,7 +74,7 @@ class EventsController extends ApiController
         /** @var Event $event */
         $event = $this->Events->patchFromNewValidatingFederation($data);
         if ($event->getErrors()) {
-            throw new \InvalidArgumentException('Validation failed: ' . json_encode($event->getErrors()));
+            throw new ValidationException($event, 400);
         }
         $event->users = [$this->Events->Users->get($userId)];
         $this->return = $this->Events->saveOrFail($event, ['associated' => true]);
