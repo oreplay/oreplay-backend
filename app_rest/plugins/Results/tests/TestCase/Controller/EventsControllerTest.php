@@ -338,7 +338,13 @@ class EventsControllerTest extends ApiCommonErrorsTest
         ];
         $this->post($this->_getEndpoint(), $data);
 
-        $this->assertResponseCode(400);
+        $expectedError = [
+            'final_date' => [
+                'checkDates' => 'The final date cannot be earlier than the initial date.',
+            ]
+        ];
+        $this->assertException('Validation error', 400, 'Validation Exception');
+        $this->assertValidationErrorMessage($expectedError);
     }
 
     public function testEdit()
