@@ -83,8 +83,7 @@ abstract class AppTable extends RestApiTable
             $this->_alias . '.stage_id' => $stageId,
             $this->_alias . '.short_name' => $shortName
         ];
-        // NOSONAR
-        $cacheKey = 'getByShortName_' . $this->_alias . '_' . md5(json_encode($conditions));
+        $cacheKey = 'getByShortName_' . $this->_alias . '_' . md5(json_encode($conditions)); // NOSONAR
         return [$cacheKey, $conditions];
     }
 

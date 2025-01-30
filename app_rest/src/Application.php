@@ -32,9 +32,6 @@ class Application extends BaseApplication
             $this->bootstrapCli();
         }
 
-        if (Configure::read('debug')) {
-            //$this->addPlugin(\DebugKit\Plugin::class);
-        }
         $this->loadCommonPlugins();
     }
 

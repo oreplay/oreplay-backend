@@ -41,7 +41,7 @@ class OAuthServerComponent extends Component
             $this->_parseRequestParamIDs($controller);
         }
         if ($controller && $controller->getRequest()->is(['POST', 'PUT', 'PATCH'])) {
-            if (!$controller->getRequest()->getData()) {
+            if (!$controller->getRequest()->getData()) { // NOSONAR
                 throw new BadRequestException('Empty body or invalid Content-Type in HTTP request');
             }
         }
