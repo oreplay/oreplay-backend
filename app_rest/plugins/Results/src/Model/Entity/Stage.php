@@ -45,13 +45,15 @@ class Stage extends AppEntity
     {
         $resultsPath = $this->isTeam() ? '/results/' : '/runners/';
         return [
-            'self' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX
-                . '/events/' . $this->event_id . '/stages/' . $this->id,
-            'results' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX
-                . '/events/' . $this->event_id . '/stages/' . $this->id . $resultsPath,
-            'classes' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX
-                . '/events/' . $this->event_id . '/stages/' . $this->id . '/classes/'
+            'self' => $this->_path() . $this->id,
+            'results' => $this->_path() . $this->id . $resultsPath,
+            'classes' => $this->_path() . $this->id . '/classes/'
         ];
+    }
+
+    private function _path()
+    {
+        return FullBaseUrl::host() . ApiController::ROUTE_PREFIX . '/events/' . $this->event_id . '/stages/';
     }
 
     private function isTeam(): bool

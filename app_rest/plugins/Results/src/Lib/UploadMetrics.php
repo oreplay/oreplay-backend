@@ -40,7 +40,7 @@ class UploadMetrics
         $this->startProcessing();
     }
 
-    private function _roundUp(float $value, int $precision = 2): float
+    private function _roundUp(float $value): float
     {
         return $value;
     }
