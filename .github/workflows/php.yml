@@ -87,7 +87,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: app_rest
+          projectBaseDir: ${{ github.workspace }}
           args: |
             -Dsonar.projectKey=oreplay_oreplay-backend
             -Dsonar.organization=o-replay
