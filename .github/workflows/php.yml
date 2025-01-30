@@ -89,14 +89,12 @@ jobs:
         with:
           projectBaseDir: app_rest
           args: |
-            head app_rest/coverage.xml
             -Dsonar.projectKey=oreplay_oreplay-backend
             -Dsonar.organization=o-replay
             -Dsonar.sources=src,plugins/Results/src
             -Dsonar.tests=tests/TestCase,plugins/Results/tests/TestCase
             -Dsonar.php.codesniffer.argument=--standard=phpcs.xml
             -Dsonar.php.coverage.reportPaths=app_rest/coverage.xml
-            head coverage.xml
 
       - name: Output file
         run: head app_rest/coverage.xml
