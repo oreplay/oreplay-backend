@@ -82,6 +82,11 @@ jobs:
       - name: Output file
         run: head app_rest/coverage.xml
 
+      - name: Debug SonarQube Config
+        run: |
+          ls -lah ${{ github.workspace }}
+          cat ${{ github.workspace }}/sonar-project.properties || echo "No sonar-project.properties found!"
+
       - name: Analyze with SonarCloud including coverage
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
         env:
@@ -91,8 +96,8 @@ jobs:
           args: |
             -Dsonar.projectKey=oreplay_oreplay-backend
             -Dsonar.organization=o-replay
-            -Dsonar.sources=src,plugins/Results/src
-            -Dsonar.tests=tests/TestCase,plugins/Results/tests/TestCase
+            -Dsonar.sources=app_rest/src,app_rest/plugins/Results/src
+            -Dsonar.tests=app_rest/tests/TestCase,app_rest/plugins/Results/tests/TestCase
             -Dsonar.php.codesniffer.argument=--standard=phpcs.xml
             -Dsonar.php.coverage.reportPaths=app_rest/coverage.xml
 
