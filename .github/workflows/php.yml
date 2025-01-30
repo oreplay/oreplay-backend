@@ -1,4 +1,4 @@
-name: PHP Composer
+name: PHP Composer & SonarCloud
 
 on:
   push:
@@ -10,8 +10,11 @@ on:
   pull_request:
     branches:
       - '*'
+  workflow_dispatch:
+
 permissions:
   contents: read
+  pull-requests: read
 
 jobs:
   test:
@@ -67,10 +70,42 @@ jobs:
       - name: Run PHP code sniffer
         run: composer run-script cs-check -d app_rest
 
-      - name: Run PHPUnit
+      - name: Run PHPUnit with coverage
         env:
           CACHE_DEFAULT_URL: ${{ format('memcached://127.0.0.1:{0}', job.services.memcached.ports['11211']) }}
           DATABASE_TEST_URL: 'mysql://root:password@127.0.0.1:3306/phputesting'
           COOKIE_ENCRYPT_CONFIG: 'restCookie:6584945321164241:5833546516543654'
         run: |
-          composer run-script test -d app_rest
+          phpunit --coverage-clover coverage.xml --colors=always -d app_rest
+
+      - name: Upload coverage to SonarCloud
+        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: app_rest
+          args: |
+            -Dsonar.projectKey=oreplay_oreplay-backend
+            -Dsonar.organization=o-replay
+            -Dsonar.sources=src
+            -Dsonar.tests=tests/TestCase
+            -Dsonar.php.coverage.reportPaths=coverage.xml
+
+  analysis:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Analyze with SonarCloud
+        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        with:
+          projectBaseDir: app_rest
+          args: |
+            -Dsonar.projectKey=oreplay_oreplay-backend
+            -Dsonar.organization=o-replay
+            -Dsonar.sources=src
+            -Dsonar.tests=tests/TestCase
+            -Dsonar.php.coverage.reportPaths=coverage.xml
