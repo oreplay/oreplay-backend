@@ -76,7 +76,7 @@ jobs:
           DATABASE_TEST_URL: 'mysql://root:password@127.0.0.1:3306/phputesting'
           COOKIE_ENCRYPT_CONFIG: 'restCookie:6584945321164241:5833546516543654'
         run: |
-          phpunit --coverage-clover coverage.xml --colors=always -d app_rest
+          composer run-script test-coverage -d app_rest
 
       - name: Upload coverage to SonarCloud
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
