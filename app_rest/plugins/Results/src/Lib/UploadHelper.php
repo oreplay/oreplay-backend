@@ -57,7 +57,7 @@ class UploadHelper
 
     public static function md5Encode(array $array): string
     {
-        return md5(json_encode($array));
+        return md5(json_encode($array)); // NOSONAR
     }
 
     public function validateConfigChecker(): UploadConfigChecker

@@ -84,17 +84,21 @@ class UploadConfigChecker
     {
         $contents = $this->_getDataTransferred()['configuration']['contents'] ?? null;
         $resultsType = $this->_getDataTransferred()['configuration']['results_type'] ?? null;
+        $toRet = null;
         if ($contents === self::LIST_START && $resultsType === self::TYPE_START) {
-            return self::START_LIST;
+            $toRet = self::START_LIST;
         }
         if ($contents === self::LIST_RESULT && $resultsType === self::TYPE_INTERMEDIATES) {
-            return self::INTERMEDIATES;
+            $toRet = self::INTERMEDIATES;
         }
         if ($contents === self::LIST_RESULT && $resultsType === self::TYPE_FINISH_TIMES) {
-            return self::FINISH_TIMES;
+            $toRet = self::FINISH_TIMES;
         }
         if ($contents === self::LIST_RESULT && $resultsType === self::TYPE_SPLITS) {
-            return self::SPLITS;
+            $toRet = self::SPLITS;
+        }
+        if ($toRet) {
+            return $toRet;
         }
         throw new InvalidPayloadException(
             "Invalid payload structure configuration.contents $contents and configuration.contents $resultsType");

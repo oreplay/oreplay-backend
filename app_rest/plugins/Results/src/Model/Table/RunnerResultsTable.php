@@ -56,7 +56,7 @@ class RunnerResultsTable extends AppTable
             'stage_id' => $stageId,
             'finish_time is not null'
         ])->first();
-        return !!$res;
+        return (bool)$res;
     }
 
     public function getAllResults(UploadHelper $helper): ResultSetInterface

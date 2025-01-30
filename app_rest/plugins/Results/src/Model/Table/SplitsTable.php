@@ -43,7 +43,7 @@ class SplitsTable extends AppTable
         $conditions = $data;
         unset($conditions['time_seconds']);
 
-        $cacheKey = 'createIfNotExists_' . $this->_alias . '_' . md5(json_encode($conditions));
+        $cacheKey = 'createIfNotExists_' . $this->_alias . '_' . UploadHelper::md5Encode($conditions);
         /** @var Split $entity */
         $entity = $this->getFromCache([$cacheKey, $conditions]);
         if (!$entity) {
