@@ -9,6 +9,7 @@ use App\Model\Table\AppTable;
 use Cake\Cache\Cache;
 use Cake\ORM\Behavior\TimestampBehavior;
 use RestApi\Lib\Exception\DetailedException;
+use Results\Lib\UploadHelper;
 use Results\Model\Entity\Club;
 
 /**
@@ -64,7 +65,7 @@ class ClubsTable extends AppTable
             $this->_alias . '.stage_id' => $stageId,
             $this->_alias . '.oe_key' => $oeKey
         ];
-        $cacheKey = 'getByOeKey_' . md5(json_encode($conditions));
+        $cacheKey = 'getByOeKey_' . UploadHelper::md5Encode($conditions);
         return [$cacheKey, $conditions];
     }
 

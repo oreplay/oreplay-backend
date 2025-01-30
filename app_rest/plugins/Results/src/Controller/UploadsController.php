@@ -40,7 +40,7 @@ class UploadsController extends ApiController
         $this->_clearUploadCache();
         $metrics = $helper->getMetrics();
         //$this->_writeLastUploadJson($helper->getData());
-        //$this->log('Uploading data: ' . " \n\n" . json_encode($helper->getData()), \Psr\Log\LogLevel::DEBUG);
+        //$this->log('Uploading: ' . " \n\n" . json_encode($helper->getData()), \Psr\Log\LogLevel::DEBUG); // NOSONAR
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($helper->getEventId(), $token);
         if (!$isDesktopClientAuthenticated) {
@@ -52,10 +52,8 @@ class UploadsController extends ApiController
 
         $helper->setExistingData($this->runnersTable()->RunnerResults);
 
-        if ($configChecker->isStartLists()) {
-            if ($helper->hasAlreadyFinishTimes()) {
-                throw new InvalidPayloadException('Cannot add start times when there are already finish times');
-            }
+        if ($configChecker->isStartLists() && $helper->hasAlreadyFinishTimes()) {
+            throw new InvalidPayloadException('Cannot add start times when there are already finish times');
         }
 
         foreach ($configChecker->getClasses() as $classObj) {

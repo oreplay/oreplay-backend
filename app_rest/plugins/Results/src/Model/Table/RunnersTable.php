@@ -52,26 +52,6 @@ class RunnersTable extends AppTable
         return $class;
     }
 
-    private function _findRunnersInStageBy(
-        string $field,
-        string $eventId,
-        string $stageId,
-        array $runnerData
-    ): ?Runner {
-        /** @var Runner $potentialRunner */
-        $q = $this->_findRunnersInStage($eventId, $stageId);
-        if ($runnerData[$field] ?? null) {
-            $q->where([$field => $runnerData[$field]]);
-            $potentialRunner = $q->first();
-            if ($potentialRunner) {
-                return $potentialRunner;
-            } else {
-                throw new NotFoundException('Not found runner by ' . $field);
-            }
-        }
-        return null;
-    }
-
     public function matchRunner(array $runnerData, ClassEntity $class): Runner
     {
         foreach ($this->_getStoredParticipantsInClass() as $runner) {
@@ -86,12 +66,6 @@ class RunnersTable extends AppTable
         if ($runnerData['bib_number'] ?? null) {
             throw new NotFoundException('Not found runner by bib_number');
         }
-        //foreach ($this->_getStoredRunnersInClass() as $runner) {
-        //    $matchedRunner = $runner->getMatchedRunnerWithoutSportIdent($runnerData, $class);
-        //    if ($matchedRunner) {
-        //        return $matchedRunner;
-        //    }
-        //}
         throw new NotFoundException('Not found runner by name');
     }
 
