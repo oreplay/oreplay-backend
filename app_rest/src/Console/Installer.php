@@ -160,7 +160,7 @@ class Installer
 
     private static function getChangePerms(\Composer\IO\IOInterface $io): \Closure
     {
-        $changePerms = function ($path) use ($io) {
+        return function ($path) use ($io) {
             $currentPerms = fileperms($path) & 0777;
             $worldWritable = $currentPerms | 0007;
             if ($worldWritable == $currentPerms) {
@@ -174,7 +174,6 @@ class Installer
                 $io->write('Failed to set permissions on ' . $path);
             }
         };
-        return $changePerms;
     }
 
     /**
