@@ -89,4 +89,5 @@ jobs:
             -Dsonar.organization=o-replay
             -Dsonar.sources=src,plugins/Results/src
             -Dsonar.tests=tests/TestCase,plugins/Results/tests/TestCase
+            -Dsonar.php.codesniffer.argument=--standard=phpcs.xml
             -Dsonar.php.coverage.reportPaths=coverage.xml
