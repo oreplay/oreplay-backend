@@ -87,8 +87,8 @@ jobs:
           args: |
             -Dsonar.projectKey=oreplay_oreplay-backend
             -Dsonar.organization=o-replay
-            -Dsonar.sources=src
-            -Dsonar.tests=tests/TestCase
+            -Dsonar.sources=src,plugins/Results/src
+            -Dsonar.tests=tests/TestCase,plugins/Results/tests/TestCase
             -Dsonar.php.coverage.reportPaths=coverage.xml
 
   analysis:
