@@ -77,10 +77,10 @@ jobs:
           COOKIE_ENCRYPT_CONFIG: 'restCookie:6584945321164241:5833546516543654'
         run: |
           composer run-script test-coverage -d app_rest
-          head coverage.xml
+          head app_rest/coverage.xml
 
       - name: Output file
-        run: head coverage.xml
+        run: head app_rest/coverage.xml
 
       - name: Analyze with SonarCloud including coverage
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
