@@ -78,34 +78,16 @@ jobs:
         run: |
           composer run-script test-coverage -d app_rest
 
-      - name: Upload coverage to SonarCloud
+      - name: Analyze with SonarCloud including coverage
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
-          projectBaseDir: app_rest
+          projectBaseDir: ${{ github.workspace }}
           args: |
             -Dsonar.projectKey=oreplay_oreplay-backend
             -Dsonar.organization=o-replay
-            -Dsonar.sources=src
-            -Dsonar.tests=tests/TestCase
-            -Dsonar.php.coverage.reportPaths=coverage.xml
-
-  analysis:
-    runs-on: ubuntu-20.04
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Analyze with SonarCloud
-        uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: app_rest
-          args: |
-            -Dsonar.projectKey=oreplay_oreplay-backend
-            -Dsonar.organization=o-replay
-            -Dsonar.sources=src
-            -Dsonar.tests=tests/TestCase
-            -Dsonar.php.coverage.reportPaths=coverage.xml
+            -Dsonar.sources=app_rest/src,app_rest/plugins/Results/src
+            -Dsonar.tests=app_rest/tests/TestCase,app_rest/plugins/Results/tests/TestCase
+            -Dsonar.php.codesniffer.argument=--standard=phpcs.xml
+            -Dsonar.php.coverage.reportPaths=app_rest/coverage.xml
