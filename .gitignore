@@ -16,6 +16,7 @@ Thumbs.db
 #######################
 # PHPUnit
 .phpunit.result.cache
+app_rest/coverage.xml
 # vim
 *~
 *.swp
