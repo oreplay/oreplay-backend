@@ -78,6 +78,9 @@ jobs:
         run: |
           composer run-script test-coverage -d app_rest
 
+      - name: Output file
+        run: head coverage.xml
+
       - name: Analyze with SonarCloud including coverage
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
         env:
@@ -91,3 +94,6 @@ jobs:
             -Dsonar.tests=tests/TestCase,plugins/Results/tests/TestCase
             -Dsonar.php.codesniffer.argument=--standard=phpcs.xml
             -Dsonar.php.coverage.reportPaths=coverage.xml
+
+      - name: Output file
+        run: head coverage.xml
