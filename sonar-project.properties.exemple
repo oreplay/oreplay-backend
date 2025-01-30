@@ -1,1 +1,2 @@
 sonar.projectKey=[Your Project Key of Sonarqube]
+sonar.php.codesniffer.argument=--standard=phpcs.xml
