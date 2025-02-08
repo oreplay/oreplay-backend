@@ -178,7 +178,7 @@ class UploadsController extends ApiController
     private function _writeLastUploadJson(array $content)
     {
         $path = TMP . 'lastUpload.json';
-        $file = new \SplFileObject($path, 'a+');
-        $file->fwrite(json_encode($content));
+        $file = new \SplFileObject($path, 'w+');
+        $file->fwrite(json_encode($content, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     }
 }
