@@ -34,6 +34,7 @@ class Runner extends AppEntity
 
     protected $_virtual = [
         'full_name',
+        'overall',
     ];
 
     protected $_hidden = [
@@ -81,7 +82,7 @@ class Runner extends AppEntity
 
     public function _getOverall(): ?RunnerResult
     {
-        return $this->team_results[0] ?? null;
+        return $this->runner_results[0] ?? null;
     }
     /**
      * @return RunnerResult[]
