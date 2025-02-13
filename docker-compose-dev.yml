@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   nginx:
-    image: freefri/oreplay:0.2.5
+    image: oreplay/backend:0.2.11
     build:
       context: .
       dockerfile: docker/Dockerfile
