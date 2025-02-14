@@ -9,6 +9,7 @@ use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
+use Results\Model\Table\ClassesTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\EventsFixture;
 
@@ -27,21 +28,30 @@ class StageClassesControllerTest extends ApiCommonErrorsTest
 
     public function testGetList()
     {
+        $Table = ClassesTable::load();
+        $Table->updateAll(['oe_key' => 1], ['id' => ClassEntity::FE]);
+        $Table->updateAll(['oe_key' => 2], ['id' => ClassEntity::ME]);
         $this->get($this->_getEndpoint());
 
         $bodyDecoded = $this->assertJsonResponseOK();
-        $expected = [
-            [
-                'id' => ClassEntity::FE,
-                'short_name' => 'FE',
-                'long_name' => 'F Elite',
-            ],
-            [
-                'id' => ClassEntity::ME,
-                'short_name' => 'ME',
-                'long_name' => 'M Elite',
-            ],
+        $fe = [
+            'id' => ClassEntity::FE,
+            'short_name' => 'FE',
+            'long_name' => 'F Elite',
         ];
-        $this->assertEquals($expected, $bodyDecoded['data']);
+        $me = [
+            'id' => ClassEntity::ME,
+            'short_name' => 'ME',
+            'long_name' => 'M Elite',
+        ];
+        $this->assertEquals([$fe, $me], $bodyDecoded['data']);
+
+        // test oe_key inverse order
+        $Table->updateAll(['oe_key' => 2], ['id' => ClassEntity::FE]);
+        $Table->updateAll(['oe_key' => 1], ['id' => ClassEntity::ME]);
+        $this->get($this->_getEndpoint());
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals([$me, $fe], $bodyDecoded['data']);
     }
 }
