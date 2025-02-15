@@ -52,7 +52,7 @@ class ClassesTable extends AppTable
             'event_id' => $eventId,
             'stage_id' => $stageId,
         ])
-            ->order(['oe_key' => 'ASC', 'short_name' => 'ASC']);
+            ->order(['CAST(oe_key AS UNSIGNED)' => 'ASC', 'short_name' => 'ASC']);
     }
 
     public function saveManyWithRelations(ClassEntity $singleClassToSave)

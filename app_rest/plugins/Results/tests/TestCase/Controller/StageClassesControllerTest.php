@@ -29,8 +29,8 @@ class StageClassesControllerTest extends ApiCommonErrorsTest
     public function testGetList()
     {
         $Table = ClassesTable::load();
-        $Table->updateAll(['oe_key' => 1], ['id' => ClassEntity::FE]);
-        $Table->updateAll(['oe_key' => 2], ['id' => ClassEntity::ME]);
+        $Table->updateAll(['oe_key' => 15], ['id' => ClassEntity::FE]);
+        $Table->updateAll(['oe_key' => 101], ['id' => ClassEntity::ME]);
         $this->get($this->_getEndpoint());
 
         $bodyDecoded = $this->assertJsonResponseOK();
@@ -47,8 +47,8 @@ class StageClassesControllerTest extends ApiCommonErrorsTest
         $this->assertEquals([$fe, $me], $bodyDecoded['data']);
 
         // test oe_key inverse order
-        $Table->updateAll(['oe_key' => 2], ['id' => ClassEntity::FE]);
-        $Table->updateAll(['oe_key' => 1], ['id' => ClassEntity::ME]);
+        $Table->updateAll(['oe_key' => 101], ['id' => ClassEntity::FE]);
+        $Table->updateAll(['oe_key' => 15], ['id' => ClassEntity::ME]);
         $this->get($this->_getEndpoint());
 
         $bodyDecoded = $this->assertJsonResponseOK();
