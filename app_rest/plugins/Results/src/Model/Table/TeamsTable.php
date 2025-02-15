@@ -28,7 +28,7 @@ class TeamsTable extends AppTable
     {
         $this->addBehavior(TimestampBehavior::class);
         TeamResultsTable::addBelongsTo($this);
-        RunnersTable::addBelongsTo($this);
+        RunnersTable::addBelongsTo($this)->setSort(['leg_number' => 'ASC', 'last_name' => 'ASC']);
         ClassesTable::addHasMany($this);
         ClubsTable::addHasMany($this);
     }
@@ -52,6 +52,9 @@ class TeamsTable extends AppTable
         }
         return $q->contain(ClubsTable::name())
             ->contain(ClassesTable::name())
+            ->contain(RunnersTable::name(), function (Query $q) {
+                return RunnersTable::mainRunnerContain($q);
+            })
             ->contain(
                 TeamResultsTable::name()
                 . '.' . SplitsTable::name()

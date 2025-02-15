@@ -216,6 +216,18 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->_assertNewOptionalTables(0, 1, 1, 0);
         $this->_assertNewBasicTables(2, 2, 2, 3, 3);
         $this->_assertNewResultsTables(0, 0);
+        // check uploaded teams
+        $dbTeams = TeamsTable::load()
+            ->findTeamsInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
+            ->toArray();
+        $this->assertEquals(1, count($dbTeams));
+        $this->assertEquals('Couupless', $dbTeams[0]['team_name']);
+        /** @var FrozenTime $start_time */
+        $start_time = $dbTeams[0]['team_results'][0]['start_time'];
+        $this->assertEquals('2024-11-10T09:30:00+00:00', $start_time->toIso8601String());
+        $this->assertEquals(2, count($dbTeams[0]['runners']));
+        $this->assertEquals('Morenoa', $dbTeams[0]['runners'][0]['last_name']);
+        $this->assertEquals('Ponceb', $dbTeams[0]['runners'][1]['last_name']);
     }
 
     public function testAddNew_shouldRequireAuthenticatedToken()

@@ -103,6 +103,11 @@ class RunnersTable extends AppTable
         if ($filters['club_id'] ?? null) {
             $q->where(['club_id' => $filters['club_id']]);
         }
+        return $this->mainRunnerContain($q);
+    }
+
+    public static function mainRunnerContain($q)
+    {
         return $q->contain(ClubsTable::name())
             ->contain(ClassesTable::name())
             ->contain(

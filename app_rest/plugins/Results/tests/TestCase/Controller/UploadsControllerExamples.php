@@ -659,7 +659,7 @@ class UploadsControllerExamples
                     'sicard' => '8530222',
                     'sex' => 'M',
                     'first_name' => 'Jorge',
-                    'last_name' => 'Alonso',
+                    'last_name' => 'Alonsolo',
                     'runner_results' => [
                         (int) 0 => [
                             'id' => '',
@@ -710,7 +710,7 @@ class UploadsControllerExamples
                             'sicard' => '8008999',
                             'sex' => 'M',
                             'first_name' => 'Paco',
-                            'last_name' => 'Moreno',
+                            'last_name' => 'Morenoa',
                             'runner_results' => [
                                 (int) 0 => [
                                     'id' => '',
@@ -742,7 +742,7 @@ class UploadsControllerExamples
                             'sicard' => '1398555',
                             'sex' => 'M',
                             'first_name' => 'Andrea',
-                            'last_name' => 'Ponce',
+                            'last_name' => 'Ponceb',
                             'runner_results' => [
                                 (int) 0 => [
                                     'id' => '',

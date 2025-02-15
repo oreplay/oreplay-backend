@@ -18,6 +18,7 @@ use RestApi\Lib\Exception\DetailedException;
  * @property mixed $sicard
  * @property mixed $bib_number
  * @property FrozenTime $created
+ * @property mixed $leg_number
  */
 class Runner extends AppEntity
 {
