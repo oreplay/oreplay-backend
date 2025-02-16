@@ -174,6 +174,7 @@ class UploadMetrics
                     'classes' => 0,
                     'runners' => 0,
                 ],
+                'humanColor' => '#FF0000',
                 'human' => $human
             ],
             'data' => $this->_classesToSave,
@@ -219,9 +220,9 @@ class UploadMetrics
                     ],
                     'total' => $total,
                 ],
-                'humanColor' => '#FF0000',
+                'humanColor' => '#075210',
                 'human' => [
-                    "\n *** Updated $this->classCount classes, "
+                    "\nUpdated $this->classCount classes, "
                     . "$this->coursesCount courses ($this->_coursesDuration s) $newLine"
                     . "$participantCount participants "
                     . "(and $participantResultsCount results in $resultsTotal s "
@@ -247,7 +248,6 @@ class UploadMetrics
         unset($res['meta']['updated']['splits']);
         unset($res['meta']['updated']['runnerResults']);
         unset($res['meta']['timings']);
-        unset($res['meta']['humanColor']);
         unset($res['meta']['human'][1]);
         $participantCount = $this->runnerCount + $this->teamCount;
         $res['meta']['human'] = [

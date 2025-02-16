@@ -87,6 +87,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 'classes' => 2,
                 'runners' => 4,
             ],
+            'humanColor' => '#075210',
             'human' => ['']
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
@@ -157,6 +158,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 'classes' => 2,
                 'runners' => 4,
             ],
+            'humanColor' => '#075210',
             'human' => ['']
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
@@ -247,6 +249,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 'classes' => 0,
                 'runners' => 0,
             ],
+            'humanColor' => '#FF0000',
             'human' => [
                 "\n    [ERROR - 403] ($now) ForbiddenException \n"
             ]
@@ -278,6 +281,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 'classes' => 0,
                 'runners' => 0,
             ],
+            'humanColor' => '#FF0000',
             'human' => [
                 "\n    [ERROR - 400] ($now) Cannot add start times when there are already finish times \n"
             ]
@@ -321,6 +325,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 'classes' => 1,
                 'runners' => $expectedRunnerAmount,
             ],
+            'humanColor' => '#075210',
             'human' => ['']
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
