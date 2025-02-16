@@ -146,7 +146,12 @@ class Runner extends AppEntity
                 return null;
             }
         } else {
-            $msg = "Fields first_name <$stName> and last_name <$lastName> cannot be empty";
+            $legNumber = $runnerData['runner_results'][0]['leg_number'] ?? 0;
+            if ($legNumber > 1) {
+                // we should allow 2nd+ relay to be empty
+                return null;
+            }
+            $msg = "Fields first_name [$stName] and last_name [$lastName] cannot be empty";
             throw new DetailedException($msg);
         }
     }
