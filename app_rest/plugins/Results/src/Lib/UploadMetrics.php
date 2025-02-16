@@ -193,6 +193,10 @@ class UploadMetrics
         $total = round($this->_totalDuration, 2);
         $participantResultsCount = $this->runnerResultsCount + $this->teamResultsCount;
         $participantCount = $this->runnerCount + $this->teamCount;
+        $humanColor = '#075210';
+        if (!$this->classCount) {
+            $humanColor = '#114477';
+        }
         return [
             'meta' => [
                 'updated' => [
@@ -220,7 +224,7 @@ class UploadMetrics
                     ],
                     'total' => $total,
                 ],
-                'humanColor' => '#075210',
+                'humanColor' => $humanColor,
                 'human' => [
                     "\nUpdated $this->classCount classes, "
                     . "$this->coursesCount courses ($this->_coursesDuration s) $newLine"
