@@ -18,6 +18,7 @@ use RestApi\Lib\Exception\DetailedException;
  * @property mixed $sicard
  * @property mixed $bib_number
  * @property FrozenTime $created
+ * @property mixed $leg_number
  */
 class Runner extends AppEntity
 {
@@ -34,6 +35,7 @@ class Runner extends AppEntity
 
     protected $_virtual = [
         'full_name',
+        'overall',
     ];
 
     protected $_hidden = [
@@ -71,6 +73,17 @@ class Runner extends AppEntity
         }
         $this->runner_results[] = $runnerResult;
         return $this;
+    }
+
+    public function addClub(Club $club): Runner
+    {
+        $this->club = $club;
+        return $this;
+    }
+
+    public function _getOverall(): ?RunnerResult
+    {
+        return $this->runner_results[0] ?? null;
     }
     /**
      * @return RunnerResult[]
@@ -133,7 +146,12 @@ class Runner extends AppEntity
                 return null;
             }
         } else {
-            $msg = "Fields first_name <$stName> and last_name <$lastName> cannot be empty";
+            $legNumber = $runnerData['runner_results'][0]['leg_number'] ?? 0;
+            if ($legNumber > 1) {
+                // we should allow 2nd+ relay to be empty
+                return null;
+            }
+            $msg = "Fields first_name [$stName] and last_name [$lastName] cannot be empty";
             throw new DetailedException($msg);
         }
     }

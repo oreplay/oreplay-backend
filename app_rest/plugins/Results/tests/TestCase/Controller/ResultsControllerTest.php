@@ -111,6 +111,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                 'short_name' => 'ME',
                 'long_name' => 'M Elite',
             ],
+            'runners' => [],
             'overall' => [
                 'id' => TeamResultsFixture::TEAM_RESULT_1,
                 'result_type_id' => ResultType::OVERALL,
@@ -153,6 +154,43 @@ class ResultsControllerTest extends ApiCommonErrorsTest
 
     private function _getSecondRunner(): array
     {
+        $overall = [
+            'id' => RunnerResult::FIRST_RES,
+            'result_type_id' => ResultType::STAGE,
+            'start_time' => '2024-01-02T10:00:00.000+00:00',
+            'finish_time' => '2024-01-02T10:05:10.123+00:00',
+            'time_seconds' => 310,
+            'position' => 1,
+            'status_code' => null,
+            'time_behind' => 0,
+            'points_final' => null,
+            'time_neutralization' => null,
+            'time_adjusted' => null,
+            'time_penalty' => null,
+            'time_bonus' => null,
+            'points_adjusted' => null,
+            'points_penalty' => null,
+            'points_bonus' => null,
+            'leg_number' => null,
+            'splits' => [
+                [
+                    'id' => SplitsFixture::SPLIT_1,
+                    'points' => null,
+                    'reading_time' => '2024-01-02T10:00:10.321+00:00',
+                    'order_number' => null,
+                    //'position' => 0,
+                    //'time_behind' => 0,
+                    'control' => [
+                        'id' => ControlsFixture::CONTROL_31,
+                        'station' => '31',
+                        'control_type' => [
+                            'id' => ControlType::NORMAL,
+                            'description' => 'Normal Control',
+                        ]
+                    ]
+                ]
+            ],
+        ];
         return [
             'id' => Runner::FIRST_RUNNER,
             'full_name' => 'First Runner',
@@ -169,45 +207,8 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                 'short_name' => 'ME',
                 'long_name' => 'M Elite',
             ],
-            'runner_results' => [
-                [
-                    'id' => RunnerResult::FIRST_RES,
-                    'result_type_id' => ResultType::STAGE,
-                    'start_time' => '2024-01-02T10:00:00.000+00:00',
-                    'finish_time' => '2024-01-02T10:05:10.123+00:00',
-                    'time_seconds' => 310,
-                    'position' => 1,
-                    'status_code' => null,
-                    'time_behind' => 0,
-                    'points_final' => null,
-                    'time_neutralization' => null,
-                    'time_adjusted' => null,
-                    'time_penalty' => null,
-                    'time_bonus' => null,
-                    'points_adjusted' => null,
-                    'points_penalty' => null,
-                    'points_bonus' => null,
-                    'leg_number' => null,
-                    'splits' => [
-                        [
-                            'id' => SplitsFixture::SPLIT_1,
-                            'points' => null,
-                            'reading_time' => '2024-01-02T10:00:10.321+00:00',
-                            'order_number' => null,
-                            //'position' => 0,
-                            //'time_behind' => 0,
-                            'control' => [
-                                'id' => ControlsFixture::CONTROL_31,
-                                'station' => '31',
-                                'control_type' => [
-                                    'id' => ControlType::NORMAL,
-                                    'description' => 'Normal Control',
-                                ]
-                            ]
-                        ]
-                    ],
-                ],
-            ],
+            'overall' => $overall,
+            'runner_results' => [$overall],
         ];
     }
 }

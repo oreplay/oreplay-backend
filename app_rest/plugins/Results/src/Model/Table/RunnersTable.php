@@ -103,6 +103,11 @@ class RunnersTable extends AppTable
         if ($filters['club_id'] ?? null) {
             $q->where(['club_id' => $filters['club_id']]);
         }
+        return $this->mainRunnerContain($q);
+    }
+
+    public static function mainRunnerContain($q)
+    {
         return $q->contain(ClubsTable::name())
             ->contain(ClassesTable::name())
             ->contain(
@@ -121,16 +126,17 @@ class RunnersTable extends AppTable
 
         $results = $runnerData['runner_results'] ?? [];
         foreach ($results as $resultData) {
-            $helper->getMetrics()->addOneRunnerToCounter();
+            $helper->getMetrics()->addOneRunnerResultToCounter();
             $runner = $this->RunnerResults->createRunnerResult($resultData, $runner, $helper);
         }
 
         $helper->getMetrics()->startClubsTime();
-        $runnerClub = $runnerData['club'] ?? null;
-        if ($runnerClub) {
-            $runner->club = $this->Clubs->createIfNotExists($helper->getEventId(), $helper->getStageId(), $runnerClub);
+        $club = $runnerData['club'] ?? null;
+        if ($club) {
+            $runner->addClub($this->Clubs->createIfNotExists($helper->getEventId(), $helper->getStageId(), $club));
         }
         $helper->getMetrics()->endClubsTime();
+        $helper->getMetrics()->addToRunnerCounter(1);
         return $runner;
     }
 }

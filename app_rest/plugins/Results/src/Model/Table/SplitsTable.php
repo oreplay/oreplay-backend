@@ -72,4 +72,16 @@ class SplitsTable extends AppTable
         }
         return $resultToSave;
     }
+
+    public function uploadAllSplits($splits, RunnerResult $runnerResultToSave, UploadHelper $helper): RunnerResult
+    {
+        $helper->getMetrics()->startSplitsTime();
+        if ($splits && !$runnerResultToSave->hasSameSplits($splits)) {
+            $runnerResultToSave->setHash($splits);
+            $this->deleteAllByRunnerId($runnerResultToSave->id);
+            $runnerResultToSave = $this->uploadForEachSplit($runnerResultToSave, $splits, $helper);
+        }
+        $helper->getMetrics()->endSplitsTime();
+        return $runnerResultToSave;
+    }
 }

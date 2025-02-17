@@ -23,7 +23,7 @@ class ClubsTable extends AppTable
         RunnersTable::addBelongsTo($this);
     }
 
-    public function createIfNotExists(string $eventId, string $stageId, array $data): ?Club
+    public function createIfNotExists(string $eventId, string $stageId, array $data): Club
     {
         /** @var Club $club */
         $oeKey = $data['oe_key'] ?? null;

@@ -5,8 +5,7 @@ declare(strict_types = 1);
 namespace Results\Lib;
 
 use Cake\Datasource\ResultSetInterface;
-use Results\Model\Entity\Runner;
-use Results\Model\Entity\RunnerResult;
+use Results\Model\Entity\ParticipantResultsEntity;
 
 class StorageHelper
 {
@@ -26,18 +25,22 @@ class StorageHelper
         }
     }
 
+    /**
+     * @param string $id
+     * @return ParticipantResultsEntity[]
+     */
     private function _getExistingDataById(string $id): array
     {
         return $this->_existingData[$id] ?? [];
     }
 
-    public function getExistingDbDataForThisId(string $id, RunnerResult $dataToSave): array
+    public function getExistingDbDataForThisId(string $id, $dataToSave): array
     {
         $toRet = [];
         $resForRunner = $this->_getExistingDataById($id);
-        foreach ($resForRunner as $runnerResult) {
-            if ($runnerResult->isSameResult($dataToSave)) {
-                $toRet[] = $runnerResult;
+        foreach ($resForRunner as $participantResult) {
+            if ($participantResult->isSameResult($dataToSave)) {
+                $toRet[] = $participantResult;
             }
         }
         return $toRet;
