@@ -8,6 +8,10 @@ namespace Results\Model\Entity;
  * @property mixed $reading_time
  * @property mixed $points
  * @property Control $control
+ * @property mixed $is_intermediate
+ * @property mixed $order_number
+ * @property mixed $station
+ * @property mixed $sicard
  */
 class Split extends AppEntity
 {
@@ -19,6 +23,7 @@ class Split extends AppEntity
         'points' => true,
         'reading_time' => true,
         'order_number' => true,
+        'is_intermediate' => true,
     ];
 
     protected $_virtual = [

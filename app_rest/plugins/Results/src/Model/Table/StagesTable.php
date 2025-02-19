@@ -35,7 +35,7 @@ class StagesTable extends AppTable
     {
         return $this->find()
             ->where([$this->_alias . '.id' => $stageId, 'event_id' => $eventId])
-            ->contain('StageTypes');
+            ->contain(StageTypesTable::name());
     }
 
     public function getByEvent(string $stageId, string $eventId): Stage

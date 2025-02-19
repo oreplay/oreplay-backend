@@ -7,7 +7,6 @@ namespace Results\Test\TestCase\Controller;
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Results\Model\Entity\ClassEntity;
-use Results\Model\Entity\Club;
 use Results\Model\Entity\ControlType;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
@@ -136,6 +135,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                         'points' => null,
                         'reading_time' => '2024-01-03T11:00:20.321+00:00',
                         'order_number' => null,
+                        'is_intermediate' => false,
                         //'position' => 0,
                         //'time_behind' => 0,
                         'control' => [
@@ -178,6 +178,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                     'points' => null,
                     'reading_time' => '2024-01-02T10:00:10.321+00:00',
                     'order_number' => null,
+                    'is_intermediate' => false,
                     //'position' => 0,
                     //'time_behind' => 0,
                     'control' => [

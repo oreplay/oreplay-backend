@@ -34,6 +34,11 @@ class UploadConfigChecker
         return $this->preCheckType() === self::START_LIST;
     }
 
+    public function isIntermediates(): bool
+    {
+        return $this->preCheckType() === self::INTERMEDIATES;
+    }
+
     public function validateStructure(string $eventId): self
     {
         $data = $this->_getDataTransferred();

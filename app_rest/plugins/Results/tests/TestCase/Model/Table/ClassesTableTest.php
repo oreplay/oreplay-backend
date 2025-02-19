@@ -52,7 +52,7 @@ class ClassesTableTest extends TestCase
             'uuid' => '',
             'oe_key' => '10',
             'short_name' => 'E',
-            'long_name' => 'Elite',
+            'long_name' => 'Senior',
             'course' => [
                 'id' => '',
                 'uuid' => '',

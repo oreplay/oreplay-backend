@@ -36,6 +36,7 @@ class SplitsTableTest extends TestCase
             'id' => SplitsFixture::SPLIT_1,
             'reading_time' => '2024-01-02T10:00:10.321+00:00',
             'points' => null,
+            'is_intermediate' => false,
             'order_number' => null
         ];
         $this->assertEquals($expected, $array);

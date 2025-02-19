@@ -13,6 +13,7 @@ use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
+use Results\Model\Entity\Split;
 use Results\Model\Entity\Team;
 use Results\Model\Table\AnswersTable;
 use Results\Model\Table\ClassesControlsTable;
@@ -232,6 +233,54 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('Ponceb', $dbTeams[0]['runners'][1]['last_name']);
     }
 
+    public function testAddNew_shouldAddIntermediatesWithRadios()
+    {
+        Cache::clear();
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = ['oreplay_data_transfer' => UploadsControllerExamples::intermediateResults()];
+        $this->post($this->_getEndpoint() . '?version=306', $data);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
+        $expectedMeta = [
+            'updated' => [
+                'classes' => 1,
+                'runners' => 2,
+                'courses' => 1,
+                'splits' => 4,
+                'runnerResults' => 2,
+            ],
+            'humanColor' => '#075210',
+        ];
+        unset($jsonDecoded['meta']['human']);
+        unset($jsonDecoded['meta']['timings']);
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+        $this->assertStringContainsString('Updated 1 classes, 1 courses', $human);
+
+        $dbSplits = SplitsTable::load()->find()
+            ->where(['Splits.created >' => new FrozenTime('-1 minute')])
+            ->contain(ControlsTable::name())
+            ->orderAsc('Splits.order_number')
+            ->all();
+        $this->assertEquals(4, $dbSplits->count());
+        /** @var Split $splitA */
+        $splitA = $dbSplits->first();
+        $this->assertEquals(true, $splitA->is_intermediate);
+        $this->assertEquals(1, $splitA->order_number);
+        $this->assertEquals(32, $splitA->control->station);
+        /** @var Split $splitB */
+        $splitB = $dbSplits->last();
+        $this->assertEquals(true, $splitB->is_intermediate);
+        $this->assertEquals(2, $splitB->order_number);
+        $this->assertEquals(100, $splitB->control->station);
+    }
+
     public function testAddNew_shouldRequireAuthenticatedToken()
     {
         $ClassesTable = ClassesTable::load();
@@ -364,6 +413,18 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($expectedRunnerAmount, count($decodedData[0]['runners']));
         $this->_assertRunnersWithFinishTimes($decodedData, true);
         $this->assertEquals($expectedControlAmount, ControlsTable::load()->find()->all()->count());
+
+        $dbSplits = SplitsTable::load()->find()
+            ->where(['Splits.created >' => new FrozenTime('-1 minute')])
+            ->contain(ControlsTable::name())
+            ->orderAsc('Splits.order_number')
+            ->all();
+        $this->assertEquals($expectedSplits, $dbSplits->count());
+        /** @var Split $splitA */
+        $splitA = $dbSplits->first();
+        $this->assertEquals(false, $splitA->is_intermediate);
+        $this->assertEquals(1, $splitA->order_number);
+        $this->assertEquals(33, $splitA->control->station);
     }
 
     private function _assertRunnersWithFinishTimes($decodedData, $skipSplits = false)

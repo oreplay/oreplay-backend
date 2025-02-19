@@ -815,4 +815,183 @@ class UploadsControllerExamples
             ]
         ];
     }
+
+    public static function intermediateResults()
+    {
+        $classA = [
+            'id' => '',
+            'uuid' => '',
+            'oe_key' => '1',
+            'short_name' => 'E',
+            'long_name' => 'Elite',
+            'teams' => [],
+            'course' => [
+                'id' => '',
+                'uuid' => '',
+                'distance' => '5000.0',
+                'climb' => '120.0',
+                'controls' => (int) 4,
+                'oe_key' => '1',
+                'short_name' => 'R1'
+            ],
+            'classes_controls' => [
+                (int) 0 => [
+                    'control' => [
+                        'station' => '32'
+                    ]
+                ],
+                (int) 1 => [
+                    'control' => [
+                        'station' => '100'
+                    ]
+                ]
+            ],
+            'runners' => [
+                (int) 0 => [
+                    'id' => '',
+                    'uuid' => '',
+                    'sicard' => '8000001',
+                    'sex' => 'M',
+                    'first_name' => 'Javier',
+                    'last_name' => 'Arufe Varela',
+                    'bib_number' => '1',
+                    'runner_results' => [
+                        (int) 0 => [
+                            'id' => '',
+                            'start_time' => '2024-01-16T10:30:00.000+01:00',
+                            'status_code' => '0',
+                            'time_neutralization' => (int) 0,
+                            'time_adjusted' => (int) 0,
+                            'time_penalty' => (int) 0,
+                            'time_bonus' => (int) 0,
+                            'leg_number' => (int) 1,
+                            'splits' => [
+                                (int) 0 => [
+                                    'sicard' => '8000001',
+                                    'station' => '32',
+                                    'points' => (int) 0,
+                                    'reading_time' => '2024-01-16T10:56:47.000+01:00',
+                                    'reading_milli' => (int) 1705399007000,
+                                    'time_seconds' => (int) 1607,
+                                    'bib_runner' => '1',
+                                    'order_number' => (int) 1
+                                ],
+                                (int) 1 => [
+                                    'sicard' => '8000001',
+                                    'station' => '100',
+                                    'points' => (int) 0,
+                                    'bib_runner' => '1',
+                                    'order_number' => (int) 2
+                                ]
+                            ],
+                            'result_type' => [
+                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                'description' => 'Stage'
+                            ]
+                        ]
+                    ],
+                    'club' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'oe_key' => '1',
+                        'short_name' => 'A Coruña LICEO',
+                        'long_name' => 'A Coruña LICEO'
+                    ]
+                ],
+                (int) 1 => [
+                    'id' => '',
+                    'uuid' => '',
+                    'sicard' => '8000002',
+                    'sex' => 'M',
+                    'first_name' => 'Natalia',
+                    'last_name' => 'Pedre Fernández',
+                    'bib_number' => '2',
+                    'runner_results' => [
+                        (int) 0 => [
+                            'id' => '',
+                            'start_time' => '2024-01-16T10:40:00.000+01:00',
+                            'status_code' => '0',
+                            'time_neutralization' => (int) 0,
+                            'time_adjusted' => (int) 0,
+                            'time_penalty' => (int) 0,
+                            'time_bonus' => (int) 0,
+                            'leg_number' => (int) 1,
+                            'splits' => [
+                                (int) 0 => [
+                                    'sicard' => '8000002',
+                                    'station' => '32',
+                                    'points' => (int) 0,
+                                    'reading_time' => '2024-01-16T10:59:54.000+01:00',
+                                    'reading_milli' => (int) 1705399194000,
+                                    'time_seconds' => (int) 1194,
+                                    'bib_runner' => '2',
+                                    'order_number' => (int) 1
+                                ],
+                                (int) 1 => [
+                                    'sicard' => '8000002',
+                                    'station' => '100',
+                                    'points' => (int) 0,
+                                    'bib_runner' => '2',
+                                    'order_number' => (int) 2
+                                ]
+                            ],
+                            'result_type' => [
+                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                'description' => 'Stage'
+                            ]
+                        ]
+                    ],
+                    'club' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'oe_key' => '1',
+                        'short_name' => 'A Coruña LICEO',
+                        'long_name' => 'A Coruña LICEO'
+                    ]
+                ]
+            ]
+        ];
+        return [
+            'configuration' => [
+                'file' => '/OReplayExamples/OE12_SimplestTest_03_Intermediate.xml',
+                'extension' => 'XML',
+                'utf' => true,
+                'known_data' => true,
+                'contents' => 'ResultList',
+                'results_type' => 'Radiocontrols',
+                'one_stage' => true,
+                'source' => 'OEv12',
+                'iof_version' => '3.0',
+                'include_score' => false,
+                'trailo_type' => 'Other',
+                'trailo_at' => 'Other',
+                'trailo_normal' => '0',
+                'trailo_group' => '0'
+            ],
+            'event' => [
+                'id' => Event::FIRST_EVENT,
+                'description' => 'Test_Event',
+                'is_hidden' => false,
+                'stages' => [
+                    [
+                        'id' => StagesFixture::STAGE_FEDO_2,
+                        'description' => 'iterim1',
+                        'base_date' => '2024-01-16',
+                        'base_time' => '10:30:00.000+01:00',
+                        'controls' => [
+                            (int) 0 => [
+                                'station' => '32'
+                            ],
+                            (int) 1 => [
+                                'station' => '100'
+                            ]
+                        ],
+                        'classes' => [
+                            $classA,
+                        ]
+                    ]
+                ]
+            ]
+        ];
+    }
 }

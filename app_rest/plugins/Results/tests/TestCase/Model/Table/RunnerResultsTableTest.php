@@ -118,12 +118,14 @@ class RunnerResultsTableTest extends TestCase
                     'id' => '3t3b5adc-23b9-4790-a116-c83Af4760ad8',
                     'reading_time' => '2024-01-02T10:00:12.000+00:00',
                     'points' => null,
+                    'is_intermediate' => false,
                     'order_number' => 1
                 ],
                 [
                     'id' => SplitsFixture::SPLIT_1,
                     'reading_time' => '2024-01-02T10:00:10.321+00:00',
                     'points' => null,
+                    'is_intermediate' => false,
                     'order_number' => 2
                 ],
             ],

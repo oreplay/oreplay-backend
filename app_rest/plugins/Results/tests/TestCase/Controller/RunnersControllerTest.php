@@ -95,6 +95,7 @@ class RunnersControllerTest extends ApiCommonErrorsTest
                     'points' => null,
                     'reading_time' => '2024-01-02T10:00:10.321+00:00',
                     'order_number' => null,
+                    'is_intermediate' => false,
                     //'position' => 0,
                     //'time_behind' => 0,
                     'control' => [

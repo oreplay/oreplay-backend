@@ -61,6 +61,7 @@ class SplitsTable extends AppTable
     {
         if ($splits) {
             foreach ($splits as $split) {
+                $split['is_intermediate'] = $helper->getChecker()->isIntermediates();
                 $splitToSave = $this->fillNewWithStage($split, $helper->getEventId(), $helper->getStageId());
                 if ($split['station'] ?? null) {
                     $control = $this->Controls->createControlIfNotExists($helper, $split);
@@ -78,7 +79,9 @@ class SplitsTable extends AppTable
         $helper->getMetrics()->startSplitsTime();
         if ($splits && !$runnerResultToSave->hasSameSplits($splits)) {
             $runnerResultToSave->setHash($splits);
-            $this->deleteAllByRunnerId($runnerResultToSave->id);
+            if (!$helper->getChecker()->isIntermediates()) {
+                $this->deleteAllByRunnerId($runnerResultToSave->id);
+            }
             $runnerResultToSave = $this->uploadForEachSplit($runnerResultToSave, $splits, $helper);
         }
         $helper->getMetrics()->endSplitsTime();
