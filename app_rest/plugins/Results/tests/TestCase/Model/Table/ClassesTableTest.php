@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Results\Test\TestCase\Controller\Model\Table;
 
+use App\Lib\Consts\CacheGrp;
+use Cake\Cache\Cache;
 use Cake\TestSuite\TestCase;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
@@ -47,6 +49,7 @@ class ClassesTableTest extends TestCase
 
     public function testCreateIfNotExists()
     {
+        Cache::delete('getByShortName_Classes_bfc5bf7328fd8975addb36e3de885a03', CacheGrp::UPLOAD);
         $data = [
             'id' => '',
             'uuid' => '',
@@ -65,8 +68,8 @@ class ClassesTableTest extends TestCase
             'runners' => []
         ];
         $res = $this->Classes->createIfNotExists(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2, $data);
+        $this->assertEquals($data['long_name'], $res->long_name);
         $this->assertEquals($data['oe_key'], $res->oe_key);
         $this->assertEquals($data['short_name'], $res->short_name);
-        $this->assertEquals($data['long_name'], $res->long_name);
     }
 }

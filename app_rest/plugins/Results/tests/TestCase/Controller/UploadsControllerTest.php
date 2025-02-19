@@ -266,7 +266,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $dbSplits = SplitsTable::load()->find()
             ->where(['Splits.created >' => new FrozenTime('-1 minute')])
             ->contain(ControlsTable::name())
-            ->orderAsc('Splits.order_number')
+            ->order(['Splits.order_number' => 'ASC', 'Splits.reading_time' => 'ASC'])
             ->all();
         $this->assertEquals(4, $dbSplits->count());
         /** @var Split $splitA */
@@ -417,14 +417,14 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $dbSplits = SplitsTable::load()->find()
             ->where(['Splits.created >' => new FrozenTime('-1 minute')])
             ->contain(ControlsTable::name())
-            ->orderAsc('Splits.order_number')
+            ->order(['Splits.order_number' => 'ASC', 'Splits.reading_time' => 'ASC'])
             ->all();
         $this->assertEquals($expectedSplits, $dbSplits->count());
         /** @var Split $splitA */
         $splitA = $dbSplits->first();
         $this->assertEquals(false, $splitA->is_intermediate);
         $this->assertEquals(1, $splitA->order_number);
-        $this->assertEquals(33, $splitA->control->station);
+        $this->assertEquals(31, $splitA->control->station);
     }
 
     private function _assertRunnersWithFinishTimes($decodedData, $skipSplits = false)
