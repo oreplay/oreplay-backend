@@ -4,6 +4,9 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
+use Cake\I18n\FrozenTime;
+use Results\Lib\SplitCompareReason;
+
 /**
  * @property mixed $reading_time
  * @property mixed $points
@@ -12,6 +15,7 @@ namespace Results\Model\Entity;
  * @property mixed $order_number
  * @property mixed $station
  * @property mixed $sicard
+ * @property FrozenTime $created
  */
 class Split extends AppEntity
 {
@@ -59,5 +63,53 @@ class Split extends AppEntity
     {
         $this->_fields['control'] = $control;
         return $this;
+    }
+
+    public function isRadio(): bool
+    {
+        return $this->is_intermediate;
+    }
+
+    public function shouldDisplayCurrent(Split $last): SplitCompareReason
+    {
+        if ($this->order_number != $last->order_number) {
+            return new SplitCompareReason(true, '1 foot-o with order numbers');
+        }
+        if ($this->isRadio()) {
+            if (!$this->reading_time) {
+                return new SplitCompareReason(false,
+                    '10 do not return radios without time, this should never happen');
+            }
+            if ($last->isRadio()) {
+                if ($this->reading_time == $last->reading_time) {
+                    return new SplitCompareReason(false,
+                        '6 skip current without time if both are radio AND rogaining when any no radio exists');
+                } else {
+                    return new SplitCompareReason(true,
+                        '5 keep current if both radios with different time AND rogaining when different reading_time');
+                }
+            } else {
+                if ($this->reading_time == $last->reading_time) {
+                    return new SplitCompareReason(false,
+                        '8 skip rogaining when radio with same time');
+                } else {
+                    return new SplitCompareReason(false,
+                        '7 skip rogaining when any no radio exists');
+                }
+            }
+        } else {
+            if ($this->reading_time) {
+                return new SplitCompareReason(true,
+                    '3 keep repeated split as revisited control');
+            } else {
+                if ($last->reading_time) {
+                    return new SplitCompareReason(false,
+                        '2 skip without reading time');
+                } else {
+                    return new SplitCompareReason(true,
+                        '4 keep if none has reading time because is DNS or MP');
+                }
+            }
+        }
     }
 }
