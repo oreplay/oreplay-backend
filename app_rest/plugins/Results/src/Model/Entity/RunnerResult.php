@@ -24,6 +24,8 @@ use Results\Lib\UploadHelper;
  */
 class RunnerResult extends AppEntity implements ParticipantResultsEntity
 {
+    use ResultTrait;
+
     public const FIRST_RES = '635af121-db7b-4c5e-82ab-79208e45568f';
 
     protected $_accessible = [
@@ -68,17 +70,23 @@ class RunnerResult extends AppEntity implements ParticipantResultsEntity
     public function addSplit(Split $split)
     {
         if (!($this->_fields['splits'] ?? null)) {
-            $this->_fields['splits'] = [];
+            $this->replaceSplits([]);
         }
         $this->setDirty('splits');
         $this->_fields['splits'][] = $split;
     }
+
     /**
      * @return Split[]
      */
-    public function getSplits()
+    public function getSplits(): array
     {
-        return $this->_fields['splits'];
+        return $this->_fields['splits'] ?? [];
+    }
+
+    public function replaceSplits(array $splits)
+    {
+        $this->_fields['splits'] = $splits;
     }
 
     public function isSameResult(RunnerResult $runnerResultToSave): bool

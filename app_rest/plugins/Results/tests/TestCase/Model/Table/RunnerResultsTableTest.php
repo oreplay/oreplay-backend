@@ -73,8 +73,9 @@ class RunnerResultsTableTest extends TestCase
 
     public function testFindWithSplits()
     {
+        $splitId = '3t3b5adc-23b9-4790-a116-c83Af4760ad9';
         $split = new Split([
-            'id' => '3t3b5adc-23b9-4790-a116-c83Af4760ad8',
+            'id' => $splitId,
             'event_id' => Event::FIRST_EVENT,
             'stage_id' => Stage::FIRST_STAGE,
             'stage_order' => 1,
@@ -115,7 +116,14 @@ class RunnerResultsTableTest extends TestCase
             'leg_number' => null,
             'splits' => [
                 [
-                    'id' => '3t3b5adc-23b9-4790-a116-c83Af4760ad8',
+                    'id' => SplitsFixture::SPLIT_1_RADIO,
+                    'reading_time' => '2024-01-02T10:00:10.321+00:00',
+                    'points' => null,
+                    'is_intermediate' => true,
+                    'order_number' => null
+                ],
+                [
+                    'id' => $splitId,
                     'reading_time' => '2024-01-02T10:00:12.000+00:00',
                     'points' => null,
                     'is_intermediate' => false,

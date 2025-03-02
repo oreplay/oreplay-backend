@@ -83,7 +83,12 @@ class Runner extends AppEntity
 
     public function _getOverall(): ?RunnerResult
     {
-        return $this->runner_results[0] ?? null;
+        /** @var RunnerResult $res */
+        $res = $this->runner_results[0] ?? null;
+        if ($res) {
+            $res->cleanSplitsWithoutRadios();
+        }
+        return $res;
     }
     /**
      * @return RunnerResult[]

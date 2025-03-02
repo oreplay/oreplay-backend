@@ -46,7 +46,7 @@ class SplitsTableTest extends TestCase
     {
         /** @var Split $res */
         $res = $this->Splits->deleteAllByRunnerId(Runner::FIRST_RUNNER);
-        $this->assertEquals(1, $res);
+        $this->assertEquals(2, $res);
 
         $res = $this->Splits->findById(SplitsFixture::SPLIT_1)->first();
         $this->assertNull($res);

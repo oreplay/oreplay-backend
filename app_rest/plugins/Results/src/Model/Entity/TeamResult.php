@@ -17,6 +17,8 @@ use Cake\I18n\FrozenTime;
  */
 class TeamResult extends AppEntity implements ParticipantResultsEntity
 {
+    use ResultTrait;
+
     protected $_accessible = [
         '*' => false,
         'id' => false,
@@ -57,6 +59,29 @@ class TeamResult extends AppEntity implements ParticipantResultsEntity
         'team_id',
         'team_uuid',
     ];
+
+    /*
+    public function addSplit(Split $split)
+    {
+        if (!($this->_fields['splits'] ?? null)) {
+            $this->replaceSplits([]);
+        }
+        $this->setDirty('splits');
+        $this->_fields['splits'][] = $split;
+    }
+
+    /**
+     * @return Split[]
+     */
+    public function getSplits(): array
+    {
+        return $this->_fields['splits'] ?? [];
+    }
+
+    public function replaceSplits(array $splits)
+    {
+        $this->_fields['splits'] = $splits;
+    }
 
     public function setIDsToUpdate(TeamResult $teamResult): TeamResult
     {

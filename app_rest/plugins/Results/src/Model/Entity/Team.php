@@ -81,7 +81,12 @@ class Team extends AppEntity
 
     public function _getOverall(): ?TeamResult
     {
-        return $this->team_results[0] ?? null;
+        /** @var TeamResult $res */
+        $res = $this->team_results[0] ?? null;
+        if ($res) {
+            $res->cleanSplitsWithoutRadios();
+        }
+        return $res;
     }
 
     public function _getFullName()

@@ -110,12 +110,21 @@ class RunnersTable extends AppTable
     {
         return $q->contain(ClubsTable::name())
             ->contain(ClassesTable::name())
-            ->contain(
-                RunnerResultsTable::name()
-                . '.' . SplitsTable::name()
-                . '.' . ControlsTable::name()
-                . '.' . ControlTypesTable::name()
-            );
+            ->contain(RunnerResultsTable::name(), function (Query $q) {
+                return $q->contain(SplitsTable::name(), function (Query $q) {
+                    $order = [
+                        'order_number' => 'DESC', // 1st order number (null last)
+                        'is_intermediate' => 'ASC', // 2nd no radio before radio
+                        'reading_time' => 'DESC', // 3rd punch time (latest first, null last)
+                        SplitsTable::field('created') => 'DESC' // 4th db created
+                    ];
+                    return $q
+                        ->order($order)
+                        ->contain(ControlsTable::name(), function (Query $q) {
+                            return $q->contain(ControlTypesTable::name());
+                        });
+                });
+            });
     }
 
     public function createRunnerWithResults(array $runnerData, ClassEntity $class, UploadHelper $helper): Runner
