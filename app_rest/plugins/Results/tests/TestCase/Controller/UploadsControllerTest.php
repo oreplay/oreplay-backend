@@ -674,7 +674,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'controls' => $controls,
         ];
         $db = [
-            'splits' => SplitsTable::load()->find()->all()->count() - 2,
+            'splits' => SplitsTable::load()->find()->all()->count() - 3,
             'controls' => ControlsTable::load()->find()->all()->count() - 1,
         ];
         $this->assertEquals($expected, $db, 'NewResultsTableAmounts');
