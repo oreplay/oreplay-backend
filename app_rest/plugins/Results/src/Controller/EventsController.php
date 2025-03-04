@@ -49,7 +49,7 @@ class EventsController extends ApiController
         /** @var Event $res */
         $res = $this->Events->getEventWithRelations($id);
         if ($res->is_hidden === true) {
-            throw new ForbiddenException('Event is private');
+            $this->_getEventFromUser($id);
         }
         if ($isDesktopClientAuthenticated) {
             $res = $res->getVerySimplified();
