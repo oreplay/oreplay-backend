@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Results\Lib;
 
 use Cake\I18n\FrozenTime;
+use Results\Lib\Consts\Color;
+use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Table\ClassesTable;
 
@@ -174,7 +176,7 @@ class UploadMetrics
                     'classes' => 0,
                     'runners' => 0,
                 ],
-                'humanColor' => '#FF0000',
+                'humanColor' => Color::RED,
                 'human' => $human
             ],
             'data' => $this->_classesToSave,
@@ -193,9 +195,14 @@ class UploadMetrics
         $total = round($this->_totalDuration, 2);
         $participantResultsCount = $this->runnerResultsCount + $this->teamResultsCount;
         $participantCount = $this->runnerCount + $this->teamCount;
-        $humanColor = '#075210';
+        $humanColor = Color::GREEN;
         if (!$this->classCount) {
-            $humanColor = '#114477';
+            $humanColor = Color::BLUE;
+        }
+        if ($participantCount && !$this->splitCount) {
+            if (in_array($type, [UploadTypes::FINISH_TIMES, UploadTypes::INTERMEDIATES, UploadTypes::SPLITS])) {
+                $humanColor = Color::RED;
+            }
         }
         return [
             'meta' => [

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Lib;
 
 use App\Lib\Exception\InvalidPayloadException;
+use Results\Lib\Consts\UploadTypes;
 
 class UploadConfigChecker
 {
@@ -16,11 +17,6 @@ class UploadConfigChecker
     private const TYPE_FINISH_TIMES = 'Totals';
     private const TYPE_SPLITS = 'Breakdown';
 
-    private const START_LIST = 'start_list';
-    private const INTERMEDIATES = 'res_intermediates';
-    private const FINISH_TIMES = 'res_finish';
-    private const SPLITS = 'res_splits';
-
     private array $_data;
     private array $_firstStage;
 
@@ -31,12 +27,12 @@ class UploadConfigChecker
 
     public function isStartLists(): bool
     {
-        return $this->preCheckType() === self::START_LIST;
+        return $this->preCheckType() === UploadTypes::START_LIST;
     }
 
     public function isIntermediates(): bool
     {
-        return $this->preCheckType() === self::INTERMEDIATES;
+        return $this->preCheckType() === UploadTypes::INTERMEDIATES;
     }
 
     public function validateStructure(string $eventId): self
@@ -91,16 +87,16 @@ class UploadConfigChecker
         $resultsType = $this->_getDataTransferred()['configuration']['results_type'] ?? null;
         $toRet = null;
         if ($contents === self::LIST_START && $resultsType === self::TYPE_START) {
-            $toRet = self::START_LIST;
+            $toRet = UploadTypes::START_LIST;
         }
         if ($contents === self::LIST_RESULT && $resultsType === self::TYPE_INTERMEDIATES) {
-            $toRet = self::INTERMEDIATES;
+            $toRet = UploadTypes::INTERMEDIATES;
         }
         if ($contents === self::LIST_RESULT && $resultsType === self::TYPE_FINISH_TIMES) {
-            $toRet = self::FINISH_TIMES;
+            $toRet = UploadTypes::FINISH_TIMES;
         }
         if ($contents === self::LIST_RESULT && $resultsType === self::TYPE_SPLITS) {
-            $toRet = self::SPLITS;
+            $toRet = UploadTypes::SPLITS;
         }
         if ($toRet) {
             return $toRet;
