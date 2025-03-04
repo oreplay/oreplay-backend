@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Test\Fixture;
 
 use RestApi\TestSuite\Fixture\RestApiFixture;
+use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
@@ -33,7 +34,7 @@ class SplitsFixture extends RestApiFixture
             'points' => null,
             'runner_result_id' => RunnerResult::FIRST_RES,
             'team_result_id' => null,
-            'class_id' => null,
+            'class_id' => ClassEntity::ME,
             'control_id' => ControlsFixture::CONTROL_31,
             'id_leg' => null,
             'id_revisit' => null,
@@ -63,7 +64,7 @@ class SplitsFixture extends RestApiFixture
             'points' => null,
             'runner_result_id' => RunnerResult::FIRST_RES,
             'team_result_id' => null,
-            'class_id' => null,
+            'class_id' => ClassEntity::ME,
             'control_id' => ControlsFixture::CONTROL_31,
             'id_leg' => null,
             'id_revisit' => null,
@@ -93,7 +94,7 @@ class SplitsFixture extends RestApiFixture
             'points' => null,
             'runner_result_id' => null,
             'team_result_id' => TeamResultsFixture::TEAM_RESULT_1,
-            'class_id' => null,
+            'class_id' => ClassEntity::ME,
             'control_id' => ControlsFixture::CONTROL_31,
             'id_leg' => null,
             'id_revisit' => null,

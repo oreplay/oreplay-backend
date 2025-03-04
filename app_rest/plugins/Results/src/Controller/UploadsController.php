@@ -61,6 +61,7 @@ class UploadsController extends ApiController
             $class = $this->Classes->createIfNotExists($helper->getEventId(), $stageId, $classObj);
             if (!$class->isSameUploadHash($classObj)) {
                 $class->setHash($classObj);
+                $this->_helper->setCurrentClassId($class->id);
                 $helper->getMetrics()->startCoursesTime();
                 // if no change is done in the whole class, we could totally skip processing it
                 $course = $this->Classes->Courses->createIfNotExists($helper->getEventId(), $stageId, $classObj);

@@ -273,11 +273,13 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $splitA = $dbSplits->first();
         $this->assertEquals(true, $splitA->is_intermediate);
         $this->assertEquals(1, $splitA->order_number);
+        $this->assertEquals(4, substr_count($splitA->class_id, '-'));
         $this->assertEquals(32, $splitA->control->station);
         /** @var Split $splitB */
         $splitB = $dbSplits->last();
         $this->assertEquals(true, $splitB->is_intermediate);
         $this->assertEquals(2, $splitB->order_number);
+        $this->assertEquals(4, substr_count($splitA->class_id, '-'));
         $this->assertEquals(100, $splitB->control->station);
     }
 

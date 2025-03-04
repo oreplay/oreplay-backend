@@ -26,7 +26,7 @@ class RunnerResultsTable extends AppTable
     {
         $this->addBehavior(TimestampBehavior::class);
         RunnersTable::addHasMany($this);
-        SplitsTable::addBelongsTo($this)->setSort(['order_number' => 'ASC', 'reading_time' => 'ASC']);
+        SplitsTable::addBelongsTo($this)->setSort(SplitsTable::defaultOrder());
         ResultTypesTable::addHasMany($this);
     }
 

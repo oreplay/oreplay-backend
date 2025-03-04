@@ -26,6 +26,11 @@ class SplitsTable extends AppTable
         ControlsTable::addHasMany($this);
     }
 
+    public static function defaultOrder(): array
+    {
+        return ['order_number' => 'ASC', 'reading_time' => 'ASC'];
+    }
+
     protected function _insert(EntityInterface $entity, array $data)
     {
         return parent::_insert($entity, $data);
@@ -63,6 +68,7 @@ class SplitsTable extends AppTable
             foreach ($splits as $split) {
                 $split['is_intermediate'] = $helper->getChecker()->isIntermediates();
                 $splitToSave = $this->fillNewWithStage($split, $helper->getEventId(), $helper->getStageId());
+                $splitToSave->class_id = $helper->getCurrentClassId();
                 if ($split['station'] ?? null) {
                     $control = $this->Controls->createControlIfNotExists($helper, $split);
                     $splitToSave->addControl($control);

@@ -12,12 +12,14 @@ use Results\Model\Entity\Stage;
 use Results\Model\Table\ClassesTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\EventsFixture;
+use Results\Test\Fixture\SplitsFixture;
 
 class StageClassesControllerTest extends ApiCommonErrorsTest
 {
     protected $fixtures = [
         EventsFixture::LOAD,
         ClassesFixture::LOAD,
+        SplitsFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -38,11 +40,21 @@ class StageClassesControllerTest extends ApiCommonErrorsTest
             'id' => ClassEntity::FE,
             'short_name' => 'FE',
             'long_name' => 'F Elite',
+            'splits' => [],
         ];
         $me = [
             'id' => ClassEntity::ME,
             'short_name' => 'ME',
             'long_name' => 'M Elite',
+            'splits' => [
+                [
+                    'id' => SplitsFixture::SPLIT_1_RADIO,
+                    'is_intermediate' => true,
+                    'reading_time' => '2024-01-02T10:00:10.321+00:00',
+                    'points' => null,
+                    'order_number' => null
+                ]
+            ],
         ];
         $this->assertEquals([$fe, $me], $bodyDecoded['data']);
 

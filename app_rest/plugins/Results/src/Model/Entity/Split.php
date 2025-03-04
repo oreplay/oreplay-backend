@@ -15,6 +15,7 @@ use Results\Lib\SplitCompareReason;
  * @property mixed $order_number
  * @property mixed $station
  * @property mixed $sicard
+ * @property mixed $class_id
  * @property FrozenTime $created
  */
 class Split extends AppEntity

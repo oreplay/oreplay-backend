@@ -20,6 +20,7 @@ class UploadHelper
 {
     private array $_data;
     private string $_eventId;
+    private string $_currentClassId;
     private UploadConfigChecker $_checker;
     private StorageHelper $_existingRunnerResults;
     private StorageHelper $_existingTeamResults;
@@ -52,6 +53,16 @@ class UploadHelper
     public function getEventId(): string
     {
         return $this->_eventId;
+    }
+
+    public function setCurrentClassId(string $id): void
+    {
+        $this->_currentClassId = $id;
+    }
+
+    public function getCurrentClassId(): string
+    {
+        return $this->_currentClassId;
     }
 
     public function getStageId(): string

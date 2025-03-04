@@ -45,11 +45,21 @@
                                             "properties": {
                                                 "id": {
                                                     "type": "string",
-                                                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
+                                                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a56"
                                                 },
                                                 "short_name": {
                                                     "type": "string",
-                                                    "example": "ME"
+                                                    "example": "FE"
+                                                },
+                                                "long_name": {
+                                                    "type": "string",
+                                                    "example": "F Elite"
+                                                },
+                                                "splits": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
                                                 }
                                             }
                                         }

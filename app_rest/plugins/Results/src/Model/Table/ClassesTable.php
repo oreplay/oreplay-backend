@@ -6,12 +6,14 @@ namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Cake\ORM\Query;
 use Results\Model\Entity\ClassEntity;
 
 /**
  * @property RunnersTable $Runners
  * @property TeamsTable $Teams
  * @property CoursesTable $Courses
+ * @property SplitsTable $Splits
  */
 class ClassesTable extends AppTable
 {
@@ -23,6 +25,7 @@ class ClassesTable extends AppTable
         RunnersTable::addBelongsTo($this);
         TeamsTable::addBelongsTo($this);
         CoursesTable::addHasMany($this);
+        SplitsTable::addBelongsTo($this)->setSort(SplitsTable::defaultOrder());
     }
 
     public static function load(): self
@@ -52,6 +55,9 @@ class ClassesTable extends AppTable
             'event_id' => $eventId,
             'stage_id' => $stageId,
         ])
+            ->contain(SplitsTable::name(), function (Query $q) {
+                return $q->where(['is_intermediate' => true]);
+            })
             ->order(['CAST(oe_key AS UNSIGNED)' => 'ASC', 'short_name' => 'ASC']);
     }
 
