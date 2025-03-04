@@ -48,6 +48,15 @@ class ClubsTable extends AppTable
         return $club;
     }
 
+    public function findByStage(string $eventId, string $stageId)
+    {
+        return $this->find()->where([
+            'event_id' => $eventId,
+            'stage_id' => $stageId,
+        ])
+            ->order(['short_name' => 'ASC']);
+    }
+
     public function fillNewWithStage(array $data, string $eventId, string $stageId)
     {
         /** @var Club $res */

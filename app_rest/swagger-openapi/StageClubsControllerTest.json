@@ -1,0 +1,65 @@
+{
+    "/api/v1/events/{eventID}/stages/{stageID}/clubs/": {
+        "get": {
+            "operationId": 1,
+            "summary": "",
+            "description": "Get list",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "stageID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                }
+            ],
+            "tags": [
+                "StageClubs"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Get list",
+                                "properties": {
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "83dc3504-9edd-4bbd-80b8-589aa0359c3e"
+                                                },
+                                                "short_name": {
+                                                    "type": "string",
+                                                    "example": "Club A"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
