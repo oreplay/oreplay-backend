@@ -1,0 +1,52 @@
+{
+    "/api/v1/organizers/": {
+        "get": {
+            "operationId": 1,
+            "summary": "",
+            "description": "Get list",
+            "parameters": [],
+            "tags": [
+                "Organizers"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Get list",
+                                "properties": {
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "ADCON"
+                                                },
+                                                "country": {
+                                                    "type": "string",
+                                                    "example": "ES"
+                                                },
+                                                "region": {
+                                                    "type": "string",
+                                                    "example": "ES-VC"
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
