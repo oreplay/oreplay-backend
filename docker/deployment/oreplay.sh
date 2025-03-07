@@ -17,7 +17,7 @@ helm upgrade -i api-memcached bitnami/memcached -n oreplay
 ### Before installing ssl-ingress, DNS must be properly set
 helm upgrade -i ssl-ingress ./subssl -n oreplay --set ingress.host=www.oreplay.es
 # helm uninstall ssl-ingress -n oreplay
-helm upgrade -i ct-frontend ./ct-frontend -n oreplay --set image.tag=v0.2.13 \
+helm upgrade -i ct-frontend ./ct-frontend -n oreplay --set image.tag=v0.2.15 \
   --set replicaCount=1 \
   --set frontendService.targetPort=4173 \
   --set image.repository=oreplay/frontend
