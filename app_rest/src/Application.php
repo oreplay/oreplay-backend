@@ -38,6 +38,7 @@ class Application extends BaseApplication
     private function loadCommonPlugins()
     {
         $this->addPlugin('Migrations');
+        $this->addPlugin(\RadioRelay\RadioRelayPlugin::class);
         $this->addPlugin(\RestOauth\RestOauthPlugin::class);
         $this->addPlugin(\Results\ResultsPlugin::class);
     }

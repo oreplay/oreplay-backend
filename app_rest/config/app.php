@@ -107,6 +107,10 @@ return [
         'tablePrefix' => '',
         'routePath' => \App\Controller\ApiController::ROUTE_PREFIX,
     ],
+    'RadioRelayPlugin' => [
+        'tablePrefix' => '',
+        'routePath' => \App\Controller\ApiController::ROUTE_PREFIX . '/radios',
+    ],
 
     /*
      * Security and encryption configuration
