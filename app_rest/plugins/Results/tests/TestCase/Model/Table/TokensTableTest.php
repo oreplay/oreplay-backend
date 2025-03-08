@@ -31,6 +31,6 @@ class TokensTableTest extends TestCase
         $this->assertEquals('Event', $res->foreign_model);
         $this->assertEquals(Event::FIRST_EVENT, $res->foreign_key);
         $this->assertEquals('2014-07-06T13:09:01+00:00', $res->expires->toIso8601String());
-        $this->assertEquals(8, strlen($res->token));
+        $this->assertEquals(6, strlen($res->token));
     }
 }

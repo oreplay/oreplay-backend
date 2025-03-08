@@ -8,7 +8,7 @@ use Cake\Http\Exception\InternalErrorException;
 
 class StrGenerator
 {
-    public const LENGTH = 8;
+    public const LENGTH = 6;
 
     public static function hex($length = self::LENGTH): string
     {

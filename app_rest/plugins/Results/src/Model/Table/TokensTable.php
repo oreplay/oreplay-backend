@@ -6,6 +6,7 @@ namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
 use Cake\Datasource\Exception\RecordNotFoundException;
+use Cake\Http\Exception\InternalErrorException;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Results\Lib\StrGenerator;
@@ -35,7 +36,16 @@ class TokensTable extends AppTable
         $token = $this->patchFromNewWithUuid($data);
         $token->foreign_model = 'Event';
         $token->foreign_key = $eventId;
-        $token->token = StrGenerator::generate();
+        $count = 0;
+        do {
+            $count++;
+            $token->token = StrGenerator::generate();
+            $alreadyExists = $this->find()->where(['token' => $token->token])->first();
+        } while ($alreadyExists && $count < 30);
+
+        if ($count >= 30) {
+            throw new InternalErrorException('Failed to generate a unique token after 30 attempts');
+        }
         $this->saveOrFail($token);
         return $token;
     }
