@@ -26,6 +26,13 @@ class SplitsTable extends AppTable
         ControlsTable::addHasMany($this);
     }
 
+    public static function load(): self
+    {
+        /** @var SplitsTable $table */
+        $table = parent::load();
+        return $table;
+    }
+
     public static function defaultOrder(): array
     {
         return ['order_number' => 'ASC', 'reading_time' => 'ASC'];

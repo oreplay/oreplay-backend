@@ -17,6 +17,9 @@ use Results\Lib\SplitCompareReason;
  * @property mixed $sicard
  * @property mixed $class_id
  * @property FrozenTime $created
+ * @property mixed|null $battery_perc
+ * @property mixed|null $battery_time
+ * @property string $runner_id
  */
 class Split extends AppEntity
 {

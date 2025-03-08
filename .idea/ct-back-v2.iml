@@ -10,6 +10,8 @@
       <sourceFolder url="file://$MODULE_DIR$/app/spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/vendor/freefri/cake-rest-api-oauth/tests" isTestSource="true" packagePrefix="RestOauth\Test\" />
+      <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/RadioRelay/src" isTestSource="false" packagePrefix="RadioRelay\" />
+      <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/RadioRelay/tests" isTestSource="true" packagePrefix="RadioRelay\Test\" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/logs" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/freefri/cake-rest-api" />

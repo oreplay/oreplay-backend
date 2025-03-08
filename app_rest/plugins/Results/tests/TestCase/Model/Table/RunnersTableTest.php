@@ -64,6 +64,15 @@ class RunnersTableTest extends TestCase
         $this->assertEquals(new FrozenTime('2024-01-02T10:00:10.321+00:00'), $split->reading_time);
     }
 
+    public function testFindByCard()
+    {
+        /** @var Runner $res */
+        $res = $this->Runners->findByCard(2009933, Event::FIRST_EVENT, Stage::FIRST_STAGE)
+            ->first();
+        $this->assertEquals('First', $res->first_name);
+        $this->assertEquals('Runner', $res->last_name);
+    }
+
     public function testMatchRunner()
     {
         $dbId = '984ur983u';

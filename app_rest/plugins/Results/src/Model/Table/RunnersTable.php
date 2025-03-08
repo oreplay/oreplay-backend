@@ -52,6 +52,18 @@ class RunnersTable extends AppTable
         return $class;
     }
 
+    public function findByCard($siCard, $eventId, $stageId): Query
+    {
+        return $this->find()
+            ->where([
+                'sicard' => $siCard,
+                'event_id' => $eventId,
+                'stage_id' => $stageId,
+            ])
+            //->contain(RunnerResultsTable::name())
+            ->order(['modified' => 'DESC']);
+    }
+
     public function matchRunner(array $runnerData, ClassEntity $class): Runner
     {
         foreach ($this->_getStoredParticipantsInClass() as $runner) {

@@ -16,15 +16,16 @@ use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\StagesTable;
 use Results\Model\Table\TeamResultsTable;
 
-class UploadHelper
+class UploadHelper implements UploadInterface
 {
+    use UploadControlsTrait;
+
     private array $_data;
     private string $_eventId;
     private string $_currentClassId;
     private UploadConfigChecker $_checker;
     private StorageHelper $_existingRunnerResults;
     private StorageHelper $_existingTeamResults;
-    private array $_existingControls;
     private UploadMetrics $_metrics;
 
     public function __construct(array $data, string $eventID)
@@ -102,27 +103,6 @@ class UploadHelper
         $this->_existingTeamResults = new StorageHelper('team_id');
         $this->_existingTeamResults->setExistingData($TeamResults->getAllResults($this));
         $this->setExistingControls($RunnerResults->Splits->Controls->getAllControls($this));
-    }
-
-    public function setExistingControls(ResultSetInterface $existingRunnerResults): UploadHelper
-    {
-        $this->_existingControls = [];
-        /** @var Control $control */
-        foreach ($existingRunnerResults as $control) {
-            $this->storeControlByStation($control);
-        }
-        return $this;
-    }
-
-    public function getExistingControlByStation($stationNumber): ?Control
-    {
-        return $this->_existingControls[$stationNumber] ?? null;
-    }
-
-    public function storeControlByStation(Control $control): void
-    {
-        $stationNumber = $control->station;
-        $this->_existingControls[$stationNumber] = $control;
     }
 
     public function getExistingDbResultsForThisRunner(

@@ -8,6 +8,7 @@ use App\Model\Table\AppTable;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Results\Lib\UploadInterface;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\Control;
 
@@ -24,7 +25,7 @@ class ControlsTable extends AppTable
         ControlTypesTable::addHasMany($this);
     }
 
-    public function createControlIfNotExists(UploadHelper $helper, array $data): Control
+    public function createControlIfNotExists(UploadInterface $helper, array $data): Control
     {
         if (!($data['station'] ?? null)) {
             throw new InternalErrorException('Station number is needed to create control ' . json_encode($data));
