@@ -22,6 +22,7 @@ class CpiServerController extends ApiController
 
     protected function addNew($data)
     {
+        $this->log('CpiServerController: [21] ' . json_encode($data) . ' ' . json_encode($_SERVER));
         switch ($data['order']) {
             case 'ProcessPunches':
                 try {

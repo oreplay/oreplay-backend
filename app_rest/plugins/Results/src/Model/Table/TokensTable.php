@@ -6,9 +6,9 @@ namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
 use Cake\Datasource\Exception\RecordNotFoundException;
-use Cake\Http\Exception\InternalErrorException;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Results\Lib\StrGenerator;
 use Results\Model\Entity\Token;
 
 /**
@@ -35,7 +35,7 @@ class TokensTable extends AppTable
         $token = $this->patchFromNewWithUuid($data);
         $token->foreign_model = 'Event';
         $token->foreign_key = $eventId;
-        $token->token = $this->_generateToken();
+        $token->token = StrGenerator::generate();
         $this->saveOrFail($token);
         return $token;
     }
@@ -89,16 +89,5 @@ class TokensTable extends AppTable
         } catch (RecordNotFoundException $e) {
             return false;
         }
-    }
-
-    private function _generateToken(): string
-    {
-        if (function_exists('random_bytes')) {
-            $randomData = random_bytes(20);
-            if ($randomData !== false && strlen($randomData) === 20) {
-                return bin2hex($randomData);
-            }
-        }
-        throw new InternalErrorException('Cannot generate token');
     }
 }

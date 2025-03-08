@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Results\Test\TestCase\Controller\Model\Table;
+namespace Results\Test\TestCase\Model\Table;
 
 use App\Lib\Consts\CacheGrp;
 use Cake\Cache\Cache;

@@ -10,7 +10,7 @@ use Results\Model\Entity\Event;
 class TokensFixture extends RestApiFixture
 {
     public const LOAD = 'plugin.Results.Tokens';
-    public const FIRST_TOKEN = '8fe6cd50c76d54a4e6c3b30e6b724a86703d8178';
+    public const FIRST_TOKEN = 'bBMEWbN6';
     public const FIRST_ID = 'fa349e58-00b4-4db5-8e2e-ce25e7669adf';
 
     public $records = [

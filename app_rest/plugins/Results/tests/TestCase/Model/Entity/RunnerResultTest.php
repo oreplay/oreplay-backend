@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Results\Test\TestCase\Controller\Model\Entity;
+namespace Results\Test\TestCase\Model\Entity;
 
 use Cake\TestSuite\TestCase;
 use Results\Model\Entity\RunnerResult;

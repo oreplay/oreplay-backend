@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Results\Test\TestCase\Controller\Model\Entity;
+namespace Results\Test\TestCase\Model\Entity;
 
 use Cake\I18n\FrozenTime;
 use Cake\TestSuite\TestCase;

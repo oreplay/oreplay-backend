@@ -6,6 +6,7 @@ namespace RadioRelay\Lib\Cpi;
 
 use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\FrozenTime;
+use Results\Lib\StrGenerator;
 use Results\Lib\UploadInterface;
 use Results\Lib\UploadControlsTrait;
 
@@ -17,7 +18,7 @@ class PayloadParser implements UploadInterface
     private string $secret;
     private array $data;
 
-    private const SECRET_LEN = 40;
+    private const SECRET_LEN = StrGenerator::LENGTH;
     private const UUID_LEN = 36;
 
     public function __construct(array $data)

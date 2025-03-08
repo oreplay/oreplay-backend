@@ -45,6 +45,7 @@ class EventTokensController extends ApiController
     protected function delete($id)
     {
         $event = $this->_checkIsOwnEvent();
+        $this->log('Token deleted: ' . $id . ' in event ' . $event->id);
         $this->EventTokens->expireTokenForEvent($id, $event->id);
         $this->return = false;
     }
