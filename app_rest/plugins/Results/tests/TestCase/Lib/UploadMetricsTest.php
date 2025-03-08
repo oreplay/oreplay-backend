@@ -2,22 +2,15 @@
 
 declare(strict_types = 1);
 
-namespace Lib;
+namespace Results\Test\TestCase\Lib;
 
-use App\Controller\ApiController;
 use Cake\TestSuite\TestCase;
 use Results\Lib\UploadMetrics;
-use Results\Model\Entity\Event;
 
 class UploadMetricsTest extends TestCase
 {
     protected $fixtures = [
     ];
-
-    protected function _getEndpoint(): string
-    {
-        return ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/tokens/';
-    }
 
     public function testToArray()
     {
