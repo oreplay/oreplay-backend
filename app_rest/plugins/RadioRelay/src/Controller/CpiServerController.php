@@ -29,7 +29,9 @@ class CpiServerController extends ApiController
                     $processor = new ProcessPunches(new PayloadParser($data));
                     $toRet = $processor->setRunnersTable(RunnersTable::load())->process();
                 } catch (BadRequestException $e) {
-                    $toRet = ['KO', '0', $e->getMessage()];
+                    $this->log('CpiServerController: [20] ' . $e->getMessage()
+                        . ' ------------- ' . $e->getTraceAsString());
+                    $toRet = ['KO - Error: ' . $e->getMessage(), '0', '0'];
                 }
                 break;
             case 'CheckConnectivity':
@@ -37,17 +39,33 @@ class CpiServerController extends ApiController
                 $toRet = ['OK'];
                 break;
             case 'CheckMinimumEventUser':
-                $cred = new PayloadParser($data['data']);
-                $res = TokensTable::load()->isValidEventToken($cred->getEventId(), $cred->getSecret());
-                if ($res) {
-                    /** @var Event $event */
-                    $event = EventsTable::load()->find()->where(['id' => $cred->getEventId()])->firstOrFail();
-                    $eventTitle = $event->description;
-                } else {
-                    $eventTitle = 'Invalid event ID ' . $cred->getEventId();
+                try {
+                    $cred = new PayloadParser($data);
+                    $res = TokensTable::load()->isValidEventToken($cred->getEventId(), $cred->getSecret());
+                    if ($res) {
+                        /** @var Event $event */
+                        $event = EventsTable::load()->find()->where(['id' => $cred->getEventId()])->firstOrFail();
+                        $eventTitle = $event->description;
+                    } else {
+                        $eventTitle = 'Invalid event ID ' . $cred->getEventId();
+                    }
+                    $baseTime = '00:00:00'; // e.g '10:30:00'
+                    $eventType = '0'; // 0=Classic; 1=Mass Start; 2=Chase Start; 3=Relays; 4=Rogaine
+                    $controlStation = ''; // Usually empty. Control station associated to the device
+                    $eventOrigin = '0';
+                    $toRet = [
+                        $cred->getEventId(),
+                        $eventTitle,
+                        $baseTime,
+                        $eventType,
+                        $controlStation,
+                        $eventOrigin,
+                        $cred->getSecret(),
+                        ''
+                    ];
+                } catch (BadRequestException $e) {
+                    $toRet = ['-1', $e->getMessage(), '', '', '', '', '', ''];
                 }
-                $startsAt = ''; // e.g '10:30:00'
-                $toRet = [$cred->getEventId(), $eventTitle, $startsAt, '', '', '', $cred->getSecret()];
                 break;
             default:
                 throw new BadRequestException('Invalid payload ' . json_encode($data));
