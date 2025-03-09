@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Test\TestCase\Controller;
 
+use Results\Lib\Consts\StatusCode;
 use Results\Model\Entity\Event;
 use Results\Test\Fixture\StagesFixture;
 
@@ -64,7 +65,7 @@ class UploadsControllerExamples
                                                 'start_time' => '2024-09-29T11:00:00.000',
                                                 'finish_time' => '2024-09-29T12:26:54.000',
                                                 'time_seconds' => (int) 5214,
-                                                'status_code' => '0',
+                                                'status_code' => StatusCode::OK,
                                                 'time_behind' => (int) 0,
                                                 'time_neutralization' => (int) 0,
                                                 'time_adjusted' => (int) 0,
@@ -124,7 +125,7 @@ class UploadsControllerExamples
                                                 'start_time' => '2024-09-29T11:00:00.000',
                                                 'finish_time' => '2024-09-29T11:48:49.000',
                                                 'time_seconds' => (int) 2929,
-                                                'status_code' => '0',
+                                                'status_code' => StatusCode::OK,
                                                 'time_behind' => (int) 44,
                                                 'time_neutralization' => (int) 0,
                                                 'time_adjusted' => (int) 0,
@@ -214,7 +215,7 @@ class UploadsControllerExamples
                                                 'id' => '',
                                                 'stage_order' => (int) 1,
                                                 'start_time' => '2014-07-06T11:09:14.523+01:00',
-                                                'status_code' => '0',
+                                                'status_code' => StatusCode::OK,
                                                 'leg_number' => (int) 1,
                                                 'result_type' => [
                                                     'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
@@ -242,7 +243,7 @@ class UploadsControllerExamples
                                                 'id' => '',
                                                 'stage_order' => (int) 1,
                                                 'start_time' => '2014-07-06T13:11:00',
-                                                'status_code' => '0',
+                                                'status_code' => StatusCode::OK,
                                                 'leg_number' => (int) 1,
                                                 'result_type' => [
                                                     'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
@@ -288,7 +289,7 @@ class UploadsControllerExamples
                                                 'id' => '',
                                                 'stage_order' => (int) 1,
                                                 'start_time' => '2014-07-06T13:22:00',
-                                                'status_code' => '0',
+                                                'status_code' => StatusCode::OK,
                                                 'leg_number' => (int) 1,
                                                 'result_type' => [
                                                     'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
@@ -316,7 +317,7 @@ class UploadsControllerExamples
                                                 'id' => '',
                                                 'stage_order' => (int) 1,
                                                 'start_time' => '2014-07-06T13:26:00',
-                                                'status_code' => '0',
+                                                'status_code' => StatusCode::OK,
                                                 'leg_number' => (int) 1,
                                                 'result_type' => [
                                                     'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
@@ -398,7 +399,7 @@ class UploadsControllerExamples
                                                 'id' => '',
                                                 'stage_order' => (int) 1,
                                                 'start_time' => '2024-10-18T09:56:00.000',
-                                                'status_code' => '0',
+                                                'status_code' => StatusCode::OK,
                                                 'leg_number' => (int) 1,
                                                 'result_type' => [
                                                     'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
@@ -446,7 +447,7 @@ class UploadsControllerExamples
                                                 'id' => '',
                                                 'stage_order' => (int) 1,
                                                 'start_time' => '2024-10-18T09:56:00.000',
-                                                'status_code' => '0',
+                                                'status_code' => StatusCode::OK,
                                                 'leg_number' => (int) 1,
                                                 'result_type' => [
                                                     'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
@@ -531,7 +532,7 @@ class UploadsControllerExamples
                                                 'start_time' => '2024-10-18T09:56:00.000',
                                                 'finish_time' => '2024-10-18T10:09:40.000',
                                                 'time_seconds' => (int) 820,
-                                                'status_code' => '0',
+                                                'status_code' => StatusCode::OK,
                                                 'time_behind' => (int) 0,
                                                 'time_neutralization' => (int) 0,
                                                 'time_adjusted' => (int) 0,
@@ -596,7 +597,7 @@ class UploadsControllerExamples
                                             (int) 0 => [
                                                 'id' => '',
                                                 'stage_order' => (int) 1,
-                                                'status_code' => '1',
+                                                'status_code' => StatusCode::DNS,
                                                 'time_neutralization' => (int) 0,
                                                 'time_adjusted' => (int) 0,
                                                 'time_penalty' => (int) 0,
@@ -665,7 +666,7 @@ class UploadsControllerExamples
                             'id' => '',
                             'stage_order' => (int) 1,
                             'start_time' => '2024-11-10T10:30:00.000+01:00',
-                            'status_code' => '0',
+                            'status_code' => StatusCode::OK,
                             'leg_number' => (int) 1
                         ]
                     ],
@@ -700,7 +701,7 @@ class UploadsControllerExamples
                             'id' => '',
                             'stage_order' => (int) 1,
                             'start_time' => '2024-11-10T10:30:00.000+01:00',
-                            'status_code' => '0'
+                            'status_code' => StatusCode::OK
                         ]
                     ],
                     'runners' => [
@@ -716,7 +717,7 @@ class UploadsControllerExamples
                                     'id' => '',
                                     'stage_order' => (int) 1,
                                     'start_time' => '2024-11-10T10:30:00.000+01:00',
-                                    'status_code' => '0',
+                                    'status_code' => StatusCode::OK,
                                     'leg_number' => (int) 1
                                 ]
                             ],
@@ -748,7 +749,7 @@ class UploadsControllerExamples
                                     'id' => '',
                                     'stage_order' => (int) 1,
                                     'start_time' => '2024-11-10T10:30:00.000+01:00',
-                                    'status_code' => '0',
+                                    'status_code' => StatusCode::OK,
                                     'leg_number' => (int) 1
                                 ]
                             ],
@@ -859,7 +860,7 @@ class UploadsControllerExamples
                         (int) 0 => [
                             'id' => '',
                             'start_time' => '2024-01-16T10:30:00.000+01:00',
-                            'status_code' => '0',
+                            'status_code' => StatusCode::OK,
                             'time_neutralization' => (int) 0,
                             'time_adjusted' => (int) 0,
                             'time_penalty' => (int) 0,
@@ -910,7 +911,7 @@ class UploadsControllerExamples
                         (int) 0 => [
                             'id' => '',
                             'start_time' => '2024-01-16T10:40:00.000+01:00',
-                            'status_code' => '0',
+                            'status_code' => StatusCode::OK,
                             'time_neutralization' => (int) 0,
                             'time_adjusted' => (int) 0,
                             'time_penalty' => (int) 0,
