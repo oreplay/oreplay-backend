@@ -18,6 +18,9 @@
       <testsuite name="Results">
           <directory>plugins/Results/tests/TestCase/</directory>
       </testsuite>
+      <testsuite name="RadioRelay">
+          <directory>plugins/RadioRelay/tests/TestCase/</directory>
+      </testsuite>
       <testsuite name="Oauth">
           <directory>vendor/freefri/cake-rest-api-oauth/tests/TestCase/</directory>
           <exclude>vendor/freefri/cake-rest-api-oauth/tests/TestCase/Controller/AuthorizeControllerTest.php</exclude>

@@ -24,12 +24,21 @@ class PayloadParser implements UploadInterface
         $this->data = $data;
     }
 
+    private function _checkSecretLen(string $secret)
+    {
+        $len = self::SECRET_LEN + self::UUID_LEN;
+        if (strlen($secret) !== $len) {
+            throw new BadRequestException('Use the secret and event token together as password');
+        }
+    }
+
     public function getEventId(): string
     {
         $secret = $this->data['data'][1] ?? null;
         if (!$secret) {
-            throw new BadRequestException('Use the secret and event token as password');
+            throw new BadRequestException('Use the event token as password');
         }
+        $this->_checkSecretLen($secret);
         if (strpos($secret, '-') === 8) {
             $eventId = substr($secret, 0, self::UUID_LEN);
             if (!$this->_isUuid($eventId)) {
@@ -50,6 +59,7 @@ class PayloadParser implements UploadInterface
         if (!$secret) {
             throw new BadRequestException('Use the secret token as password');
         }
+        $this->_checkSecretLen($secret);
         if (strpos($secret, '-') === 8) {
             $ret = substr($secret, self::SECRET_LEN * -1);
             if (!$this->_isSecret($ret)) {

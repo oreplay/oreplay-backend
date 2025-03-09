@@ -34,6 +34,13 @@ class EventsTable extends AppTable
         ]);
     }
 
+    public static function load(): self
+    {
+        /** @var EventsTable $table */
+        $table = parent::load();
+        return $table;
+    }
+
     public function patchFromNewValidatingFederation(array $data): Event
     {
         /** @var Event $event */

@@ -8,8 +8,10 @@ use App\Controller\ApiController;
 use RadioRelay\Lib\Cpi\Consts\PunchType;
 use RestApi\TestSuite\ApiCommonErrorsTest;
 use Results\Model\Entity\Event;
+use Results\Model\Entity\Stage;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
+use Results\Test\Fixture\StagesFixture;
 use Results\Test\Fixture\TokensFixture;
 
 class CpiServerControllerTest extends ApiCommonErrorsTest
@@ -17,6 +19,7 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
     protected $fixtures = [
         FederationsFixture::LOAD,
         EventsFixture::LOAD,
+        StagesFixture::LOAD,
         TokensFixture::LOAD,
     ];
 
@@ -28,8 +31,8 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
     public function testAddNew()
     {
         // should process new radio punch
-        $username = Event::FIRST_EVENT;
-        $password = TokensFixture::FIRST_TOKEN;
+        $username = Stage::FIRST_STAGE;
+        $password = Event::FIRST_EVENT . TokensFixture::FIRST_TOKEN;
         $data = [
             'order' => 'ProcessPunches',
             'data' => [$username, $password],
@@ -51,14 +54,45 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
 
         $res = $this->assertJsonResponseOK();
         $punchAmount = 1;
-        $lastId = 0;
-        $expected = ['data' => ['OK', $punchAmount, $lastId]];
+        $expected = ['data' => ['OK', $punchAmount . '', '1']];
         $this->assertEquals($expected, $res);
     }
 
     public function testAddNew_shouldCheckMinimumEvent()
     {
-        $username = Event::FIRST_EVENT;
+        $username = Stage::FIRST_STAGE;
+        $password = Event::FIRST_EVENT . TokensFixture::FIRST_TOKEN;
+        $data = [
+            'order' => 'CheckMinimumEventUser',
+            'data' => [$username, $password],
+            'punches' => [],
+        ];
+        $this->post($this->_getEndpoint(), $data);
+
+        $res = $this->assertJsonResponseOK();
+        $expected = ['data' => [Event::FIRST_EVENT, 'Test Foot-o', '00:00:00', '0', '', '0', $password, '']];
+        $this->assertEquals($expected, $res);
+    }
+
+    public function testAddNew_shouldCheckMinimumEventErrorWithPassword()
+    {
+        $username = Stage::FIRST_STAGE;
+        $password = TokensFixture::FIRST_TOKEN; // missing event token
+        $data = [
+            'order' => 'CheckMinimumEventUser',
+            'data' => [$username, $password],
+            'punches' => [],
+        ];
+        $this->post($this->_getEndpoint(), $data);
+
+        $res = $this->assertJsonResponseOK();
+        $expected = ['data' => ['-1', 'Use the secret and event token together as password', '', '', '', '', '', '']];
+        $this->assertEquals($expected, $res);
+    }
+
+    public function testAddNew_shouldCheckMinimumEventErrorWithStageToken()
+    {
+        $username = Event::FIRST_EVENT; // bad stage token
         $password = TokensFixture::FIRST_TOKEN;
         $data = [
             'order' => 'CheckMinimumEventUser',
@@ -68,7 +102,7 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
         $this->post($this->_getEndpoint(), $data);
 
         $res = $this->assertJsonResponseOK();
-        $expected = ['data' => [$username, 'Test Foot-o', '', '', '', '', $password]];
+        $expected = ['data' => ['-1', 'Use the secret and event token together as password', '', '', '', '', '', '']];
         $this->assertEquals($expected, $res);
     }
 

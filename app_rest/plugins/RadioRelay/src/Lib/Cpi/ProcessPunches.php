@@ -40,12 +40,7 @@ class ProcessPunches
                 $lastSplit = $split;
             }
         }
-
-        if ($lastSplit) {
-            $lastId = $lastSplit->created;
-        } else {
-            $lastId = '0';
-        }
+        $lastId = '1'; // must be numeric
         return ['OK', '' . $punchAmount, $lastId];
     }
 

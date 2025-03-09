@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace RadioRelay\Test\TestCase\Lib\Cpi;
 
+use Cake\Http\Exception\BadRequestException;
 use Cake\TestSuite\TestCase;
 use RadioRelay\Lib\Cpi\Consts\PunchType;
 use RadioRelay\Lib\Cpi\PayloadParser;
@@ -29,7 +30,13 @@ class PayloadParserTest extends TestCase
         //
         $secret = Event::FIRST_EVENT;
         $helper = new PayloadParser(['data' => [$eventId, $secret]]);
-        $this->assertEquals(Event::FIRST_EVENT, $helper->getEventId());
+        $exception = false;
+        try {
+            $helper->getSecret();
+        } catch (BadRequestException $e) {
+            $exception = $e->getMessage();
+        }
+        $this->assertEquals('Use the secret and event token together as password', $exception);
     }
 
     public function testGetSecret()
@@ -45,7 +52,13 @@ class PayloadParserTest extends TestCase
         //
         $secret = TokensFixture::FIRST_TOKEN;
         $helper = new PayloadParser(['data' => [$eventId, $secret]]);
-        $this->assertEquals(TokensFixture::FIRST_TOKEN, $helper->getSecret());
+        $exception = false;
+        try {
+            $helper->getSecret();
+        } catch (BadRequestException $e) {
+            $exception = $e->getMessage();
+        }
+        $this->assertEquals('Use the secret and event token together as password', $exception);
     }
 
     public function testGetStageId()
