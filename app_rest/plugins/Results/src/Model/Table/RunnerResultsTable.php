@@ -98,6 +98,9 @@ class RunnerResultsTable extends AppTable
 
         $splits = $resultData['splits'] ?? [];
         $runnerResultToSave = $this->Splits->uploadAllSplits($splits, $runnerResultToSave, $helper);
+        if ($runnerResultToSave->hasInvalidFinishTime()) {
+            $helper->getMetrics()->setWarning('Runner results has finish_times without time_seconds');
+        }
         return $runner->addRunnerResult($runnerResultToSave);
     }
 }

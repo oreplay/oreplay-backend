@@ -121,4 +121,9 @@ class RunnerResult extends AppEntity implements ParticipantResultsEntity
         $this->setDirty('upload_hash');
         return $this;
     }
+
+    public function hasInvalidFinishTime(): bool
+    {
+        return !$this->time_seconds && $this->finish_time instanceof FrozenTime;
+    }
 }

@@ -37,6 +37,7 @@ class UploadMetrics
     private float $_runnersOutLoopDuration = 0.0;
     private float $_startRunnerInLoopTime = 0.0;
     private float $_runnersInLoopDuration = 0.0;
+    private string $_lastWarning = '';
 
     public function __construct()
     {
@@ -183,6 +184,19 @@ class UploadMetrics
         ];
     }
 
+    public function setWarning(string $string)
+    {
+        $this->_lastWarning = $string;
+    }
+
+    private function _formatExtraMessage(): string
+    {
+        if (!$this->_lastWarning) {
+            return '';
+        }
+        return ' (<b>' . $this->_lastWarning . '</b>)';
+    }
+
     public function toArray(string $type): array
     {
         $now = new FrozenTime();
@@ -203,6 +217,10 @@ class UploadMetrics
             if (in_array($type, [UploadTypes::FINISH_TIMES, UploadTypes::INTERMEDIATES, UploadTypes::SPLITS])) {
                 $humanColor = Color::RED;
             }
+        }
+        $extraMessage = $this->_formatExtraMessage();
+        if ($extraMessage) {
+            $humanColor = Color::RED;
         }
         return [
             'meta' => [
@@ -233,7 +251,7 @@ class UploadMetrics
                 ],
                 'humanColor' => $humanColor,
                 'human' => [
-                    "\nUpdated $this->classCount classes, "
+                    "\nUpdated$extraMessage $this->classCount classes, "
                     . "$this->coursesCount courses ($this->_coursesDuration s) $newLine"
                     . "$participantCount participants "
                     . "(and $participantResultsCount results in $resultsTotal s "
@@ -261,8 +279,9 @@ class UploadMetrics
         unset($res['meta']['timings']);
         unset($res['meta']['human'][1]);
         $participantCount = $this->runnerCount + $this->teamCount;
+        $extraMessage = $this->_formatExtraMessage();
         $res['meta']['human'] = [
-            " *** Updated $participantCount participants, "
+            " *** Updated$extraMessage $participantCount participants, "
             . "$this->classCount classes, "
             . "$this->splitCount splits, "
             . "($now - $type) in $total seconds ($processingDuration processing + $savingDuration saving)",

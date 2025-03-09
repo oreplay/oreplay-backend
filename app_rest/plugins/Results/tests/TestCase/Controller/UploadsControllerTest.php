@@ -529,7 +529,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'runnerResults' => 2,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        //$this->assertStringStartsWith(' *** Updated 2 participants, 2 classes, 0 splits', $human);
+        $this->assertStringContainsString('Updated 2 classes, 2 courses (', $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
