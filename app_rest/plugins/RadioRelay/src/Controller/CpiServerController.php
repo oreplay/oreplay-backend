@@ -22,11 +22,11 @@ class CpiServerController extends ApiController
 
     protected function addNew($data)
     {
-        $this->log('CpiServerController: [21] ' . json_encode($data) . ' ' . json_encode($_SERVER));
+        $this->log('CpiServerController: [21] ' . json_encode($data));
         switch ($data['order']) {
             case 'ProcessPunches':
                 try {
-                    $processor = new ProcessPunches($data);
+                    $processor = new ProcessPunches(new PayloadParser($data));
                     $toRet = $processor->setRunnersTable(RunnersTable::load())->process();
                 } catch (BadRequestException $e) {
                     $toRet = ['KO', '0', $e->getMessage()];

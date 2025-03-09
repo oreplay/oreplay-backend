@@ -14,8 +14,6 @@ class PayloadParser implements UploadInterface
 {
     use UploadControlsTrait;
 
-    private string $eventId;
-    private string $secret;
     private array $data;
 
     private const SECRET_LEN = StrGenerator::LENGTH;
@@ -30,7 +28,7 @@ class PayloadParser implements UploadInterface
     {
         $secret = $this->data['data'][1] ?? null;
         if (!$secret) {
-            throw new BadRequestException('Use the secret token as password');
+            throw new BadRequestException('Use the secret and event token as password');
         }
         if (strpos($secret, '-') === 8) {
             $eventId = substr($secret, 0, self::UUID_LEN);

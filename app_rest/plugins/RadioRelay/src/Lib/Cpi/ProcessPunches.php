@@ -23,7 +23,9 @@ class ProcessPunches
     public function setRunnersTable(RunnersTable $table)
     {
         $this->Runners = $table;
-        $this->Splits = $table->RunnerResults->Splits;
+        /** @var SplitsTable $splitsTable */
+        $splitsTable = $table->RunnerResults->Splits->getTarget();
+        $this->Splits = $splitsTable;
         return $this;
     }
 
@@ -33,8 +35,8 @@ class ProcessPunches
         $punchAmount = 0;
         foreach ($this->data->getPunches() as $punch) {
             $split = $this->_processPunch($punch);
+            $punchAmount++;
             if ($split) {
-                $punchAmount++;
                 $lastSplit = $split;
             }
         }

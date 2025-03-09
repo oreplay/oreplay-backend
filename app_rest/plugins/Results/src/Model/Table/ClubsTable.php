@@ -23,6 +23,13 @@ class ClubsTable extends AppTable
         RunnersTable::addBelongsTo($this);
     }
 
+    public static function load(): self
+    {
+        /** @var ClubsTable $table */
+        $table = parent::load();
+        return $table;
+    }
+
     public function createIfNotExists(string $eventId, string $stageId, array $data): Club
     {
         /** @var Club $club */
