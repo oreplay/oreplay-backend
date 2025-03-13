@@ -22,7 +22,7 @@ helm upgrade -i ct-frontend ./ct-frontend -n oreplay --set image.tag=v0.2.16 \
   --set frontendService.targetPort=4173 \
   --set image.repository=oreplay/frontend
 # helm uninstall ct-frontend -n oreplay
-helm upgrade -i cakeapi ./nginx -n oreplay --set image.tag=0.2.16 \
+helm upgrade -i cakeapi ./nginx -n oreplay --set image.tag=0.2.17 \
   --set replicaCount=1 \
   --set container.envTimezone=UTC \
   --set image.repository=oreplay/backend
