@@ -78,7 +78,7 @@ jobs:
         run: |
           composer run-script test-coverage -d app_rest
 
-      - name: Analyze with SonarCloud including coverage
+      - name: Analyze with SonarCloud without including coverage
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -90,4 +90,4 @@ jobs:
             -Dsonar.sources=app_rest/src,app_rest/plugins/Results/src
             -Dsonar.tests=app_rest/tests/TestCase,app_rest/plugins/Results/tests/TestCase
             -Dsonar.php.codesniffer.argument=--standard=phpcs.xml
-            -Dsonar.php.coverage.reportPaths=app_rest/coverage.xml
+          #  -Dsonar.php.coverage.reportPaths=app_rest/coverage.xml
