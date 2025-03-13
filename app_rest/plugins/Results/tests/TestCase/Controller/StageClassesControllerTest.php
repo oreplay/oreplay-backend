@@ -49,10 +49,7 @@ class StageClassesControllerTest extends ApiCommonErrorsTest
             'splits' => [
                 [
                     'id' => SplitsFixture::SPLIT_1_RADIO,
-                    'is_intermediate' => true,
-                    'reading_time' => '2024-01-02T10:00:10.321+00:00',
-                    'points' => null,
-                    'order_number' => null
+                    'station' => 81,
                 ]
             ],
         ];

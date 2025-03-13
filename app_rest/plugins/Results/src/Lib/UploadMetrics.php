@@ -200,7 +200,7 @@ class UploadMetrics
     public function toArray(string $type): array
     {
         $now = new FrozenTime();
-        $newLine = "\n       ";
+        $newLine = "<br>";
         $runnersInLoop = $this->_runnersInLoopDuration;
         $loopingTime = $this->_runnersOutLoopDuration - $runnersInLoop;
         $resultsTotal = round($this->_runnersOutLoopDuration, 2);
@@ -251,15 +251,15 @@ class UploadMetrics
                 ],
                 'humanColor' => $humanColor,
                 'human' => [
-                    "\nUpdated$extraMessage $this->classCount classes, "
+                    "Updated$extraMessage $this->classCount classes, "
                     . "$this->coursesCount courses ($this->_coursesDuration s) $newLine"
                     . "$participantCount participants "
                     . "(and $participantResultsCount results in $resultsTotal s "
                     . "[$loopingTime looping + $runnersInLoop s + $this->_clubsDuration clubs + "
                     . "$this->_runnerResultsDuration results]), $newLine"
                     . "$this->splitCount splits (in $this->_splitDuration s), $newLine"
-                    . "   in $total seconds ($processingDuration processing + $savingDuration saving) $newLine",
-                    "($now - $type)\n" . 'second line for testing',
+                    . "in $total seconds ($processingDuration processing + $savingDuration saving)",
+                    "($now - $type)",
                 ]
             ],
             'data' => $this->_classesToSave,
@@ -281,7 +281,8 @@ class UploadMetrics
         $participantCount = $this->runnerCount + $this->teamCount;
         $extraMessage = $this->_formatExtraMessage();
         $res['meta']['human'] = [
-            " *** Updated$extraMessage $participantCount participants, "
+            " *** PLEASE UPDATE THE DESKTOP CLIENT TO THE LAST VERSION!!!!!!!!!!!!!!!!!!!!! "
+            . "Updated$extraMessage $participantCount participants, "
             . "$this->classCount classes, "
             . "$this->splitCount splits, "
             . "($now - $type) in $total seconds ($processingDuration processing + $savingDuration saving)",

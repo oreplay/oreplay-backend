@@ -40,7 +40,7 @@ class UploadsController extends ApiController
     {
         $this->_clearUploadCache();
         $metrics = $helper->getMetrics();
-        //$this->_writeLastUploadJson($helper->getData());
+        //$this->_writeLastUploadJson($helper->getData(), TMP . 'lastUpload.json');
         //$this->log('Uploading: ' . " \n\n" . json_encode($helper->getData()), \Psr\Log\LogLevel::DEBUG); // NOSONAR
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($helper->getEventId(), $token);
@@ -176,9 +176,8 @@ class UploadsController extends ApiController
         return substr($auth, strlen('Bearer '));
     }
 
-    private function _writeLastUploadJson(array $content)
+    private function _writeLastUploadJson(array $content, string $path)
     {
-        $path = TMP . 'lastUpload.json';
         $file = new \SplFileObject($path, 'w+');
         $file->fwrite(json_encode($content, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
     }

@@ -62,6 +62,8 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         TeamResultsFixture::LOAD,
     ];
 
+    const PREFIX = ' *** PLEASE UPDATE THE DESKTOP CLIENT TO THE LAST VERSION!!!!!!!!!!!!!!!!!!!!!';
+
     protected function _getEndpoint(): string
     {
         return ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/uploads/';
@@ -92,7 +94,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'human' => ['']
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-        $this->assertStringStartsWith(' *** Updated 4 participants, 2 classes, 0 splits', $human);
+        $this->assertStringStartsWith(self::PREFIX . ' Updated 4 participants, 2 classes, 0 splits', $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -163,7 +165,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'human' => ['']
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-        $this->assertStringStartsWith(' *** Updated 4 participants, 2 classes, 0 splits', $human);
+        $this->assertStringStartsWith(self::PREFIX . ' Updated 4 participants, 2 classes, 0 splits', $human);
 
         $dbTeams = TeamsTable::load()->find()
             ->where(['created >' => new FrozenTime('-1 minute')])
@@ -381,7 +383,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
         $expectedSplits = 3;
-        $this->assertStringStartsWith(" *** Updated $expectedRunnerAmount participants, 1 classes, $expectedSplits splits", $human);
+        $this->assertStringStartsWith(self::PREFIX . " Updated $expectedRunnerAmount participants, 1 classes, $expectedSplits splits", $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -590,7 +592,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'runnerResults' => 2,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        //$this->assertStringStartsWith(' *** Updated 2 participants, 2 classes, 0 splits', $human);
+        //$this->assertStringStartsWith(self::PREFIX . ' Updated 2 participants, 2 classes, 0 splits', $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])

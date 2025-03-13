@@ -7,11 +7,16 @@ namespace Results\Test\TestCase\Model\Table;
 use App\Lib\Consts\CacheGrp;
 use Cake\Cache\Cache;
 use Cake\TestSuite\TestCase;
+use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
+use Results\Model\Entity\Split;
 use Results\Model\Entity\Stage;
 use Results\Model\Table\ClassesTable;
+use Results\Model\Table\SplitsTable;
 use Results\Test\Fixture\ClassesFixture;
+use Results\Test\Fixture\ControlsFixture;
 use Results\Test\Fixture\EventsFixture;
+use Results\Test\Fixture\SplitsFixture;
 use Results\Test\Fixture\StagesFixture;
 
 class ClassesTableTest extends TestCase
@@ -19,6 +24,9 @@ class ClassesTableTest extends TestCase
     protected $fixtures = [
         EventsFixture::LOAD,
         ClassesFixture::LOAD,
+        StagesFixture::LOAD,
+        ControlsFixture::LOAD,
+        SplitsFixture::LOAD,
     ];
     /** @var ClassesTable Runners */
     private $Classes;
@@ -34,7 +42,7 @@ class ClassesTableTest extends TestCase
         $class = $this->Classes->getByShortName(Event::FIRST_EVENT, Stage::FIRST_STAGE, 'ME');
 
         $expected = [
-            'id' => 'd8a87faf-68a4-487b-8f28-6e0ead6c1a57',
+            'id' => ClassEntity::ME,
             'short_name' => 'ME',
             'long_name' => 'M Elite',
         ];
@@ -71,5 +79,64 @@ class ClassesTableTest extends TestCase
         $this->assertEquals($data['long_name'], $res->long_name);
         $this->assertEquals($data['oe_key'], $res->oe_key);
         $this->assertEquals($data['short_name'], $res->short_name);
+    }
+
+    public function testGetByStageWithRadios()
+    {
+        $split = new Split(
+            [
+                'id' => '2e0a9e34-ad82-4f41-a46e-d76427705281',
+                'event_id' => Event::FIRST_EVENT,
+                'stage_id' => Stage::FIRST_STAGE,
+                'sicard' => '8000001',
+                'is_intermediate' => true,
+                'station' => 81,
+                'reading_time' => '2024-01-02 10:00:10.321',
+                'control_id' => ControlsFixture::CONTROL_31,
+                'class_id' => ClassEntity::ME,
+                'created' => '2024-01-02 09:10:10',
+                'modified' => '2024-01-02 09:10:10',
+            ]
+        );
+        SplitsTable::load()->save($split);
+        $splitId = '2e0a9e34-ad82-4f41-a46e-d76427705282';
+        $split = new Split(
+            [
+                'id' => $splitId,
+                'event_id' => Event::FIRST_EVENT,
+                'stage_id' => Stage::FIRST_STAGE,
+                'sicard' => '8000002',
+                'is_intermediate' => true,
+                'station' => 182,
+                'reading_time' => '2024-01-02 10:00:10.321',
+                'control_id' => null,
+                'class_id' => ClassEntity::ME,
+                'created' => '2024-01-02 09:10:10',
+                'modified' => '2024-01-02 09:10:10',
+            ]
+        );
+        SplitsTable::load()->save($split);
+
+        $res = $this->Classes
+            ->getByStageWithRadios(Event::FIRST_EVENT, Stage::FIRST_STAGE)
+            ->toArray();
+        $this->assertEquals(2, count($res));
+
+        $this->assertEquals('FE', $res[0]['short_name']);
+        $this->assertEquals('F Elite', $res[0]['long_name']);
+        $this->assertEquals([], $res[0]['splits']);
+        $this->assertEquals('ME', $res[1]['short_name']);
+        $this->assertEquals('M Elite', $res[1]['long_name']);
+        $this->assertEquals(2, count($res[1]['splits']));
+        $first = [
+            'id' => SplitsFixture::SPLIT_1_RADIO,
+            'station' => '81'
+        ];
+        $this->assertEquals($first, $res[1]['splits'][0]->toArray());
+        $second = [
+            'id' => $splitId,
+            'station' => '182'
+        ];
+        $this->assertEquals($second, $res[1]['splits'][1]->toArray());
     }
 }

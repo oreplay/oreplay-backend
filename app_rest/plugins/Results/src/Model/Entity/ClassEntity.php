@@ -13,6 +13,7 @@ use Results\Lib\UploadHelper;
  * @property string $event_id
  * @property string $stage_id
  * @property Runner[] $runners
+ * @property Split[] $splits
  * @property Team[] $teams
  * @property Course $course
  */
@@ -56,5 +57,15 @@ class ClassEntity extends AppEntity
         $hash = UploadHelper::md5Encode($resultData);
         $this->_fields['upload_hash'] = $hash;
         $this->setDirty('upload_hash');
+    }
+
+    public function setSplitsAsSimpleArray()
+    {
+        if ($this->splits && is_array($this->splits)) {
+            /** @var Split $s */
+            foreach ($this->splits as $s) {
+                $s->setStationVisible();
+            }
+        }
     }
 }

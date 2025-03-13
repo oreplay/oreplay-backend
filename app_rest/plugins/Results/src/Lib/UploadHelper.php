@@ -4,10 +4,8 @@ declare(strict_types = 1);
 
 namespace Results\Lib;
 
-use Cake\Datasource\ResultSetInterface;
 use Cake\Http\Exception\InternalErrorException;
 use RestApi\Lib\Exception\DetailedException;
-use Results\Model\Entity\Control;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Team;

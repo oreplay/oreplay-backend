@@ -26,6 +26,6 @@ class StageClassesController extends ApiController
     {
         $eventId = $this->request->getParam('eventID');
         $stageId = $this->request->getParam('stageID');
-        $this->return = $this->Classes->findByStage($eventId, $stageId)->all();
+        $this->return = $this->Classes->getByStageWithRadios($eventId, $stageId);
     }
 }

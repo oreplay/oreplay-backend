@@ -49,16 +49,31 @@ class ClassesTable extends AppTable
         return $res;
     }
 
-    public function findByStage(string $eventId, string $stageId)
+    public function getByStageWithRadios(string $eventId, string $stageId)
     {
-        return $this->find()->where([
+        $res = $this->find()->where([
             'event_id' => $eventId,
             'stage_id' => $stageId,
         ])
             ->contain(SplitsTable::name(), function (Query $q) {
-                return $q->where(['is_intermediate' => true]);
+                $select = [
+                    'class_id',
+                    'station',
+                    'id' => $q->func()->max(SplitsTable::field('id'), ['string']),
+                ];
+                return $q
+                    ->select($select)
+                    ->where(['is_intermediate' => true])
+                    ->group(['station', 'class_id'])
+                    ->order(['station DESC'], true);
             })
-            ->order(['CAST(oe_key AS UNSIGNED)' => 'ASC', 'short_name' => 'ASC']);
+            ->order(['CAST(oe_key AS UNSIGNED)' => 'ASC', 'short_name' => 'ASC'])
+            ->all();
+        /** @var ClassEntity $r */
+        foreach ($res as $r) {
+            $r->setSplitsAsSimpleArray();
+        }
+        return $res;
     }
 
     public function saveManyWithRelations(ClassEntity $singleClassToSave)

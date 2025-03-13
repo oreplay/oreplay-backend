@@ -74,6 +74,11 @@ class Split extends AppEntity
         return $this->is_intermediate;
     }
 
+    public function setStationVisible()
+    {
+        $this->setHidden(array_diff($this->getHidden(), ['station']));
+    }
+
     public function shouldDisplayCurrent(Split $last): SplitCompareReason
     {
         if ($this->order_number != $last->order_number) {
