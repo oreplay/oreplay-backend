@@ -78,7 +78,7 @@ class UploadsController extends ApiController
         $metrics->endTotalTimer();
 
         $queryParam = $this->getRequest()->getQuery('version');
-        if (!$queryParam || $queryParam < 301) {
+        if (!$queryParam || $queryParam < 402) {
             return $metrics->toArrayLegacy($configChecker->preCheckType());
         }
         return $metrics->toArray($configChecker->preCheckType());
