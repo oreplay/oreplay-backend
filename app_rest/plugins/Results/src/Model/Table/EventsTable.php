@@ -29,7 +29,7 @@ class EventsTable extends AppTable
         FederationsTable::addHasMany($this);
         OrganizersTable::addHasMany($this);
         StagesTable::addBelongsTo($this)
-            ->setSort([StagesTable::field('created') => 'DESC']);
+            ->setSort([StagesTable::field('created') => 'ASC']);
         $this->belongsToMany(UsersTable::name(), [
             'joinTable' => 'users_events',
         ]);

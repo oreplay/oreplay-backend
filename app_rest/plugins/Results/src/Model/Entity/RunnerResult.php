@@ -12,6 +12,7 @@ use Results\Lib\UploadHelper;
  * @property integer $time_seconds
  * @property integer $status_code
  * @property integer $time_behind
+ * @property string $upload_type
  * @property string $event_id
  * @property string $stage_id
  * @property string $runner_id

@@ -69,6 +69,7 @@ class RunnerResultsTable extends AppTable
     private function _newResultWithType(array $resultData, UploadHelper $helper): RunnerResult
     {
         $runnerResultToSave = $this->fillNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
+        $runnerResultToSave->upload_type = $helper->getChecker()->preCheckType();
 
         $runnerResultToSave->result_type = $this->ResultTypes
             ->getCachedWithDefault($helper->getChecker(), $resultData['result_type']['id'] ?? null);

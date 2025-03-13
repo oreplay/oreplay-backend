@@ -159,6 +159,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'result_type_id' => ResultType::STAGE,
             'start_time' => '2024-01-02T10:00:00.000+00:00',
             'finish_time' => '2024-01-02T10:05:10.123+00:00',
+            'upload_type' => null,
             'time_seconds' => 310,
             'position' => 1,
             'status_code' => null,

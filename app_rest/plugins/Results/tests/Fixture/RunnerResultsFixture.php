@@ -29,6 +29,7 @@ class RunnerResultsFixture extends RestApiFixture
             'check_time' => null,
             'start_time' => '2024-01-02 10:00:00.000',
             'finish_time' => '2024-01-02 10:05:10.123',
+            'upload_type' => null,
             'time_seconds' => 310,
             'position' => 1,
             'status_code' => null,

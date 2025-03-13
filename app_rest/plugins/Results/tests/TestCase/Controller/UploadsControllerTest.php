@@ -8,6 +8,8 @@ use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Cake\Cache\Cache;
 use Cake\I18n\FrozenTime;
+use Results\Controller\UploadsController;
+use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
@@ -125,6 +127,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals($runnersJson[$key]['bib_number'], $value->bib_number);
             $this->assertEquals($runnersJson[$key]['id'], $value->id);
             $this->assertEquals($runnersJson[$key]['club']['short_name'], $value->club->short_name);
+            $this->assertEquals(UploadTypes::START_LIST, $runnersJson[$key]['runner_results'][0]['upload_type']);
             $this->assertEquals($runnersJson[$key]['runner_results'][0]['start_time'],
                 $value->getRunnerResults()[0]->start_time->jsonSerialize());
             if ($key === 0) {
@@ -210,6 +213,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals($currentRunner['sicard'], $value->sicard);
             $this->assertEquals($currentRunner['id'], $value->id);
             $this->assertEquals($currentRunner['club']['short_name'], $value->club->short_name);
+            $this->assertEquals(UploadTypes::START_LIST, $currentRunner['runner_results'][0]['upload_type']);
             $this->assertEquals($currentRunner['runner_results'][0]['start_time'],
                 $value->getRunnerResults()[0]->start_time->jsonSerialize());
             $this->assertEquals('2024-11-10T09:30:00.000+00:00', $currentRunner['runner_results'][0]['start_time']);
@@ -245,7 +249,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['id' => ClassEntity::ME]);
 
         $data = ['oreplay_data_transfer' => UploadsControllerExamples::intermediateResults()];
-        $this->post($this->_getEndpoint() . '?version=306', $data);
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
         $human = $jsonDecoded['meta']['human'][0];
@@ -449,6 +453,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('2024-09-29T12:26:54.000+00:00', $firstRunner['runner_results'][0]['finish_time']);
         $this->assertEquals(5214, $firstRunner['runner_results'][0]['time_seconds']);
         $this->assertEquals('0', $firstRunner['runner_results'][0]['status_code']);
+        $this->assertEquals(UploadTypes::FINISH_TIMES, $firstRunner['runner_results'][0]['upload_type']);
         $this->assertEquals(0, $firstRunner['runner_results'][0]['time_behind']);
         $this->assertEquals(0, $firstRunner['runner_results'][0]['time_neutralization']);
         $this->assertEquals(0, $firstRunner['runner_results'][0]['time_adjusted']);
@@ -479,6 +484,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('2', $secondRunner['runner_results'][0]['position']);
         $this->assertEquals('2024-09-29T11:00:00.000+00:00', $secondRunner['runner_results'][0]['start_time']);
         $this->assertEquals('2024-09-29T11:48:49.000+00:00', $secondRunner['runner_results'][0]['finish_time']);
+        $this->assertEquals(UploadTypes::FINISH_TIMES, $secondRunner['runner_results'][0]['upload_type']);
         //$this->assertEquals(2929, $secondRunner['runner_results'][0]['time_seconds']);
         $this->assertEquals('0', $secondRunner['runner_results'][0]['status_code']);
         $this->assertEquals(44, $secondRunner['runner_results'][0]['time_behind']);
@@ -506,13 +512,13 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleImport2CategoriesStarts()];
-        $this->post($this->_getEndpoint() . '?version=301', $data);
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
         $jsonDecoded = $this->assertJsonResponseOK();
         $this->_assertStartsTimesFrom2Classes($jsonDecoded);
 
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleImport2CategoriesSplits()];
-        $this->post($this->_getEndpoint() . '?version=301', $data);
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
         $jsonDecoded = $this->assertJsonResponseOK();
         $this->_assertSplitsTimesFrom2Classes($jsonDecoded);
     }

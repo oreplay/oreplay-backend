@@ -23,6 +23,8 @@ use Results\Model\Table\TokensTable;
  */
 class UploadsController extends ApiController
 {
+    public const NEW_VERSION = 402;
+
     private UploadHelper $_helper;
 
     public function isPublicController(): bool
@@ -78,7 +80,7 @@ class UploadsController extends ApiController
         $metrics->endTotalTimer();
 
         $queryParam = $this->getRequest()->getQuery('version');
-        if (!$queryParam || $queryParam < 402) {
+        if (!$queryParam || $queryParam < UploadsController::NEW_VERSION) {
             return $metrics->toArrayLegacy($configChecker->preCheckType());
         }
         return $metrics->toArray($configChecker->preCheckType());
