@@ -20,6 +20,7 @@ use Results\Lib\UploadHelper;
  * @property string $result_type_id
  * @property string $upload_hash
  * @property mixed $leg_number
+ * @property string $class_id
  * @property FrozenTime $start_time
  * @property FrozenTime $finish_time
  * @property ResultType $result_type

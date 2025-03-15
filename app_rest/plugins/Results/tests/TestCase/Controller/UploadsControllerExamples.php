@@ -210,6 +210,7 @@ class UploadsControllerExamples
                                         'first_name' => 'Carlos',
                                         'last_name' => 'Alonso',
                                         'bib_number' => '359',
+                                        'sex' => 'F',
                                         'runner_results' => [
                                             [
                                                 'id' => '',

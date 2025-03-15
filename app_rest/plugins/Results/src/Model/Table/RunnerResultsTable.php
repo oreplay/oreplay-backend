@@ -157,6 +157,7 @@ class RunnerResultsTable extends AppTable
     {
         $helper->getMetrics()->startRunnerResultsTime();
         $runnerResultToSave = $this->_newResultWithType($resultData, $helper);
+        $runnerResultToSave->class_id = $helper->getCurrentClassId();
 
         $existingRunnerResults = $helper->getExistingDbResultsForThisRunner($runner, $runnerResultToSave);
         $existingRunnerResultsAmount = count($existingRunnerResults);

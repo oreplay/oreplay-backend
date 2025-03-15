@@ -125,6 +125,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals($runnersJson[$key]['first_name'], $value->first_name);
             $this->assertEquals($runnersJson[$key]['sicard'], $value->sicard);
             $this->assertEquals($runnersJson[$key]['bib_number'], $value->bib_number);
+            $this->assertEquals($runnersJson[$key]['sex'] ?? null, $value->sex);
             $this->assertEquals($runnersJson[$key]['id'], $value->id);
             $this->assertEquals($runnersJson[$key]['club']['short_name'], $value->club->short_name);
             $this->assertEquals(UploadTypes::START_LIST, $runnersJson[$key]['runner_results'][0]['upload_type']);
@@ -140,6 +141,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals(ResultType::STAGE,
                 $value->getRunnerResults()[0]->result_type_id);
         }
+        $this->assertEquals('F', $runnersJson[0]['sex']);
         $this->_assertNewOptionalTables(0, 0, 0, 0);
         $this->_assertNewBasicTables(2, 2, 1, 4, 4);
         $this->_assertNewResultsTables(0, 0);

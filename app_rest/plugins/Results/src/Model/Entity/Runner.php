@@ -17,6 +17,7 @@ use RestApi\Lib\Exception\DetailedException;
  * @property string $db_id
  * @property mixed $sicard
  * @property mixed $bib_number
+ * @property string $sex
  * @property FrozenTime $created
  * @property mixed $leg_number
  */
@@ -31,6 +32,7 @@ class Runner extends AppEntity
         'last_name' => true,
         'sicard' => true,
         'bib_number' => true,
+        'sex' => true,
     ];
 
     protected $_virtual = [
@@ -49,7 +51,6 @@ class Runner extends AppEntity
         'license',
         'national_id',
         'birth_date',
-        'sex',
         'telephone1',
         'telephone2',
         'email',
