@@ -128,6 +128,8 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals($runnersJson[$key]['id'], $value->id);
             $this->assertEquals($runnersJson[$key]['club']['short_name'], $value->club->short_name);
             $this->assertEquals(UploadTypes::START_LIST, $runnersJson[$key]['runner_results'][0]['upload_type']);
+            $this->assertEquals($runnersJson[$key]['runner_results'][0]['status_code'],
+                $value->getRunnerResults()[0]->status_code);
             $this->assertEquals($runnersJson[$key]['runner_results'][0]['start_time'],
                 $value->getRunnerResults()[0]->start_time->jsonSerialize());
             if ($key === 0) {

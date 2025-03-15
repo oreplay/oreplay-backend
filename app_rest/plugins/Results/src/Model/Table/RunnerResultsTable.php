@@ -37,6 +37,82 @@ class RunnerResultsTable extends AppTable
         return $table;
     }
 
+    public function getNotClassesStats(string $eventId, string $stageId, array $classNames): array
+    {
+        $classCondition = [ClassesTable::field('short_name') . ' not in' => $classNames];
+        return $this->_getClassStats($classCondition, $eventId, $stageId);
+    }
+
+    public function getClassesStats(string $eventId, string $stageId, array $classNames): array
+    {
+        $classCondition = [ClassesTable::field('short_name') . ' in' => $classNames];
+        return $this->_getClassStats($classCondition, $eventId, $stageId);
+    }
+
+    public function _getClassStats(array $classCondition, string $eventId, string $stageId): array
+    {
+        $matching = RunnersTable::name() . '.' . ClassesTable::name();
+        $results = $this->find()
+            ->where([
+                RunnerResultsTable::field('event_id') => $eventId,
+                RunnerResultsTable::field('stage_id') => $stageId,
+            ])
+            ->matching($matching, function ($q) use ($classCondition) {
+                return $q->where($classCondition);
+            })
+            ->order([RunnerResultsTable::field('runner_id') => 'ASC'])
+            ->toArray();
+
+        $classes = [];
+        $previousRunnerId = '';
+        $total = 0;
+        $dns = 0;
+        $mp = 0;
+        $dnf = 0;
+        $ot = 0;
+        $dqf = 0;
+        $notYetFinished = 0;
+        $finished = 0;
+        $others = 0;
+        /** @var RunnerResult $res */
+        foreach ($results as $res) {
+            if ($res->runner_id !== $previousRunnerId) {
+                $previousRunnerId = $res->runner_id;
+                $total++;
+                $classes[$res->getMatchingClass()->short_name] = null;
+                if ($res->isDNS()) {
+                    $dns++;
+                } else if ($res->isMP()) {
+                    $mp++;
+                } else if ($res->isDNF()) {
+                    $dnf++;
+                } else if ($res->isOT()) {
+                    $ot++;
+                } else if ($res->isDQF()) {
+                    $dqf++;
+                } else if ($res->isNotYetFinished()) {
+                    $notYetFinished++;
+                } else if ($res->isFinished()) {
+                    $finished++;
+                } else {
+                    $others++;
+                }
+            }
+        }
+        return [
+            'classes' => array_keys($classes),
+            'total' => $total,
+            'dns' => $dns,
+            'mp' => $mp,
+            'dnf' => $dnf,
+            'ot' => $ot,
+            'dqf' => $dqf,
+            'notYetFinished' => $notYetFinished,
+            'finished' => $finished,
+            'others' => $others,
+        ];
+    }
+
     protected function _insert(EntityInterface $entity, array $data)
     {
         return parent::_insert($entity, $data);

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Model\Entity;
 
 use Cake\I18n\FrozenTime;
+use Results\Lib\Consts\StatusCode;
 use Results\Lib\UploadHelper;
 
 /**
@@ -126,5 +127,45 @@ class RunnerResult extends AppEntity implements ParticipantResultsEntity
     public function hasInvalidFinishTime(): bool
     {
         return !$this->time_seconds && $this->finish_time instanceof FrozenTime;
+    }
+
+    public function isDNS(): bool
+    {
+        return $this->status_code == StatusCode::DNS;
+    }
+
+    public function isMP(): bool
+    {
+        return $this->status_code == StatusCode::MP;
+    }
+
+    public function isDNF(): bool
+    {
+        return $this->status_code == StatusCode::DNF;
+    }
+
+    public function isOT(): bool
+    {
+        return $this->status_code == StatusCode::OT;
+    }
+
+    public function isDQF(): bool
+    {
+        return $this->status_code == StatusCode::DQF;
+    }
+
+    public function isNotYetFinished(): bool
+    {
+        return $this->status_code == StatusCode::OK && !$this->finish_time;
+    }
+
+    public function isFinished(): bool
+    {
+        return $this->status_code == StatusCode::OK && $this->finish_time;
+    }
+
+    public function getMatchingClass(): ?ClassEntity
+    {
+        return $this->_matchingData['Classes'] ?? null;
     }
 }
