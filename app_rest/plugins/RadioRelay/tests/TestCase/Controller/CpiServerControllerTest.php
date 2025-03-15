@@ -9,6 +9,7 @@ use RadioRelay\Lib\Cpi\Consts\PunchType;
 use RestApi\TestSuite\ApiCommonErrorsTest;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
+use Results\Test\Fixture\ControlTypesFixture;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
 use Results\Test\Fixture\StagesFixture;
@@ -19,6 +20,7 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
     protected $fixtures = [
         FederationsFixture::LOAD,
         EventsFixture::LOAD,
+        ControlTypesFixture::LOAD,
         StagesFixture::LOAD,
         TokensFixture::LOAD,
     ];
@@ -33,9 +35,10 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
         // should process new radio punch
         $username = Stage::FIRST_STAGE;
         $password = Event::FIRST_EVENT . TokensFixture::FIRST_TOKEN;
+        $timezone = '+01:00';
         $data = [
             'order' => 'ProcessPunches',
-            'data' => [$username, $password],
+            'data' => [$username, $password, $timezone],
             'punches' => [
                 [
                      'date' => '2025-03-08',

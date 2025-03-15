@@ -32,6 +32,16 @@ class PayloadParser implements UploadInterface
         }
     }
 
+    public function getTimezone(): string
+    {
+        $timezone = $this->data['data'][2] ?? null;
+        $pattern = '/^(Z|[+-](0[0-9]|1[0-4]):[0-5][0-9])$/';
+        if (!preg_match($pattern, $timezone)) {
+            throw new BadRequestException('Invalid timezone format: ' . $timezone);
+        }
+        return $timezone;
+    }
+
     public function getEventId(): string
     {
         $secret = $this->data['data'][1] ?? null;
@@ -104,9 +114,9 @@ class PayloadParser implements UploadInterface
         return $this->data['punches'];
     }
 
-    public static function getReadingTime(array $punch): FrozenTime
+    public static function getReadingTime(array $punch, string $timezone): FrozenTime
     {
-        $time = $punch['date'] . ' ' . $punch['time'];
+        $time = $punch['date'] . ' ' . $punch['time'] . $timezone;
         return new FrozenTime($time);
     }
 }

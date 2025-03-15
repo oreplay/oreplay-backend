@@ -31,14 +31,10 @@ class ProcessPunches
 
     public function process(): array
     {
-        $lastSplit = null;
         $punchAmount = 0;
         foreach ($this->data->getPunches() as $punch) {
-            $split = $this->_processPunch($punch);
+            $this->_processPunch($punch);
             $punchAmount++;
-            if ($split) {
-                $lastSplit = $split;
-            }
         }
         $lastId = '1'; // must be numeric
         return ['OK', '' . $punchAmount, $lastId];
@@ -48,24 +44,27 @@ class ProcessPunches
     {
         $eventId = $this->data->getEventId();
         $stageId = $this->data->getStageId();
+        $timezone = $this->data->getTimezone();
         $siCard = $punch['sicard'] ?? null;
         /** @var Runner $runner */
         $runner = $this->Runners->findByCard($siCard, $eventId, $stageId)->first();
-        if (!$runner) {
-            return null;
-        }
         $split = [
             'sicard' => $siCard,
             'is_intermediate' => true,
             'station' => $punch['station'] ?? null,
-            'reading_time' => PayloadParser::getReadingTime($punch),
+            'reading_time' => PayloadParser::getReadingTime($punch, $timezone),
             'battery_perc' => $punch['battery'] ?? null,
             'battery_time' => $punch['reading'] ?? null,
             'raw_value' => $punch['raw'] ?? null,
         ];
         $splitToSave = $this->Splits->fillNewWithStage($split, $eventId, $stageId);
-        $splitToSave->class_id = $runner->class_id;
-        $splitToSave->runner_id = $runner->id;
+        if ($runner) {
+            $splitToSave->class_id = $runner->class_id;
+            $splitToSave->runner_id = $runner->id;
+        } else {
+            $splitToSave->class_id = null;
+            $splitToSave->runner_id = null;
+        }
         // maybe add $splitToSave->bib_runner = $punch['bib_runner'] ?? null;
         // maybe add $splitToSave->runner_result_id = $runner->_getOverall()->id;
         $splitToSave->battery_perc = $punch['battery'] ?? null;

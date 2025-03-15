@@ -83,8 +83,9 @@ class PayloadParserTest extends TestCase
             'battery' => '9',
             'type' => PunchType::SI_CARD
         ];
-        $res = $helper->getReadingTime($punch);
-        $this->assertEquals('2025-03-08T00:12:50+00:00', $res->toIso8601String());
+        $timezone = '-04:00';
+        $res = $helper->getReadingTime($punch, $timezone);
+        $this->assertEquals('2025-03-08T00:12:50-04:00', $res->toIso8601String());
 
     }
 }
