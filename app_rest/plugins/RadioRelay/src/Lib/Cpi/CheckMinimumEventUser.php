@@ -52,16 +52,17 @@ class CheckMinimumEventUser
             if (!$e->stages) {
                 throw new BadRequestException('Stage id (username) does not belong to event ' . $e->id);
             }
-            $eventTitle = $e->description;
+            $eventTitle = $e->description . ' (' . $e->stages[0]->description . ')';
         } else {
             $eventTitle = 'Invalid password (event ID) ' . $cred->getEventId();
         }
+        $firstParamData = $cred->getStageId();
         $baseTime = '00:00:00'; // e.g '10:30:00'
         $eventType = '0'; // 0=Classic; 1=Mass Start; 2=Chase Start; 3=Relays; 4=Rogaine
         $controlStation = ''; // Usually empty. Control station associated to the device
         $eventOrigin = '0';
         return [
-            $cred->getEventId(),
+            $firstParamData,
             $eventTitle,
             $baseTime,
             $eventType,

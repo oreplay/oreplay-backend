@@ -134,15 +134,17 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
     {
         $username = Stage::FIRST_STAGE;
         $password = Event::FIRST_EVENT . TokensFixture::FIRST_TOKEN;
+        $timezone = '+01:00';
         $data = [
             'order' => 'CheckMinimumEventUser',
-            'data' => [$username, $password],
+            'data' => [$username, $password, $timezone],
             'punches' => [],
         ];
         $this->post($this->_getEndpoint(), $data);
 
         $res = $this->assertJsonResponseOK();
-        $expected = ['data' => [Event::FIRST_EVENT, 'Test Foot-o', '00:00:00', '0', '', '0', $password, '']];
+        $expected = ['data' => [
+            Stage::FIRST_STAGE, 'Test Foot-o (First stage)', '00:00:00', '0', '', '0', $password, '']];
         $this->assertEquals($expected, $res);
     }
 

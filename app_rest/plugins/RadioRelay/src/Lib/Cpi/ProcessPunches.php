@@ -66,15 +66,18 @@ class ProcessPunches
             $splitToSave->runner_id = $runner->id;
             $splitToSave->runner_result_id = $runner->_getOverall()->id;
         } else {
+            $this->log('CpiServerController: [32] no_runner in event '.$eventId.' '.$stageId);
             $splitToSave->class_id = null;
             $splitToSave->runner_id = null;
             $splitToSave->runner_result_id = null;
         }
+        /*
         $this->log('CpiServerController: [31] ' . json_encode($split)
             . ' -  ' . $splitToSave->class_id
             . ' -  ' . $splitToSave->runner_id
             . ' -  ' . $splitToSave->runner_result_id
         );
+        //*/
         // maybe add $splitToSave->bib_runner = $punch['bib_runner'] ?? null;
         // maybe add $splitToSave->runner_result_id = $runner->_getOverall()->id;
         $splitToSave->battery_perc = $punch['battery'] ?? null;
