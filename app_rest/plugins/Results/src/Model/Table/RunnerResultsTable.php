@@ -37,10 +37,10 @@ class RunnerResultsTable extends AppTable
         return $table;
     }
 
-    public function getNotClassesStats(string $eventId, string $stageId, array $classNames): array
+    public function getNotClassesStats(string $eventId, string $stageId, array $classNames, string $sex): array
     {
         $classCondition = [ClassesTable::field('short_name') . ' not in' => $classNames];
-        return $this->_getClassStats($classCondition, $eventId, $stageId);
+        return $this->_getClassStats($classCondition, $eventId, $stageId, $sex);
     }
 
     public function getClassesStats(string $eventId, string $stageId, array $classNames): array
@@ -49,19 +49,23 @@ class RunnerResultsTable extends AppTable
         return $this->_getClassStats($classCondition, $eventId, $stageId);
     }
 
-    public function _getClassStats(array $classCondition, string $eventId, string $stageId): array
+    public function _getClassStats(array $classCondition, string $eventId, string $stageId, string $sex = null): array
     {
-        $matching = RunnersTable::name() . '.' . ClassesTable::name();
-        $results = $this->find()
+        $query = $this->find()
             ->where([
                 RunnerResultsTable::field('event_id') => $eventId,
                 RunnerResultsTable::field('stage_id') => $stageId,
             ])
-            ->matching($matching, function ($q) use ($classCondition) {
+            ->matching(RunnersTable::name() . '.' . ClassesTable::name(), function ($q) use ($classCondition) {
                 return $q->where($classCondition);
             })
-            ->order([RunnerResultsTable::field('runner_id') => 'ASC'])
-            ->toArray();
+            ->order([RunnerResultsTable::field('runner_id') => 'ASC']);
+        if ($sex) {
+            $query->matching(RunnersTable::name(), function ($q) use ($sex) {
+                return $q->where([RunnersTable::field('sex') => $sex]);
+            });
+        }
+        $results = $query->toArray();
 
         $classes = [];
         $previousRunnerId = '';

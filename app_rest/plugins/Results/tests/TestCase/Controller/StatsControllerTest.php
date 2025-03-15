@@ -76,9 +76,7 @@ class StatsControllerTest extends ApiCommonErrorsTest
             ],
             'officialSenior' => [
                 'M' => [
-                    'classes' => [
-                        0 => 'ME'
-                    ],
+                    'classes' => ['ME'],
                     'total' => 1,
                     'dns' => 0,
                     'mp' => 0,
@@ -103,16 +101,42 @@ class StatsControllerTest extends ApiCommonErrorsTest
                 ]
             ],
             'others' => [
-                'classes' => [],
-                'total' => 0,
-                'dns' => 0,
-                'mp' => 0,
-                'dnf' => 0,
-                'ot' => 0,
-                'dqf' => 0,
-                'notYetFinished' => 0,
-                'finished' => 0,
-                'others' => 0
+                'M' => [
+                    'classes' => [],
+                    'total' => 0,
+                    'dns' => 0,
+                    'mp' => 0,
+                    'dnf' => 0,
+                    'ot' => 0,
+                    'dqf' => 0,
+                    'notYetFinished' => 0,
+                    'finished' => 0,
+                    'others' => 0
+                ],
+                'F' => [
+                    'classes' => [],
+                    'total' => 0,
+                    'dns' => 0,
+                    'mp' => 0,
+                    'dnf' => 0,
+                    'ot' => 0,
+                    'dqf' => 0,
+                    'notYetFinished' => 0,
+                    'finished' => 0,
+                    'others' => 0
+                ],
+                'any' => [
+                    'classes' => [],
+                    'total' => 0,
+                    'dns' => 0,
+                    'mp' => 0,
+                    'dnf' => 0,
+                    'ot' => 0,
+                    'dqf' => 0,
+                    'notYetFinished' => 0,
+                    'finished' => 0,
+                    'others' => 0
+                ],
             ]
         ];
         $this->assertEquals($expected, $bodyDecoded['data']);

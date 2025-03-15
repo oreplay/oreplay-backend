@@ -53,7 +53,11 @@ class StatsController extends ApiController
                 'M' => $table->getClassesStats($eventId, $stageId, $officialSeniorM),
                 'F' => $table->getClassesStats($eventId, $stageId, $officialSeniorF),
             ],
-            'others' => $table->getNotClassesStats($eventId, $stageId, $all),
+            'others' => [
+                'M' => $table->getNotClassesStats($eventId, $stageId, $all, 'M'),
+                'F' => $table->getNotClassesStats($eventId, $stageId, $all, 'F'),
+                'any' => $table->getNotClassesStats($eventId, $stageId, $all, ''),
+            ],
         ];
     }
 }
