@@ -50,6 +50,11 @@ class TeamsTable extends AppTable
         if ($filters['club_id'] ?? null) {
             $q->where(['club_id' => $filters['club_id']]);
         }
+        if ($filters['text'] ?? null) {
+            $q->where([
+                'team_name LIKE' => '%'.$filters['text'].'%',
+            ]);
+        }
         return $q->contain(ClubsTable::name())
             ->contain(ClassesTable::name())
             ->contain(RunnersTable::name(), function (Query $q) {

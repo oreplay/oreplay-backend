@@ -44,6 +44,16 @@
                     "schema": {
                         "type": "string"
                     }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "text",
+                    "example": "Runner",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
                 }
             ],
             "tags": [

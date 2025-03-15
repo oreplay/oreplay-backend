@@ -115,6 +115,16 @@ class RunnersTable extends AppTable
         if ($filters['club_id'] ?? null) {
             $q->where(['club_id' => $filters['club_id']]);
         }
+        if ($filters['text'] ?? null) {
+            $q->where([
+                'OR' => [
+                    'first_name LIKE' => '%'.$filters['text'].'%',
+                    'last_name like' => '%'.$filters['text'] .'%',
+                    'sicard' => $filters['text'],
+                    'bib_number' => $filters['text']
+                ]
+            ]);
+        }
         return $this->mainRunnerContain($q);
     }
 

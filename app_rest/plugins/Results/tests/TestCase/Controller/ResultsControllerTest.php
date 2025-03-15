@@ -85,6 +85,15 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($this->_getSecondRunner(), $bodyDecoded['data'][1]);
     }
 
+    public function testGetList_filteredByName()
+    {
+        $this->get($this->_getEndpoint() . '?text=Runner');
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals(1, count($bodyDecoded['data']));
+        $this->assertEquals($this->_getSecondRunner(), $bodyDecoded['data'][0]);
+    }
+
     public function testGetList_filteredByNotExistingClub()
     {
         $this->skipNextRequestInSwagger();
