@@ -35,8 +35,8 @@ class StatsController extends ApiController
     {
         $eventId = $this->request->getParam('eventID');
         $stageId = $this->request->getParam('stageID');
-        $officialSub20M = $this->_getClassParam('officialSub20M', 'M-15,M-17,M-20');
-        $officialSub20F = $this->_getClassParam('officialSub20F', 'F-15,F-17,F-20');
+        $officialSub20M = $this->_getClassParam('officialSub20M', 'M-15,M-17,M-20,M-21');
+        $officialSub20F = $this->_getClassParam('officialSub20F', 'F-15,F-17,F-20,F-21');
         $females = 'F-E,F-35,F-40,F-45,F-50,F-55,F-60,F-65,F-70,F-75,F-80,F-85,F-90,F-95';
         $officialSeniorF = $this->_getClassParam('officialSeniorF', $females);
         $males = 'M-E,M-35,M-40,M-45,M-50,M-55,M-60,M-65,M-70,M-75,M-80,M-85,M-90,M-95';

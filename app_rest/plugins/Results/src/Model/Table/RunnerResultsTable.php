@@ -78,6 +78,7 @@ class RunnerResultsTable extends AppTable
         $notYetFinished = 0;
         $finished = 0;
         $others = 0;
+        $otherValues = [];
         /** @var RunnerResult $res */
         foreach ($results as $res) {
             if ($res->runner_id !== $previousRunnerId) {
@@ -100,6 +101,7 @@ class RunnerResultsTable extends AppTable
                     $finished++;
                 } else {
                     $others++;
+                    $otherValues[$res->status_code] = null;
                 }
             }
         }
@@ -114,6 +116,7 @@ class RunnerResultsTable extends AppTable
             'notYetFinished' => $notYetFinished,
             'finished' => $finished,
             'others' => $others,
+            'otherValues' => array_keys($otherValues),
         ];
     }
 
