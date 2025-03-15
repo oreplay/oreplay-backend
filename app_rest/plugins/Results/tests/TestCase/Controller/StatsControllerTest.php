@@ -59,7 +59,8 @@ class StatsControllerTest extends ApiCommonErrorsTest
                     'dqf' => 0,
                     'notYetFinished' => 0,
                     'finished' => 0,
-                    'others' => 0
+                    'others' => 0,
+                    'otherValues' => [],
                 ],
                 'F' => [
                     'classes' => [],
@@ -71,7 +72,8 @@ class StatsControllerTest extends ApiCommonErrorsTest
                     'dqf' => 0,
                     'notYetFinished' => 0,
                     'finished' => 0,
-                    'others' => 0
+                    'others' => 0,
+                    'otherValues' => [],
                 ]
             ],
             'officialSenior' => [
@@ -85,7 +87,8 @@ class StatsControllerTest extends ApiCommonErrorsTest
                     'dqf' => 0,
                     'notYetFinished' => 0,
                     'finished' => 0,
-                    'others' => 1
+                    'others' => 1,
+                    'otherValues' => [''],
                 ],
                 'F' => [
                     'classes' => [],
@@ -97,7 +100,8 @@ class StatsControllerTest extends ApiCommonErrorsTest
                     'dqf' => 0,
                     'notYetFinished' => 0,
                     'finished' => 0,
-                    'others' => 0
+                    'others' => 0,
+                    'otherValues' => [],
                 ]
             ],
             'others' => [
@@ -111,7 +115,8 @@ class StatsControllerTest extends ApiCommonErrorsTest
                     'dqf' => 0,
                     'notYetFinished' => 0,
                     'finished' => 0,
-                    'others' => 0
+                    'others' => 0,
+                    'otherValues' => [],
                 ],
                 'F' => [
                     'classes' => [],
@@ -123,7 +128,8 @@ class StatsControllerTest extends ApiCommonErrorsTest
                     'dqf' => 0,
                     'notYetFinished' => 0,
                     'finished' => 0,
-                    'others' => 0
+                    'others' => 0,
+                    'otherValues' => [],
                 ],
                 'any' => [
                     'classes' => [],
@@ -135,7 +141,8 @@ class StatsControllerTest extends ApiCommonErrorsTest
                     'dqf' => 0,
                     'notYetFinished' => 0,
                     'finished' => 0,
-                    'others' => 0
+                    'others' => 0,
+                    'otherValues' => [],
                 ],
             ]
         ];
