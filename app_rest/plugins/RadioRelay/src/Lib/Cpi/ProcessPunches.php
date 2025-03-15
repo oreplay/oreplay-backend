@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace RadioRelay\Lib\Cpi;
 
+use Cake\Log\LogTrait;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Split;
 use Results\Model\Table\RunnersTable;
@@ -11,6 +12,8 @@ use Results\Model\Table\SplitsTable;
 
 class ProcessPunches
 {
+    use LogTrait;
+
     private PayloadParser $data;
     private RunnersTable $Runners;
     private SplitsTable $Splits;
@@ -61,10 +64,17 @@ class ProcessPunches
         if ($runner) {
             $splitToSave->class_id = $runner->class_id;
             $splitToSave->runner_id = $runner->id;
+            $splitToSave->runner_result_id = $runner->_getOverall()->id;
         } else {
             $splitToSave->class_id = null;
             $splitToSave->runner_id = null;
+            $splitToSave->runner_result_id = null;
         }
+        $this->log('CpiServerController: [31] ' . json_encode($split)
+            . ' -  ' . $splitToSave->class_id
+            . ' -  ' . $splitToSave->runner_id
+            . ' -  ' . $splitToSave->runner_result_id
+        );
         // maybe add $splitToSave->bib_runner = $punch['bib_runner'] ?? null;
         // maybe add $splitToSave->runner_result_id = $runner->_getOverall()->id;
         $splitToSave->battery_perc = $punch['battery'] ?? null;

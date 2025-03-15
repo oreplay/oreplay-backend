@@ -60,7 +60,7 @@ class RunnersTable extends AppTable
                 'event_id' => $eventId,
                 'stage_id' => $stageId,
             ])
-            //->contain(RunnerResultsTable::name())
+            ->contain(RunnerResultsTable::name())
             ->order(['modified' => 'DESC']);
     }
 

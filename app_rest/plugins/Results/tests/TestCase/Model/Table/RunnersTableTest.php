@@ -71,6 +71,8 @@ class RunnersTableTest extends TestCase
             ->first();
         $this->assertEquals('First', $res->first_name);
         $this->assertEquals('Runner', $res->last_name);
+        $this->assertEquals(ClassEntity::ME, $res->class_id);
+        $this->assertEquals(RunnerResult::FIRST_RES, $res->_getOverall()->id);
     }
 
     public function testMatchRunner()

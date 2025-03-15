@@ -5,13 +5,22 @@ declare(strict_types = 1);
 namespace RadioRelay\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
+use Cake\I18n\FrozenTime;
 use RadioRelay\Lib\Cpi\Consts\PunchType;
 use RestApi\TestSuite\ApiCommonErrorsTest;
+use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
+use Results\Model\Entity\Runner;
+use Results\Model\Entity\RunnerResult;
+use Results\Model\Entity\Split;
 use Results\Model\Entity\Stage;
+use Results\Model\Table\SplitsTable;
+use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ControlTypesFixture;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
+use Results\Test\Fixture\RunnerResultsFixture;
+use Results\Test\Fixture\RunnersFixture;
 use Results\Test\Fixture\StagesFixture;
 use Results\Test\Fixture\TokensFixture;
 
@@ -23,6 +32,9 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
         ControlTypesFixture::LOAD,
         StagesFixture::LOAD,
         TokensFixture::LOAD,
+        ClassesFixture::LOAD,
+        RunnersFixture::LOAD,
+        RunnerResultsFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -41,14 +53,14 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
             'data' => [$username, $password, $timezone],
             'punches' => [
                 [
-                     'date' => '2025-03-08',
-                     'raw' => '02d30d80160f85d41b01013c1e7400019db903',
-                     'reading' => '2025-03-08 05:58:26',
-                     'sicard' => '2009933',
-                     'station' => '31',
-                     'time' => '12:50',
-                     'battery' => '9',
-                     'type' => PunchType::SI_CARD
+                    'date' => '2025-03-08',
+                    'raw' => '02d30d80160f85d41b01013c1e7400019db903',
+                    'reading' => '2025-03-08 05:58:26',
+                    'sicard' => '2009933',
+                    'station' => '31',
+                    'time' => '12:50',
+                    'battery' => '9',
+                    'type' => PunchType::SI_CARD
                 ]
             ],
         ];
@@ -59,6 +71,63 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
         $punchAmount = 1;
         $expected = ['data' => ['OK', $punchAmount . '', '1']];
         $this->assertEquals($expected, $res);
+
+        /** @var Split $last */
+        $last = SplitsTable::load()->find()->orderDesc('created')->first();
+        $expected = [
+            'is_intermediate' => true,
+            'reading_time' => new FrozenTime('2025-03-08 11:50:00.000000+00:00'),
+            'points' => null,
+            'order_number' => null
+        ];
+        $this->assertEqualsNoId($expected, $last->toArray());
+        $this->assertEquals(ClassEntity::ME, $last->class_id);
+        $this->assertEquals(Runner::FIRST_RUNNER, $last->runner_id);
+        $this->assertEquals(RunnerResult::FIRST_RES, $last->runner_result_id);
+    }
+
+    public function testAddNew_shouldStoreUnknownSiCard()
+    {
+        // should process new radio punch
+        $username = Stage::FIRST_STAGE;
+        $password = Event::FIRST_EVENT . TokensFixture::FIRST_TOKEN;
+        $timezone = '+01:00';
+        $data = [
+            'order' => 'ProcessPunches',
+            'data' => [$username, $password, $timezone],
+            'punches' => [
+                [
+                    'date' => '2025-03-08',
+                    'raw' => '02d30d80160f85d41b01013c1e7400019db903',
+                    'reading' => '2025-03-08 05:58:26',
+                    'sicard' => '1009232',
+                    'station' => '31',
+                    'time' => '12:50',
+                    'battery' => '9',
+                    'type' => PunchType::SI_CARD
+                ]
+            ],
+        ];
+
+        $this->post($this->_getEndpoint(), $data);
+
+        $res = $this->assertJsonResponseOK();
+        $punchAmount = 1;
+        $expected = ['data' => ['OK', $punchAmount . '', '1']];
+        $this->assertEquals($expected, $res);
+
+        /** @var Split $last */
+        $last = SplitsTable::load()->find()->orderDesc('created')->first();
+        $expected = [
+            'is_intermediate' => true,
+            'reading_time' => new FrozenTime('2025-03-08 11:50:00.000000+00:00'),
+            'points' => null,
+            'order_number' => null
+        ];
+        $this->assertEqualsNoId($expected, $last->toArray());
+        $this->assertNull($last->class_id);
+        $this->assertNull($last->runner_id);
+        $this->assertNull($last->runner_result_id);
     }
 
     public function testAddNew_shouldCheckMinimumEvent()
