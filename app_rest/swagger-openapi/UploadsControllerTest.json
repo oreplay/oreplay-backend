@@ -3,7 +3,7 @@
         "post": {
             "operationId": 1,
             "summary": "",
-            "description": "Add new should add start dates",
+            "description": "Add new should add start times",
             "parameters": [
                 {
                     "description": "ID in URL",
@@ -36,7 +36,7 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "description": "Add new should add start dates",
+                                "description": "Add new should add start times",
                                 "properties": {
                                     "data": {
                                         "type": "array",
@@ -50,6 +50,10 @@
                                                 "short_name": {
                                                     "type": "string",
                                                     "example": "ME"
+                                                },
+                                                "long_name": {
+                                                    "type": "string",
+                                                    "example": "M Elite"
                                                 },
                                                 "course": {
                                                     "type": "object",
@@ -93,6 +97,10 @@
                                                                 "type": "number",
                                                                 "example": 359
                                                             },
+                                                            "sex": {
+                                                                "type": "string",
+                                                                "example": "F"
+                                                            },
                                                             "runner_results": {
                                                                 "type": "array",
                                                                 "items": {
@@ -113,6 +121,10 @@
                                                                         "leg_number": {
                                                                             "type": "number",
                                                                             "example": 1
+                                                                        },
+                                                                        "upload_type": {
+                                                                            "type": "string",
+                                                                            "example": "start_list"
                                                                         },
                                                                         "result_type": {
                                                                             "type": "object",
@@ -146,8 +158,60 @@
                                                                         "example": "BRIGHTNET"
                                                                     }
                                                                 }
+                                                            },
+                                                            "full_name": {
+                                                                "type": "string",
+                                                                "example": "Carlos Alonso"
+                                                            },
+                                                            "overall": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "id": {
+                                                                        "type": "string",
+                                                                        "example": "844fe80e-399a-4b58-a0bf-a626a024e12f"
+                                                                    },
+                                                                    "start_time": {
+                                                                        "type": "string",
+                                                                        "example": "2014-07-06T10:09:14.523+00:00"
+                                                                    },
+                                                                    "status_code": {
+                                                                        "type": "number",
+                                                                        "example": 0
+                                                                    },
+                                                                    "leg_number": {
+                                                                        "type": "number",
+                                                                        "example": 1
+                                                                    },
+                                                                    "upload_type": {
+                                                                        "type": "string",
+                                                                        "example": "start_list"
+                                                                    },
+                                                                    "result_type": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "id": {
+                                                                                "type": "string",
+                                                                                "example": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e"
+                                                                            },
+                                                                            "description": {
+                                                                                "type": "string",
+                                                                                "example": "Stage"
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "result_type_id": {
+                                                                        "type": "string",
+                                                                        "example": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e"
+                                                                    }
+                                                                }
                                                             }
                                                         }
+                                                    }
+                                                },
+                                                "teams": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
                                                     }
                                                 }
                                             }
@@ -168,6 +232,10 @@
                                                         "example": 4
                                                     }
                                                 }
+                                            },
+                                            "humanColor": {
+                                                "type": "string",
+                                                "example": "#075210"
                                             },
                                             "human": {
                                                 "type": "array",
@@ -191,10 +259,6 @@
                                 "type": "object",
                                 "description": "Add new should require authenticated token",
                                 "properties": {
-                                    "data": {
-                                        "type": "string",
-                                        "example": ""
-                                    },
                                     "meta": {
                                         "type": "object",
                                         "properties": {
@@ -211,6 +275,10 @@
                                                     }
                                                 }
                                             },
+                                            "humanColor": {
+                                                "type": "string",
+                                                "example": "#FF0000"
+                                            },
                                             "human": {
                                                 "type": "array",
                                                 "items": {
@@ -218,6 +286,12 @@
                                                     "example": "\n    [ERROR - 403] (12/9/24, 6:08 PM) ForbiddenException \n"
                                                 }
                                             }
+                                        }
+                                    },
+                                    "data": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object"
                                         }
                                     }
                                 }
@@ -248,14 +322,14 @@
                 }
             },
             "requestBody": {
-                "description": "Request body can match to any of the 5 provided schemas",
+                "description": "Request body can match to any of the 9 provided schemas",
                 "content": {
                     "application/json": {
                         "schema": {
                             "oneOf": [
                                 {
                                     "type": "object",
-                                    "description": "Add new should add start dates",
+                                    "description": "Add new should add start times",
                                     "properties": {
                                         "oreplay_data_transfer": {
                                             "type": "object",
@@ -391,6 +465,10 @@
                                                                                             "bib_number": {
                                                                                                 "type": "number",
                                                                                                 "example": 359
+                                                                                            },
+                                                                                            "sex": {
+                                                                                                "type": "string",
+                                                                                                "example": "F"
                                                                                             },
                                                                                             "runner_results": {
                                                                                                 "type": "array",
@@ -1244,6 +1322,10 @@
                                                                                                 "type": "number",
                                                                                                 "example": 359
                                                                                             },
+                                                                                            "sex": {
+                                                                                                "type": "string",
+                                                                                                "example": "F"
+                                                                                            },
                                                                                             "runner_results": {
                                                                                                 "type": "array",
                                                                                                 "items": {
@@ -1463,6 +1545,10 @@
                                                                                             "bib_number": {
                                                                                                 "type": "number",
                                                                                                 "example": 359
+                                                                                            },
+                                                                                            "sex": {
+                                                                                                "type": "string",
+                                                                                                "example": "F"
                                                                                             },
                                                                                             "runner_results": {
                                                                                                 "type": "array",

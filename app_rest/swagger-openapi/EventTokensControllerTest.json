@@ -47,11 +47,11 @@
                                             },
                                             "token": {
                                                 "type": "string",
-                                                "example": "6fad29184c28a3696d64f3f40f05bd02008bac75"
+                                                "example": "1QzU3w"
                                             },
                                             "created": {
                                                 "type": "string",
-                                                "example": "2024-07-16T13:14:17.067+00:00"
+                                                "example": "2025-03-15T21:41:15.206+00:00"
                                             }
                                         }
                                     }
@@ -129,7 +129,7 @@
                                             "properties": {
                                                 "token": {
                                                     "type": "string",
-                                                    "example": "8fe6cd50c76d54a4e6c3b30e6b724a86703d8178"
+                                                    "example": "bBMEWb"
                                                 },
                                                 "expires": {
                                                     "type": "string",
@@ -179,7 +179,7 @@
                     "schema": {
                         "type": "string"
                     },
-                    "example": "8fe6cd50c76d54a4e6c3b30e6b724a86703d8178"
+                    "example": "bBMEWb"
                 },
                 {
                     "description": "Auth token",

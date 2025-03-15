@@ -145,6 +145,10 @@
                                                     "type": "string",
                                                     "example": "2022-03-13T10:01:00.000+00:00"
                                                 },
+                                                "organizer_id": {
+                                                    "type": "string",
+                                                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                                },
                                                 "organizer": {
                                                     "type": "object",
                                                     "properties": {
@@ -158,11 +162,11 @@
                                                         },
                                                         "country": {
                                                             "type": "string",
-                                                            "example": "Spain"
+                                                            "example": "ES"
                                                         },
                                                         "region": {
                                                             "type": "string",
-                                                            "example": "Region"
+                                                            "example": "ES-VC"
                                                         }
                                                     }
                                                 },
@@ -243,6 +247,14 @@
                                                 "type": "string",
                                                 "example": "2024-03-26"
                                             },
+                                            "organizer_id": {
+                                                "type": "string",
+                                                "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                            },
+                                            "federation_id": {
+                                                "type": "string",
+                                                "example": "FEDO"
+                                            },
                                             "users": {
                                                 "type": "array",
                                                 "items": {
@@ -311,6 +323,41 @@
                             }
                         }
                     }
+                },
+                "400": {
+                    "description": "Bad Request",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "description": "Add new should not add final date befaore initial date",
+                                "properties": {
+                                    "error": {
+                                        "type": "string",
+                                        "example": "Validation error"
+                                    },
+                                    "code": {
+                                        "type": "number",
+                                        "example": 400
+                                    },
+                                    "error_fields": {
+                                        "type": "object",
+                                        "properties": {
+                                            "final_date": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "checkDates": {
+                                                        "type": "string",
+                                                        "example": "The final date cannot be earlier than the initial date."
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             },
             "requestBody": {
@@ -321,6 +368,10 @@
                             "type": "object",
                             "description": "Add new",
                             "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "example": "7f83e207-5a6e-456e-a08f-935eef54eca2"
+                                },
                                 "description": {
                                     "type": "string",
                                     "example": "Test New Race"
@@ -335,7 +386,11 @@
                                 },
                                 "federation_id": {
                                     "type": "string",
-                                    "example": ""
+                                    "example": "FEDO"
+                                },
+                                "organizer_id": {
+                                    "type": "string",
+                                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
                                 }
                             }
                         }
@@ -428,6 +483,10 @@
                                                 "type": "string",
                                                 "example": "2022-03-01T10:01:00.000+00:00"
                                             },
+                                            "organizer_id": {
+                                                "type": "string",
+                                                "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                            },
                                             "stages": {
                                                 "type": "array",
                                                 "items": {
@@ -487,11 +546,11 @@
                                                     },
                                                     "country": {
                                                         "type": "string",
-                                                        "example": "Spain"
+                                                        "example": "ES"
                                                     },
                                                     "region": {
                                                         "type": "string",
-                                                        "example": "Region"
+                                                        "example": "ES-VC"
                                                     }
                                                 }
                                             },
@@ -630,6 +689,10 @@
                                                 "type": "string",
                                                 "example": "2024-07-10T15:55:10.469+00:00"
                                             },
+                                            "organizer_id": {
+                                                "type": "string",
+                                                "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                            },
                                             "_links": {
                                                 "type": "object",
                                                 "properties": {
@@ -694,15 +757,29 @@
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "description": "Patch should throw bad request exception when no body provided",
+                                "description": "Edit should not edit final date befaore initial date",
                                 "properties": {
                                     "error": {
                                         "type": "string",
-                                        "example": "Bad Request"
+                                        "example": "Validation error"
                                     },
                                     "code": {
                                         "type": "number",
                                         "example": 400
+                                    },
+                                    "error_fields": {
+                                        "type": "object",
+                                        "properties": {
+                                            "final_date": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "checkDates": {
+                                                        "type": "string",
+                                                        "example": "The final date cannot be earlier than the initial date."
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
