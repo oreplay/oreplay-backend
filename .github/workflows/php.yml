@@ -90,4 +90,5 @@ jobs:
             -Dsonar.sources=app_rest/src,app_rest/plugins/Results/src
             -Dsonar.tests=app_rest/tests/TestCase,app_rest/plugins/Results/tests/TestCase
             -Dsonar.php.codesniffer.argument=--standard=phpcs.xml
-          #  -Dsonar.php.coverage.reportPaths=app_rest/coverage.xml
+            -Dsonar.php.coverage.reportPaths=app_rest/coverage.xml
+            -Dsonar.coverage.exclusions=**/*
