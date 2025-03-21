@@ -1,0 +1,7 @@
+#cloud-config
+runcmd:
+  - echo "Running custom startup script..."
+  - sudo apt-get update
+  - sudo apt-get install -y nginx mysql-client-core-8.0 net-tools
+  - sudo systemctl start nginx
+  - sudo systemctl enable nginx
