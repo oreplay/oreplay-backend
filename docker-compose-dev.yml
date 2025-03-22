@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   nginx:
-    image: oreplay/backend:0.2.19
+    image: oreplay/backend:0.2.20
     build:
       context: .
       dockerfile: docker/Dockerfile
