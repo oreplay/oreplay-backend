@@ -8,7 +8,7 @@ use Cake\I18n\FrozenTime;
 use Results\Lib\SplitCompareReason;
 
 /**
- * @property mixed $reading_time
+ * @property FrozenTime|null $reading_time
  * @property mixed $points
  * @property Control $control
  * @property mixed $is_intermediate
@@ -64,6 +64,8 @@ class Split extends AppEntity
         'deleted',
     ];
 
+    private bool $_compareWithoutDay = false;
+
     public function addControl(Control $control): self
     {
         $this->_fields['control'] = $control;
@@ -91,7 +93,7 @@ class Split extends AppEntity
                     '10 do not return radios without time, this should never happen');
             }
             if ($last->isRadio()) {
-                if ($this->reading_time == $last->reading_time) {
+                if ($this->isSameTime($last->reading_time)) {
                     return new SplitCompareReason(false,
                         '6 skip current without time if both are radio AND rogaining when any no radio exists');
                 } else {
@@ -99,7 +101,7 @@ class Split extends AppEntity
                         '5 keep current if both radios with different time AND rogaining when different reading_time');
                 }
             } else {
-                if ($this->reading_time == $last->reading_time) {
+                if ($this->isSameTime($last->reading_time)) {
                     return new SplitCompareReason(false,
                         '8 skip rogaining when radio with same time');
                 } else {
@@ -121,5 +123,21 @@ class Split extends AppEntity
                 }
             }
         }
+    }
+
+    public function compareWithoutDay(bool $compareWithoutDay): self
+    {
+        $this->_compareWithoutDay = $compareWithoutDay;
+        return $this;
+    }
+
+    public function isSameTime(FrozenTime $time): bool
+    {
+        if ($this->_compareWithoutDay) {
+            $a = explode('T', $this->reading_time->toIso8601String())[1];
+            $b = explode('T', $time->toIso8601String())[1];
+            return $a === $b;
+        }
+        return $this->reading_time == $time;
     }
 }

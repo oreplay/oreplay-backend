@@ -6,6 +6,11 @@ namespace Results\Model\Entity;
 
 trait ResultTrait
 {
+    private bool $_compareWithoutDay = false;
+    public function setCompareWithoutDay(bool $compareWithoutDay)
+    {
+        $this->_compareWithoutDay = $compareWithoutDay;
+    }
 
     public function cleanSplitsWithoutRadios()
     {
@@ -25,7 +30,7 @@ trait ResultTrait
         $lastSplit = null;
         foreach ($this->getSplits() as $split) {
             if ($lastSplit) {
-                $reason = $split->shouldDisplayCurrent($lastSplit);
+                $reason = $split->compareWithoutDay($this->_compareWithoutDay)->shouldDisplayCurrent($lastSplit);
                 if ($reason->shouldDisplay()) {
                     $lastSplit = $split;
                     $splitsToRet[] = $lastSplit;
