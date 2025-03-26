@@ -151,13 +151,13 @@ class RunnerResultsTable extends AppTable
 
     private function _newResultWithType(array $resultData, UploadHelper $helper): RunnerResult
     {
-        $runnerResultToSave = $this->fillNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
-        $runnerResultToSave->upload_type = $helper->getChecker()->preCheckType();
+        $resultToSave = $this->fillNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
+        $resultToSave->upload_type = $helper->getChecker()->preCheckType();
 
-        $runnerResultToSave->result_type = $this->ResultTypes
+        $resultToSave->result_type = $this->ResultTypes
             ->getCachedWithDefault($helper->getChecker(), $resultData['result_type']['id'] ?? null);
 
-        return $runnerResultToSave;
+        return $resultToSave;
     }
 
     public function createRunnerResult(array $resultData, Runner $runner, UploadHelper $helper): Runner
@@ -184,7 +184,8 @@ class RunnerResultsTable extends AppTable
         $splits = $resultData['splits'] ?? [];
         $runnerResultToSave = $this->Splits->uploadAllSplits($splits, $runnerResultToSave, $helper);
         if ($runnerResultToSave->hasInvalidFinishTime()) {
-            $helper->getMetrics()->setWarning('Runner results has finish_times without time_seconds');
+            $helper->getMetrics()
+                ->setWarning('Runner results has finish_times without time_seconds card:' . $runner->sicard);
         }
         return $runner->addRunnerResult($runnerResultToSave);
     }

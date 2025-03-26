@@ -137,6 +137,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                 'points_adjusted' => null,
                 'points_penalty' => null,
                 'points_bonus' => null,
+                'upload_type' => null,
                 //'leg_number' => null,
                 'splits' => [
                     [

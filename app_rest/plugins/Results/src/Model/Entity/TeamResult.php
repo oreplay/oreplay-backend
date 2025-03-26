@@ -14,6 +14,7 @@ use Cake\I18n\FrozenTime;
  * @property string $upload_hash
  * @property string $result_type_id
  * @property mixed $leg_number
+ * @property string $upload_type
  */
 class TeamResult extends AppEntity implements ParticipantResultsEntity
 {

@@ -55,12 +55,13 @@ class TeamResultsTable extends AppTable
 
     private function _newResultWithType(array $resultData, UploadHelper $helper): TeamResult
     {
-        $teamResultToSave = $this->fillNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
+        $resultToSave = $this->fillNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
+        $resultToSave->upload_type = $helper->getChecker()->preCheckType();
 
-        $teamResultToSave->result_type = $this->ResultTypes
+        $resultToSave->result_type = $this->ResultTypes
             ->getCachedWithDefault($helper->getChecker(), $resultData['result_type']['id'] ?? null);
 
-        return $teamResultToSave;
+        return $resultToSave;
     }
 
     public function createTeamResult(array $resultData, Team $team, UploadHelper $helper): Team
