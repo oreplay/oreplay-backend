@@ -221,7 +221,6 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                 'long_name' => 'M Elite',
             ],
             'overall' => $overall,
-            'runner_results' => [$overall],
         ];
     }
 }
