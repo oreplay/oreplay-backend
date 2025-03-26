@@ -1,7 +1,83 @@
 #cloud-config
+package_update: true
+package_upgrade: true
+packages:
+  - mysql-client-core-8.0
+  - unzip
+  - git
+  - net-tools
+
+write_files:
+  - path: /etc/nginx/sites-available/nginx_config
+    content: |
+      ${nginx_config}
+    owner: root:root
+    permissions: '0644'
+  - path: /home/vm_admin_user/production-deployment.yml
+    content: |
+      services:
+        nginxprod:
+          image: oreplay/backend:0.2.20
+          command: bash -c "php-fpm7.4 && nginx -g 'daemon off;'"
+          ports:
+            - '8087:80'
+          depends_on:
+            - memcached
+          env_file:
+            - .env.production
+        memcached:
+          image: docker.io/bitnami/memcached:1.6.9-debian-10-r194
+        nodejsprod:
+          image: oreplay/frontend:v0.2.19
+          command: bash -c "cd /var/www && npm install --ignore-scripts && npm run dev"
+          ports:
+            - "8086:8080"
+    owner: root:root
+    permissions: '0644'
+
 runcmd:
+  - echo " "
+  - echo "-******************************-"
   - echo "Running custom startup script..."
-  - sudo apt-get update
-  - sudo apt-get install -y nginx mysql-client-core-8.0 net-tools
-  - sudo systemctl start nginx
+  - echo "-******************************-"
+  - echo " "
+  - echo "Update www.oreplay.es DNS"
+  - wget -q --read-timeout=0.0 --waitretry=5 --tries=400 --background https://freedns.afraid.org/dynamic/update.php?MWtmVkZSU3JtbXJGNFp0a3VCOGI6MjI1NzA0ODY=
+  - sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+  - sudo chmod +x /usr/local/bin/docker-compose
+  - echo "-**** add commands to history ***"
+  - echo "sudo lsof -i :80" | sudo tee -a /home/vm_admin_user/.bash_history > /dev/null
+  - echo "systemctl enable nginx" | sudo tee -a /home/vm_admin_user/.bash_history > /dev/null
+  - echo "systemctl restart nginx" | sudo tee -a /home/vm_admin_user/.bash_history > /dev/null
+  - echo "sudo cat /var/log/cloud-init-output.log | tail -n 50" | sudo tee -a /home/vm_admin_user/.bash_history > /dev/null
+  - echo "sudo cloud-init status --long" | sudo tee -a /home/vm_admin_user/.bash_history > /dev/null
+  - echo "-**** install docker compose ***"
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  - echo "-**** Waiting for package installation to complete..."
+  - while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do echo "Waiting for dpkg lock..."; sleep 2; done
+  - sudo apt-get update && sudo apt-get upgrade -y
+  - sudo apt install -y nginx php php-mysql certbot python3-certbot-nginx apt-transport-https ca-certificates curl software-properties-common docker-ce
+  - echo "-**** add user to docker ***"
+  - sudo usermod -aG docker vm_admin_user
+  - sudo newgrp docker
+  - sudo systemctl stop apache2
+  - sudo systemctl disable apache2
+  - echo "-**** starting with nginx config ***"
+  - sudo cp /etc/nginx/sites-available/nginx_config /home/vm_admin_user/nginx_config
+  - sudo rm /etc/nginx/sites-enabled/default
+  - sudo ln -sf /etc/nginx/sites-available/nginx_config /etc/nginx/sites-enabled/nginx_config
+  - sudo systemctl restart nginx
   - sudo systemctl enable nginx
+  - echo "-**** Configure certbot ***"
+  - sudo certbot --nginx -d preprod.oreplay.es -d www.oreplay.es --email support@oreplay.es --agree-tos --non-interactive
+  - echo "-**** Docker-compose up ***"
+  - echo "DATABASE_URL=mysql://root:password@mysql:3306/app_rest" | sudo tee /home/vm_admin_user/.env.production > /dev/null
+  - echo "COOKIE_ENCRYPT_CONFIG=restCookie:$(shuf -i 1000000000000000-9999999999999999 -n 1):$(shuf -i 1000000000000000-9999999999999999 -n 1)" | sudo tee -a /home/vm_admin_user/.env.production > /dev/null
+  - echo "CACHE_DEFAULT_URL=memcached://memcached:11211" | sudo tee -a /home/vm_admin_user/.env.production > /dev/null
+  - echo "DEBUG=0" | sudo tee -a /home/vm_admin_user/.env.production > /dev/null
+  - docker-compose -f /home/vm_admin_user/production-deployment.yml -p production-deployment up -d
+# sudo sed -i '1s#.*#DATABASE_URL=mysql://or_mysql_admin:******@o-replay2024-mysql-flexible-server.mysql.database.azure.com:3306/app_rest#' /home/vm_admin_user/.env.production
+# mysqldump -h mysql-db.oreplay.svc.cluster.local -u root -p app_rest federations organizers events stage_types stages clubs classes runners result_types runner_results control_types controls splits tokens courses teams team_results answers classes_controls oauth_clients users users_events users_federations > second_dump.sql
+# mysqldump -h mysql-db.oreplay.svc.cluster.local -u root -p app_rest oauth_access_tokens oauth_authorization_codes phinxlog rest_oauth_phinxlog results_phinxlog > phinx_dump.sql
+# mysql -u or_mysql_admin -p -h o-replay2024-mysql-flexible-server.mysql.database.azure.com app_rest < second_dump.sql

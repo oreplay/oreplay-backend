@@ -1,0 +1,17 @@
+services:
+  nginx:
+    image: oreplay/backend:0.2.20
+    command: bash -c "php-fpm7.4 && nginx -g 'daemon off;'"
+    ports:
+      - '8087:80'
+    depends_on:
+      - memcached
+    env_file:
+      - .env.production
+  memcached:
+    image: docker.io/bitnami/memcached:1.6.9-debian-10-r194
+  nodejs:
+    image: oreplay/frontend:v0.2.19
+    command: bash -c "cd /var/www && npm install --ignore-scripts && npm run dev"
+    ports:
+      - "8086:8080"

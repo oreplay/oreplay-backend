@@ -35,7 +35,7 @@ resource "azurerm_linux_virtual_machine" "vm_mod" {
     name                  = "${var.name_prefix}-virtual-machine"
     resource_group_name   = var.resource_group_name
     location              = var.resource_group_location
-    size                  = "Standard_B1s" # Equivalent to t2.micro
+    size                  = "Standard_B1ms" # Equivalent to t2.small
     admin_username        = "vm_admin_user"
     network_interface_ids = [azurerm_network_interface.vm_mod.id]
 
@@ -60,5 +60,7 @@ resource "azurerm_linux_virtual_machine" "vm_mod" {
         version   = "latest"
     }
 
-    custom_data = base64encode(file("${path.module}/cloud-init.yaml"))
+    custom_data = base64encode(templatefile("${path.module}/cloud-init.yaml", {
+        nginx_config = file("${path.module}/nginx.conf")
+    }))
 }

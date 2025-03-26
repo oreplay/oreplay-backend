@@ -29,6 +29,13 @@ resource "azurerm_mysql_flexible_server" "default" {
 #    depends_on = [azurerm_private_dns_zone_virtual_network_link.default]
 }
 
+resource "azurerm_mysql_flexible_server_configuration" "require_secure_transport" {
+    name                = "require_secure_transport"
+    resource_group_name = var.resource_group_name
+    server_name         = azurerm_mysql_flexible_server.default.name
+    value               = "OFF"
+}
+
 # Allow all IPs to access MySQL server (NOT recommended for production)
 resource "azurerm_mysql_flexible_server_firewall_rule" "allow_all" {
     name                = "allow-all-ips"
