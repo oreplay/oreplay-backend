@@ -85,6 +85,9 @@ class TeamResultsTable extends AppTable
         $helper->getMetrics()->endRunnerResultsTime();
 
         $splits = $resultData['splits'] ?? [];
+        /** @var TeamResult $teamResultToSave */
+        $teamResultToSave = $this->Splits->uploadAllSplits($splits, $teamResultToSave, $helper); // NOT TESTED
+        // needs testing in UploadsControllerTest
         return $team->addTeamResult($teamResultToSave);
     }
 }

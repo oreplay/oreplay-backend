@@ -182,6 +182,7 @@ class RunnerResultsTable extends AppTable
         $helper->getMetrics()->endRunnerResultsTime();
 
         $splits = $resultData['splits'] ?? [];
+        /** @var RunnerResult $runnerResultToSave */
         $runnerResultToSave = $this->Splits->uploadAllSplits($splits, $runnerResultToSave, $helper);
         if ($runnerResultToSave->hasInvalidFinishTime()) {
             $helper->getMetrics()

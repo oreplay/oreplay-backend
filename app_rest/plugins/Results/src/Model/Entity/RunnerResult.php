@@ -28,6 +28,7 @@ use Results\Lib\UploadHelper;
 class RunnerResult extends AppEntity implements ParticipantResultsEntity
 {
     use ResultTrait;
+    use ResultTraitMatcher;
 
     public const FIRST_RES = '635af121-db7b-4c5e-82ab-79208e45568f';
 
@@ -70,15 +71,6 @@ class RunnerResult extends AppEntity implements ParticipantResultsEntity
         'deleted',
     ];
 
-    public function addSplit(Split $split)
-    {
-        if (!($this->_fields['splits'] ?? null)) {
-            $this->replaceSplits([]);
-        }
-        $this->setDirty('splits');
-        $this->_fields['splits'][] = $split;
-    }
-
     /**
      * @return Split[]
      */
@@ -90,31 +82,6 @@ class RunnerResult extends AppEntity implements ParticipantResultsEntity
     public function replaceSplits(array $splits)
     {
         $this->_fields['splits'] = $splits;
-    }
-
-    public function isSameResult(RunnerResult $runnerResultToSave): bool
-    {
-        if ($this->leg_number != $runnerResultToSave->leg_number) {
-            return false;
-        }
-        if ($this->result_type_id != $runnerResultToSave->result_type->id) {
-            return false;
-        }
-        return true;
-    }
-
-    public function hasSameSplits(array $compareArray): bool
-    {
-        $uploadHash = UploadHelper::md5Encode($compareArray);
-        $existingHash = $this->_fields['upload_hash'] ?? 'hash_run_res_does_not_exist';
-        return $existingHash == $uploadHash;
-    }
-
-    public function setHash(array $resultData)
-    {
-        $hash = UploadHelper::md5Encode($resultData);
-        $this->_fields['upload_hash'] = $hash;
-        $this->setDirty('upload_hash');
     }
 
     public function setIDsToUpdate(RunnerResult $runnerResult): RunnerResult

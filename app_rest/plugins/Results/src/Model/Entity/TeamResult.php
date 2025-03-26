@@ -19,6 +19,7 @@ use Cake\I18n\FrozenTime;
 class TeamResult extends AppEntity implements ParticipantResultsEntity
 {
     use ResultTrait;
+    use ResultTraitMatcher;
 
     protected $_accessible = [
         '*' => false,
@@ -90,16 +91,5 @@ class TeamResult extends AppEntity implements ParticipantResultsEntity
         $this->upload_hash = $teamResult->upload_hash;
         $this->setDirty('upload_hash');
         return $this;
-    }
-
-    public function isSameResult(RunnerResult $runnerResultToSave): bool
-    {
-        if ($this->leg_number != $runnerResultToSave->leg_number) {
-            return false;
-        }
-        if ($this->result_type_id != $runnerResultToSave->result_type->id) {
-            return false;
-        }
-        return true;
     }
 }

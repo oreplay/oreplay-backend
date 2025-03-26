@@ -154,7 +154,7 @@ class Runner extends AppEntity
             }
         } else {
             $legNumber = $runnerData['runner_results'][0]['leg_number'] ?? 0;
-            if ($legNumber > 0 && $lastName == 'nn') {
+            if ($legNumber > 0 && in_array($lastName, ['nn', 'N.N.'])) {
                 // we should allow any relay runner to be empty (but leg has to be defined)
                 return null;
             }

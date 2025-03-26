@@ -8,7 +8,7 @@ use App\Model\Table\AppTable;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Results\Lib\UploadHelper;
-use Results\Model\Entity\RunnerResult;
+use Results\Model\Entity\ParticipantResultsEntity;
 use Results\Model\Entity\Split;
 
 /**
@@ -69,8 +69,11 @@ class SplitsTable extends AppTable
         return $this->deleteAll(['runner_id' => $runnerId]);
     }
 
-    public function uploadForEachSplit(RunnerResult $resultToSave, array $splits, UploadHelper $helper): RunnerResult
-    {
+    public function uploadForEachSplit(
+        ParticipantResultsEntity $resultToSave,
+        array $splits,
+        UploadHelper $helper
+    ): ParticipantResultsEntity {
         if ($splits) {
             foreach ($splits as $split) {
                 $split['is_intermediate'] = $helper->getChecker()->isIntermediates();
@@ -87,13 +90,16 @@ class SplitsTable extends AppTable
         return $resultToSave;
     }
 
-    public function uploadAllSplits($splits, RunnerResult $runnerResultToSave, UploadHelper $helper): RunnerResult
-    {
+    public function uploadAllSplits(
+        $splits,
+        ParticipantResultsEntity $runnerResultToSave,
+        UploadHelper $helper
+    ): ParticipantResultsEntity {
         $helper->getMetrics()->startSplitsTime();
         if ($splits && !$runnerResultToSave->hasSameSplits($splits)) {
             $runnerResultToSave->setHash($splits);
             if (!$helper->getChecker()->isIntermediates()) {
-                $this->deleteAllByRunnerId($runnerResultToSave->id);
+                $this->deleteAllByRunnerId($runnerResultToSave->getId());
             }
             $runnerResultToSave = $this->uploadForEachSplit($runnerResultToSave, $splits, $helper);
         }
