@@ -153,8 +153,8 @@ class Runner extends AppEntity
             }
         } else {
             $legNumber = $runnerData['runner_results'][0]['leg_number'] ?? 0;
-            if ($legNumber > 1) {
-                // we should allow 2nd+ relay to be empty
+            if ($legNumber > 0 && $lastName == 'nn') {
+                // we should allow any relay runner to be empty (but leg has to be defined)
                 return null;
             }
             $msg = "Fields first_name [$stName] and last_name [$lastName] cannot be empty";

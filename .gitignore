@@ -43,3 +43,4 @@ nbproject/*
 #sonarqube
 sonar-project.properties
 build/
+.env.production
