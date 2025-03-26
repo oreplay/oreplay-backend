@@ -43,10 +43,9 @@ class Stage extends AppEntity
 
     public function _get_links(): array
     {
-        $resultsPath = $this->isTeam() ? '/results/' : '/runners/';
         return [
             'self' => $this->_path() . $this->id,
-            'results' => $this->_path() . $this->id . $resultsPath,
+            'results' => $this->_path() . $this->id . '/results/',
             'classes' => $this->_path() . $this->id . '/classes/'
         ];
     }

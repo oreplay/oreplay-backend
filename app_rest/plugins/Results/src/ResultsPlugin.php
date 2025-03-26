@@ -12,10 +12,6 @@ class ResultsPlugin extends RestPlugin
     protected function routeConnectors(RouteBuilder $builder): void
     {
         $builder->connect(
-            '/events/{eventID}/stages/{stageID}/runners/*',
-            \Results\Controller\RunnersController::route()
-        );
-        $builder->connect(
             '/events/{eventID}/stages/{stageID}/results/*',
             \Results\Controller\ResultsController::route()
         );
