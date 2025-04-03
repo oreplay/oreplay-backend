@@ -62,9 +62,13 @@ class ClassEntity extends AppEntity
     public function setSplitsAsSimpleArray()
     {
         if ($this->splits && is_array($this->splits)) {
+            usort($this->splits, function ($a, $b) {
+                return $a->reading_time <=> $b->reading_time; // Ascending order
+            });
             /** @var Split $s */
             foreach ($this->splits as $s) {
                 $s->setStationVisible();
+                $s->setHidden(['reading_time'], true);
             }
         }
     }

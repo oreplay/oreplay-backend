@@ -59,13 +59,14 @@ class ClassesTable extends AppTable
                 $select = [
                     'class_id',
                     'station',
+                    'reading_time'  => $q->func()->min(SplitsTable::field('reading_time'), ['string']),
                     'id' => $q->func()->max(SplitsTable::field('id'), ['string']),
                 ];
                 return $q
                     ->select($select)
                     ->where(['is_intermediate' => true])
                     ->group(['station', 'class_id'])
-                    ->order(['station DESC'], true);
+                    ->order(['station' => 'DESC'], true);
             })
             ->order(['CAST(oe_key AS UNSIGNED)' => 'ASC', 'short_name' => 'ASC'])
             ->all();
