@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   nginx:
-    image: oreplay/backend:0.2.20
+    image: oreplay/backend:0.2.21
     build:
       context: .
       dockerfile: docker/Dockerfile
@@ -17,7 +17,8 @@ services:
       - mysql
       - memcached
     env_file:
-      - nginx-dev.env
+#      - nginx-dev.env
+      - .env.production
     extra_hosts:
       - "host.docker.internal:host-gateway"
   memcached:

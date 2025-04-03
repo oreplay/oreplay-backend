@@ -62,6 +62,14 @@ class ClassesTable extends AppTable
                     'reading_time'  => $q->func()->min(SplitsTable::field('reading_time'), ['string']),
                     'id' => $q->func()->max(SplitsTable::field('id'), ['string']),
                 ];
+                // ---
+                //
+                // ---
+                // crear una tabla cache de courses
+                // class_id
+                // order_number
+                // station
+                // is_intermediate
                 return $q
                     ->select($select)
                     ->where(['is_intermediate' => true])
