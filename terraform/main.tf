@@ -11,6 +11,7 @@
 # terraform apply main.tfplan
 ## export TF_LOG=WARN # TRACE, DEBUG, INFO, WARN or ERROR
 ## sudo cloud-init status --long
+## ssh vm_admin_user@www.oreplay.es
 resource "azurerm_resource_group" "rg" {
     location = var.resource_group_location
     name     = "${var.name_prefix}-resource-group"
