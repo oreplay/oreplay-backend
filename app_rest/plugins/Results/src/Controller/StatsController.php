@@ -41,22 +41,26 @@ class StatsController extends ApiController
         $officialSeniorF = $this->_getClassParam('officialSeniorF', $females);
         $males = 'M-E,M-21A,M-21B,M-35,M-35B,M-35A,M-40,M-45,M-50,M-55,M-60,M-65,M-70,M-75,M-80,M-85,M-90,M-95';
         $officialSeniorM = $this->_getClassParam('officialSeniorM', $males);
-        $all = array_merge($officialSub20M, $officialSub20F, $officialSeniorM, $officialSeniorF);
+        $officialSub20 = array_merge($officialSub20M, $officialSub20F);
+        $officialSenior = array_merge($officialSeniorM, $officialSeniorF);
+        $all = array_merge($officialSub20, $officialSenior);
 
         $table = $this->RunnerResults;
         $this->return = [
             'officialSub20' => [
                 'M' => $table->getClassesStats($eventId, $stageId, $officialSub20M, 'M'),
                 'F' => $table->getClassesStats($eventId, $stageId, $officialSub20F, 'F'),
+                'any' => $table->getClassesStats($eventId, $stageId, $officialSub20, ''),
             ],
             'officialSenior' => [
                 'M' => $table->getClassesStats($eventId, $stageId, $officialSeniorM, 'M'),
                 'F' => $table->getClassesStats($eventId, $stageId, $officialSeniorF, 'F'),
+                'any' => $table->getClassesStats($eventId, $stageId, $officialSenior, ''),
             ],
             'others' => [
                 'M' => $table->getNotClassesStats($eventId, $stageId, $all, 'M'),
                 'F' => $table->getNotClassesStats($eventId, $stageId, $all, 'F'),
-                //'any' => $table->getNotClassesStats($eventId, $stageId, $all, ''),
+                'any' => $table->getNotClassesStats($eventId, $stageId, $all, ''),
             ],
         ];
     }

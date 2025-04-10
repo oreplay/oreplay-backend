@@ -74,7 +74,20 @@ class StatsControllerTest extends ApiCommonErrorsTest
                     'finished' => 0,
                     'others' => 0,
                     'otherValues' => [],
-                ]
+                ],
+                'any' => [
+                    'classes' => [],
+                    'total' => 0,
+                    'dns' => 0,
+                    'mp' => 0,
+                    'dnf' => 0,
+                    'ot' => 0,
+                    'dqf' => 0,
+                    'notYetFinished' => 0,
+                    'finished' => 0,
+                    'others' => 0,
+                    'otherValues' => [],
+                ],
             ],
             'officialSenior' => [
                 'M' => [
@@ -102,7 +115,20 @@ class StatsControllerTest extends ApiCommonErrorsTest
                     'finished' => 0,
                     'others' => 0,
                     'otherValues' => [],
-                ]
+                ],
+                'any' => [
+                    'classes' => ['ME'],
+                    'total' => 1,
+                    'dns' => 0,
+                    'mp' => 0,
+                    'dnf' => 0,
+                    'ot' => 0,
+                    'dqf' => 0,
+                    'notYetFinished' => 0,
+                    'finished' => 0,
+                    'others' => 1,
+                    'otherValues' => [''],
+                ],
             ],
             'others' => [
                 'M' => [

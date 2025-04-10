@@ -210,7 +210,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'last_name' => 'Runner',
             'sicard' => '2009933',
             'bib_number' => '4444',
-            'sex' => 'F',
+            'sex' => 'M',
             'club' => [
                 'id' => ClubsFixture::CLUB_1,
                 'short_name' => 'Club A',

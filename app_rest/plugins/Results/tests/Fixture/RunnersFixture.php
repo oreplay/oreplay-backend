@@ -41,7 +41,7 @@ class RunnersFixture extends RestApiFixture
             'license' => null,
             'national_id' => null,
             'birth_date' => null,
-            'sex' => 'F',
+            'sex' => 'M',
             'telephone1' => null,
             'telephone2' => null,
             'email' => null,
