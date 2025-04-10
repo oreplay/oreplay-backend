@@ -43,10 +43,10 @@ class RunnerResultsTable extends AppTable
         return $this->_getClassStats($classCondition, $eventId, $stageId, $sex);
     }
 
-    public function getClassesStats(string $eventId, string $stageId, array $classNames): array
+    public function getClassesStats(string $eventId, string $stageId, array $classNames, string $sex): array
     {
         $classCondition = [ClassesTable::field('short_name') . ' in' => $classNames];
-        return $this->_getClassStats($classCondition, $eventId, $stageId);
+        return $this->_getClassStats($classCondition, $eventId, $stageId, $sex);
     }
 
     public function _getClassStats(array $classCondition, string $eventId, string $stageId, string $sex = null): array
