@@ -17,8 +17,8 @@ services:
       - mysql
       - memcached
     env_file:
-#      - nginx-dev.env
-      - .env.production
+      - nginx-dev.env
+      #- .env.production # TODO do not commit
     extra_hosts:
       - "host.docker.internal:host-gateway"
   memcached:
