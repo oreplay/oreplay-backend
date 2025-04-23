@@ -1,6 +1,0 @@
-.terraform
-.terraform.tfstate.lock.info
-terraform.tfstate
-tfplan
-*.tfplan
-*.backup
