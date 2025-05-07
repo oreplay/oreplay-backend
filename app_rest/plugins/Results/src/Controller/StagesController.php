@@ -83,11 +83,11 @@ class StagesController extends ApiController
         ];
         $now = new FrozenTime();
         foreach ($tables as $table) {
-            $table->updateAll(['deleted' => $now], ['stage_id' => $id]);
+            $table->updateAll(['deleted' => $now], ['stage_id' => $id, 'deleted is null']);
         }
 
         if (!$clean) {
-            $this->Stages->updateAll(['deleted' => $now], ['id' => $id]);
+            $this->Stages->updateAll(['deleted' => $now], ['id' => $id, 'deleted is null']);
         }
         $this->return = false;
     }
@@ -96,7 +96,7 @@ class StagesController extends ApiController
     {
         $eventId = $this->request->getParam('eventID');
         $this->_isUserAllowedInStage($eventId, $id);
-        
+
         $stage =$this->Stages->get($id);
         $stage = $this->Stages->patchEntity($stage, $data);
         $saved = $this->Stages->saveOrFail($stage);
