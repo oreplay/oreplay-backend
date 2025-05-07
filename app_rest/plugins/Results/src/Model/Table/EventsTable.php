@@ -74,6 +74,11 @@ class EventsTable extends AppTable
             $query->where(['is_hidden' => false]);
         }
 
+        $description = $filters['description'] ?? null;
+        if ($description) {
+            $query->where(['description like' => "%" . $description . "%"]);
+        }
+
         $when = $filters['when'] ?? null;
         //Filter by ?when='today','past',future
         if ($when) {

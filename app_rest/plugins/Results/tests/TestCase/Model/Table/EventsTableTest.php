@@ -97,5 +97,10 @@ class EventsTableTest extends TestCase
         $events = $this->Events->findPaginatedEvents($filters)->all();
         $this->assertEquals(1, $events->count());
         $this->assertEquals(EventsFixture::EVENT_TODAY, $events->first()->id);
+
+        // search by description
+        $events = $this->Events->findPaginatedEvents(['description' => 'Adventure'])->all();
+        $this->assertEquals(1, $events->count());
+        $this->assertEquals(EventsFixture::FIRST_RAID, $events->first()->id);
     }
 }

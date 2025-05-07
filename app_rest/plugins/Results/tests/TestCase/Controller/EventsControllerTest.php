@@ -60,6 +60,15 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($this->_getFirstEvent(), $bodyDecoded['data'][0]);
     }
 
+    public function testGetList_shouldFilterByDescription()
+    {
+        $this->get($this->_getEndpoint() . '?description=Foot-o');
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals(1, count($bodyDecoded['data']));
+        $this->assertEquals($this->_getFirstEvent(), $bodyDecoded['data'][0]);
+    }
+
     public function testGetList_paginated_NoParams()
     {
         $this->get($this->_getEndpoint() . '?page=3&limit=1');
