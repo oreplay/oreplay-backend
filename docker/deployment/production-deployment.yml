@@ -1,7 +1,7 @@
 services:
   nginx:
     image: oreplay/backend:0.2.20
-    command: bash -c "php-fpm7.4 && nginx -g 'daemon off;'"
+    command: bash -c "php-fpm8.3 && nginx -g 'daemon off;'"
     ports:
       - '8087:80'
     depends_on:

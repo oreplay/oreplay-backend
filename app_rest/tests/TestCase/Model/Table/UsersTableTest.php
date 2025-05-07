@@ -4,11 +4,8 @@ declare(strict_types = 1);
 
 namespace App\Test\TestCase\View\Helper;
 
-use App\Lib\Consts\CacheGrp;
-use App\Lib\Consts\UserGroups;
 use App\Model\Table\UsersTable;
 use App\Test\Fixture\UsersFixture;
-use Cake\Cache\Cache;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\TestSuite\Fixture\FixtureStrategyInterface;
@@ -20,6 +17,9 @@ class UsersTableTest extends TestCase
     protected $fixtures = [
         UsersFixture::LOAD
     ];
+
+    /** @var UsersTable */
+    public $Users;
 
     protected function getFixtureStrategy(): FixtureStrategyInterface
     {

@@ -1,4 +1,4 @@
-FROM public.ecr.aws/ct-nilus/base-images:nginx-php-dev-v18-focal-7.4
+FROM public.ecr.aws/ct-nilus/base-images:nginx-php-dev-v21-noble-8.3
 ADD ./app_rest /var/www/cplatform/public/app_rest
 ADD ./docker/sites/nginx-site-dev.conf /etc/nginx/sites-available/courseticket
 RUN chown www-data:www-data -R /var/www/cplatform/public/app_rest/tmp
