@@ -174,7 +174,9 @@ class RunnerResultsTable extends AppTable
                 $runnerResultToSave->setIDsToUpdate($existingRunnerResults[0]);
             } else {
                 // if there is more than one result, we keep them all in the runner
+                /** @var RunnerResult $existingResult */
                 foreach ($existingRunnerResults as $existingResult) {
+                    $existingResult->setSoftDeleted();
                     $runner = $runner->addRunnerResult($existingResult);
                 }
             }
