@@ -74,9 +74,9 @@ class EventsTable extends AppTable
             $query->where(['is_hidden' => false]);
         }
 
+        $when = $filters['when'] ?? null;
         //Filter by ?when='today','past',future
-        if (array_key_exists('when', $filters)) {
-            $when = $filters['when'];
+        if ($when) {
             // case today
             if ($when === 'today') {
                 $filters['initial_date:lte'] = $today;
@@ -105,9 +105,13 @@ class EventsTable extends AppTable
             });
         }
 
+        if ($when === 'future') {
+            $query->orderAsc('initial_date');
+        } else {
+            $query->orderDesc('initial_date');
+        }
         // Return query
-        return $query->orderDesc('initial_date')
-            ->contain(OrganizersTable::name());
+        return $query->contain(OrganizersTable::name());
     }
 
     public function getEventWithRelations(string $id): Event
