@@ -35,7 +35,7 @@ class SplitsTable extends AppTable
 
     public static function defaultOrder(): array
     {
-        return ['order_number' => 'ASC', 'reading_time' => 'ASC'];
+        return ['reading_time' => 'ASC'];
     }
 
     protected function _insert(EntityInterface $entity, array $data)

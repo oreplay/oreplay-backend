@@ -135,13 +135,13 @@ class RunnersTable extends AppTable
             ->contain(RunnerResultsTable::name(), function (Query $q) {
                 return $q->contain(SplitsTable::name(), function (Query $q) {
                     $order = [
-                        'order_number' => 'DESC', // 1st order number (null last)
+                        //'order_number' => 'DESC', // order number will change from splits or radios export
+                        'reading_time' => 'DESC', // 1st punch time (latest first, null last)
                         'is_intermediate' => 'ASC', // 2nd no radio before radio
-                        'reading_time' => 'DESC', // 3rd punch time (latest first, null last)
                         SplitsTable::field('created') => 'DESC' // 4th db created
                     ];
                     return $q
-                        ->order($order)
+                        ->order($order, true)
                         ->contain(ControlsTable::name(), function (Query $q) {
                             return $q->contain(ControlTypesTable::name());
                         });

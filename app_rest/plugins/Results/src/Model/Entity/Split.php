@@ -84,9 +84,6 @@ class Split extends AppEntity
 
     public function shouldDisplayCurrent(Split $last): SplitCompareReason
     {
-        if ($this->order_number != $last->order_number) {
-            return new SplitCompareReason(true, '1 foot-o with order numbers');
-        }
         if ($this->isRadio()) {
             if (!$this->reading_time) {
                 return new SplitCompareReason(false,

@@ -41,7 +41,7 @@ class ResultsController extends ApiController
             $toRet[] = $team;
             $team->_getOverall()->setCompareWithoutDay($isSameDay);
         }
-        /** @var Runner $team */
+        /** @var Runner $runner */
         foreach ($runners as $runner) {
             $toRet[] = $runner;
             $runner->_getOverall()->setCompareWithoutDay($isSameDay);

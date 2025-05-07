@@ -15,6 +15,7 @@ use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Stage;
 use Results\Model\Table\RunnersTable;
 use Results\Test\Fixture\ClassesFixture;
+use Results\Test\Fixture\ControlsFixture;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\RunnerResultsFixture;
 use Results\Test\Fixture\RunnersFixture;
@@ -29,6 +30,7 @@ class RunnersTableTest extends TestCase
         RunnerResultsFixture::LOAD,
         TeamResultsFixture::LOAD,
         SplitsFixture::LOAD,
+        ControlsFixture::LOAD,
         ClassesFixture::LOAD,
         EventsFixture::LOAD,
         StagesFixture::LOAD,
@@ -59,9 +61,16 @@ class RunnersTableTest extends TestCase
         $this->assertEquals(RunnerResult::FIRST_RES, $runnerResult->id);
         $this->assertEquals(1, $runnerResult->position);
         $this->assertEquals(310, $runnerResult->time_seconds);
-        $split = $runnerResult->getSplits()[0];
+        $splits = $runnerResult->getSplits();
+        $this->assertEquals(2, count($splits));
+        $split = $splits[0];
         $this->assertEquals(SplitsFixture::SPLIT_1, $split->id);
+        $this->assertEquals(false, $split->is_intermediate);
         $this->assertEquals(new FrozenTime('2024-01-02T10:00:10.321+00:00'), $split->reading_time);
+        $split2 = $splits[1];
+        $this->assertEquals(SplitsFixture::SPLIT_1_RADIO, $split2->id);
+        $this->assertEquals(true, $split2->is_intermediate);
+        $this->assertEquals(new FrozenTime('2024-01-02T10:00:10.321+00:00'), $split2->reading_time);
     }
 
     public function testFindByCard()

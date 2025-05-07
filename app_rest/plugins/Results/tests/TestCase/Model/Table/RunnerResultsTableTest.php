@@ -117,6 +117,13 @@ class RunnerResultsTableTest extends TestCase
             'leg_number' => null,
             'splits' => [
                 [
+                    'id' => SplitsFixture::SPLIT_1,
+                    'reading_time' => '2024-01-02T10:00:10.321+00:00',
+                    'points' => null,
+                    'is_intermediate' => false,
+                    'order_number' => 2
+                ],
+                [
                     'id' => SplitsFixture::SPLIT_1_RADIO,
                     'reading_time' => '2024-01-02T10:00:10.321+00:00',
                     'points' => null,
@@ -129,13 +136,6 @@ class RunnerResultsTableTest extends TestCase
                     'points' => null,
                     'is_intermediate' => false,
                     'order_number' => 1
-                ],
-                [
-                    'id' => SplitsFixture::SPLIT_1,
-                    'reading_time' => '2024-01-02T10:00:10.321+00:00',
-                    'points' => null,
-                    'is_intermediate' => false,
-                    'order_number' => 2
                 ],
             ],
         ];

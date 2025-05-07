@@ -23,7 +23,7 @@ class SplitTest extends TestCase
 
     public function testShouldDisplayCurrent()
     {
-        $msg = '1 foot-o with order numbers';
+        $msg = '3 keep repeated split as revisited control';
         $differentOrderNumber = $this->_newSplit();
         $differentOrderNumber->order_number = '1';
         $res = $this->_newSplit()->shouldDisplayCurrent($differentOrderNumber);
