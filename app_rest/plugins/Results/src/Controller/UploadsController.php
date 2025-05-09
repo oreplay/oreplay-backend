@@ -11,6 +11,7 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\UploadHelper;
+use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\RunnersTable;
@@ -59,9 +60,11 @@ class UploadsController extends ApiController
             throw new InvalidPayloadException('Cannot add start times when there are already finish times');
         }
 
+        $counter = 0;
         foreach ($configChecker->getClasses() as $classObj) {
             $class = $this->Classes->createIfNotExists($helper->getEventId(), $stageId, $classObj);
-            if (!$class->isSameUploadHash($classObj)) {
+            $isTakingTooLong = $this->_setIsTakingTooLongWarning($metrics, $counter);
+            if (!$class->isSameUploadHash($classObj) && !$isTakingTooLong) {
                 $class->setHash($classObj);
                 $this->_helper->setCurrentClassId($class->id);
                 $helper->getMetrics()->startCoursesTime();
@@ -72,6 +75,7 @@ class UploadsController extends ApiController
                 $class = $this->_addAllRunnersInClass($classObj, $class, $helper);
                 $class = $this->_addAllTeamsInClass($classObj, $class, $helper);
                 $metrics->saveManyOrFail($this->Classes, $class);
+                $counter++;
             }
         }
 
@@ -176,6 +180,18 @@ class UploadsController extends ApiController
             return null;
         }
         return substr($auth, strlen('Bearer '));
+    }
+
+    private function _setIsTakingTooLongWarning(UploadMetrics $metrics, int $counter): bool
+    {
+        $isTakingTooLong = $metrics->isTakingTooLong();
+        if ($isTakingTooLong) {
+            $msg1 = 'It is taking too long, ';
+            $msg2 = $counter ? 'some data was already processed, but ' : '';
+            $msg3 = 'you need to upload again to finish processing';
+            $metrics->setWarning($msg1 . $msg2 . $msg3);
+        }
+        return $isTakingTooLong;
     }
 
     private function _writeLastUploadJson(array $content, string $path)

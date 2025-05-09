@@ -83,8 +83,19 @@ class UploadMetrics
     }
     public function endTotalTimer()
     {
+        $this->_totalDuration = $this->getTotalTime();
+    }
+
+    public function getTotalTime()
+    {
         $end = microtime(true);
-        $this->_totalDuration = $this->_roundUp($end - $this->_startTimeTotal);
+        return $this->_roundUp($end - $this->_startTimeTotal);
+    }
+
+    public function isTakingTooLong(): bool
+    {
+        $maxProcessingSeconds = 45;
+        return $this->getTotalTime() > $maxProcessingSeconds;
     }
 
     public function addToRunnerCounter(int $toAdd)
