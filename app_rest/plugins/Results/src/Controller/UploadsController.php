@@ -7,6 +7,7 @@ namespace Results\Controller;
 use App\Lib\Consts\CacheGrp;
 use App\Lib\Exception\InvalidPayloadException;
 use Cake\Cache\Cache;
+use Cake\Core\Configure;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
@@ -43,7 +44,9 @@ class UploadsController extends ApiController
     {
         $this->_clearUploadCache();
         $metrics = $helper->getMetrics();
-        //$this->_writeLastUploadJson($helper->getData(), TMP . 'lastUpload.json');
+        if (Configure::read('debug')) {
+            $this->_writeLastUploadJson($helper->getData(), TMP . 'lastUpload.json');
+        }
         //$this->log('Uploading: ' . " \n\n" . json_encode($helper->getData()), \Psr\Log\LogLevel::DEBUG); // NOSONAR
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($helper->getEventId(), $token);
