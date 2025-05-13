@@ -142,6 +142,77 @@ class RunnerResultsTableTest extends TestCase
         $this->assertEquals($expected, $array);
     }
 
+    public function testFindWithSplits_andMP()
+    {
+        $splitId = '3t3b5adc-23b9-4790-a116-c83Af4760ad9';
+        $split = new Split([
+            'id' => $splitId,
+            'event_id' => Event::FIRST_EVENT,
+            'stage_id' => Stage::FIRST_STAGE,
+            'stage_order' => 1,
+            'sicard' => null,
+            'station' => 81,
+            'order_number' => 1,
+            'reading_time' => null, // MP
+            'runner_result_id' => RunnerResult::FIRST_RES,
+            'runner_id' => Runner::FIRST_RUNNER,
+            'created' => '2024-05-02 10:00:10',
+            'modified' => '2024-05-02 10:00:10',
+        ]);
+        $this->RunnerResults->Splits->save($split);
+        $this->RunnerResults->Splits->updateAll(['order_number' => 2], ['id' => SplitsFixture::SPLIT_1]);
+        /** @var RunnerResult $res */
+        $res = $this->RunnerResults->find()
+            ->where(['id' => RunnerResult::FIRST_RES])
+            ->contain(SplitsTable::name())
+            ->firstOrFail();
+        $array = json_decode(json_encode($res), true);
+        $expected = [
+            'id' => RunnerResult::FIRST_RES,
+            'result_type_id' => ResultType::STAGE,
+            'start_time' => '2024-01-02T10:00:00.000+00:00',
+            'finish_time' => '2024-01-02T10:05:10.123+00:00',
+            'upload_type' => null,
+            'time_seconds' => 310,
+            'position' => 1,
+            'status_code' => null,
+            'time_behind' => 0,
+            'time_neutralization' => null,
+            'time_adjusted' => null,
+            'time_penalty' => null,
+            'time_bonus' => null,
+            'points_final' => null,
+            'points_adjusted' => null,
+            'points_penalty' => null,
+            'points_bonus' => null,
+            'leg_number' => null,
+            'splits' => [
+                [
+                    'id' => $splitId,
+                    'reading_time' => null, // MP
+                    'points' => null,
+                    'is_intermediate' => false,
+                    'order_number' => 1
+                ],
+                [
+                    'id' => SplitsFixture::SPLIT_1,
+                    'reading_time' => '2024-01-02T10:00:10.321+00:00',
+                    'points' => null,
+                    'is_intermediate' => false,
+                    'order_number' => 2
+                ],
+                [
+                    'id' => SplitsFixture::SPLIT_1_RADIO,
+                    'reading_time' => '2024-01-02T10:00:10.321+00:00',
+                    'points' => null,
+                    'is_intermediate' => true,
+                    'order_number' => null
+                ],
+            ],
+        ];
+        $this->assertEquals($expected, $array);
+    }
+
     public function testFastPatch()
     {
         $timezone = $this->RunnerResults->getConnection()->config()['timezone'];

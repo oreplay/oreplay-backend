@@ -84,12 +84,19 @@ class Split extends AppEntity
 
     public function shouldDisplayCurrent(Split $last): SplitCompareReason
     {
+        // if ($this->station != $last->station) {
+        //     return new SplitCompareReason(true, '1 foot-o with order numbers');
+        // }
         if ($this->isRadio()) {
             if (!$this->reading_time) {
                 return new SplitCompareReason(false,
                     '10 do not return radios without time, this should never happen');
             }
             if ($last->isRadio()) {
+                if (!$last->reading_time) {
+                    return new SplitCompareReason(true,
+                        '11 last radio must always have reading_time');
+                }
                 if ($this->isSameTime($last->reading_time)) {
                     return new SplitCompareReason(false,
                         '6 skip current without time if both are radio AND rogaining when any no radio exists');
@@ -98,6 +105,10 @@ class Split extends AppEntity
                         '5 keep current if both radios with different time AND rogaining when different reading_time');
                 }
             } else {
+                if (!$last->reading_time) {
+                    return new SplitCompareReason(true,
+                        '12 last without reading_time means MP');
+                }
                 if ($this->isSameTime($last->reading_time)) {
                     return new SplitCompareReason(false,
                         '8 skip rogaining when radio with same time');
@@ -111,13 +122,13 @@ class Split extends AppEntity
                 return new SplitCompareReason(true,
                     '3 keep repeated split as revisited control');
             } else {
-                if ($last->reading_time) {
-                    return new SplitCompareReason(false,
-                        '2 skip without reading time');
-                } else {
-                    return new SplitCompareReason(true,
-                        '4 keep if none has reading time because is DNS or MP');
-                }
+                // if ($last->reading_time) {
+                //     return new SplitCompareReason(false,
+                //         '2 skip without reading time');
+                // } else {
+                return new SplitCompareReason(true,
+                    '4 keep if none has reading time because is DNS or MP');
+                // }
             }
         }
     }

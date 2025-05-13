@@ -12,6 +12,7 @@ use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
+use Results\Model\Entity\Split;
 use Results\Model\Entity\Stage;
 use Results\Model\Table\RunnersTable;
 use Results\Test\Fixture\ClassesFixture;
@@ -62,15 +63,128 @@ class RunnersTableTest extends TestCase
         $this->assertEquals(1, $runnerResult->position);
         $this->assertEquals(310, $runnerResult->time_seconds);
         $splits = $runnerResult->getSplits();
-        $this->assertEquals(2, count($splits));
-        $split = $splits[0];
-        $this->assertEquals(SplitsFixture::SPLIT_1, $split->id);
-        $this->assertEquals(false, $split->is_intermediate);
-        $this->assertEquals(new FrozenTime('2024-01-02T10:00:10.321+00:00'), $split->reading_time);
-        $split2 = $splits[1];
-        $this->assertEquals(SplitsFixture::SPLIT_1_RADIO, $split2->id);
-        $this->assertEquals(true, $split2->is_intermediate);
-        $this->assertEquals(new FrozenTime('2024-01-02T10:00:10.321+00:00'), $split2->reading_time);
+        $splitsArray = json_decode(json_encode($splits), true);
+        $expected = [
+            [
+                'id' => SplitsFixture::SPLIT_1,
+                'is_intermediate' => false,
+                'reading_time' => '2024-01-02T10:00:10.321+00:00',
+                'points' => null,
+                'order_number' => null,
+                'control' => [
+                    'id' => ControlsFixture::CONTROL_31,
+                    'station' => '31',
+                    'control_type' => null
+                ]
+            ],
+            [
+                'id' => SplitsFixture::SPLIT_1_RADIO,
+                'is_intermediate' => true,
+                'reading_time' => '2024-01-02T10:00:10.321+00:00',
+                'points' => null,
+                'order_number' => null,
+                'control' => [
+                    'id' => ControlsFixture::CONTROL_31,
+                    'station' => '31',
+                    'control_type' => null
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $splitsArray);
+    }
+
+
+    private function getMissingPunch(string $id, int $orderNumber, int $station): Split
+    {
+        $controlsInFixture = [
+            81 => ControlsFixture::CONTROL_81,
+            82 => ControlsFixture::CONTROL_82,
+        ];
+        $missingPunch = new Split();
+        $missingPunch->id = $id;
+        $missingPunch->event_id = Event::FIRST_EVENT;
+        $missingPunch->stage_id = Stage::FIRST_STAGE;
+        $missingPunch->is_intermediate = false;
+        $missingPunch->reading_time = null;
+        $missingPunch->runner_result_id = RunnerResult::FIRST_RES;
+        $missingPunch->class_id = ClassEntity::ME;
+        $missingPunch->control_id = $controlsInFixture[$station];
+        $missingPunch->runner_id = Runner::FIRST_RUNNER;
+        $missingPunch->order_number = $orderNumber;
+        $missingPunch->station = $station;
+        return $missingPunch;
+    }
+
+    public function testFindRunnersInStage_shouldReturnOveralls_withMP(): void
+    {
+        $split81 = 'f6bde838-f018-49c6-960c-61e0b68ed73b';
+        $split82 = 'f729162b-a2d0-4407-8b78-b2f55c615e13';
+        $Splits = $this->Runners->RunnerResults->Splits;
+        $Splits->save($this->getMissingPunch($split81, 1, 81)); // 1st in course
+        $Splits->updateAll(['order_number' => '1'], // 1st radio
+            ['id' => SplitsFixture::SPLIT_1_RADIO]);
+        $Splits->updateAll(['order_number' => '2'], // 2nd in course
+            ['id' => SplitsFixture::SPLIT_1]);
+        $splitWithTime = $this->getMissingPunch($split82, 3, 82); // 3rd in course
+        $splitWithTime->reading_time = new FrozenTime('2025-05-13 08:13:50.814000+00:00');
+        $Splits->save($splitWithTime);
+        // Defined course as START -> 81 -> 31 (radio) -> 82 -> FINISH
+        $runners = $this->Runners->findRunnersInStage(
+            Event::FIRST_EVENT, Stage::FIRST_STAGE
+        )->all();
+
+        $this->assertEquals(1, $runners->count());
+        /** @var Runner $runner */
+        $runner = $runners->first();
+        $this->assertEquals(Runner::FIRST_RUNNER, $runner->id);
+        $this->assertEquals('First', $runner->first_name);
+        $this->assertEquals('Runner', $runner->last_name);
+        $runnerResult = $runner->_getOverall();
+        $this->assertNull($runner->team_results);
+        $this->assertEquals(RunnerResult::FIRST_RES, $runnerResult->id);
+        $this->assertEquals(1, $runnerResult->position);
+        $this->assertEquals(310, $runnerResult->time_seconds);
+        $splits = $runnerResult->getSplits();
+        $splitsArray = json_decode(json_encode($splits), true);
+        $expected = [
+            [
+                'id' => $split82,
+                'is_intermediate' => false,
+                'reading_time' => '2025-05-13T08:13:50.814+00:00',
+                'points' => null,
+                'order_number' => 3,
+                'control' => [
+                    'id' => ControlsFixture::CONTROL_82,
+                    'station' => '82',
+                    'control_type' => null
+                ]
+            ],
+            [
+                'id' => SplitsFixture::SPLIT_1,
+                'is_intermediate' => false,
+                'reading_time' => '2024-01-02T10:00:10.321+00:00',
+                'points' => null,
+                'order_number' => 2,
+                'control' => [
+                    'id' => ControlsFixture::CONTROL_31,
+                    'station' => '31',
+                    'control_type' => null
+                ]
+            ],
+            [
+                'id' => $split81,
+                'is_intermediate' => false,
+                'reading_time' => null,
+                'points' => null,
+                'order_number' => 1,
+                'control' => [
+                    'id' => ControlsFixture::CONTROL_81,
+                    'station' => '81',
+                    'control_type' => null
+                ]
+            ],
+        ];
+        $this->assertEquals($expected, $splitsArray);
     }
 
     public function testFindByCard()

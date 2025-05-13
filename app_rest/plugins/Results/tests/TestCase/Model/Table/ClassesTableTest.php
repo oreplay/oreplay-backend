@@ -90,7 +90,7 @@ class ClassesTableTest extends TestCase
                 'stage_id' => Stage::FIRST_STAGE,
                 'sicard' => '8000001',
                 'is_intermediate' => true,
-                'station' => 81,
+                'station' => 31,
                 'reading_time' => '2024-01-02 10:00:10.321',
                 'control_id' => ControlsFixture::CONTROL_31,
                 'class_id' => ClassEntity::ME,
@@ -130,7 +130,7 @@ class ClassesTableTest extends TestCase
         $this->assertEquals(2, count($res[1]['splits']));
         $first = [
             'id' => SplitsFixture::SPLIT_1_RADIO,
-            'station' => '81'
+            'station' => '31'
         ];
         $this->assertEquals($first, $res[1]['splits'][0]->toArray());
         $second = [

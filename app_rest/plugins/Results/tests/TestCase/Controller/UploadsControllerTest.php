@@ -414,7 +414,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($expectedRunnerAmount, count($res), 'Runner count in db');
         $this->assertEquals($expectedRunnerAmount, count($decodedData[0]['runners']));
         $this->_assertRunnersWithFinishTimes($decodedData);
-        $expectedControlAmount = 3;
+        $expectedControlAmount = $this->controlsAmount() + 2;
         $this->assertEquals($expectedControlAmount, ControlsTable::load()->find()->all()->count());
 
         // second upload should not add again results
@@ -690,9 +690,21 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'controls' => $controls,
         ];
         $db = [
-            'splits' => SplitsTable::load()->find()->all()->count() - 3,
-            'controls' => ControlsTable::load()->find()->all()->count() - 1,
+            'splits' => SplitsTable::load()->find()->all()->count() - $this->splitsAmount(),
+            'controls' => ControlsTable::load()->find()->all()->count() - $this->controlsAmount(),
         ];
         $this->assertEquals($expected, $db, 'NewResultsTableAmounts');
+    }
+
+    private function splitsAmount(): int
+    {
+        $fixture = new SplitsFixture();
+        return count($fixture->records);
+    }
+
+    private function controlsAmount(): int
+    {
+        $fixture = new ControlsFixture();
+        return count($fixture->records);
     }
 }

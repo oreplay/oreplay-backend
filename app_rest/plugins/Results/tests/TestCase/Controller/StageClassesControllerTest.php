@@ -49,7 +49,7 @@ class StageClassesControllerTest extends ApiCommonErrorsTest
             'splits' => [
                 [
                     'id' => SplitsFixture::SPLIT_1_RADIO,
-                    'station' => 81,
+                    'station' => 31,
                 ]
             ],
         ];
