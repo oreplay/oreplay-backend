@@ -16,17 +16,26 @@ trait StoredParticipantTrait
     private array $_storedParticipantsInClass = [];
     private string $_classIdForStoredParticipants = '';
 
-    public function getStoredAllParticipantsInClass(string $eventId, string $stageId, string $classId)
+    public function getStoredAllParticipantsInClass(string $eventId, string $stageId, ?string $classId)
     {
-        $this->ifDifferentClassEmptyStoredList($classId);
+        $classIdString = $classId ?: '';
+        $this->ifDifferentClassEmptyStoredList($classIdString);
         if (empty($this->_getStoredParticipantsInClass())) {
             $runners = $this->find()
                 ->where([
                     'event_id' => $eventId,
                     'stage_id' => $stageId,
+                ]);
+            if ($classId === null) {
+                $runners->where([
+                    'class_id is null',
+                ]);
+            } else {
+                $runners->where([
                     'class_id' => $classId,
                 ]);
-            $this->_classIdForStoredParticipants = $classId;
+            }
+            $this->_classIdForStoredParticipants = $classIdString;
             $this->_storedParticipantsInClass = $runners->all()->toArray();
         }
     }

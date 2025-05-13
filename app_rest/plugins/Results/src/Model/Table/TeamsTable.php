@@ -112,7 +112,9 @@ class TeamsTable extends AppTable
         }
         $runners = $teamData['runners'] ?? [];
         foreach ($runners as $runnerData) {
-            $team->addRunner($this->Runners->createRunnerWithResults($runnerData, $class, $helper));
+            $nullClass = new ClassEntity();
+            $nullClass->id = null;
+            $team->addRunner($this->Runners->createRunnerWithResults($runnerData, $nullClass, $helper));
         }
 
         $helper->getMetrics()->startClubsTime();

@@ -61,7 +61,6 @@ class Runner extends AppEntity
         'club_id',
         'team_id',
         'runner_results',
-        'leg_number',
         'upload_hash',
         'results',
         'created',

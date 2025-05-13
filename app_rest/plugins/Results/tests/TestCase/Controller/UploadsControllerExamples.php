@@ -818,6 +818,216 @@ class UploadsControllerExamples
         ];
     }
 
+    public static function simple3relay()
+    {
+        $runnerA = [
+            'id' => '',
+            'uuid' => '',
+            'sicard' => '8186666',
+            'sex' => 'F',
+            'first_name' => 'María',
+            'last_name' => 'Prado',
+            'db_id' => '6208',
+            'iof_id' => '',
+            'bib_number' => '1001-1',
+            'sicard_alt' => '',
+            'leg_number' => (int) 1,
+            'runner_results' => [
+                (int) 0 => [
+                    'id' => '',
+                    'start_time' => '2001-01-01T10:35:00.000+01:00',
+                    'finish_time' => '2001-01-01T11:04:04.000+01:00',
+                    'time_seconds' => (int) 1744,
+                    'status_code' => '0',
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'points_final' => (int) 0,
+                    'points_adjusted' => (int) 0,
+                    'points_penalty' => (int) 0,
+                    'points_bonus' => (int) 0,
+                    'leg_number' => (int) 1,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'city' => '',
+                'oe_key' => '12',
+                'short_name' => 'Galicia',
+                'long_name' => 'Galicia'
+            ]
+        ];
+        $runnerB = [
+            'id' => '',
+            'uuid' => '',
+            'sicard' => '8664444',
+            'sex' => 'F',
+            'first_name' => 'Ines',
+            'last_name' => 'Pardo',
+            'db_id' => '11323',
+            'iof_id' => '',
+            'bib_number' => '1001-2',
+            'sicard_alt' => '',
+            'leg_number' => (int) 2,
+            'runner_results' => [
+                (int) 0 => [
+                    'id' => '',
+                    'start_time' => '2001-01-01T11:04:04.000+01:00',
+                    'finish_time' => '2001-01-01T11:42:42.000+01:00',
+                    'time_seconds' => (int) 2318,
+                    'status_code' => '0',
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'points_final' => (int) 0,
+                    'points_adjusted' => (int) 0,
+                    'points_penalty' => (int) 0,
+                    'points_bonus' => (int) 0,
+                    'leg_number' => (int) 2,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'city' => '',
+                'oe_key' => '12',
+                'short_name' => 'Galicia',
+                'long_name' => 'Galicia'
+            ]
+        ];
+        $runnerC = [
+            'id' => '',
+            'uuid' => '',
+            'sicard' => '8655555',
+            'sex' => 'F',
+            'first_name' => 'Ana',
+            'last_name' => 'Torres',
+            'db_id' => '8515',
+            'iof_id' => '',
+            'bib_number' => '1001-3',
+            'sicard_alt' => '',
+            'leg_number' => (int) 3,
+            'runner_results' => [
+                (int) 0 => [
+                    'id' => '',
+                    'start_time' => '2001-01-01T11:42:42.000+01:00',
+                    'finish_time' => '2001-01-01T12:09:42.000+01:00',
+                    'time_seconds' => (int) 1619,
+                    'status_code' => '0',
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'points_final' => (int) 0,
+                    'points_adjusted' => (int) 0,
+                    'points_penalty' => (int) 0,
+                    'points_bonus' => (int) 0,
+                    'leg_number' => (int) 3,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'city' => '',
+                'oe_key' => '12',
+                'short_name' => 'Galicia',
+                'long_name' => 'Galicia'
+            ]
+        ];
+        $team = [
+            'id' => '',
+            'uuid' => '',
+            'legs' => (int) 3,
+            'bib_number' => '1001',
+            'bib_alt' => '',
+            'team_name' => 'CMA-SENIOR FEM-01',
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'city' => '',
+                'oe_key' => '12',
+                'short_name' => 'Galicia',
+                'long_name' => 'Galicia'
+            ],
+            'team_results' => [
+                (int) 0 => [
+                    'id' => '',
+                    'position' => (int) 1,
+                    'start_time' => '2001-01-01T10:35:00.000+01:00',
+                    'time_seconds' => (int) 3600,
+                    'status_code' => '0',
+                    'time_behind' => (int) 0,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'runners' => [
+                $runnerA,
+                $runnerB,
+                $runnerC
+            ]
+        ];
+        return [
+            'configuration' => [
+                'cSeparator' => ';',
+                'cEncoding' => 'ISO-8859-1',
+                'file' => '/tmp/OS12-relevos-provisionalesCategoriasFE.csv',
+                'extension' => 'CSV',
+                'utf' => false,
+                'known_data' => true,
+                'contents' => 'ResultList',
+                'results_type' => 'Totals',
+                'one_stage' => true,
+                'source' => 'OSv12',
+                'iof_version' => 'Other',
+                'include_score' => false,
+                'trailo_type' => 'Other',
+                'trailo_at' => 'Other',
+                'trailo_normal' => '0',
+                'trailo_group' => '0',
+                'totalization' => 'Other'
+            ],
+            'event' => [
+                'id' => Event::FIRST_EVENT,
+                'description' => 'Test back 0.2.25',
+                'is_hidden' => false,
+                'stages' => [
+                    (int) 0 => [
+                        'id' => StagesFixture::STAGE_FEDO_2,
+                        'description' => 'Relevo Provisionales 0.2.25',
+                        'classes' => [
+                            (int) 0 => [
+                                'id' => '',
+                                'uuid' => '',
+                                'oe_key' => '1',
+                                'short_name' => 'SENIOR FEM',
+                                'long_name' => 'SENIOR FEM',
+                                'teams' => [$team]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+    }
+
     public static function intermediateResults()
     {
         $classA = [

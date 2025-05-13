@@ -93,7 +93,7 @@ class RunnersTable extends AppTable
         } catch (NotFoundException $e) {
             /** @var Runner $runner */
             $runner = $this->fillNewWithStage($runnerData, $eventId, $stageId);
-            $this->addParticipantInClass($runner, $class->id);
+            $this->addParticipantInClass($runner, $class->id ?: '');
         }
         return $runner;
     }
