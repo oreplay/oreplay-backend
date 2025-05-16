@@ -831,7 +831,7 @@ class UploadsControllerExamples
             'iof_id' => '',
             'bib_number' => '1001-1',
             'sicard_alt' => '',
-            'leg_number' => (int) 1,
+            //'leg_number' => (int) 1,
             'runner_results' => [
                 (int) 0 => [
                     'id' => '',
@@ -874,7 +874,7 @@ class UploadsControllerExamples
             'iof_id' => '',
             'bib_number' => '1001-2',
             'sicard_alt' => '',
-            'leg_number' => (int) 2,
+            //'leg_number' => (int) 2,
             'runner_results' => [
                 (int) 0 => [
                     'id' => '',

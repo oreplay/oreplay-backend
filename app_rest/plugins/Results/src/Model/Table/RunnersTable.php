@@ -151,6 +151,9 @@ class RunnersTable extends AppTable
 
     public function createRunnerWithResults(array $runnerData, ClassEntity $class, UploadHelper $helper): Runner
     {
+        if (!isset($runnerData['leg_number']) && isset($runnerData['runner_results'][0]['leg_number'])) {
+            $runnerData['leg_number'] = $runnerData['runner_results'][0]['leg_number'];
+        }
         $helper->getMetrics()->startClubsTime();
         $runner = $this->createRunnerIfNotExists($helper->getEventId(), $helper->getStageId(), $runnerData, $class);
         $helper->getMetrics()->endClubsTime();

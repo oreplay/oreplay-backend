@@ -767,6 +767,9 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(3, count($res), 'Runner count in db');
         $this->assertEquals(1, count($decodedData[0]['teams']));
         $this->assertEquals(3, count($decodedData[0]['teams'][0]['runners']));
+        $this->assertEquals(1, $decodedData[0]['teams'][0]['runners'][0]['leg_number'] ?? null);
+        $this->assertEquals(2, $decodedData[0]['teams'][0]['runners'][1]['leg_number'] ?? null);
+        $this->assertEquals(3, $decodedData[0]['teams'][0]['runners'][2]['leg_number'] ?? null);
 //        $runnersJson = array_merge($decodedData[0]['runners'], $decodedData[1]['runners']);
 //        /** @var Runner $value */
 //        foreach ($res as $key => $value) {
