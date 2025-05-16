@@ -30,7 +30,7 @@ class RunnersTable extends AppTable
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
-        RunnerResultsTable::addBelongsTo($this);
+        RunnerResultsTable::addBelongsTo($this)->setSort(['time_seconds' => 'DESC']);
         StagesTable::addHasMany($this);
         UsersTable::addHasMany($this);
         ClassesTable::addHasMany($this);

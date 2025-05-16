@@ -27,7 +27,7 @@ class TeamsTable extends AppTable
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
-        TeamResultsTable::addBelongsTo($this);
+        TeamResultsTable::addBelongsTo($this)->setSort(['time_seconds' => 'DESC']);
         RunnersTable::addBelongsTo($this)->setSort(['leg_number' => 'ASC', 'last_name' => 'ASC']);
         ClassesTable::addHasMany($this);
         ClubsTable::addHasMany($this);
