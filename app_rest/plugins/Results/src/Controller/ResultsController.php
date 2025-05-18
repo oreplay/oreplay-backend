@@ -39,12 +39,16 @@ class ResultsController extends ApiController
         /** @var Team $team */
         foreach ($teams as $team) {
             $toRet[] = $team;
-            $team->_getOverall()->setCompareWithoutDay($isSameDay);
+            if ($team->_getOverall()) {
+                $team->_getOverall()->setCompareWithoutDay($isSameDay);
+            }
         }
         /** @var Runner $runner */
         foreach ($runners as $runner) {
             $toRet[] = $runner;
-            $runner->_getOverall()->setCompareWithoutDay($isSameDay);
+            if ($team->_getOverall()) {
+                $runner->_getOverall()->setCompareWithoutDay($isSameDay);
+            }
         }
         $this->return = $toRet;
     }
