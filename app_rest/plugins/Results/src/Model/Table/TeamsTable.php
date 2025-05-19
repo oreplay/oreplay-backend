@@ -106,11 +106,17 @@ class TeamsTable extends AppTable
         $helper->getMetrics()->endClubsTime();
 
         $results = $teamData['team_results'] ?? [];
+        if (!$results) {
+            $helper->getMetrics()->setWarning('Team without team_results');
+        }
         foreach ($results as $resultData) {
             $helper->getMetrics()->addOneTeamResultToCounter();
             $team = $this->TeamResults->createTeamResult($resultData, $team, $helper);
         }
         $runners = $teamData['runners'] ?? [];
+        if (!$runners) {
+            $helper->getMetrics()->setWarning('Team without runners');
+        }
         foreach ($runners as $runnerData) {
             $nullClass = new ClassEntity();
             $nullClass->id = null;
