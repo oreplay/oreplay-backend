@@ -49,4 +49,18 @@ class Control extends AppEntity
             $this->control_type_id = ControlType::NORMAL;
         }
     }
+
+    public function setTypeFinishIfNotDefined()
+    {
+        if (!$this->control_type_id) {
+            $this->control_type_id = ControlType::FINISH;
+        }
+    }
+
+    public function setTypeClearIfNotDefined()
+    {
+        if (!$this->control_type_id) {
+            $this->control_type_id = ControlType::CLEAR;
+        }
+    }
 }
