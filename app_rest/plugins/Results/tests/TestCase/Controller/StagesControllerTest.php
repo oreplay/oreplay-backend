@@ -16,9 +16,11 @@ use Results\Model\Table\StagesTable;
 use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
+use Results\Test\Fixture\RawUploadsFixture;
 use Results\Test\Fixture\RunnersFixture;
 use Results\Test\Fixture\StagesFixture;
 use Results\Test\Fixture\StageTypesFixture;
+use Results\Test\Fixture\UploadLogsFixture;
 use Results\Test\Fixture\UsersEventsFixture;
 
 class StagesControllerTest extends ApiCommonErrorsTest
@@ -33,6 +35,8 @@ class StagesControllerTest extends ApiCommonErrorsTest
         ClubsFixture::LOAD,
         RunnersFixture::LOAD,
         OauthAccessTokensFixture::LOAD,
+        UploadLogsFixture::LOAD,
+        RawUploadsFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -137,7 +141,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
     {
         $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE . '?clean=1');
 
-        $this->assertEquals(204, $this->_response->getStatusCode());
+        $this->assertEquals(204, $this->_response->getStatusCode(), $this->_getBodyAsString());
         $stage = StagesTable::load()->findById(Stage::FIRST_STAGE)->first();
         $this->assertEquals(Stage::FIRST_STAGE, $stage->id);
         $class = ClassesTable::load()->findById(Stage::FIRST_STAGE)->first();
@@ -148,7 +152,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
     {
         $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE . '');
 
-        $this->assertEquals(204, $this->_response->getStatusCode());
+        $this->assertEquals(204, $this->_response->getStatusCode(), $this->_getBodyAsString());
         $stage = StagesTable::load()->findById(Stage::FIRST_STAGE)->first();
         $this->assertNull($stage);
         $class = ClassesTable::load()->findById(Stage::FIRST_STAGE)->first();

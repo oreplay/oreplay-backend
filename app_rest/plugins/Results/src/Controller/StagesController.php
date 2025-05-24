@@ -14,12 +14,14 @@ use Results\Model\Table\ClassesTable;
 use Results\Model\Table\ClubsTable;
 use Results\Model\Table\ControlsTable;
 use Results\Model\Table\CoursesTable;
+use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\RunnersTable;
 use Results\Model\Table\SplitsTable;
 use Results\Model\Table\StagesTable;
 use Results\Model\Table\TeamResultsTable;
 use Results\Model\Table\TeamsTable;
+use Results\Model\Table\UploadLogsTable;
 
 /**
  * @property StagesTable $Stages
@@ -57,6 +59,7 @@ class StagesController extends ApiController
         } else {
             $stageType = StageType::CLASSIC;
         }
+        RawUploadsTable::load()->hardDeleteOld();
         $stage->stage_type = $this->Stages->StageTypes->get($stageType);
         $this->return = $this->Stages->saveOrFail($stage);
     }
@@ -90,6 +93,7 @@ class StagesController extends ApiController
             $this->Stages->updateAll(['deleted' => $now], ['id' => $id, 'deleted is null']);
         }
         $this->return = false;
+        UploadLogsTable::load()->saveClearLog($eventId, $id);
     }
 
     protected function edit($id, $data)

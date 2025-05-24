@@ -24,6 +24,10 @@ class ResultsPlugin extends RestPlugin
             \Results\Controller\UploadsController::route()
         );
         $builder->connect(
+            '/events/{eventID}/rawUploads/*',
+            \Results\Controller\RawUploadsController::route()
+        );
+        $builder->connect(
             '/events/{eventID}/stages/{stageID}/clubs/*',
             \Results\Controller\StageClubsController::route()
         );
