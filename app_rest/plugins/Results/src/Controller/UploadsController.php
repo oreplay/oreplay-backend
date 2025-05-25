@@ -138,6 +138,9 @@ class UploadsController extends ApiController
         for ($i = 0; $i < $runnerCount; $i++) {
             $helper->getMetrics()->startRunnersInLoopTime();
             $runnerData = $runnerArray[$i];
+            if (!($runnerData['runners'] ?? [])) {
+                $helper->getMetrics()->setWarning('Team without runners ' . $runnerData['team_name'] ?? '');
+            }
             $teams[] = $this->teamsTable()->createTeamWithResults($runnerData, $class, $helper);
             $helper->getMetrics()->endRunnersInLoopTime();
         }
