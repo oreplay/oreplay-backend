@@ -6,11 +6,13 @@ namespace Results\Controller;
 
 use App\Lib\Consts\CacheGrp;
 use App\Lib\Exception\InvalidPayloadException;
+use App\Lib\FullBaseUrl;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
+use Results\Lib\DeferredResolution\FireAndForget;
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
@@ -40,6 +42,18 @@ class UploadsController extends ApiController
         $this->runnersTable()->emptyStoredList();
     }
 
+    private function _getHost()
+    {
+        $host = FullBaseUrl::host();
+        if (str_contains($host, 'http://')) {
+            return 'http://www.example.com';
+        }
+        if (str_contains($host, '127.0.0.1')) {
+            return 'http://localhost';
+        }
+        return $host;
+    }
+
     private function _addNew(UploadHelper $helper): array
     {
         $this->_clearUploadCache();
@@ -56,6 +70,9 @@ class UploadsController extends ApiController
 
         $configChecker = $helper->validateConfigChecker();
         $stageId = $helper->getStageId();
+
+        $rawUrl = $this->_getHost() . '/api/v1/events/' . $helper->getEventId() . '/rawUploads';
+        FireAndForget::postJson($rawUrl, $helper->getData(), ['Authorization' => 'Bearer ' . $token]);
 
         $helper->setExistingData($this->runnersTable()->RunnerResults, $this->teamsTable()->TeamResults);
 
@@ -116,12 +133,12 @@ class UploadsController extends ApiController
         $this->teamsTable()->ifDifferentClassEmptyStoredList($class->id);
         $teams = [];
         $runnerArray = $classArray['teams'] ?? [];
-        $runnerCount = count($runnerArray);
+        $teamCount = count($runnerArray);
         $helper->getMetrics()->startRunnersOutLoopTime();
-        for ($i = 0; $i < $runnerCount; $i++) {
+        for ($i = 0; $i < $teamCount; $i++) {
             $helper->getMetrics()->startRunnersInLoopTime();
-            $runnerData = $runnerArray[$i];
-            $teams[] = $this->teamsTable()->createTeamWithResults($runnerData, $class, $helper);
+            $teamData = $runnerArray[$i];
+            $teams[] = $this->teamsTable()->createTeamWithResults($teamData, $class, $helper);
             $helper->getMetrics()->endRunnersInLoopTime();
         }
         $helper->getMetrics()->endRunnersOutLoopTime();

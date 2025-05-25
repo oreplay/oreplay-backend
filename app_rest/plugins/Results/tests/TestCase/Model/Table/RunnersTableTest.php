@@ -119,6 +119,7 @@ class RunnersTableTest extends TestCase
     {
         $split81 = 'f6bde838-f018-49c6-960c-61e0b68ed73b';
         $split82 = 'f729162b-a2d0-4407-8b78-b2f55c615e13';
+        $this->Runners->RunnerResults->updateAll(['position' => null], ['id' => RunnerResult::FIRST_RES]);
         $Splits = $this->Runners->RunnerResults->Splits;
         $Splits->save($this->getMissingPunch($split81, 1, 81)); // 1st in course
         $Splits->updateAll(['order_number' => '1'], // 1st radio
@@ -142,7 +143,7 @@ class RunnersTableTest extends TestCase
         $runnerResult = $runner->_getOverall();
         $this->assertNull($runner->team_results);
         $this->assertEquals(RunnerResult::FIRST_RES, $runnerResult->id);
-        $this->assertEquals(1, $runnerResult->position);
+        $this->assertEquals(null, $runnerResult->position);
         $this->assertEquals(310, $runnerResult->time_seconds);
         $splits = $runnerResult->getSplits();
         $splitsArray = json_decode(json_encode($splits), true);

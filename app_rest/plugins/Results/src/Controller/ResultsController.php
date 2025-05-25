@@ -35,19 +35,13 @@ class ResultsController extends ApiController
         $teams = $this->Teams->findTeamsInStage($eventId, $stageId, $filters)->toArray();
         $runners = $this->Runners->findRunnersInStage($eventId, $stageId, $filters)->toArray();
         $isSameDay = (bool)($filters['forceSameDay'] ?? false);
-        $toRet = [];
-        /** @var Team $team */
-        foreach ($teams as $team) {
-            $toRet[] = $team;
-            if ($team->_getOverall()) {
-                $team->_getOverall()->setCompareWithoutDay($isSameDay);
-            }
-        }
-        /** @var Runner $runner */
-        foreach ($runners as $runner) {
-            $toRet[] = $runner;
-            if ($runner->_getOverall()) {
-                $runner->_getOverall()->setCompareWithoutDay($isSameDay);
+        $toRet = array_merge($teams, $runners);
+
+        /** @var Team|Runner $res */
+        foreach ($toRet as $res) {
+            $overall = $res->_getOverall();
+            if ($overall) {
+                $overall->setCompareWithoutDay($isSameDay);
             }
         }
         $this->return = $toRet;

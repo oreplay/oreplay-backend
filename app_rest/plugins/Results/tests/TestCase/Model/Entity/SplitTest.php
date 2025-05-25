@@ -112,4 +112,33 @@ class SplitTest extends TestCase
         $this->assertEquals($msg, $res->reason());
         $this->assertFalse($res->shouldDisplay(), $msg);
     }
+
+    public function testIsRadioFinish()
+    {
+        $split = new Split();
+        $split->is_intermediate = true;
+        $split->station = '20';
+        $this->assertTrue($split->isRadioFinish());
+        #
+        $split = new Split();
+        $split->is_intermediate = false;
+        $split->station = '20';
+        $this->assertFalse($split->isRadioFinish());
+        #
+        $split = new Split();
+        $split->is_intermediate = true;
+        $split->station = '19';
+        $this->assertFalse($split->isRadioFinish());
+        #
+        $split = new Split();
+        $split->is_intermediate = true;
+        $split->station = '30';
+        $this->assertFalse($split->isRadioFinish());
+        #
+        $split = new Split();
+        $split->is_intermediate = true;
+        $split->station = '29';
+        $this->assertTrue($split->isRadioFinish());
+        #
+    }
 }

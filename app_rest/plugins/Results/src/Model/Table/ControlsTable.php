@@ -36,7 +36,13 @@ class ControlsTable extends AppTable
             $helper->storeControlByStation($entity);
         }
         $entity->setAsNew();
-        $entity->setTypeNormalIfNotDefined();
+        if ($data['station'] === 1 || $data['station'] === '1') {
+            $entity->setTypeClearIfNotDefined();
+        } else if ($data['station'] > 19 && $data['station'] < 30) {
+            $entity->setTypeFinishIfNotDefined();
+        } else {
+            $entity->setTypeNormalIfNotDefined();
+        }
         return $entity;
     }
 

@@ -115,7 +115,7 @@ class TeamsTable extends AppTable
         }
         $runners = $teamData['runners'] ?? [];
         if (!$runners) {
-            $helper->getMetrics()->setWarning('Team without runners');
+            $helper->getMetrics()->setWarning('Team without runners ' . $teamData['team_name'] ?? '');
         }
         foreach ($runners as $runnerData) {
             $nullClass = new ClassEntity();
