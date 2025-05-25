@@ -46,6 +46,9 @@ class UploadsController extends ApiController
     {
         $host = FullBaseUrl::host();
         if (str_contains($host, 'http://')) {
+            return 'http://www.example.com';
+        }
+        if (str_contains($host, '127.0.0.1')) {
             return 'http://localhost';
         }
         return $host;

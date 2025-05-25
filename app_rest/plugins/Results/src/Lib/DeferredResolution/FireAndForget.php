@@ -24,7 +24,7 @@ class FireAndForget
         $isSsl = ($parts['scheme'] === 'https');
         $fp = fsockopen(($isSsl ? 'ssl://' : '') . $host, $port, $errno, $errstr, 30);
         if (!$fp) {
-            throw new InternalErrorException("Error opening connection with fsockopen: $errstr ($errno)");
+            throw new InternalErrorException("Error opening connection with fsockopen: $url $errstr ($errno)");
         }
 
         $headers = self::_getHeaderString($path, $host, $contentLength, $extraHeaders);
