@@ -8,7 +8,7 @@ use Cake\Http\Exception\InternalErrorException;
 
 class FireAndForget
 {
-    public static function postJson(string $url, array $data): void
+    public static function postJson(string $url, array $data, array $extraHeaders = []): void
     {
         $parts = parse_url($url);
         $host = $parts['host'];
@@ -24,15 +24,10 @@ class FireAndForget
         $isSsl = ($parts['scheme'] === 'https');
         $fp = fsockopen(($isSsl ? 'ssl://' : '') . $host, $port, $errno, $errstr, 30);
         if (!$fp) {
-            throw new InternalErrorException('Error opening fsockopen ' . $errno);
+            throw new InternalErrorException("Error opening connection with fsockopen: $errstr ($errno)");
         }
 
-        $headers = "POST {$path} HTTP/1.1\r\n";
-        $headers .= "Host: {$host}\r\n";
-        $headers .= "Content-Type: application/json\r\n";
-        $headers .= "Content-Length: {$contentLength}\r\n";
-        $headers .= "Connection: Close\r\n\r\n";
-
+        $headers = self::_getHeaderString($path, $host, $contentLength, $extraHeaders);
         $out = $headers . $jsonData;
 
         fwrite($fp, $out);
@@ -44,5 +39,22 @@ class FireAndForget
         //debug($response);
 
         fclose($fp);
+    }
+
+    private static function _getHeaderString(mixed $path, mixed $host, int $contentLength, array $extraHeaders): string
+    {
+        $headers = [
+            "POST {$path} HTTP/1.1",
+            "Host: {$host}",
+            "Content-Type: application/json",
+            "Content-Length: {$contentLength}",
+            "Connection: Close"
+        ];
+
+        foreach ($extraHeaders as $key => $value) {
+            $headers[] = "{$key}: {$value}";
+        }
+
+        return implode("\r\n", $headers) . "\r\n\r\n";
     }
 }
