@@ -133,15 +133,15 @@ class UploadsController extends ApiController
         $this->teamsTable()->ifDifferentClassEmptyStoredList($class->id);
         $teams = [];
         $runnerArray = $classArray['teams'] ?? [];
-        $runnerCount = count($runnerArray);
+        $teamCount = count($runnerArray);
         $helper->getMetrics()->startRunnersOutLoopTime();
-        for ($i = 0; $i < $runnerCount; $i++) {
+        for ($i = 0; $i < $teamCount; $i++) {
             $helper->getMetrics()->startRunnersInLoopTime();
-            $runnerData = $runnerArray[$i];
-            if (!($runnerData['runners'] ?? [])) {
-                $helper->getMetrics()->setWarning('Team without runners ' . $runnerData['team_name'] ?? '');
+            $teamData = $runnerArray[$i];
+            if (!($teamData['runners'] ?? [])) {
+                $helper->getMetrics()->setWarning('Team without runners ' . $teamData['team_name'] ?? '');
             }
-            $teams[] = $this->teamsTable()->createTeamWithResults($runnerData, $class, $helper);
+            $teams[] = $this->teamsTable()->createTeamWithResults($teamData, $class, $helper);
             $helper->getMetrics()->endRunnersInLoopTime();
         }
         $helper->getMetrics()->endRunnersOutLoopTime();
