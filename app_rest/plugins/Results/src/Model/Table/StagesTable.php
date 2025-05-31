@@ -8,6 +8,7 @@ use App\Model\Table\AppTable;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
 use Results\Model\Entity\Stage;
+use Results\Model\Entity\StageType;
 
 /**
  * @property EventsTable $Events
@@ -44,5 +45,36 @@ class StagesTable extends AppTable
         $res = $this->findByEvent($stageId, $eventId)
             ->firstOrFail();
         return $res;
+    }
+
+    public function getOrCreateTotalsInEvent(string $eventId): Stage
+    {
+        /** @var Stage $stage */
+        $stage = $this->find()
+            ->where([
+                'event_id' => $eventId,
+                'stage_type_id' => StageType::TOTALS
+            ])
+            ->contain(StageTypesTable::name())
+            ->orderAsc(StageTypesTable::field('created'))
+            ->first();
+        if ($stage) {
+            return $stage;
+        }
+        /** @var Stage $stage */
+        $stage = $this->patchFromNewWithUuid(['description' => '']);
+        $stage->event_id = $eventId;
+        $stage->stage_type_id = StageType::TOTALS;
+        $stage->stage_type = $this->StageTypes->get($stage->stage_type_id);
+        /** @var Stage $stage */
+        $stage = $this->saveOrFail($stage);
+        return $stage;
+    }
+
+    public function getStageTypeId(string $stageId): string
+    {
+        /** @var Stage $stage */
+        $stage = $this->get($stageId);
+        return $stage->stage_type_id;
     }
 }

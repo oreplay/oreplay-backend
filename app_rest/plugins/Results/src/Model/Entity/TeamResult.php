@@ -10,6 +10,9 @@ use Cake\I18n\FrozenTime;
  * @property FrozenTime $start_time
  * @property FrozenTime $finish_time
  * @property mixed $position
+ * @property mixed $time_seconds
+ * @property mixed $points_final
+ * @property mixed $stage_order
  * @property ResultType $result_type
  * @property string $upload_hash
  * @property string $result_type_id

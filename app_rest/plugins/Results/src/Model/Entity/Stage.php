@@ -6,12 +6,14 @@ namespace Results\Model\Entity;
 
 use App\Controller\ApiController;
 use App\Lib\FullBaseUrl;
+use Cake\I18n\FrozenTime;
 
 /**
  * @property string $event_id
- * @property integer $stage_type_id
+ * @property string $stage_type_id
  * @property StageType $stage_type
  * @property string $description
+ * @property FrozenTime $created
  */
 class Stage extends AppEntity
 {

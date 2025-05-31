@@ -16,6 +16,7 @@ use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Split;
+use Results\Model\Entity\StageType;
 use Results\Model\Entity\Team;
 use Results\Model\Table\AnswersTable;
 use Results\Model\Table\ClassesControlsTable;
@@ -26,6 +27,7 @@ use Results\Model\Table\CoursesTable;
 use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\RunnersTable;
 use Results\Model\Table\SplitsTable;
+use Results\Model\Table\StagesTable;
 use Results\Model\Table\TeamResultsTable;
 use Results\Model\Table\TeamsTable;
 use Results\Test\Fixture\ClassesFixture;
@@ -791,6 +793,69 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 //        }
         $this->_assertNewOptionalTables(0, 1, 1, 0);
         $this->_assertNewBasicTables(1, 1, 1, 3, 3);
+        $this->_assertNewResultsTables(0, 0);
+    }
+
+    public function testAddNew_shouldAddTotalsWithPoints()
+    {
+        Cache::clear();
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $data = ['oreplay_data_transfer' => TotalsExamples::simpleTotalPoints()];
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $this->_assertTotals($jsonDecoded);
+
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $dataTransfer = TotalsExamples::simpleTotalPoints(2932);
+        $data = ['oreplay_data_transfer' => $dataTransfer];
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $this->_assertTotals($jsonDecoded);
+    }
+
+    private function _assertTotals($jsonDecoded)
+    {
+        $ClassesTable = ClassesTable::load();
+        $decodedData = $jsonDecoded['data'];
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
+        $expectedMeta = [
+            'classes' => 1,
+            'runners' => 2,
+            'courses' => 1,
+            'splits' => 0,
+            'runnerResults' => 6,
+        ];
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
+        $this->assertStringContainsString('Updated 1 classes, 1 courses (0', $human);
+
+        $newStage = StagesTable::load()->find()->orderDesc('created')->firstOrFail();
+        $this->assertEquals(StageType::TOTALS, $newStage->stage_type_id);
+        $addedClasses = $ClassesTable->find()
+            ->where(['Classes.stage_id' => $newStage->id])
+            ->contain(CoursesTable::name())
+            ->orderAsc('Classes.oe_key')
+            ->all();
+        $expectedClasses = ['F-E'];
+        $this->assertEquals(count($expectedClasses), count($addedClasses));
+        foreach ($addedClasses as $k => $class) {
+            $this->assertEquals($expectedClasses[$k], $class->short_name);
+        }
+
+        $res = RunnersTable::load()
+            ->findRunnersInStage(Event::FIRST_EVENT, $newStage->id)
+            ->orderAsc('last_name')
+            ->all();
+        $this->assertEquals(2, count($res), 'Runner count in db');
+
+        $this->assertEquals(0, count($decodedData[0]['teams']));
+        $this->_assertNewOptionalTables(0, 0, 0, 0);
+        $this->_assertNewBasicTables(2, 1, 1, 2, 6);
         $this->_assertNewResultsTables(0, 0);
     }
 }
