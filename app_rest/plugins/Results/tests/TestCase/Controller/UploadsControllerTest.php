@@ -837,7 +837,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'runnerResults' => 6,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        $this->assertStringContainsString('Updated 1 classes, 1 courses (0', $human);
+        $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 1 courses (0', $human);
 
         $newStage = StagesTable::load()->find()->orderDesc('created')->firstOrFail();
         $this->assertEquals(StageType::TOTALS, $newStage->stage_type_id);

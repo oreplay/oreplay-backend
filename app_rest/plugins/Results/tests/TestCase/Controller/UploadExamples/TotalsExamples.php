@@ -79,7 +79,7 @@ class TotalsExamples
                                                 'points_bonus' => (int) 0,
                                                 'leg_number' => (int) 1,
                                                 'result_type' => [
-                                                    'id' => '5542d38b-8bd3-40f4-913d-2c38048a0b04',
+                                                    'id' => ResultType::OVERALL,
                                                     'description' => 'Overall'
                                                 ]
                                             ],
@@ -100,7 +100,7 @@ class TotalsExamples
                                                 'points_bonus' => (int) 0,
                                                 'leg_number' => (int) 1,
                                                 'result_type' => [
-                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'id' => ResultType::STAGE,
                                                     'description' => 'Stage'
                                                 ]
                                             ],
@@ -121,8 +121,7 @@ class TotalsExamples
                                                 'points_bonus' => (int) 0,
                                                 'leg_number' => (int) 1,
                                                 'result_type' => [
-                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
-                                                    'description' => 'Stage'
+                                                    'id' => ResultType::PARTIAL_OVERALL,
                                                 ]
                                             ]
                                         ],
@@ -165,7 +164,7 @@ class TotalsExamples
                                                 'points_bonus' => (int) 0,
                                                 'leg_number' => (int) 1,
                                                 'result_type' => [
-                                                    'id' => '5542d38b-8bd3-40f4-913d-2c38048a0b04',
+                                                    'id' => ResultType::OVERALL,
                                                     'description' => 'Overall'
                                                 ]
                                             ],
@@ -186,8 +185,7 @@ class TotalsExamples
                                                 'points_bonus' => (int) 0,
                                                 'leg_number' => (int) 1,
                                                 'result_type' => [
-                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
-                                                    'description' => 'Stage'
+                                                    'id' => ResultType::PARTIAL_OVERALL,
                                                 ]
                                             ],
                                             (int) 2 => [
@@ -207,8 +205,7 @@ class TotalsExamples
                                                 'points_bonus' => (int) 0,
                                                 'leg_number' => (int) 1,
                                                 'result_type' => [
-                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
-                                                    'description' => 'Stage'
+                                                    'id' => ResultType::PARTIAL_OVERALL,
                                                 ]
                                             ]
                                         ],

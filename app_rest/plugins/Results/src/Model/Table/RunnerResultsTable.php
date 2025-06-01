@@ -9,6 +9,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Results\Lib\UploadHelper;
+use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Traits\TimingTrait;
@@ -151,6 +152,13 @@ class RunnerResultsTable extends AppTable
 
     private function _newResultWithType(array $resultData, UploadHelper $helper): RunnerResult
     {
+        if ($helper->getChecker()->isTotals()) {
+            $resultType = $resultData['result_type']['id'] ?? null;
+            if ($resultType === ResultType::STAGE) {
+                $helper->getMetrics()->setWarning('Result type STAGE converted to PARTIAL_OVERALL');
+                $resultData['result_type'] = ['id' => ResultType::PARTIAL_OVERALL];
+            }
+        }
         $resultToSave = $this->fillNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
         $resultToSave->upload_type = $helper->getChecker()->preCheckType();
 

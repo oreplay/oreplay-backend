@@ -47,5 +47,12 @@ class ResultTypesFixture extends RestApiFixture
             'modified' => '2023-01-01 10:01:00',
             'deleted' => null,
         ],
+        [
+            'id' => ResultType::PARTIAL_OVERALL,
+            'description' => 'Partial Overall',
+            'created' => '2025-06-01 10:01:00',
+            'modified' => '2025-06-01 10:01:00',
+            'deleted' => null,
+        ],
     ];
 }

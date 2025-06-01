@@ -46,6 +46,13 @@ class ResultTypesSeed extends AbstractSeed
                 'modified' => $now,
                 'deleted' => null,
             ],
+            [
+                'id' => ResultType::PARTIAL_OVERALL,
+                'description' => 'Partial Overall',
+                'created' => $now,
+                'modified' => $now,
+                'deleted' => null,
+            ],
         ];
 
         $table = $this->table('result_types');
