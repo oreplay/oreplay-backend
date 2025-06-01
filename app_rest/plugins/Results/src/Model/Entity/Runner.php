@@ -6,6 +6,7 @@ namespace Results\Model\Entity;
 
 use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
+use Results\Lib\ResultsFilter;
 
 /**
  * @property string $first_name
@@ -20,6 +21,7 @@ use RestApi\Lib\Exception\DetailedException;
  * @property string $sex
  * @property FrozenTime $created
  * @property mixed $leg_number
+ * @property RunnerResult[] $runner_results
  */
 class Runner extends AppEntity
 {
@@ -39,6 +41,8 @@ class Runner extends AppEntity
     protected $_virtual = [
         'full_name',
         'overall',
+        'stage',
+        'overalls',
     ];
 
     protected $_hidden = [
@@ -83,15 +87,34 @@ class Runner extends AppEntity
         return $this;
     }
 
-    public function _getOverall(): ?RunnerResult
+    public function _getOveralls(): ?array
+    {
+        return ResultsFilter::getOveralls($this->getRunnerResults());
+    }
+
+    public function _getStage(): ?RunnerResult
     {
         /** @var RunnerResult $res */
-        $res = $this->runner_results[0] ?? null;
-        if ($res) {
-            $res->cleanSplitsWithoutRadios();
+        try {
+            $res = ResultsFilter::getFirstStage($this->getRunnerResults());
+            if ($res) {
+                $res->cleanSplitsWithoutRadios();
+            }
+            return $res;
+        } catch (\Exception $e) {
+            debug($this->first_name . ' ' . $this->last_name . ' ' . $this->bib_number);
+            throw $e;
         }
-        return $res;
     }
+    /**
+     * TO remove after added to frontend
+     * @deprecated use _getStage())
+     */
+    public function _getOverall(): ?RunnerResult
+    {
+        return $this->_getStage();
+    }
+
     /**
      * @return RunnerResult[]
      */

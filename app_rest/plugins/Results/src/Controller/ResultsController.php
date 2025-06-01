@@ -39,7 +39,7 @@ class ResultsController extends ApiController
 
         /** @var Team|Runner $res */
         foreach ($toRet as $res) {
-            $overall = $res->_getOverall();
+            $overall = $res->_getStage();
             if ($overall) {
                 $overall->setCompareWithoutDay($isSameDay);
             }

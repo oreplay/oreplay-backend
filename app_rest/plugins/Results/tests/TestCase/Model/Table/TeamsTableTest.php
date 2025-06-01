@@ -63,11 +63,11 @@ class TeamsTableTest extends TestCase
         $runnerA = $team['runners'][0];
         $this->assertEquals('First Runner', $runnerA->_getFullName());
         $this->assertEquals('1', $runnerA->leg_number);
-        $this->assertEquals(1, count($runnerA->_getOverall()->getSplits()));
+        $this->assertEquals(1, count($runnerA->_getStage()->getSplits()));
         /** @var Runner $runnerB */
         $runnerB = $team['runners'][1];
         $this->assertEquals('Second Raider', $runnerB->_getFullName());
         $this->assertEquals('2', $runnerB->leg_number);
-        $this->assertEquals(null, $runnerB->_getOverall());
+        $this->assertEquals(null, $runnerB->_getStage());
     }
 }

@@ -140,7 +140,7 @@ class RunnersTableTest extends TestCase
         $this->assertEquals(Runner::FIRST_RUNNER, $runner->id);
         $this->assertEquals('First', $runner->first_name);
         $this->assertEquals('Runner', $runner->last_name);
-        $runnerResult = $runner->_getOverall();
+        $runnerResult = $runner->_getStage();
         $this->assertNull($runner->team_results);
         $this->assertEquals(RunnerResult::FIRST_RES, $runnerResult->id);
         $this->assertEquals(null, $runnerResult->position);
@@ -196,7 +196,7 @@ class RunnersTableTest extends TestCase
         $this->assertEquals('First', $res->first_name);
         $this->assertEquals('Runner', $res->last_name);
         $this->assertEquals(ClassEntity::ME, $res->class_id);
-        $this->assertEquals(RunnerResult::FIRST_RES, $res->_getOverall()->id);
+        $this->assertEquals(RunnerResult::FIRST_RES, $res->_getStage()->id);
     }
 
     public function testMatchRunner()

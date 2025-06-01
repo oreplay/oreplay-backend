@@ -105,6 +105,45 @@ class ResultsControllerTest extends ApiCommonErrorsTest
 
     private function _getFirstRunner(): array
     {
+        $stage = [
+            'id' => TeamResultsFixture::TEAM_RESULT_1,
+            'result_type_id' => ResultType::STAGE,
+            'start_time' => '2024-01-03T10:10:00.000+00:00',
+            'finish_time' => '2024-01-03T10:15:10.000+00:00',
+            'time_seconds' => 310,
+            'position' => 1,
+            'status_code' => null,
+            'time_behind' => 0,
+            'points_final' => null,
+            'time_neutralization' => null,
+            'time_adjusted' => null,
+            'time_penalty' => null,
+            'time_bonus' => null,
+            'points_adjusted' => null,
+            'points_penalty' => null,
+            'points_bonus' => null,
+            'upload_type' => null,
+            //'leg_number' => null,
+            'splits' => [
+                [
+                    'id' => SplitsFixture::SPLIT_2,
+                    'points' => null,
+                    'reading_time' => '2024-01-03T11:00:20.321+00:00',
+                    'order_number' => null,
+                    'is_intermediate' => false,
+                    //'position' => 0,
+                    //'time_behind' => 0,
+                    'control' => [
+                        'id' => ControlsFixture::CONTROL_31,
+                        'station' => '31',
+                        'control_type' => [
+                            'id' => ControlType::NORMAL,
+                            'description' => 'Normal Control',
+                        ]
+                    ]
+                ]
+            ],
+        ];
         return [
             'id' => Team::FIRST_TEAM,
             'full_name' => 'First Team',
@@ -120,45 +159,9 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                 'long_name' => 'M Elite',
             ],
             'runners' => [],
-            'overall' => [
-                'id' => TeamResultsFixture::TEAM_RESULT_1,
-                'result_type_id' => ResultType::OVERALL,
-                'start_time' => '2024-01-03T10:10:00.000+00:00',
-                'finish_time' => '2024-01-03T10:15:10.000+00:00',
-                'time_seconds' => 310,
-                'position' => 1,
-                'status_code' => null,
-                'time_behind' => 0,
-                'points_final' => null,
-                'time_neutralization' => null,
-                'time_adjusted' => null,
-                'time_penalty' => null,
-                'time_bonus' => null,
-                'points_adjusted' => null,
-                'points_penalty' => null,
-                'points_bonus' => null,
-                'upload_type' => null,
-                //'leg_number' => null,
-                'splits' => [
-                    [
-                        'id' => SplitsFixture::SPLIT_2,
-                        'points' => null,
-                        'reading_time' => '2024-01-03T11:00:20.321+00:00',
-                        'order_number' => null,
-                        'is_intermediate' => false,
-                        //'position' => 0,
-                        //'time_behind' => 0,
-                        'control' => [
-                            'id' => ControlsFixture::CONTROL_31,
-                            'station' => '31',
-                            'control_type' => [
-                                'id' => ControlType::NORMAL,
-                                'description' => 'Normal Control',
-                            ]
-                        ]
-                    ]
-                ],
-            ],
+            'overalls' => null,
+            'stage' => $stage,
+            'overall' => $stage,
         ];
     }
 
@@ -221,6 +224,8 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                 'short_name' => 'ME',
                 'long_name' => 'M Elite',
             ],
+            'overalls' => null,
+            'stage' => $overall,
             'overall' => $overall,
         ];
     }

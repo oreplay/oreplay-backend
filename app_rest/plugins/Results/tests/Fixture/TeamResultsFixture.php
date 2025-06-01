@@ -17,7 +17,7 @@ class TeamResultsFixture extends RestApiFixture
 
     public $records = [
         [
-            'id' => self::TEAM_RESULT_1,
+            'id' => TeamResultsFixture::TEAM_RESULT_1,
             'event_id' => EventsFixture::FIRST_RAID,
             'stage_id' => Stage::FIRST_STAGE,
             'team_id' => Team::FIRST_TEAM,
@@ -25,7 +25,7 @@ class TeamResultsFixture extends RestApiFixture
             'stage_order' => null,
             'team_uuid' => null,
             'class_uuid' => null,
-            'result_type_id' => ResultType::OVERALL,
+            'result_type_id' => ResultType::STAGE,
             'check_time' => null,
             'start_time' => '2024-01-03 10:10:00',
             'finish_time' => '2024-01-03 10:15:10',

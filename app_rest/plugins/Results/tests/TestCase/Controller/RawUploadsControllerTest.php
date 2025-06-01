@@ -18,6 +18,7 @@ use Results\Test\Fixture\RawUploadsFixture;
 use Results\Test\Fixture\StagesFixture;
 use Results\Test\Fixture\TokensFixture;
 use Results\Test\Fixture\UploadLogsFixture;
+use Results\Test\TestCase\Controller\UploadExamples\StartExamples;
 
 class RawUploadsControllerTest extends ApiCommonErrorsTest
 {
@@ -42,7 +43,7 @@ class RawUploadsControllerTest extends ApiCommonErrorsTest
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
             ['id' => ClassEntity::ME]);
 
-        $data = ['oreplay_data_transfer' => UploadsControllerExamples::exampleImportSmall()];
+        $data = ['oreplay_data_transfer' => StartExamples::startImportSmall()];
         $this->post($this->_getEndpoint(), $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
