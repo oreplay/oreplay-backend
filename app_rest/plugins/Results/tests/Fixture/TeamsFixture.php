@@ -22,6 +22,8 @@ class TeamsFixture extends RestApiFixture
             'uuid' => '',
             'bib_number' => '301',
             'bib_alt' => '',
+            'is_nc' => false,
+            'eligibility' => '',
             'team_name' => 'First Team',
             'sicard' => '',
             'sicard_alt' => '',

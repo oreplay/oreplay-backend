@@ -36,6 +36,8 @@ class Runner extends AppEntity
         'bib_number' => true,
         'sex' => true,
         'leg_number' => true,
+        'is_nc' => true,
+        'eligibility' => true,
     ];
 
     protected $_virtual = [

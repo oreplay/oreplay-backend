@@ -149,6 +149,8 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'full_name' => 'First Team',
             'legs' => null,
             'bib_number' => '301',
+            'is_nc' => false,
+            'eligibility' => '',
             'club' => [
                 'id' => ClubsFixture::CLUB_1,
                 'short_name' => 'Club A',
@@ -213,6 +215,8 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'last_name' => 'Runner',
             'sicard' => '2009933',
             'bib_number' => '4444',
+            'is_nc' => false,
+            'eligibility' => '',
             'sex' => 'M',
             'leg_number' => null,
             'club' => [

@@ -22,6 +22,8 @@ class Team extends AppEntity
         'id' => false,
         'team_name' => true,
         'bib_number' => true,
+        'is_nc' => true,
+        'eligibility' => true,
     ];
 
     protected $_virtual = [
