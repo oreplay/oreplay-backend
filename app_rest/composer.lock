@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1968d9bc2de83ef4192acdc1015fb831",
+    "content-hash": "813a92e1938632478524d785b9dcc450",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
@@ -1154,16 +1154,16 @@
         },
         {
             "name": "freefri/cake-rest-api-oauth",
-            "version": "0.0.8",
+            "version": "0.0.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/freefri/cake-rest-api-oauth.git",
-                "reference": "549ccf50e58ce1258f24f187485438bf1f03711b"
+                "reference": "1509fc1d2ede3ba672f113c6f5b4b9182e7557da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/freefri/cake-rest-api-oauth/zipball/549ccf50e58ce1258f24f187485438bf1f03711b",
-                "reference": "549ccf50e58ce1258f24f187485438bf1f03711b",
+                "url": "https://api.github.com/repos/freefri/cake-rest-api-oauth/zipball/1509fc1d2ede3ba672f113c6f5b4b9182e7557da",
+                "reference": "1509fc1d2ede3ba672f113c6f5b4b9182e7557da",
                 "shasum": ""
             },
             "require": {
@@ -1219,20 +1219,20 @@
                 "issues": "https://github.com/freefri/cake-rest-api-oauth/issues",
                 "source": "https://github.com/freefri/cake-rest-api-oauth"
             },
-            "time": "2024-12-29T19:09:29+00:00"
+            "time": "2025-05-07T16:14:23+00:00"
         },
         {
             "name": "justinrainbow/json-schema",
-            "version": "6.4.1",
+            "version": "6.4.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jsonrainbow/json-schema.git",
-                "reference": "35d262c94959571e8736db1e5c9bc36ab94ae900"
+                "reference": "ce1fd2d47799bb60668643bc6220f6278a4c1d02"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jsonrainbow/json-schema/zipball/35d262c94959571e8736db1e5c9bc36ab94ae900",
-                "reference": "35d262c94959571e8736db1e5c9bc36ab94ae900",
+                "url": "https://api.github.com/repos/jsonrainbow/json-schema/zipball/ce1fd2d47799bb60668643bc6220f6278a4c1d02",
+                "reference": "ce1fd2d47799bb60668643bc6220f6278a4c1d02",
                 "shasum": ""
             },
             "require": {
@@ -1292,9 +1292,9 @@
             ],
             "support": {
                 "issues": "https://github.com/jsonrainbow/json-schema/issues",
-                "source": "https://github.com/jsonrainbow/json-schema/tree/6.4.1"
+                "source": "https://github.com/jsonrainbow/json-schema/tree/6.4.2"
             },
-            "time": "2025-04-04T13:08:07+00:00"
+            "time": "2025-06-03T18:27:04+00:00"
         },
         {
             "name": "laminas/laminas-diactoros",
@@ -2433,16 +2433,16 @@
         },
         {
             "name": "swagger-api/swagger-ui",
-            "version": "v5.22.0",
+            "version": "v5.24.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swagger-api/swagger-ui.git",
-                "reference": "4b37bf2a25a8d82fb0092b25d8108d1bb4171181"
+                "reference": "4680916cd91d4c9e7caabef0a1c677e2ab011118"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swagger-api/swagger-ui/zipball/4b37bf2a25a8d82fb0092b25d8108d1bb4171181",
-                "reference": "4b37bf2a25a8d82fb0092b25d8108d1bb4171181",
+                "url": "https://api.github.com/repos/swagger-api/swagger-ui/zipball/4680916cd91d4c9e7caabef0a1c677e2ab011118",
+                "reference": "4680916cd91d4c9e7caabef0a1c677e2ab011118",
                 "shasum": ""
             },
             "type": "library",
@@ -2488,9 +2488,9 @@
             ],
             "support": {
                 "issues": "https://github.com/swagger-api/swagger-ui/issues",
-                "source": "https://github.com/swagger-api/swagger-ui/tree/v5.22.0"
+                "source": "https://github.com/swagger-api/swagger-ui/tree/v5.24.0"
             },
-            "time": "2025-05-21T12:44:47+00:00"
+            "time": "2025-06-05T09:32:44+00:00"
         },
         {
             "name": "symfony/config",
