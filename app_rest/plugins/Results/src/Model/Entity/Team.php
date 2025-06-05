@@ -5,11 +5,13 @@ declare(strict_types = 1);
 namespace Results\Model\Entity;
 
 use RestApi\Lib\Exception\DetailedException;
+use Results\Lib\ResultsFilter;
 
 /**
  * @property string $team_name
  * @property mixed $bib_number
  * @property string $class_id
+ * @property TeamResult[] $team_results
  */
 class Team extends AppEntity
 {
@@ -20,11 +22,15 @@ class Team extends AppEntity
         'id' => false,
         'team_name' => true,
         'bib_number' => true,
+        'is_nc' => true,
+        'eligibility' => true,
     ];
 
     protected $_virtual = [
         'full_name',
         'overall',
+        'stage',
+        'overalls',
     ];
 
     protected $_hidden = [
@@ -79,14 +85,28 @@ class Team extends AppEntity
         return $this;
     }
 
-    public function _getOverall(): ?TeamResult
+    public function _getOveralls(): ?array
+    {
+        return ResultsFilter::getOveralls($this->team_results);
+    }
+
+    public function _getStage(): ?TeamResult
     {
         /** @var TeamResult $res */
-        $res = $this->team_results[0] ?? null;
+        $res = ResultsFilter::getFirstStage($this->team_results);
         if ($res) {
             $res->cleanSplitsWithoutRadios();
         }
         return $res;
+    }
+
+    /**
+     * TO remove after added to frontend
+     * @deprecated use _getStage())
+     */
+    public function _getOverall(): ?TeamResult
+    {
+        return $this->_getStage();
     }
 
     public function _getFullName()

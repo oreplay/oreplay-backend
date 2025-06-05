@@ -77,6 +77,14 @@ class UploadHelper implements UploadInterface
     public function validateConfigChecker(): UploadConfigChecker
     {
         $this->_checker = new UploadConfigChecker($this->_data);
+        if ($this->_checker->isTotals()) {
+            $Stages = StagesTable::load();
+            if (!$this->_checker->isStageTotals($Stages)) {
+                $stage = $Stages->getOrCreateTotalsInEvent($this->getEventId());
+                $this->_checker->overwriteStageId($stage->id);
+            }
+        }
+
         $checker = $this->_checker->validateStructure($this->getEventId());
 
         $this->_validateStageInEvent($this->getEventId(), $this->getStageId());

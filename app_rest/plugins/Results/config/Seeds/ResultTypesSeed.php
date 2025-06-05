@@ -46,11 +46,26 @@ class ResultTypesSeed extends AbstractSeed
                 'modified' => $now,
                 'deleted' => null,
             ],
+            [
+                'id' => ResultType::PARTIAL_OVERALL,
+                'description' => 'Partial Overall',
+                'created' => $now,
+                'modified' => $now,
+                'deleted' => null,
+            ],
         ];
 
         $table = $this->table('result_types');
-        if ($table->getAdapter()->fetchAll('SELECT * from ' . $table->getName() . ' LIMIT 1') === []) {
-            $table->insert($data)->save();
+        $rows = $table->getAdapter()->fetchAll('SELECT count(*) from ' . $table->getName() . ' LIMIT 1');
+        $count = $rows[0][0] ?? '';
+        if ($count !== count($data)) {
+            foreach ($data as $datum) {
+                try {
+                    $table->setData([])->insert($datum)->save();
+                } catch (\Exception $e) {
+                    debug($e->getMessage());
+                }
+            }
         }
     }
 }

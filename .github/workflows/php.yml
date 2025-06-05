@@ -3,10 +3,7 @@ name: PHP Composer & SonarCloud
 on:
   push:
     branches:
-      - 'main'
-      - 'develop'
-      - 'dev'
-      - 'test'
+      - '*'
   pull_request:
     branches:
       - '*'

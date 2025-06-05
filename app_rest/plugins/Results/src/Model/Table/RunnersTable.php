@@ -159,6 +159,9 @@ class RunnersTable extends AppTable
         $helper->getMetrics()->endClubsTime();
 
         $results = $runnerData['runner_results'] ?? [];
+        if (!$results) {
+            $helper->getMetrics()->setWarning('Runner without runner_results');
+        }
         foreach ($results as $resultData) {
             $helper->getMetrics()->addOneRunnerResultToCounter();
             $runner = $this->RunnerResults->createRunnerResult($resultData, $runner, $helper);

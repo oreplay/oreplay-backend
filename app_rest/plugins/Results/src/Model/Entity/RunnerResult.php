@@ -6,12 +6,13 @@ namespace Results\Model\Entity;
 
 use Cake\I18n\FrozenTime;
 use Results\Lib\Consts\StatusCode;
-use Results\Lib\UploadHelper;
 
 /**
  * @property integer $position
  * @property integer $time_seconds
+ * @property integer $points_final
  * @property integer $status_code
+ * @property mixed $stage_order
  * @property integer $time_behind
  * @property string $upload_type
  * @property string $event_id

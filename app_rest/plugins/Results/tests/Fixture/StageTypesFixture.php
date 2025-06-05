@@ -61,5 +61,12 @@ class StageTypesFixture extends RestApiFixture
             'modified' => '2023-01-01 10:01:00',
             'deleted' => null,
         ],
+        [
+            'id' => StageType::TOTALS,
+            'description' => 'Totals',
+            'created' => '2025-05-31 10:01:00',
+            'modified' => '2025-05-31 10:01:00',
+            'deleted' => null,
+        ],
     ];
 }

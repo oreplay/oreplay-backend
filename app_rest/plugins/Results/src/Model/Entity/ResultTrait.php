@@ -31,15 +31,24 @@ trait ResultTrait
         foreach ($this->getSplits() as $split) {
             if ($lastSplit) {
                 $reason = $split->compareWithoutDay($this->_compareWithoutDay)->shouldDisplayCurrent($lastSplit);
-                if ($reason->shouldDisplay()) {
+                if ($reason->shouldDisplay() && !$this->_hasPositionButNoTime($split)) {
+                    // skip split if it has position (all controls ok) and no reading_time
                     $lastSplit = $split;
                     $splitsToRet[] = $lastSplit;
                 }
             } else {
-                $lastSplit = $split;
-                $splitsToRet[] = $lastSplit;
+                if (!$this->_hasPositionButNoTime($split)) {
+                    $lastSplit = $split;
+                    $splitsToRet[] = $lastSplit;
+                }
             }
         }
         return $splitsToRet;
+    }
+
+    private function _hasPositionButNoTime(Split $s): bool
+    {
+        // has position (all controls ok) and no reading_time (one control is not ok)
+        return $this->position && !$s->reading_time;
     }
 }

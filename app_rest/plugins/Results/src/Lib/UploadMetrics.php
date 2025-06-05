@@ -226,8 +226,10 @@ class UploadMetrics
         }
         if ($participantCount && !$this->splitCount) {
             if (in_array($type, [UploadTypes::FINISH_TIMES, UploadTypes::INTERMEDIATES, UploadTypes::SPLITS])) {
-                $humanColor = Color::RED;
-                $this->setWarning('Uploading results without splits');
+                if (!$this->_formatExtraMessage()) {
+                    $humanColor = Color::RED;
+                    $this->setWarning('Uploading results without splits');
+                }
             }
         }
         $extraMessage = $this->_formatExtraMessage();

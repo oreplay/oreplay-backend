@@ -64,7 +64,7 @@ class ProcessPunches
         if ($runner) {
             $splitToSave->class_id = $runner->class_id;
             $splitToSave->runner_id = $runner->id;
-            $splitToSave->runner_result_id = $runner->_getOverall()->id;
+            $splitToSave->runner_result_id = $runner->_getStage()->id;
         } else {
             $this->log('CpiServerController: [32] no_runner in event '.$eventId.' '.$stageId);
             $splitToSave->class_id = null;
@@ -79,7 +79,7 @@ class ProcessPunches
         );
         //*/
         // maybe add $splitToSave->bib_runner = $punch['bib_runner'] ?? null;
-        // maybe add $splitToSave->runner_result_id = $runner->_getOverall()->id;
+        // maybe add $splitToSave->runner_result_id = $runner->_getStage()->id;
         $splitToSave->battery_perc = $punch['battery'] ?? null;
         $splitToSave->battery_time = $punch['reading'] ?? null;
         $control = $this->Splits->Controls->createControlIfNotExists($this->data, $split);

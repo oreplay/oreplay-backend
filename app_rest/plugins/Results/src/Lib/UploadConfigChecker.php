@@ -5,7 +5,10 @@ declare(strict_types = 1);
 namespace Results\Lib;
 
 use App\Lib\Exception\InvalidPayloadException;
+use Cake\Http\Exception\BadRequestException;
 use Results\Lib\Consts\UploadTypes;
+use Results\Model\Entity\StageType;
+use Results\Model\Table\StagesTable;
 
 class UploadConfigChecker
 {
@@ -16,6 +19,7 @@ class UploadConfigChecker
     private const TYPE_INTERMEDIATES = 'Radiocontrols';
     private const TYPE_FINISH_TIMES = 'Totals';
     private const TYPE_SPLITS = 'Breakdown';
+    private const TYPE_TOTAL_POINTS = 'TotalizationPoints';
 
     private array $_data;
     private array $_firstStage;
@@ -30,9 +34,31 @@ class UploadConfigChecker
         return $this->preCheckType() === UploadTypes::START_LIST;
     }
 
+    public function isTotals(): bool
+    {
+        return $this->preCheckType() === UploadTypes::TOTAL_POINTS;
+    }
+
     public function isIntermediates(): bool
     {
         return $this->preCheckType() === UploadTypes::INTERMEDIATES;
+    }
+
+    public function isStageTotals(StagesTable $table)
+    {
+        $currentStageId = $this->_getDataTransferred()['event']['stages'][0]['id'] ?? null;
+        if (!$currentStageId) {
+            throw new BadRequestException('Stage id not defined in event.stages.0.id');
+        }
+        return $table->getStageTypeId($currentStageId) === StageType::TOTALS;
+    }
+
+    public function overwriteStageId(string $id): UploadConfigChecker
+    {
+        if (isset($this->_getDataTransferred()['event']['stages'][0]['id'])) {
+            $this->_data['oreplay_data_transfer']['event']['stages'][0]['id'] = $id;
+        }
+        return $this;
     }
 
     public function validateStructure(string $eventId): self
@@ -85,6 +111,7 @@ class UploadConfigChecker
     {
         $contents = $this->_getDataTransferred()['configuration']['contents'] ?? null;
         $resultsType = $this->_getDataTransferred()['configuration']['results_type'] ?? null;
+        $totalization = $this->_getDataTransferred()['configuration']['totalization'] ?? null;
         $toRet = null;
         if ($contents === self::LIST_START && $resultsType === self::TYPE_START) {
             $toRet = UploadTypes::START_LIST;
@@ -97,6 +124,9 @@ class UploadConfigChecker
         }
         if ($contents === self::LIST_RESULT && $resultsType === self::TYPE_SPLITS) {
             $toRet = UploadTypes::SPLITS;
+        }
+        if ($totalization === self::TYPE_TOTAL_POINTS) {
+            $toRet = UploadTypes::TOTAL_POINTS;
         }
         if ($toRet) {
             return $toRet;

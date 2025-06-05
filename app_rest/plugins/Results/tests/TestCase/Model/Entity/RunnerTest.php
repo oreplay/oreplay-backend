@@ -7,7 +7,9 @@ namespace Results\Test\TestCase\Model\Entity;
 use Cake\I18n\FrozenTime;
 use Cake\TestSuite\TestCase;
 use RestApi\Lib\Exception\DetailedException;
+use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
+use Results\Model\Entity\RunnerResult;
 
 class RunnerTest extends TestCase
 {
@@ -74,5 +76,50 @@ class RunnerTest extends TestCase
             $exception = $e->getMessage();
         }
         $this->assertEquals('Fields first_name [] and last_name [nn] cannot be empty', $exception);
+    }
+
+    public function testGetStages()
+    {
+        $runnerResult1 = new RunnerResult();
+        $runnerResult1->result_type_id = ResultType::PARTIAL_OVERALL;
+        $runnerResult1->stage_order = 3;
+        $runnerResult1->position = 2;
+        $runnerResult1->time_seconds = 265;
+        $runnerResult1->points_final = 854;
+
+        $runnerResult2 = new RunnerResult();
+        $runnerResult2->result_type_id = ResultType::PARTIAL_OVERALL;
+        $runnerResult2->stage_order = 2;
+        $runnerResult2->position = 1;
+        $runnerResult2->time_seconds = 234;
+        $runnerResult2->points_final = 895;
+
+        $runner = new Runner();
+        $runner->runner_results = [
+            $runnerResult1,
+            $runnerResult2,
+        ];
+
+        $expected = [
+            'parts' => [
+                [
+                    'id' => null,
+                    'stage_order' => 2,
+                    'position' => 1,
+                    'time_seconds' => 234,
+                    'points_final' => 895,
+                ],
+                [
+                    'id' => null,
+                    'stage_order' => 3,
+                    'position' => 2,
+                    'time_seconds' => 265,
+                    'points_final' => 854,
+                ],
+            ],
+            'overall' => null,
+        ];
+        $this->assertEquals($expected, $runner->_getOveralls());
+        $this->assertEquals(null, $runner->_getStage());
     }
 }

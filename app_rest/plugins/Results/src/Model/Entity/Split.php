@@ -77,6 +77,11 @@ class Split extends AppEntity
         return $this->is_intermediate;
     }
 
+    public function isRadioFinish(): bool
+    {
+        return $this->isRadio() && $this->station > 19 && $this->station < 30;
+    }
+
     public function setStationVisible()
     {
         $this->setHidden(array_diff($this->getHidden(), ['station']));
