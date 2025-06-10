@@ -11,4 +11,5 @@ class UploadTypes
     public const FINISH_TIMES = 'res_finish';
     public const SPLITS = 'res_splits';
     public const TOTAL_POINTS = 'total_points';
+    public const TOTAL_TIMES = 'total_times';
 }

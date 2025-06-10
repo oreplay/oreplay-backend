@@ -20,6 +20,7 @@ class UploadConfigChecker
     private const TYPE_FINISH_TIMES = 'Totals';
     private const TYPE_SPLITS = 'Breakdown';
     private const TYPE_TOTAL_POINTS = 'TotalizationPoints';
+    private const TYPE_TOTAL_TIMES = 'TotalizationTime';
 
     private array $_data;
     private array $_firstStage;
@@ -36,7 +37,7 @@ class UploadConfigChecker
 
     public function isTotals(): bool
     {
-        return $this->preCheckType() === UploadTypes::TOTAL_POINTS;
+        return in_array($this->preCheckType(), [UploadTypes::TOTAL_POINTS, UploadTypes::TOTAL_TIMES]);
     }
 
     public function isIntermediates(): bool
@@ -127,6 +128,9 @@ class UploadConfigChecker
         }
         if ($totalization === self::TYPE_TOTAL_POINTS) {
             $toRet = UploadTypes::TOTAL_POINTS;
+        }
+        if ($totalization === self::TYPE_TOTAL_TIMES) {
+            $toRet = UploadTypes::TOTAL_TIMES;
         }
         if ($toRet) {
             return $toRet;
