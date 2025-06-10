@@ -28,7 +28,6 @@ class Team extends AppEntity
 
     protected $_virtual = [
         'full_name',
-        'overall',
         'stage',
         'overalls',
     ];

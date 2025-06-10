@@ -163,7 +163,6 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'runners' => [],
             'overalls' => null,
             'stage' => $stage,
-            'overall' => $stage,
         ];
     }
 
@@ -230,7 +229,6 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             ],
             'overalls' => null,
             'stage' => $overall,
-            'overall' => $overall,
         ];
     }
 }
