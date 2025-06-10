@@ -17,9 +17,11 @@ use Results\Lib\UploadHelper;
 use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Table\ClassesTable;
+use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\RunnersTable;
 use Results\Model\Table\TeamsTable;
 use Results\Model\Table\TokensTable;
+use Results\Model\Table\UploadLogsTable;
 
 /**
  * @property RunnersTable $Runners
@@ -71,8 +73,8 @@ class UploadsController extends ApiController
         $configChecker = $helper->validateConfigChecker();
         $stageId = $helper->getStageId();
 
-        $rawUrl = $this->_getHost() . '/api/v1/events/' . $helper->getEventId() . '/rawUploads';
-        FireAndForget::postJson($rawUrl, $helper->getData(), ['Authorization' => 'Bearer ' . $token]);
+        //$rawUrl = $this->_getHost() . '/api/v1/events/' . $helper->getEventId() . '/rawUploads';
+        //FireAndForget::postJson($rawUrl, $helper->getData(), ['Authorization' => 'Bearer ' . $token]);
 
         $helper->setExistingData($this->runnersTable()->RunnerResults, $this->teamsTable()->TeamResults);
 
@@ -100,6 +102,9 @@ class UploadsController extends ApiController
         }
 
         $this->_clearUploadCache();
+
+        $log = UploadLogsTable::load()->saveUploadLog($helper);
+        RawUploadsTable::load()->saveFile($log, $helper);
 
         $metrics->endTotalTimer();
 

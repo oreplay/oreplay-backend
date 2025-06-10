@@ -32,6 +32,7 @@ class FireAndForget
 
         fwrite($fp, $out);
 
+        // reading is required
         //$response = '';
         //while (!feof($fp)) {
         //    $response .= fgets($fp, 1024);
