@@ -136,6 +136,6 @@ class UploadConfigChecker
             return $toRet;
         }
         throw new InvalidPayloadException(
-            "Invalid payload structure configuration.contents $contents and configuration.contents $resultsType");
+            "Invalid payload structure configuration.contents $contents and configuration.results_type $resultsType");
     }
 }
