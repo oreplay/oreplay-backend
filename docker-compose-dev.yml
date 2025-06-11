@@ -21,10 +21,16 @@ services:
       #- .env.production # TODO do not commit
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - oreplay_network
+
   memcached:
     image: docker.io/bitnami/memcached:1.6.9-debian-10-r194
     #ports:
     #  - '11211:11211'
+    networks:
+      - oreplay_network
+
   mysql:
     image: mysql:8.0.28-debian
     ports:
@@ -37,6 +43,13 @@ services:
       MYSQL_PASSWORD: a1234
       MYSQL_ROOT_PASSWORD: password
       MYSQL_ROOT_HOST: '%'
+    networks:
+      - oreplay_network
+
+networks:
+  oreplay_network:
+    driver: bridge
+
   #sonarqube:
   #  image: sonarqube:latest
   #  ports:
