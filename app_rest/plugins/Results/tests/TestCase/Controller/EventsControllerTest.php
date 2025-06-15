@@ -117,7 +117,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $bodyDecoded = $this->assertJsonResponseOK();
         $expected = [
             'id' => '1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow',
-            'description' => 'Tomorrow event',
+            'description' => 'Tomorrow ranking event',
             'initial_date' => $tomorrow,
             'final_date' => $tomorrow,
             'federation_id' => 'IOF',

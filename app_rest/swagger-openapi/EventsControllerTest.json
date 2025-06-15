@@ -103,7 +103,7 @@
                                                 },
                                                 "description": {
                                                     "type": "string",
-                                                    "example": "Tomorrow event"
+                                                    "example": "Tomorrow ranking event"
                                                 },
                                                 "picture": {
                                                     "type": "string",

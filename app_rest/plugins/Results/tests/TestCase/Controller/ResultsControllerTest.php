@@ -52,7 +52,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals(2, count($bodyDecoded['data']));
-        $this->assertEquals($this->_getFirstRunner(), $bodyDecoded['data'][0]);
+        $this->assertEquals($this->_getFirstTeam(), $bodyDecoded['data'][0]);
         $this->assertEquals($this->_getSecondRunner(), $bodyDecoded['data'][1]);
     }
 
@@ -62,7 +62,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals(2, count($bodyDecoded['data']));
-        $this->assertEquals($this->_getFirstRunner(), $bodyDecoded['data'][0]);
+        $this->assertEquals($this->_getFirstTeam(), $bodyDecoded['data'][0]);
         $this->assertEquals($this->_getSecondRunner(), $bodyDecoded['data'][1]);
     }
 
@@ -81,7 +81,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals(2, count($bodyDecoded['data']));
-        $this->assertEquals($this->_getFirstRunner(), $bodyDecoded['data'][0]);
+        $this->assertEquals($this->_getFirstTeam(), $bodyDecoded['data'][0]);
         $this->assertEquals($this->_getSecondRunner(), $bodyDecoded['data'][1]);
     }
 
@@ -103,7 +103,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals([], $bodyDecoded['data']);
     }
 
-    private function _getFirstRunner(): array
+    private function _getFirstTeam(): array
     {
         $stage = [
             'id' => TeamResultsFixture::TEAM_RESULT_1,

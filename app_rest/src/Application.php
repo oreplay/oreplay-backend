@@ -39,6 +39,7 @@ class Application extends BaseApplication
     {
         $this->addPlugin('Migrations');
         $this->addPlugin(\RadioRelay\RadioRelayPlugin::class);
+        $this->addPlugin(\Rankings\RankingsPlugin::class);
         $this->addPlugin(\RestOauth\RestOauthPlugin::class);
         $this->addPlugin(\Results\ResultsPlugin::class);
     }

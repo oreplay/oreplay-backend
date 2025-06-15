@@ -12,10 +12,11 @@ use Results\Model\Entity\Organizer;
 
 class EventsFixture extends RestApiFixture
 {
-    public const LOAD = 'plugin.Results.Events';
+    public const string LOAD = 'plugin.Results.Events';
 
-    public const FIRST_RAID = '1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00';
-    public const EVENT_TODAY = '1b10cfcc-b3f2-40bb-8dbe-8b24c0-today';
+    public const string FIRST_RAID = '1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00';
+    public const string EVENT_TODAY = '1b10cfcc-b3f2-40bb-8dbe-8b24c0-today';
+    public const string EVENT_TOMORROW_RANKING = '85a7c518-54a8-4180-9708-9dcd4e9906c7';
 
     public function init(): void
     {
@@ -54,8 +55,8 @@ class EventsFixture extends RestApiFixture
                 'deleted' => null,
             ],
             [
-                'id' => '1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow',
-                'description' => 'Tomorrow event',
+                'id' => self::EVENT_TOMORROW_RANKING,
+                'description' => 'Tomorrow ranking event',
                 'initial_date' => (new DateTime('now'))->modify('+1 day')->format('Y-m-d'),
                 'final_date' => (new DateTime('now'))->modify('+1 day')->format('Y-m-d'),
                 'federation_id' => Federation::IOF,

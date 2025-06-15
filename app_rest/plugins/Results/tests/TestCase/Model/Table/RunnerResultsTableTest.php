@@ -243,6 +243,7 @@ class RunnerResultsTableTest extends TestCase
             'leg_number' => 3,
             'start_time' => '2014-07-06T11:09:14.523+01:00'
         ];
+        /** @var RunnerResult $runnerResult */
         $runnerResult = $this->RunnerResults->fillNewWithUuid($data);
         $runnerResult->id = 'newRunnerTest';
         $runnerResult->event_id = Event::FIRST_EVENT;

@@ -12,5 +12,5 @@ class StatusCode
     public const MP = '3'; // missing punch
     public const DQF = '4'; //disqualified
     public const OT = '5'; //out of time
-    public const NC = '9'; // not competitive
+    //public const NC = '9'; // not competitive
 }

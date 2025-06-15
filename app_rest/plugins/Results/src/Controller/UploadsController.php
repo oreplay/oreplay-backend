@@ -129,7 +129,7 @@ class UploadsController extends ApiController
             $helper->getMetrics()->endRunnersInLoopTime();
         }
         $helper->getMetrics()->endRunnersOutLoopTime();
-        $class->runners = $runners;
+        $class->addRunners($runners);
         return $class;
     }
 

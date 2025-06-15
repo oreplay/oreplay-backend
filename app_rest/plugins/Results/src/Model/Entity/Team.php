@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
+use Rankings\Model\Table\ParticipantInterface;
+use Rankings\Model\Traits\ParticipantTrait;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\ResultsFilter;
 
@@ -11,10 +13,13 @@ use Results\Lib\ResultsFilter;
  * @property string $team_name
  * @property mixed $bib_number
  * @property string $class_id
+ * @property bool $is_nc
  * @property TeamResult[] $team_results
  */
-class Team extends AppEntity
+class Team extends AppEntity implements ParticipantInterface
 {
+    use ParticipantTrait;
+
     public const FIRST_TEAM = '8ea9f351-4141-4ff2-891d-9e2a904bc296';
 
     protected $_accessible = [
@@ -81,7 +86,13 @@ class Team extends AppEntity
     public function addClub(Club $club): Team
     {
         $this->club = $club;
+        $this->_fields['club'] = $club;
         return $this;
+    }
+
+    public function _getClub(): ?Club
+    {
+        return $this->_fields['club'] ?? null;
     }
 
     public function _getOveralls(): ?array

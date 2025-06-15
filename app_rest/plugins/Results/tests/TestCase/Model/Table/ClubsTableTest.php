@@ -17,7 +17,6 @@ class ClubsTableTest extends TestCase
         EventsFixture::LOAD,
         ClubsFixture::LOAD,
     ];
-    /** @var ClubsTable Runners */
     private ClubsTable $Clubs;
 
     public function setUp(): void

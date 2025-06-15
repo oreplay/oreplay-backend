@@ -9,6 +9,7 @@ use App\Model\Entity\User;
 use Cake\Auth\DefaultPasswordHasher;
 use Cake\Datasource\EntityInterface;
 use Cake\Http\Exception\BadRequestException;
+use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\Utility\Text;
@@ -84,5 +85,15 @@ class UsersTable extends AppTable
             throw new UnauthorizedException('Invalid password');
         }
         return $usr;
+    }
+
+    public function getManagerOrFail(string $uid): User
+    {
+        /** @var User $user */
+        $user = $this->_getFirst($uid);
+        if (!$user->isManager()) {
+            throw new ForbiddenException('Only for manager users');
+        }
+        return $user;
     }
 }

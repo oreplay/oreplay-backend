@@ -35,6 +35,20 @@ class ClassesTable extends AppTable
         return $table;
     }
 
+    public function duplicateIfNotExists(string $classId, string $eventId, string $stageId): ClassEntity
+    {
+        /** @var ClassEntity $class */
+        $class = $this->get($classId);
+        $classObj = [
+            'id' => '',
+            'uuid' => $classId,
+            'oe_key' => $class->oe_key,
+            'short_name' => $class->short_name,
+            'long_name' => $class->long_name,
+        ];
+        return $this->createIfNotExists($eventId, $stageId, $classObj);
+    }
+
     public function createIfNotExists(string $eventId, string $stageId, array $data): ClassEntity
     {
         /** @var ClassEntity $class */

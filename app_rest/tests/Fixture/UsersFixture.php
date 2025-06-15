@@ -18,6 +18,7 @@ class UsersFixture extends RestApiFixture
             'email' => self::USER_ADMIN_EMAIL,
             'first_name' => 'My Name',
             'last_name' => 'My Surname',
+            'is_admin' => true,
             'password' => '$2y$10$1cCayk8qquFFWyvk161qZuOm4kgLFbmg4O1ItVQ5Qt.w3V28VNUk2',
             'created' => '2021-01-18 10:39:23',
             'modified' => '2021-01-18 10:41:31'

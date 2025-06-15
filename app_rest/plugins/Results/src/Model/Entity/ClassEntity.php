@@ -45,6 +45,11 @@ class ClassEntity extends AppEntity
         'deleted',
     ];
 
+    public function addRunners(array $runners)
+    {
+        $this->runners = $runners;
+    }
+
     public function isSameUploadHash(array $compareArray): bool
     {
         $uploadHash = UploadHelper::md5Encode($compareArray);

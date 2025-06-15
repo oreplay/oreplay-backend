@@ -13,6 +13,7 @@ use Cake\ORM\Entity;
  * @property string email
  * @property mixed group_id
  * @property mixed $password
+ * @property mixed $is_admin
  */
 class User extends Entity
 {
@@ -43,5 +44,10 @@ class User extends Entity
         if (strlen($password) > 0) {
             return (new DefaultPasswordHasher)->hash($password);
         }
+    }
+
+    public function isManager(): bool
+    {
+        return (bool)$this->is_admin;
     }
 }

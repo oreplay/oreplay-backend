@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Results\Model\Entity;
 
 use Cake\I18n\FrozenTime;
+use Rankings\Model\Table\ParticipantInterface;
+use Rankings\Model\Traits\ParticipantTrait;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\ResultsFilter;
 
@@ -21,10 +23,13 @@ use Results\Lib\ResultsFilter;
  * @property string $sex
  * @property FrozenTime $created
  * @property mixed $leg_number
+ * @property bool $is_nc
  * @property RunnerResult[] $runner_results
  */
-class Runner extends AppEntity
+class Runner extends AppEntity implements ParticipantInterface
 {
+    use ParticipantTrait;
+
     public const FIRST_RUNNER = 'd08fa43b-ddf8-47f6-9a59-2f1828881765';
 
     protected $_accessible = [
@@ -85,7 +90,13 @@ class Runner extends AppEntity
     public function addClub(Club $club): Runner
     {
         $this->club = $club;
+        $this->_fields['club'] = $club;
         return $this;
+    }
+
+    public function _getClub(): ?Club
+    {
+        return $this->_fields['club'] ?? null;
     }
 
     public function _getOveralls(): ?array

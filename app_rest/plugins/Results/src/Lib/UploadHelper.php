@@ -74,9 +74,14 @@ class UploadHelper implements UploadInterface
         return md5(json_encode($array)); // NOSONAR
     }
 
+    public function setConfigChecker(UploadConfigChecker $checker): void
+    {
+        $this->_checker = $checker;
+    }
+
     public function validateConfigChecker(): UploadConfigChecker
     {
-        $this->_checker = new UploadConfigChecker($this->_data);
+        $this->setConfigChecker(new UploadConfigChecker($this->_data));
         if ($this->_checker->isTotals()) {
             $Stages = StagesTable::load();
             if (!$this->_checker->isStageTotals($Stages)) {

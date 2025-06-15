@@ -9,10 +9,13 @@ use App\Model\Table\UsersTable;
 use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
+use Rankings\Model\Table\ParticipantInterface;
 use RestApi\Model\ORM\RestApiSelectQuery;
+use Results\Lib\Consts\StatusCode;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Runner;
+use Results\Model\Entity\Team;
 use Results\Model\Traits\StoredParticipantTrait;
 
 /**
@@ -96,6 +99,17 @@ class RunnersTable extends AppTable
             $this->addParticipantInClass($runner, $class->id ?: '');
         }
         return $runner;
+    }
+
+    public function duplicateIfNotExists(
+        string $eventId,
+        string $stageId,
+        ParticipantInterface $participant,
+        ClassEntity $class
+    ): Runner {
+        $runnerData = $participant->jsonSerialize();
+        $runnerData['id'] = '';
+        return $this->createRunnerIfNotExists($eventId, $stageId, $runnerData, $class);
     }
 
     private function _findRunnersInStage(string $eventId, string $stageId): RestApiSelectQuery

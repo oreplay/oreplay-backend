@@ -21,6 +21,9 @@
       <testsuite name="RadioRelay">
           <directory>plugins/RadioRelay/tests/TestCase/</directory>
       </testsuite>
+      <testsuite name="Rankings">
+          <directory>plugins/Rankings/tests/TestCase/</directory>
+      </testsuite>
       <testsuite name="Oauth">
           <directory>vendor/freefri/cake-rest-api-oauth/tests/TestCase/</directory>
           <exclude>vendor/freefri/cake-rest-api-oauth/tests/TestCase/Controller/AuthorizeControllerTest.php</exclude>

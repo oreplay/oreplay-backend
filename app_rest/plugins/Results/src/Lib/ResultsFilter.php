@@ -7,6 +7,7 @@ namespace Results\Lib;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\TeamResult;
+use Results\Model\Table\StageOrdersTable;
 
 class ResultsFilter
 {
@@ -59,11 +60,17 @@ class ResultsFilter
         }
         /** @var TeamResult|RunnerResult $res */
         foreach ($results as $res) {
-            if ($res->result_type_id === ResultType::PARTIAL_OVERALL) {
+            $typeId = $res->result_type_id;
+            if (!$typeId) {
+                $typeId = $res->result_type->id;
+            }
+            if ($typeId === ResultType::PARTIAL_OVERALL) {
                 $stageOrder = (int)$res->stage_order;
+                $stage = StageOrdersTable::load()->getDescriptionByOrder($stageOrder, $res->stage_id);
                 $toRet[] = [
                     'id' => $res->id,
                     'stage_order' => $stageOrder,
+                    'stage' => $stage,
                     'position' => $res->position,
                     'time_seconds' => $res->time_seconds,
                     'points_final' => $res->points_final,
