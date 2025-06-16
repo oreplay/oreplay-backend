@@ -39,12 +39,12 @@ class ResultsSorter
             $timeB = $b->_getOveralls()->_getOverall()['time_seconds'] ?? null;
 
             if ($posA !== $posB) {
-                return ($posA <=> $posB);
+                return $posA <=> $posB;
             }
             if ($pointsA !== $pointsB) {
-                return ($pointsB <=> $pointsA);
+                return $pointsB <=> $pointsA;
             }
-            return ($timeA <=> $timeB);
+            return $timeA <=> $timeB;
         };
     }
 }
