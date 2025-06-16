@@ -95,28 +95,22 @@ class Team extends AppEntity implements ParticipantInterface
         return $this->_fields['club'] ?? null;
     }
 
-    public function _getOveralls(): ?array
+    /**
+     * @return TeamResult[]
+     */
+    public function getResultList()
     {
-        return ResultsFilter::getOveralls($this->team_results);
+        return $this->team_results;
     }
 
     public function _getStage(): ?TeamResult
     {
         /** @var TeamResult $res */
-        $res = ResultsFilter::getFirstStage($this->team_results);
+        $res = ResultsFilter::getFirstStage($this->getResultList());
         if ($res) {
             $res->cleanSplitsWithoutRadios();
         }
         return $res;
-    }
-
-    /**
-     * TO remove after added to frontend
-     * @deprecated use _getStage())
-     */
-    public function _getOverall(): ?TeamResult
-    {
-        return $this->_getStage();
     }
 
     public function _getFullName()

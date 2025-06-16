@@ -226,6 +226,8 @@
       <path value="$PROJECT_DIR$/app_rest/vendor/freefri/cake-rest-api-oauth" />
       <path value="$PROJECT_DIR$/app_rest/vendor/firebase/php-jwt" />
       <path value="$PROJECT_DIR$/app_rest/vendor/marc-mabe/php-enum" />
+      <path value="$PROJECT_DIR$/app_rest/vendor/fig/http-message-util" />
+      <path value="$PROJECT_DIR$/app_rest/vendor/react/http" />
     </include_path>
   </component>
   <component name="PhpInterpreters">

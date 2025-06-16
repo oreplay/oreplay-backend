@@ -224,7 +224,8 @@ function migrationList(): array
 {
     return [
         [],
-        ['plugin' => (new \Results\ResultsPlugin)->getName()],
-        ['plugin' => (new \RestOauth\RestOauthPlugin)->getName()],
+        \Rankings\RankingsPlugin::getMigrationLoader(),
+        \Results\ResultsPlugin::getMigrationLoader(),
+        \RestOauth\RestOauthPlugin::getMigrationLoader(),
     ];
 }

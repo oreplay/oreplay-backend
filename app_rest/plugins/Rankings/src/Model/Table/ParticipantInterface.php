@@ -14,4 +14,5 @@ interface ParticipantInterface
     public function setLeader(ParticipantInterface $runner): ParticipantInterface;
     public function _getRankingPoints(): ?float;
     public function _getClub(): ?Club;
+    public function getResultList();
 }

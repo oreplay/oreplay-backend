@@ -116,7 +116,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $expected = [
-            'id' => '1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow',
+            'id' => EventsFixture::EVENT_TOMORROW_RANKING,
             'description' => 'Tomorrow ranking event',
             'initial_date' => $tomorrow,
             'final_date' => $tomorrow,
@@ -131,7 +131,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'created' => '2022-03-13T10:01:00.000+00:00',
             'modified' => '2022-03-13T10:01:00.000+00:00',
             '_links' => [
-                'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow'
+                'self' => 'http://dev.example.com/api/v1/events/' . EventsFixture::EVENT_TOMORROW_RANKING
             ],
             'organizer' => $this->_organizer(),
         ];

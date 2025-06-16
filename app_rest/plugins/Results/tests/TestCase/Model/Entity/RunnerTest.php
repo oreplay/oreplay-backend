@@ -6,13 +6,19 @@ namespace Results\Test\TestCase\Model\Entity;
 
 use Cake\I18n\FrozenTime;
 use Cake\TestSuite\TestCase;
+use Rankings\Test\Fixture\RankingsFixture;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
+use Results\Test\Fixture\StagesFixture;
 
 class RunnerTest extends TestCase
 {
+    protected $fixtures = [
+        RankingsFixture::LOAD,
+    ];
+
     public function test_getFullName()
     {
         $runnerResult = new Runner();
@@ -78,17 +84,21 @@ class RunnerTest extends TestCase
         $this->assertEquals('Fields first_name [] and last_name [nn] cannot be empty', $exception);
     }
 
-    public function testGetStages()
+    public function testGetOveralls()
     {
         $runnerResult1 = new RunnerResult();
+        $runnerResult1->id = 'runnerResult1';
         $runnerResult1->result_type_id = ResultType::PARTIAL_OVERALL;
+        $runnerResult1->stage_id = StagesFixture::STAGE_RANKING;
         $runnerResult1->stage_order = 3;
         $runnerResult1->position = 2;
         $runnerResult1->time_seconds = 265;
         $runnerResult1->points_final = 854;
 
         $runnerResult2 = new RunnerResult();
+        $runnerResult2->id = 'runnerResult2';
         $runnerResult2->result_type_id = ResultType::PARTIAL_OVERALL;
+        $runnerResult2->stage_id = StagesFixture::STAGE_RANKING;
         $runnerResult2->stage_order = 2;
         $runnerResult2->position = 1;
         $runnerResult2->time_seconds = 234;
@@ -103,23 +113,32 @@ class RunnerTest extends TestCase
         $expected = [
             'parts' => [
                 [
-                    'id' => null,
+                    'id' => 'runnerResult2',
                     'stage_order' => 2,
+                    'stage' => null,
                     'position' => 1,
                     'time_seconds' => 234,
                     'points_final' => 895,
                 ],
                 [
-                    'id' => null,
+                    'id' => 'runnerResult1',
                     'stage_order' => 3,
+                    'stage' => null,
                     'position' => 2,
                     'time_seconds' => 265,
                     'points_final' => 854,
                 ],
             ],
-            'overall' => null,
+            'overall' => [
+                'id' => '',
+                'stage_order' => 2,
+                'stage' => null,
+                'position' => -1,
+                'time_seconds' => 499,
+                'points_final' => 1749,
+            ],
         ];
-        $this->assertEquals($expected, $runner->_getOveralls());
+        $this->assertEquals($expected, json_decode(json_encode($runner->_getOveralls()), true));
         $this->assertEquals(null, $runner->_getStage());
     }
 }

@@ -12,9 +12,13 @@
       <sourceFolder url="file://$MODULE_DIR$/app_rest/vendor/freefri/cake-rest-api-oauth/tests" isTestSource="true" packagePrefix="RestOauth\Test\" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/RadioRelay/src" isTestSource="false" packagePrefix="RadioRelay\" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/RadioRelay/tests" isTestSource="true" packagePrefix="RadioRelay\Test\" />
+      <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Rankings/src" isTestSource="false" packagePrefix="Rankings\" />
+      <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Rankings/tests" isTestSource="true" packagePrefix="Rankings\Test\" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/logs" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/freefri/cake-rest-api" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/fig/http-message-util" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/react/http" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

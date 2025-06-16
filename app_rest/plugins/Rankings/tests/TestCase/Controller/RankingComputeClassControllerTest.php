@@ -7,7 +7,9 @@ namespace Rankings\Test\TestCase\Controller;
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Rankings\Controller\RankingComputeClassController;
+use Rankings\Lib\ScoringAlgorithms\ScoringAlgorithm;
 use Rankings\Model\Table\RankingsTable;
+use Rankings\Test\Fixture\RankingsFixture;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
@@ -19,6 +21,7 @@ use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\ResultTypesFixture;
 use Results\Test\Fixture\RunnerResultsFixture;
 use Results\Test\Fixture\RunnersFixture;
+use Results\Test\Fixture\StageOrdersFixture;
 use Results\Test\Fixture\StagesFixture;
 
 class RankingComputeClassControllerTest extends ApiCommonErrorsTest
@@ -36,6 +39,8 @@ class RankingComputeClassControllerTest extends ApiCommonErrorsTest
         //TeamsFixture::LOAD,
         //TeamResultsFixture::LOAD,
         ResultTypesFixture::LOAD,
+        RankingsFixture::LOAD,
+        StageOrdersFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -54,27 +59,30 @@ class RankingComputeClassControllerTest extends ApiCommonErrorsTest
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals('M Elite', $bodyDecoded['data']['long_name']);
         $this->assertEquals(1, count($bodyDecoded['data']['runners']));
+        $overalls = $bodyDecoded['data']['runners'][0]['overalls'];
         $expectedOveralls = [
             'parts' =>[
                 [
+                    'id' => $overalls['parts'][0]['id'] ?? 'undefined_parts.0.id',
                     'stage_order' => 1,
-                    'stage' => null,
+                    'stage' => [
+                        'id' => $overalls['parts'][0]['stage']['id'] ?? 'undefined_parts.0.stage.id',
+                        'description' => 'Test Foot-o',
+                    ],
                     'position' => 1,
                     'time_seconds' => null,
                     'points_final' => 100,
                 ],
             ],
             'overall' => [
+                'id' => $overalls['overall']['id'] ?? 'undefined_overall.id',
                 'stage_order' => 1,
                 'stage' => null,
-                'position' => 1,
+                'position' => ScoringAlgorithm::NEEDS_POSITION,
                 'time_seconds' => null,
                 'points_final' => 100,
             ],
         ];
-        $overalls = $bodyDecoded['data']['runners'][0]['overalls'];
-        unset($overalls['parts'][0]['id']);
-        unset($overalls['overall']['id']);
         $this->assertEquals($expectedOveralls, $overalls);
     }
 }

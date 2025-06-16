@@ -7,9 +7,12 @@ namespace Results\Test\TestCase\Model\Table;
 use Cake\Http\Exception\NotFoundException;
 use Cake\I18n\FrozenTime;
 use Cake\TestSuite\TestCase;
+use Rankings\Lib\ScoringAlgorithms\ScoringAlgorithm;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
+use Results\Model\Entity\PartialOverall;
+use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Split;
@@ -57,7 +60,7 @@ class RunnersTableTest extends TestCase
         $this->assertEquals(Runner::FIRST_RUNNER, $runner->id);
         $this->assertEquals('First', $runner->first_name);
         $this->assertEquals('Runner', $runner->last_name);
-        $runnerResult = $runner->getRunnerResults()[0];
+        $runnerResult = $runner->getResultList()[0];
         $this->assertNull($runner->team_results);
         $this->assertEquals(RunnerResult::FIRST_RES, $runnerResult->id);
         $this->assertEquals(1, $runnerResult->position);
@@ -310,5 +313,30 @@ class RunnersTableTest extends TestCase
             $exception = $e->getMessage();
         }
         $this->assertEquals('Fields first_name [] and last_name [] cannot be empty', $exception);
+    }
+
+    public function testSortTotals()
+    {
+        $recalculatePosition = ScoringAlgorithm::NEEDS_POSITION;
+        $runner1 = $this->_getRunner($recalculatePosition, 548);
+        $runner2 = $this->_getRunner($recalculatePosition, 431);
+        $toRet = [$runner1, $runner2];
+        $toRet = RunnersTable::sortTotals($toRet);
+        $this->assertEquals([$runner2, $runner1], $toRet);
+        $this->assertEquals(1, $runner2->_getOveralls()['overall']['position']);
+        $this->assertEquals(2, $runner1->_getOveralls()['overall']['position']);
+    }
+
+    private function _getRunner($pos, $time): Runner
+    {
+        $overall = new PartialOverall();
+        $overall->result_type_id = ResultType::OVERALL;
+        $overall->points_final = 12.5;
+        $overall->time_seconds = $time;
+        $overall->position = $pos;
+
+        $runner1 = new Runner();
+        $runner1->runner_results = [$overall];
+        return $runner1;
     }
 }

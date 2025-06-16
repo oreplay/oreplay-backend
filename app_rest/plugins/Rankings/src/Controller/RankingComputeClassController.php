@@ -13,6 +13,7 @@ use React\Http\Browser;
 use React\Promise\PromiseInterface;
 use RestApi\Lib\Helpers\CookieHelper;
 use Results\Controller\ApiController;
+use Results\Lib\ResultsSorter;
 use Results\Model\Table\RunnersTable;
 
 class RankingComputeClassController extends ApiController
@@ -71,7 +72,7 @@ class RankingComputeClassController extends ApiController
             throw new NotFoundException('Not found participants');
         }
 
-        usort($participants, RunnersTable::sortResults());
+        usort($participants, ResultsSorter::sortStages());
         $saved = $this->Rankings->saveRanking($rankingId, $stageId, $classId, $participants);
         if ($saved) {
             $this->return = $saved;

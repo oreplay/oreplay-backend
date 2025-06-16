@@ -9,6 +9,7 @@ use App\Test\Fixture\OauthAccessTokensFixture;
 use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Rankings\Model\Table\RankingsTable;
+use Rankings\Test\Fixture\RankingsFixture;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
 use Results\Test\Fixture\ClassesFixture;
@@ -38,6 +39,7 @@ class RankingComputeStageControllerTest extends ApiCommonErrorsTest
         ResultTypesFixture::LOAD,
         OauthAccessTokensFixture::LOAD,
         UsersFixture::LOAD,
+        RankingsFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string

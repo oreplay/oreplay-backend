@@ -99,16 +99,11 @@ class Runner extends AppEntity implements ParticipantInterface
         return $this->_fields['club'] ?? null;
     }
 
-    public function _getOveralls(): ?array
-    {
-        return ResultsFilter::getOveralls($this->getRunnerResults());
-    }
-
     public function _getStage(): ?RunnerResult
     {
         /** @var RunnerResult $res */
         try {
-            $res = ResultsFilter::getFirstStage($this->getRunnerResults());
+            $res = ResultsFilter::getFirstStage($this->getResultList());
             if ($res) {
                 $res->cleanSplitsWithoutRadios();
             }
@@ -118,19 +113,11 @@ class Runner extends AppEntity implements ParticipantInterface
             throw $e;
         }
     }
-    /**
-     * TO remove after added to frontend
-     * @deprecated use _getStage())
-     */
-    public function _getOverall(): ?RunnerResult
-    {
-        return $this->_getStage();
-    }
 
     /**
      * @return RunnerResult[]
      */
-    public function getRunnerResults()
+    public function getResultList()
     {
         return $this->runner_results;
     }

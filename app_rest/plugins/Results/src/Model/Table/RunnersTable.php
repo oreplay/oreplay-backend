@@ -11,7 +11,7 @@ use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
 use Rankings\Model\Table\ParticipantInterface;
 use RestApi\Model\ORM\RestApiSelectQuery;
-use Results\Lib\Consts\StatusCode;
+use Results\Lib\ResultsSorter;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Runner;
@@ -118,6 +118,17 @@ class RunnersTable extends AppTable
         $res = $this->find()
             ->where([$this->_alias . '.event_id' => $eventId, $this->_alias . '.stage_id' => $stageId]);
         return $res;
+    }
+
+    public static function sortTotals(array $toRet): array
+    {
+        usort($toRet, ResultsSorter::sortTotals());
+
+        /** @var Team|Runner $value */
+        foreach ($toRet as $i => $value) {
+            $value->addPositionIfNeeded($i + 1);
+        }
+        return $toRet;
     }
 
     public function findRunnersInStage(string $eventId, string $stageId, array $filters = []): Query

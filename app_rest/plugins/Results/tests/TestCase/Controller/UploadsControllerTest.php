@@ -138,16 +138,16 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $stage = $runnersJson[$key]['stage'];
             $this->assertEquals(UploadTypes::START_LIST, $stage['upload_type']);
             $this->assertEquals($stage['status_code'],
-                $value->getRunnerResults()[0]->status_code);
+                $value->getResultList()[0]->status_code);
             $this->assertEquals($stage['start_time'],
-                $value->getRunnerResults()[0]->start_time->jsonSerialize());
+                $value->getResultList()[0]->start_time->jsonSerialize());
             if ($key === 0) {
                 $this->assertEquals('2014-07-06T10:09:14.523+00:00', $stage['start_time']);
             }
             $this->assertEquals($stage['id'],
-                $value->getRunnerResults()[0]->id);
+                $value->getResultList()[0]->id);
             $this->assertEquals(ResultType::STAGE,
-                $value->getRunnerResults()[0]->result_type_id);
+                $value->getResultList()[0]->result_type_id);
         }
         $this->assertEquals('F', $runnersJson[0]['sex']);
         $this->_assertNewOptionalTables(0, 0, 0, 0);
@@ -228,12 +228,12 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $stage = $currentRunner['stage'];
             $this->assertEquals(UploadTypes::START_LIST, $stage['upload_type']);
             $this->assertEquals($stage['start_time'],
-                $value->getRunnerResults()[0]->start_time->jsonSerialize());
+                $value->getResultList()[0]->start_time->jsonSerialize());
             $this->assertEquals('2024-11-10T09:30:00.000+00:00', $stage['start_time']);
             $this->assertEquals($stage['id'],
-                $value->getRunnerResults()[0]->id);
+                $value->getResultList()[0]->id);
             $this->assertEquals(ResultType::STAGE,
-                $value->getRunnerResults()[0]->result_type_id);
+                $value->getResultList()[0]->result_type_id);
         }
         $this->_assertNewOptionalTables(0, 1, 1, 0);
         $this->_assertNewBasicTables(2, 2, 2, 3, 3);
@@ -583,14 +583,14 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals($runnersJson[$key]['id'], $value->id);
             $this->assertEquals($runnersJson[$key]['club']['short_name'], $value->club->short_name);
             $this->assertEquals($runnersJson[$key]['stage']['start_time'],
-                $value->getRunnerResults()[0]->start_time->jsonSerialize());
+                $value->getResultList()[0]->start_time->jsonSerialize());
             if ($key === 0) {
                 $this->assertEquals('2024-10-18T09:56:00.000+00:00', $runnersJson[$key]['stage']['start_time']);
             }
             $this->assertEquals($runnersJson[$key]['stage']['id'],
-                $value->getRunnerResults()[0]->id);
+                $value->getResultList()[0]->id);
             $this->assertEquals(ResultType::STAGE,
-                $value->getRunnerResults()[0]->result_type_id);
+                $value->getResultList()[0]->result_type_id);
         }
         $this->_assertNewOptionalTables(0, 0, 0, 0);
         $this->_assertNewBasicTables(2, 2, 2, 2, 2);
@@ -648,9 +648,9 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 $this->assertEquals('2024-10-18T09:56:00.000+00:00', $runnersJson[$key]['stage']['start_time']);
             }
             $this->assertEquals($runnersJson[$key]['stage']['id'],
-                $value->getRunnerResults()[0]->id);
+                $value->getResultList()[0]->id);
             $this->assertEquals(ResultType::STAGE,
-                $value->getRunnerResults()[0]->result_type_id);
+                $value->getResultList()[0]->result_type_id);
         }
         $this->_assertNewOptionalTables(0, 0, 0, 0);
         $this->_assertNewBasicTables(2, 2, 2, 2, 2);

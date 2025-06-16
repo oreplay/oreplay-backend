@@ -4,6 +4,9 @@ declare(strict_types = 1);
 
 namespace Results\Lib;
 
+use Rankings\Model\Table\RankingsTable;
+use Results\Model\Entity\Overalls;
+use Results\Model\Entity\PartialOverall;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\TeamResult;
@@ -25,20 +28,23 @@ class ResultsFilter
         return null;
     }
 
-    public static function getOveralls(array $results = null): ?array
+    public static function getOveralls(array $results = null): ?Overalls
     {
-        $parts = ResultsFilter::getParts($results);
-        $teamResult = ResultsFilter::getFirstOverall($results);
-        if (!$teamResult && !$parts) {
+        $overalls = new Overalls();
+        $overalls->setParts(ResultsFilter::getParts($results));
+        $overall = ResultsFilter::getFirstOverall($results);
+        if (!$overall && $overalls->hasParts()) {
+            $calc = RankingsTable::load()->getCalculator(RankingsTable::FIRST_RANKING);
+            $overall = $calc->calculateOverallScore($overalls->_getParts());
+        }
+        if (!$overall && !$overalls->hasParts()) {
             return null;
         }
-        return [
-            'parts' => $parts,
-            'overall' => $teamResult,
-        ];
+        $overalls->setOverall($overall);
+        return $overalls;
     }
 
-    public static function getFirstOverall(array $results = null): TeamResult|RunnerResult|null
+    public static function getFirstOverall(array $results = null): ?PartialOverall
     {
         if (!$results) {
             return null;
@@ -46,7 +52,7 @@ class ResultsFilter
         /** @var TeamResult|RunnerResult $res */
         foreach ($results as $res) {
             if ($res->result_type_id === ResultType::OVERALL) {
-                return $res;
+                return PartialOverall::fromResult($res);
             }
         }
         return null;
@@ -67,14 +73,9 @@ class ResultsFilter
             if ($typeId === ResultType::PARTIAL_OVERALL) {
                 $stageOrder = (int)$res->stage_order;
                 $stage = StageOrdersTable::load()->getDescriptionByOrder($stageOrder, $res->stage_id);
-                $toRet[] = [
-                    'id' => $res->id,
-                    'stage_order' => $stageOrder,
-                    'stage' => $stage,
-                    'position' => $res->position,
-                    'time_seconds' => $res->time_seconds,
-                    'points_final' => $res->points_final,
-                ];
+                $overall = PartialOverall::fromResult($res);
+                $overall->setStage($stage);
+                $toRet[] = $overall;
             }
         }
         usort($toRet, function ($a, $b) {
