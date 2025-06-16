@@ -22,6 +22,13 @@ class UsersTable extends AppTable
         parent::__construct($config);
     }
 
+    public static function load(): self
+    {
+        /** @var UsersTable $table */
+        $table = parent::load();
+        return $table;
+    }
+
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
