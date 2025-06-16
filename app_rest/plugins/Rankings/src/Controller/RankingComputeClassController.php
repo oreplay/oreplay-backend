@@ -6,7 +6,6 @@ namespace Rankings\Controller;
 
 use App\Lib\FullBaseUrl;
 use Cake\Http\Exception\ForbiddenException;
-use Cake\Http\Exception\InternalErrorException;
 use Cake\Http\Exception\NotFoundException;
 use Rankings\Model\Table\RankingsTable;
 use React\Http\Browser;
@@ -78,7 +77,8 @@ class RankingComputeClassController extends ApiController
             $this->return = $saved;
         } else {
             $err = 'Class without position one runner ' . $classId . ' ' . json_encode($participants);
-            throw new InternalErrorException($err);
+            $this->log($err);
+            $this->return = ['error' => $err];
         }
     }
 
