@@ -168,6 +168,13 @@ class RunnerResultsTable extends AppTable
         return $resultToSave;
     }
 
+    public function createSimpleRunnerResult(array $resultData, Runner $runner, UploadHelper $helper): Runner
+    {
+        $runnerResultToSave = $this->_newResultWithType($resultData, $helper);
+        $runnerResultToSave->class_id = $helper->getCurrentClassId();
+        return $runner->addRunnerResult($runnerResultToSave);
+    }
+
     public function createRunnerResult(array $resultData, Runner $runner, UploadHelper $helper): Runner
     {
         $helper->getMetrics()->startRunnerResultsTime();

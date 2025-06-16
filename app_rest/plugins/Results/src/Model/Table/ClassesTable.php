@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
+use Cake\Datasource\EntityInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
 use Results\Model\Entity\ClassEntity;
@@ -105,4 +106,26 @@ class ClassesTable extends AppTable
             throw $e;
         }
     }
+
+    public function saveOrFailRetrying(ClassEntity $class): EntityInterface
+    {
+        $maxRetries = 5;
+        $attempt = 0;
+        do {
+            try {
+                return $this->getConnection()->transactional(function () use ($class) {
+                    return $this->saveOrFail($class);
+                });
+            } catch (\PDOException $e) {
+                if ($e->getCode() === '40001' && $attempt < $maxRetries) {
+                    $attempt++;
+                    $around100ms = mt_rand(81000, 102000);
+                    usleep($around100ms);
+                } else {
+                    throw $e;
+                }
+            }
+        } while ($attempt < $maxRetries);
+    }
+
 }

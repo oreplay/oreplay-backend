@@ -16,15 +16,20 @@ use React\Socket\Connector;
 use Rankings\Model\Table\RankingsTable;
 use Results\Controller\ApiController;
 use Results\Model\Entity\ClassEntity;
+use Results\Model\Table\StageOrdersTable;
 
 class RankingComputeStageController extends ApiController
 {
     private RankingsTable $Rankings;
+    private UsersTable $Users;
+    private StageOrdersTable $StageOrders;
 
     public function initialize(): void
     {
         parent::initialize();
         $this->Rankings = RankingsTable::load();
+        $this->Users = UsersTable::load();
+        $this->StageOrders = StageOrdersTable::load();
     }
 
     protected function addNew($data)
@@ -33,12 +38,15 @@ class RankingComputeStageController extends ApiController
         $eventId = $this->request->getParam('eventID');
         $stageId = $this->request->getParam('stageID');
 
-        UsersTable::load()->getManagerOrFail($this->OAuthServer->getUserID());
+        $this->Users->getManagerOrFail($this->OAuthServer->getUserID());
 
         $classes = $this->Rankings->getClassIds($eventId, $stageId, $rankingId);
         if (!$classes) {
             throw new NotFoundException('Classes not found');
         }
+
+        $rk = $this->Rankings->getCached($rankingId);
+        $this->StageOrders->getAllCreatingOne($stageId, $rk->getEventId(), $rk->getStageId());
 
         $loop = Loop::get();
         $browser = new Browser($loop, new Connector());
