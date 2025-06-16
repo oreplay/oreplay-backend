@@ -119,7 +119,7 @@ class ClassesTable extends AppTable
             } catch (\PDOException $e) {
                 if ($e->getCode() === '40001' && $attempt < $maxRetries) {
                     $attempt++;
-                    $around100ms = mt_rand(81000, 102000);
+                    $around100ms = random_int(81000, 102000);
                     usleep($around100ms);
                 } else {
                     throw $e;
