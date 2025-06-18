@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="LaravelPintOptionsConfiguration">
-    <option name="ruleset" value="laravel" />
-  </component>
   <component name="MessDetectorOptionsConfiguration">
     <option name="transferred" value="true" />
   </component>
@@ -13,6 +10,7 @@
     <option name="codingStandard" value="Custom" />
     <option name="customRuleset" value="/var/www/cplatform/public/app_rest/phpcs.xml" />
     <option name="highlightLevel" value="ERROR" />
+    <option name="showSniffs" value="true" />
     <option name="transferred" value="true" />
   </component>
   <component name="PhpCSFixer">
