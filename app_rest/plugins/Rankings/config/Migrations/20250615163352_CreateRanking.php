@@ -8,7 +8,6 @@ class CreateRanking extends AbstractMigration
 {
     public function change(): void
     {
-        debug('change Create Ranking');
         $table = $this->table('rankings', ['id' => false, 'collation' => 'utf8mb4_general_ci']);
         $table
             ->addColumn('id', 'string', [
