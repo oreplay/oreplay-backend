@@ -6,13 +6,14 @@ namespace Results\Model\Entity;
 
 trait ResultTrait
 {
+    private array $_splitsToRemove = [];
     private bool $_compareWithoutDay = false;
-    public function setCompareWithoutDay(bool $compareWithoutDay)
+    public function setCompareWithoutDay(bool $compareWithoutDay): void
     {
         $this->_compareWithoutDay = $compareWithoutDay;
     }
 
-    public function cleanSplitsWithoutRadios()
+    public function cleanSplitsWithoutRadios(): void
     {
         $splits = $this->getSplitsWithoutRadios();
         if ($splits) {
@@ -25,9 +26,11 @@ trait ResultTrait
      */
     public function getSplitsWithoutRadios(): array
     {
+        $this->_splitsToRemove = [];
         $splitsToRet = [];
         /** @var Split $lastSplit */
         $lastSplit = null;
+        /** @var Split $split */
         foreach ($this->getSplits() as $split) {
             if ($lastSplit) {
                 $reason = $split->compareWithoutDay($this->_compareWithoutDay)->shouldDisplayCurrent($lastSplit);
@@ -35,6 +38,8 @@ trait ResultTrait
                     // skip split if it has position (all controls ok) and no reading_time
                     $lastSplit = $split;
                     $splitsToRet[] = $lastSplit;
+                } else {
+                    $this->_splitsToRemove[] = $split->id;
                 }
             } else {
                 if (!$this->_hasPositionButNoTime($split)) {
@@ -44,6 +49,11 @@ trait ResultTrait
             }
         }
         return $splitsToRet;
+    }
+
+    public function getSplitsToRemove(): array
+    {
+        return $this->_splitsToRemove;
     }
 
     private function _hasPositionButNoTime(Split $s): bool

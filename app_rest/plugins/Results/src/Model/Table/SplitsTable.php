@@ -6,6 +6,7 @@ namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
 use Cake\Datasource\EntityInterface;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\ParticipantResultsEntity;
@@ -105,5 +106,17 @@ class SplitsTable extends AppTable
         }
         $helper->getMetrics()->endSplitsTime();
         return $runnerResultToSave;
+    }
+
+    /**
+     * @param string[] $splitIds
+     * @return int
+     */
+    public function softDeleteMany(array $splitIds): int
+    {
+        if (!$splitIds) {
+            return 0;
+        }
+        return $this->updateAll(['deleted' => new FrozenTime()], ['id in' => $splitIds]);
     }
 }

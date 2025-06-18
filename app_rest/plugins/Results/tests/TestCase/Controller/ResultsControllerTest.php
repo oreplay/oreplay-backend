@@ -6,6 +6,7 @@ namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
+use Cake\Datasource\ResultSetInterface;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\ControlType;
 use Results\Model\Entity\Event;
@@ -14,6 +15,7 @@ use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Stage;
 use Results\Model\Entity\Team;
+use Results\Model\Table\SplitsTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\ControlsFixture;
@@ -48,12 +50,20 @@ class ResultsControllerTest extends ApiCommonErrorsTest
 
     public function testGetList()
     {
+        $splits = $this->_getAllSplits()->count();
         $this->get($this->_getEndpoint());
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals(2, count($bodyDecoded['data']));
         $this->assertEquals($this->_getFirstTeam(), $bodyDecoded['data'][0]);
         $this->assertEquals($this->_getSecondRunner(), $bodyDecoded['data'][1]);
+
+        $this->assertEquals($splits - 1, $this->_getAllSplits()->count());
+    }
+
+    private function _getAllSplits(): ResultSetInterface
+    {
+        return SplitsTable::load()->find()->all();
     }
 
     public function testGetList_filteredByExistingClass()

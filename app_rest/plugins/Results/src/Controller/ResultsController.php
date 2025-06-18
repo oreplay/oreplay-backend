@@ -37,15 +37,18 @@ class ResultsController extends ApiController
         $isSameDay = (bool)($filters['forceSameDay'] ?? false);
         $toRet = array_merge($teams, $runners);
 
+        $splitsToRemove = [];
         $isAllTotals = true;
         /** @var Team|Runner $res */
         foreach ($toRet as $res) {
             $stage = $res->_getStage();
             if ($stage) {
                 $stage->setCompareWithoutDay($isSameDay);
+                $splitsToRemove = array_merge($splitsToRemove, $stage->getSplitsToRemove());
             }
             $isAllTotals = $isAllTotals && $res->isTotals();
         }
+        $this->Runners->RunnerResults->Splits->softDeleteMany($splitsToRemove);
         if ($isAllTotals) {
             $toRet = RunnersTable::sortTotals($toRet);
         }
