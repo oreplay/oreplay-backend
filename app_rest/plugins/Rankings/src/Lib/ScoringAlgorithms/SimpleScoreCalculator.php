@@ -71,6 +71,11 @@ class SimpleScoreCalculator implements ScoringAlgorithm
                 $sumSeconds += $seconds;
             }
         }
+//        $amount = count($parts);
+//        if ($amount) {
+//            $sumSeconds = round($sumSeconds / $amount, $this->_settings->_getRoundPrecision());
+//            $sumPoints = round($sumPoints / $amount, $this->_settings->_getRoundPrecision());
+//        }
         return PartialOverall::fromValues(count($parts), ScoringAlgorithm::NEEDS_POSITION, $sumSeconds, $sumPoints);
     }
 }
