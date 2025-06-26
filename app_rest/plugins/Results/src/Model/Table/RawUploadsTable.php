@@ -45,4 +45,13 @@ class RawUploadsTable extends AppTable
     {
         return $this->deleteAll(['created <' => new FrozenTime('-7days')]);
     }
+
+    public function getFirstCreated(FrozenTime $created, string $eventId)
+    {
+        return $this->find()
+            ->where(['created >' => $created, 'event_id' => $eventId])
+            ->orderAsc('created')
+            ->limit(1)
+            ->firstOrFail();
+    }
 }
