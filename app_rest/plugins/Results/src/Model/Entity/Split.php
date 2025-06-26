@@ -59,7 +59,6 @@ class Split extends AppEntity
         'battery_perc',
         'battery_time',
         'raw_value',
-        'created',
         'modified',
         'deleted',
     ];

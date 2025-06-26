@@ -58,7 +58,6 @@ class TeamResult extends AppEntity implements ParticipantResultsEntity
         'class_uuid',
         'check_time',
         'upload_hash',
-        'created',
         'modified',
         'deleted',
         'team_id',

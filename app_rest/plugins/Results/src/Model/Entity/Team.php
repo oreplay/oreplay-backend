@@ -60,7 +60,6 @@ class Team extends AppEntity implements ParticipantInterface
         'club_id',
         'team_id',
         'team_results',
-        'created',
         'modified',
         'deleted',
     ];

@@ -54,6 +54,8 @@ class Runner extends AppEntity implements ParticipantInterface
     protected $_hidden = [
         'event_id',
         'stage_id',
+        'first_name',
+        'last_name',
         'uuid',
         'db_id',
         'iof_id',
@@ -73,7 +75,6 @@ class Runner extends AppEntity implements ParticipantInterface
         'runner_results',
         'upload_hash',
         'results',
-        'created',
         'modified',
         'deleted',
     ];

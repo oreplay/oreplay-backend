@@ -74,6 +74,7 @@ class RunnersTableTest extends TestCase
                 'reading_time' => '2024-01-02T10:00:10.321+00:00',
                 'points' => null,
                 'order_number' => null,
+                'created' => '2024-01-02T10:00:10.000+00:00',
                 'control' => [
                     'id' => ControlsFixture::CONTROL_31,
                     'station' => '31',
@@ -86,6 +87,7 @@ class RunnersTableTest extends TestCase
                 'reading_time' => '2024-01-02T10:00:10.321+00:00',
                 'points' => null,
                 'order_number' => null,
+                'created' => '2024-01-02T09:00:09.000+00:00',
                 'control' => [
                     'id' => ControlsFixture::CONTROL_31,
                     'station' => '31',
@@ -188,6 +190,9 @@ class RunnersTableTest extends TestCase
                 ]
             ],
         ];
+        foreach ($splitsArray as &$split) {
+            unset($split['created']);
+        }
         $this->assertEquals($expected, $splitsArray);
     }
 

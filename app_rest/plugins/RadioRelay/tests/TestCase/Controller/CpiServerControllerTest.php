@@ -78,9 +78,11 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
             'is_intermediate' => true,
             'reading_time' => new FrozenTime('2025-03-08 11:50:00.000000+00:00'),
             'points' => null,
-            'order_number' => null
+            'order_number' => null,
         ];
-        $this->assertEqualsNoId($expected, $last->toArray());
+        $split = $last->toArray();
+        unset($split['created']);
+        $this->assertEqualsNoId($expected, $split);
         $this->assertEquals(ClassEntity::ME, $last->class_id);
         $this->assertEquals(Runner::FIRST_RUNNER, $last->runner_id);
         $this->assertEquals(RunnerResult::FIRST_RES, $last->runner_result_id);
@@ -124,7 +126,9 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
             'points' => null,
             'order_number' => null
         ];
-        $this->assertEqualsNoId($expected, $last->toArray());
+        $split = $last->toArray();
+        unset($split['created']);
+        $this->assertEqualsNoId($expected, $split);
         $this->assertNull($last->class_id);
         $this->assertNull($last->runner_id);
         $this->assertNull($last->runner_result_id);

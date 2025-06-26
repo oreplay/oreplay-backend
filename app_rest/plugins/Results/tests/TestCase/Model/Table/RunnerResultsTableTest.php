@@ -115,27 +115,31 @@ class RunnerResultsTableTest extends TestCase
             'points_penalty' => null,
             'points_bonus' => null,
             'leg_number' => null,
+            'created' => '2024-01-02T10:05:05.000+00:00',
             'splits' => [
                 [
                     'id' => SplitsFixture::SPLIT_1,
                     'reading_time' => '2024-01-02T10:00:10.321+00:00',
                     'points' => null,
                     'is_intermediate' => false,
-                    'order_number' => 2
+                    'order_number' => 2,
+                    'created' => '2024-01-02T10:00:10.000+00:00',
                 ],
                 [
                     'id' => SplitsFixture::SPLIT_1_RADIO,
                     'reading_time' => '2024-01-02T10:00:10.321+00:00',
                     'points' => null,
                     'is_intermediate' => true,
-                    'order_number' => null
+                    'order_number' => null,
+                    'created' => '2024-01-02T09:00:09.000+00:00',
                 ],
                 [
                     'id' => $splitId,
                     'reading_time' => '2024-01-02T10:00:12.000+00:00',
                     'points' => null,
                     'is_intermediate' => false,
-                    'order_number' => 1
+                    'order_number' => 1,
+                    'created' => '2024-05-02T10:00:10.000+00:00',
                 ],
             ],
         ];
@@ -186,27 +190,31 @@ class RunnerResultsTableTest extends TestCase
             'points_penalty' => null,
             'points_bonus' => null,
             'leg_number' => null,
+            'created' => '2024-01-02T10:05:05.000+00:00',
             'splits' => [
                 [
                     'id' => $splitId,
                     'reading_time' => null, // MP
                     'points' => null,
                     'is_intermediate' => false,
-                    'order_number' => 1
+                    'order_number' => 1,
+                    'created' => '2024-05-02T10:00:10.000+00:00',
                 ],
                 [
                     'id' => SplitsFixture::SPLIT_1,
                     'reading_time' => '2024-01-02T10:00:10.321+00:00',
                     'points' => null,
                     'is_intermediate' => false,
-                    'order_number' => 2
+                    'order_number' => 2,
+                    'created' => '2024-01-02T10:00:10.000+00:00',
                 ],
                 [
                     'id' => SplitsFixture::SPLIT_1_RADIO,
                     'reading_time' => '2024-01-02T10:00:10.321+00:00',
                     'points' => null,
                     'is_intermediate' => true,
-                    'order_number' => null
+                    'order_number' => null,
+                    'created' => '2024-01-02T09:00:09.000+00:00',
                 ],
             ],
         ];

@@ -67,7 +67,6 @@ class RunnerResult extends AppEntity implements ParticipantResultsEntity
         'class_uuid',
         'check_time',
         'upload_hash',
-        'created',
         'modified',
         'deleted',
     ];

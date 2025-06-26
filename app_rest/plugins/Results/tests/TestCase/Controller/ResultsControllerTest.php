@@ -134,6 +134,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'points_bonus' => null,
             'upload_type' => null,
             //'leg_number' => null,
+            'created' => '2024-01-03T10:15:05.000+00:00',
             'splits' => [
                 [
                     'id' => SplitsFixture::SPLIT_2,
@@ -143,6 +144,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                     'is_intermediate' => false,
                     //'position' => 0,
                     //'time_behind' => 0,
+                    'created' => '2024-01-03T10:00:10.000+00:00',
                     'control' => [
                         'id' => ControlsFixture::CONTROL_31,
                         'station' => '31',
@@ -173,6 +175,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'runners' => [],
             'overalls' => null,
             'stage' => $stage,
+            'created' => '2024-01-03T10:00:06.000+00:00',
         ];
     }
 
@@ -197,6 +200,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'points_penalty' => null,
             'points_bonus' => null,
             'leg_number' => null,
+            'created' => '2024-01-02T10:05:05.000+00:00',
             'splits' => [
                 [
                     'id' => SplitsFixture::SPLIT_1,
@@ -206,6 +210,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                     'is_intermediate' => false,
                     //'position' => 0,
                     //'time_behind' => 0,
+                    'created' => '2024-01-02T10:00:10.000+00:00',
                     'control' => [
                         'id' => ControlsFixture::CONTROL_31,
                         'station' => '31',
@@ -220,8 +225,6 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         return [
             'id' => Runner::FIRST_RUNNER,
             'full_name' => 'First Runner',
-            'first_name' => 'First',
-            'last_name' => 'Runner',
             'sicard' => '2009933',
             'bib_number' => '4444',
             'is_nc' => false,
@@ -239,6 +242,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             ],
             'overalls' => null,
             'stage' => $overall,
+            'created' => '2025-01-02T10:00:05.000+00:00',
         ];
     }
 }

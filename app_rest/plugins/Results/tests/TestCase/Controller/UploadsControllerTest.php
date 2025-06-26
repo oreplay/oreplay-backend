@@ -128,8 +128,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $runnersJson = array_merge($decodedData[0]['runners'], $decodedData[1]['runners']);
         /** @var Runner $value */
         foreach ($res as $key => $value) {
-            $this->assertEquals($runnersJson[$key]['last_name'], $value->last_name);
-            $this->assertEquals($runnersJson[$key]['first_name'], $value->first_name);
+            $this->assertEquals($runnersJson[$key]['full_name'], $value->first_name . ' ' . $value->last_name);
             $this->assertEquals($runnersJson[$key]['sicard'], $value->sicard);
             $this->assertEquals($runnersJson[$key]['bib_number'], $value->bib_number);
             $this->assertEquals($runnersJson[$key]['sex'] ?? null, $value->sex);
@@ -220,8 +219,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         /** @var Runner $value */
         foreach ($res as $key => $value) {
             $currentRunner = $runnersJson[$key];
-            $this->assertEquals($currentRunner['last_name'], $value->last_name);
-            $this->assertEquals($currentRunner['first_name'], $value->first_name);
+            $this->assertEquals($runnersJson[$key]['full_name'], $value->first_name . ' ' . $value->last_name);
             $this->assertEquals($currentRunner['sicard'], $value->sicard);
             $this->assertEquals($currentRunner['id'], $value->id);
             $this->assertEquals($currentRunner['club']['short_name'], $value->club->short_name);
@@ -455,7 +453,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(1, count($decodedData));
         $this->assertEquals(2, count($decodedData[0]['runners']));
         $firstRunner = $decodedData[0]['runners'][0];
-        $this->assertEquals('Ballesteros', $firstRunner['last_name']);
+        $this->assertEquals('Maria Ballesteros', $firstRunner['full_name']);
         $this->assertEquals('125', $firstRunner['bib_number']);
         $this->assertEquals('4440522', $firstRunner['sicard']);
         $this->assertEquals('Independiente', $firstRunner['club']['short_name']);
@@ -488,7 +486,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals('2024-01-28T10:18:37.000+00:00', $stage['splits'][1]['reading_time']);
         }
         $secondRunner = $decodedData[0]['runners'][1];
-        $this->assertEquals('Velazquez', $secondRunner['last_name']);
+        $this->assertEquals('Antonio Velazquez', $secondRunner['full_name']);
         $this->assertEquals('105', $secondRunner['bib_number']);
         $this->assertEquals('4540555', $secondRunner['sicard']);
         $this->assertEquals('Independiente', $secondRunner['club']['short_name']);
@@ -576,8 +574,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $runnersJson = array_merge($decodedData[0]['runners'], $decodedData[1]['runners']);
         /** @var Runner $value */
         foreach ($res as $key => $value) {
-            $this->assertEquals($runnersJson[$key]['last_name'], $value->last_name);
-            $this->assertEquals($runnersJson[$key]['first_name'], $value->first_name);
+            $this->assertEquals($runnersJson[$key]['full_name'], $value->first_name . ' ' . $value->last_name);
             $this->assertEquals($runnersJson[$key]['sicard'], $value->sicard);
             $this->assertEquals($runnersJson[$key]['bib_number'], $value->bib_number);
             $this->assertEquals($runnersJson[$key]['id'], $value->id);
@@ -637,8 +634,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $runnersJson = array_merge($decodedData[0]['runners'], $decodedData[1]['runners']);
         /** @var Runner $value */
         foreach ($res as $key => $value) {
-            $this->assertEquals($runnersJson[$key]['last_name'], $value->last_name);
-            $this->assertEquals($runnersJson[$key]['first_name'], $value->first_name);
+            $this->assertEquals($runnersJson[$key]['full_name'], $value->first_name . ' ' . $value->last_name);
             $this->assertEquals($runnersJson[$key]['sicard'], $value->sicard);
             $this->assertEquals($runnersJson[$key]['bib_number'], $value->bib_number);
             $this->assertEquals($runnersJson[$key]['id'], $value->id);
