@@ -49,6 +49,7 @@ class PingController extends ApiController
             '4' => new FrozenTime(),
             '5' => env('TEST_ENV', ''),
             '6' => env('TAG_VERSION', ''),
+            '7' => SwaggerJsonController::version(),
         ];
 
         $migrationList = migrationList();
