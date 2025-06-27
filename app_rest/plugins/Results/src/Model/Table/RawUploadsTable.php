@@ -43,7 +43,7 @@ class RawUploadsTable extends AppTable
 
     public function hardDeleteOld(): int
     {
-        return $this->deleteAll(['created <' => new FrozenTime('-7days')]);
+        return $this->deleteAll(['created <' => new FrozenTime('-12days')]);
     }
 
     public function getFirstCreated(FrozenTime $created, string $eventId)
