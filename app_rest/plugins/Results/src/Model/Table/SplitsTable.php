@@ -78,6 +78,10 @@ class SplitsTable extends AppTable
         if ($splits) {
             foreach ($splits as $split) {
                 $split['is_intermediate'] = $helper->getChecker()->isIntermediates();
+                //if ($split['is_intermediate'] && !isset($split['reading_time'])) {
+                //    // do not save radio splits without time
+                //    continue;
+                //}
                 $splitToSave = $this->fillNewWithStage($split, $helper->getEventId(), $helper->getStageId());
                 $splitToSave->class_id = $helper->getCurrentClassId();
                 if ($split['station'] ?? null) {
