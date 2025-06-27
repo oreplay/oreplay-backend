@@ -11,8 +11,10 @@ use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageType;
+use Results\Model\Entity\UploadLog;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\StagesTable;
+use Results\Model\Table\UploadLogsTable;
 use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
@@ -53,6 +55,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
             [
                 'id' => Stage::FIRST_STAGE,
                 'description' => 'First stage',
+                'last_logs' => [],
                 '_links' => [
                     'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed',
                     'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/',
@@ -62,6 +65,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
             [
                 'id' => StagesFixture::STAGE_FEDO_2,
                 'description' => 'Second stage',
+                'last_logs' => [],
                 '_links' => [
                     'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964',
                     'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/results/',
@@ -84,6 +88,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
                 'id' => StageType::CLASSIC,
                 'description' => 'Foot-O, MTBO, Ski-O',
             ],
+            'last_logs' => [],
             '_links' => [
                 'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964',
                 'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/results/',
@@ -135,6 +140,22 @@ class StagesControllerTest extends ApiCommonErrorsTest
         $db = StagesTable::load()->get(Stage::FIRST_STAGE);
         $this->assertEquals($data['description'], $db->description);
         $this->assertEquals($data['stage_type_id'], $db->stage_type_id);
+    }
+
+    public function testEdit_shouldSetStateEnded()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $data = [
+            'state_end' => true,
+        ];
+        $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, $data);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals('First stage', $bodyDecoded['data']['description']);
+
+        $logs = UploadLogsTable::load()->find()
+            ->where(['stage_id' => Stage::FIRST_STAGE, 'state' => UploadLog::STATE_ENDED])->all()->count();
+        $this->assertEquals(1, $logs);
     }
 
     public function testDelete_withCleanParamShouldNotRemoveStageButEmptyContents()

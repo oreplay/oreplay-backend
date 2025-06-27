@@ -9,12 +9,14 @@ use Results\Model\Entity\Event;
 use Results\Model\Entity\Federation;
 use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageType;
+use Results\Model\Entity\UploadLog;
 use Results\Model\Table\EventsTable;
 use Results\Model\Table\RunnersTable;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
 use Results\Test\Fixture\StagesFixture;
 use Results\Test\Fixture\StageTypesFixture;
+use Results\Test\Fixture\UploadLogsFixture;
 
 class EventsTableTest extends TestCase
 {
@@ -23,6 +25,7 @@ class EventsTableTest extends TestCase
         FederationsFixture::LOAD,
         StagesFixture::LOAD,
         StageTypesFixture::LOAD,
+        UploadLogsFixture::LOAD,
     ];
     /** @var RunnersTable Runners */
     private $Events;
@@ -60,8 +63,9 @@ class EventsTableTest extends TestCase
         $this->assertEquals('Test Foot-o', $res->description);
         $this->assertEquals(Federation::FEDO, $res->federation->id);
         $this->assertEquals('FEDO SICO', $res->federation->description);
-        $this->assertEquals(Stage::FIRST_STAGE, $res->stages[0]->id);
         $stage = $res->stages[0];
+        $this->assertEquals(Stage::FIRST_STAGE, $stage->id);
+        $this->assertEquals(UploadLog::STATE_START, $stage->_getLastLogs()[0]['state']);
         $this->assertEquals('First stage', $stage->description);
         $this->assertEquals(StageType::CLASSIC, $stage->stage_type_id);
         $this->assertEquals(StageType::CLASSIC, $stage->stage_type->id);

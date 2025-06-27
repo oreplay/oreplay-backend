@@ -14,6 +14,7 @@ use Results\Model\Entity\StageType;
  * @property EventsTable $Events
  * @property RunnersTable $Runners
  * @property StageTypesTable $StageTypes
+ * @property UploadLogsTable $UploadLogs
  */
 class StagesTable extends AppTable
 {
@@ -23,6 +24,7 @@ class StagesTable extends AppTable
         EventsTable::addHasMany($this);
         RunnersTable::addBelongsTo($this);
         StageTypesTable::addHasMany($this);
+        UploadLogsTable::addBelongsTo($this)->setSort([UploadLogsTable::field('created') => 'ASC']);
     }
 
     public static function load(): self

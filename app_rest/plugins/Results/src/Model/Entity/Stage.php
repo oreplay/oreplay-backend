@@ -27,6 +27,7 @@ class Stage extends AppEntity
     ];
 
     protected $_virtual = [
+        'last_logs',
         '_links',
     ];
 
@@ -38,10 +39,27 @@ class Stage extends AppEntity
         'stage_type_id',
         'server_offset',
         'utc_value',
+        'upload_logs',
         'created',
         'modified',
         'deleted',
     ];
+
+    /**
+     * @return UploadLog[]
+     */
+    public function _getLastLogs(): array
+    {
+        $toRet = [];
+        if (!$this->upload_logs) {
+            return [];
+        }
+        /** @var UploadLog $log */
+        foreach ($this->upload_logs as $log) {
+            $toRet[$log->state] = $log;
+        }
+        return array_values($toRet);
+    }
 
     public function _get_links(): array
     {

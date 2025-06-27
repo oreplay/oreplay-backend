@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\Utility\Text;
 use Results\Lib\UploadHelper;
@@ -57,5 +58,33 @@ class UploadLogsTable extends AppTable
         /** @var UploadLog $saved */
         $saved = $this->saveOrFail($log);
         return $saved;
+    }
+
+    public function saveStateEnded(string $eventId, string $stageId): UploadLog
+    {
+        /** @var UploadLog $log */
+        $log = $this->newEmptyEntity();
+        $log->id = Text::uuid();
+        $log->event_id = $eventId;
+        $log->stage_id = $stageId;
+        $log->upload_type = null;
+        $log->upload_status = null;
+        $log->state = $log->setEndedState();
+        $log->info = '';
+
+        /** @var UploadLog $saved */
+        $saved = $this->saveOrFail($log);
+        return $saved;
+    }
+
+    public function deleteStateEnded(string $eventId, string $stageId): int
+    {
+        $conditions = [
+            'event_id' => $eventId,
+            'stage_id' => $stageId,
+            'state' => UploadLog::STATE_ENDED,
+            'deleted is null'
+        ];
+        return $this->updateAll(['deleted' => new FrozenTime()], $conditions);
     }
 }

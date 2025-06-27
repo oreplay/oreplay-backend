@@ -19,7 +19,7 @@ class UploadLog extends AppEntity
     private const STATE_CLEAR = 0;
     public const STATE_START = 1;
     private const STATE_RESULT = 2;
-    private const STATE_ENDED = 3;
+    public const STATE_ENDED = 3;
 
     protected $_accessible = [
         '*' => false,
@@ -27,11 +27,25 @@ class UploadLog extends AppEntity
     ];
 
     protected $_hidden = [
+        'id',
+        'event_id',
+        'stage_id',
+        'upload_type',
+        'upload_status',
+        'info',
+        'modified',
+        'deleted',
     ];
 
     public function setClearState(): int
     {
         $this->state = self::STATE_CLEAR;
+        return $this->state;
+    }
+
+    public function setEndedState(): int
+    {
+        $this->state = self::STATE_ENDED;
         return $this->state;
     }
 
