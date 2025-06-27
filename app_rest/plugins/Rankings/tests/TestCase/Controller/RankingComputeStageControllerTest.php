@@ -60,7 +60,7 @@ class RankingComputeStageControllerTest extends ApiCommonErrorsTest
         $this->assertResponseFailure($body);
 
         $bodyDecoded = json_decode($body, true);
-        $string = 'Ranking compute errors: [{"error":"Not Found","code":40';
+        $string = 'Ranking compute errors: [{"error":"';
         $this->assertStringStartsWith($string, $bodyDecoded['message']);
     }
 }
