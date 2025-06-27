@@ -123,6 +123,13 @@ class Split extends AppEntity
             }
         } else {
             if ($this->reading_time) {
+                $isSameOrder = $this->order_number === $last->order_number;
+                $isSameStation = $this->station === $last->station;
+                $isSameReadingTime = $this->reading_time == $last->reading_time;
+                if ($isSameOrder && $isSameStation && $isSameReadingTime) {
+                    return new SplitCompareReason(false,
+                        '12 skip duplicated download with same time and order');
+                }
                 return new SplitCompareReason(true,
                     '3 keep repeated split as revisited control');
             } else {

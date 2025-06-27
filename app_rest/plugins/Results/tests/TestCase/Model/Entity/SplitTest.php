@@ -37,11 +37,11 @@ class SplitTest extends TestCase
         $this->assertEquals($msg, $res->reason());
         $this->assertTrue($res->shouldDisplay(), $msg);
         //
-        $msg = '3 keep repeated split as revisited control';
+        $msg = '12 skip duplicated download with same time and order';
         $revisited = $this->_newSplit();
         $res = $revisited->shouldDisplayCurrent($revisited);
         $this->assertEquals($msg, $res->reason());
-        $this->assertTrue($res->shouldDisplay(), $msg);
+        $this->assertFalse($res->shouldDisplay(), $msg);
         //
         $msg = '4 keep if none has reading time because is DNS or MP';
         $noTime = $this->_newSplit();
