@@ -121,11 +121,19 @@ class UploadsController extends ApiController
         $runners = [];
         $runnerArray = $classArray['runners'] ?? [];
         $runnerCount = count($runnerArray);
+        $existingRunnerIDs = [];
         $helper->getMetrics()->startRunnersOutLoopTime();
         for ($i = 0; $i < $runnerCount; $i++) {
             $helper->getMetrics()->startRunnersInLoopTime();
             $runnerData = $runnerArray[$i];
-            $runners[] = $this->runnersTable()->createRunnerWithResults($runnerData, $class, $helper);
+            $runner = $this->runnersTable()->createRunnerWithResults($runnerData, $class, $helper);
+            if (in_array($runner->id, $existingRunnerIDs)) {
+                $helper->getMetrics()
+                    ->setWarning('Duplicated runner ' . $runner->_getFullName() . ' ' . $runner->bib_number);
+            } else {
+                $existingRunnerIDs[] = $runner->id;
+            }
+            $runners[] = $runner;
             $helper->getMetrics()->endRunnersInLoopTime();
         }
         $helper->getMetrics()->endRunnersOutLoopTime();

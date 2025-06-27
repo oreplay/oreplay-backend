@@ -300,6 +300,61 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(100, $splitB->control->station);
     }
 
+    public function testAddNew_shouldAddIntermediatesWithRadiosAndDuplicatedBibs()
+    {
+        Cache::clear();
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = ['oreplay_data_transfer' => IntermediateExamples::itermediateWithDuplicatedBibs()];
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+
+        $existingRunners = 2;
+        $expectedNewRunners = 1;
+        $this->assertEquals($existingRunners + $expectedNewRunners, RunnersTable::load()->find()->all()->count());
+
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
+        $expectedMeta = [
+            'updated' => [
+                'classes' => 1,
+                'runners' => 3,
+                'courses' => 1,
+                'splits' => 6,
+                'runnerResults' => 3,
+            ],
+            'humanColor' => '#FF0000',
+        ];
+        unset($jsonDecoded['meta']['human']);
+        unset($jsonDecoded['meta']['timings']);
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+        $this->assertStringContainsString('Updated (<b>Duplicated runner Sara Alonso 1</b>) 1 classes, 1 courses', $human);
+
+        $dbSplits = SplitsTable::load()->find()
+            ->where(['Splits.created >' => new FrozenTime('-1 minute')])
+            ->contain(ControlsTable::name())
+            ->order(['Splits.order_number' => 'ASC', 'Splits.reading_time' => 'ASC'])
+            ->all();
+        $this->assertEquals(6, $dbSplits->count());
+        /** @var Split $splitA */
+        $splitA = $dbSplits->first();
+        $this->assertEquals(true, $splitA->is_intermediate);
+        $this->assertEquals(1, $splitA->order_number);
+        $this->assertEquals(4, substr_count($splitA->class_id, '-'));
+        $this->assertEquals(165, $splitA->control->station);
+        /** @var Split $splitB */
+        $splitB = $dbSplits->last();
+        $this->assertEquals(true, $splitB->is_intermediate);
+        $this->assertEquals(2, $splitB->order_number);
+        $this->assertEquals(4, substr_count($splitA->class_id, '-'));
+        $this->assertEquals(158, $splitB->control->station);
+    }
+
     public function testAddNew_shouldRequireAuthenticatedToken()
     {
         $ClassesTable = ClassesTable::load();
