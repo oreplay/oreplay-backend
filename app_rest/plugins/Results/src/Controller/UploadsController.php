@@ -174,6 +174,10 @@ class UploadsController extends ApiController
         $this->Classes = ClassesTable::load();
         $this->flatResponse = true;
         try {
+            $reUploadedData = RawUploadsTable::load()->getReUploadedData($data, $this->request->getParam('eventID'));
+            if ($reUploadedData) {
+                $data = $reUploadedData;
+            }
             $this->_helper = new UploadHelper($data, $this->request->getParam('eventID'));
             $this->return = $this->_addNew($this->_helper);
         } catch (\PDOException $e) {

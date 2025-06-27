@@ -46,12 +46,35 @@ class RawUploadsTable extends AppTable
         return $this->deleteAll(['created <' => new FrozenTime('-12days')]);
     }
 
-    public function getFirstCreated(FrozenTime $created, string $eventId)
+    public function getFirstCreated(FrozenTime $created, string $eventId): RawUpload
     {
-        return $this->find()
-            ->where(['created >' => $created, 'event_id' => $eventId])
+        /** @var RawUpload $res */
+        $res = $this->find()
+            ->where(['created >=' => $created, 'event_id' => $eventId])
             ->orderAsc('created')
             ->limit(1)
             ->firstOrFail();
+        return $res;
+    }
+
+    public function getReUploadedData(array $data, string $eventId): ?array
+    {
+        $arrayKeys = array_keys($data);
+        sort($arrayKeys);
+        if ($arrayKeys !== ['raw_upload_id', 'stage_id']) {
+            return null;
+        }
+        $res = $this->find()
+            ->where(['id' => $data['raw_upload_id']])
+            ->limit(1)
+            ->firstOrFail();
+
+        $toRet = json_decode($res->file_data, true);
+        $toRet['oreplay_data_transfer']['event']['id'] = $eventId;
+        $stages = $toRet['oreplay_data_transfer']['event']['stages'] ?? [];
+        foreach ($stages as $i => $stage) {
+            $toRet['oreplay_data_transfer']['event']['stages'][$i]['id'] = $data['stage_id'];
+        }
+        return $toRet;
     }
 }
