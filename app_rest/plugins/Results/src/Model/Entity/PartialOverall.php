@@ -4,13 +4,6 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
-/**
- * @property string $event_id
- * @property string $stage_id
- * @property string $oe_key
- * @property string $short_name
- * @property string $long_name
- */
 class PartialOverall extends RunnerResult
 {
     protected $_accessible = [
@@ -23,6 +16,9 @@ class PartialOverall extends RunnerResult
 
     public function __construct(array $properties = [], array $options = [])
     {
+        if (isset($properties['points_final']) && is_string($properties['points_final'])) {
+            $properties['points_final'] = (float)$properties['points_final'];
+        }
         parent::__construct($properties, $options);
     }
 
@@ -37,12 +33,16 @@ class PartialOverall extends RunnerResult
         $stageOrder = null,
         $pos = null,
         $time = null,
-        $points = null,
+        float $points = null,
+        string $uploadType = null,
         string $id = '',
         ?StageOrder $stage = null
     ): PartialOverall {
         $overall = new PartialOverall();
         $overall->id = $id;
+        if ($uploadType) {
+            $overall->upload_type = $uploadType;
+        }
         $overall->stage_order = $stageOrder;
         $overall->setStage($stage);
         $overall->setPosition($pos);
@@ -84,6 +84,7 @@ class PartialOverall extends RunnerResult
         return [
             'id' => $this->id,
             'stage_order' => $this->stage_order,
+            'upload_type' => $this->upload_type,
             'stage' => $this->_stage,
             'position' => $this->position,
             'time_seconds' => $this->time_seconds,

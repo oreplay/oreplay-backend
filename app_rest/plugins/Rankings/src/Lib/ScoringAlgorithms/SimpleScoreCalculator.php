@@ -7,6 +7,7 @@ namespace Rankings\Lib\ScoringAlgorithms;
 use Cake\Log\LogTrait;
 use Rankings\Model\Entity\Ranking;
 use Rankings\Model\Table\ParticipantInterface;
+use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\PartialOverall;
 
 class SimpleScoreCalculator implements ScoringAlgorithm
@@ -76,6 +77,12 @@ class SimpleScoreCalculator implements ScoringAlgorithm
 //            $sumSeconds = round($sumSeconds / $amount, $this->_settings->_getRoundPrecision());
 //            $sumPoints = round($sumPoints / $amount, $this->_settings->_getRoundPrecision());
 //        }
-        return PartialOverall::fromValues(count($parts), ScoringAlgorithm::NEEDS_POSITION, $sumSeconds, $sumPoints);
+        return PartialOverall::fromValues(
+            count($parts),
+            ScoringAlgorithm::NEEDS_POSITION,
+            $sumSeconds,
+            $sumPoints,
+            UploadTypes::RANKING_COMPUTED
+        );
     }
 }

@@ -12,11 +12,15 @@ use Rankings\Lib\RankingUploadConfigChecker;
 use Rankings\Lib\ScoringAlgorithms\SimpleScoreCalculator;
 use Rankings\Lib\ScoringAlgorithms\ScoringAlgorithm;
 use Rankings\Model\Entity\Ranking;
+use Results\Lib\Consts\StatusCode;
+use Results\Lib\Consts\UploadTypes;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\ResultType;
+use Results\Model\Entity\RunnerResult;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\ClubsTable;
+use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\RunnersTable;
 use Results\Model\Table\StageOrdersTable;
 use Results\Model\Table\StagesTable;
@@ -62,6 +66,27 @@ class RankingsTable extends AppTable
         return new SimpleScoreCalculator($settings);
     }
 
+    public function saveAsOrganizer(Ranking $rk, string $runnerId, string $classId, int $stageOrder): RunnerResult
+    {
+        $resultData = [
+            'stage_order' => $stageOrder,
+            'position' => null,
+            'points_final' => null,
+            'time_seconds' => null,
+            'status_code' => StatusCode::OK,
+        ];
+
+        $RunnerResults = RunnerResultsTable::load();
+        $runnerResult = $RunnerResults->fillNewWithStage($resultData, $rk->getEventId(), $rk->getStageId());
+        $runnerResult->upload_type = UploadTypes::COMPUTABLE_ORGANIZER;
+        $runnerResult->class_id = $classId;
+        $runnerResult->runner_id = $runnerId;
+        $runnerResult->result_type_id = ResultType::PARTIAL_OVERALL;
+        /** @var RunnerResult $res */
+        $res = $RunnerResults->saveOrFail($runnerResult);
+        return $res;
+    }
+
     public function saveRanking(
         string $rankingName,
         string $srcStageId,
@@ -91,7 +116,7 @@ class RankingsTable extends AppTable
                     'position' => $participant->_getStage()->position,
                     'points_final' => $participant->_getRankingPoints(),
                     'time_seconds' => null,
-                    'status_code' => '0',
+                    'status_code' => StatusCode::OK,
                     'result_type' => [
                         'id' => ResultType::PARTIAL_OVERALL,
                     ]

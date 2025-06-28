@@ -21,5 +21,9 @@ class RankingsPlugin extends RestPlugin
             '/rankings/{rankingID}/events/{eventID}/stages/{stageID}/compute/*',
             RankingComputeStageController::route()
         );
+        $builder->connect(
+            '/rankings/{rankingID}/events/{eventID}/stages/{stageID}/runnerResults/*',
+            \Rankings\Controller\RankingRunnerManagementController::route()
+        );
     }
 }

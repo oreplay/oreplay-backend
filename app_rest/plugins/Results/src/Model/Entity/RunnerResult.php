@@ -10,7 +10,7 @@ use Results\Lib\Consts\StatusCode;
 /**
  * @property integer $position
  * @property integer $time_seconds
- * @property integer $points_final
+ * @property float|string $points_final
  * @property integer $status_code
  * @property mixed $stage_order
  * @property integer $time_behind
