@@ -8,6 +8,7 @@ use Cake\I18n\FrozenTime;
 use Cake\TestSuite\TestCase;
 use Rankings\Test\Fixture\RankingsFixture;
 use RestApi\Lib\Exception\DetailedException;
+use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
@@ -119,6 +120,8 @@ class RunnerTest extends TestCase
                     'position' => 1,
                     'time_seconds' => 234,
                     'points_final' => 895,
+                    'upload_type' => null,
+                    'note' => null,
                 ],
                 [
                     'id' => 'runnerResult1',
@@ -127,6 +130,8 @@ class RunnerTest extends TestCase
                     'position' => 2,
                     'time_seconds' => 265,
                     'points_final' => 854,
+                    'upload_type' => null,
+                    'note' => null,
                 ],
             ],
             'overall' => [
@@ -136,6 +141,8 @@ class RunnerTest extends TestCase
                 'position' => -1,
                 'time_seconds' => 499,
                 'points_final' => 1749,
+                'upload_type' => UploadTypes::RANKING_COMPUTED,
+                'note' => null,
             ],
         ];
         $this->assertEquals($expected, json_decode(json_encode($runner->_getOveralls()), true));

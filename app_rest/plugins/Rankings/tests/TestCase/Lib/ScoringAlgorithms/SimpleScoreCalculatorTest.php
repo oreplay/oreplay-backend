@@ -11,6 +11,7 @@ use Rankings\Model\Table\ParticipantInterface;
 use Rankings\Model\Table\RankingsTable;
 use Rankings\Model\Traits\ParticipantTrait;
 use Rankings\Test\Fixture\RankingsFixture;
+use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\Club;
 use Results\Model\Entity\PartialOverall;
 use Results\Model\Entity\RunnerResult;
@@ -77,7 +78,9 @@ class SimpleScoreCalculatorTest extends TestCase
             'stage' => null,
             'position' => null,
             'time_seconds' => null,
-            'points_final' => null
+            'points_final' => null,
+            'upload_type' => null,
+            'note' => null,
         ];
         $this->assertEquals($expected, $overall->toArray());
         // 2 results
@@ -92,7 +95,9 @@ class SimpleScoreCalculatorTest extends TestCase
             'stage' => null,
             'position' => ScoringAlgorithm::NEEDS_POSITION,
             'time_seconds' => 0,
-            'points_final' => 132.5
+            'points_final' => 132.5,
+            'upload_type' => UploadTypes::RANKING_COMPUTED,
+            'note' => null,
         ];
         $this->assertEquals($expected, $overall->toArray());
     }

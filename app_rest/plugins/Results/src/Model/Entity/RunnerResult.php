@@ -25,6 +25,7 @@ use Results\Lib\Consts\StatusCode;
  * @property FrozenTime $start_time
  * @property FrozenTime $finish_time
  * @property ResultType $result_type
+ * @property string $note
  */
 class RunnerResult extends AppEntity implements ParticipantResultsEntity
 {
@@ -50,6 +51,7 @@ class RunnerResult extends AppEntity implements ParticipantResultsEntity
         'points_adjusted' => true,
         'points_penalty' => true,
         'points_bonus' => true,
+        'note' => true,
         'stage_order' => true,
         'leg_number' => true,
     ];

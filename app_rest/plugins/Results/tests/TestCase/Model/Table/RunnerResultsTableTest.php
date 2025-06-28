@@ -114,6 +114,7 @@ class RunnerResultsTableTest extends TestCase
             'points_adjusted' => null,
             'points_penalty' => null,
             'points_bonus' => null,
+            'note' => null,
             'leg_number' => null,
             'created' => '2024-01-02T10:05:05.000+00:00',
             'splits' => [
@@ -189,6 +190,7 @@ class RunnerResultsTableTest extends TestCase
             'points_adjusted' => null,
             'points_penalty' => null,
             'points_bonus' => null,
+            'note' => null,
             'leg_number' => null,
             'created' => '2024-01-02T10:05:05.000+00:00',
             'splits' => [

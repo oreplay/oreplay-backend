@@ -18,6 +18,7 @@ use Cake\I18n\FrozenTime;
  * @property string $result_type_id
  * @property mixed $leg_number
  * @property string $upload_type
+ * @property string $note
  */
 class TeamResult extends AppEntity implements ParticipantResultsEntity
 {
@@ -41,6 +42,7 @@ class TeamResult extends AppEntity implements ParticipantResultsEntity
         'points_adjusted' => true,
         'points_penalty' => true,
         'points_bonus' => true,
+        'note' => true,
         'stage_order' => true,
         'leg_number' => true,
     ];

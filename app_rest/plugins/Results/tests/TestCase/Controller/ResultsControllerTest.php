@@ -132,6 +132,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'points_adjusted' => null,
             'points_penalty' => null,
             'points_bonus' => null,
+            'note' => null,
             'upload_type' => null,
             //'leg_number' => null,
             'created' => '2024-01-03T10:15:05.000+00:00',
@@ -199,6 +200,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'points_adjusted' => null,
             'points_penalty' => null,
             'points_bonus' => null,
+            'note' => null,
             'leg_number' => null,
             'created' => '2024-01-02T10:05:05.000+00:00',
             'splits' => [

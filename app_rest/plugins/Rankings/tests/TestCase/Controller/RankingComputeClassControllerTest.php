@@ -10,6 +10,7 @@ use Rankings\Controller\RankingComputeClassController;
 use Rankings\Lib\ScoringAlgorithms\ScoringAlgorithm;
 use Rankings\Model\Table\RankingsTable;
 use Rankings\Test\Fixture\RankingsFixture;
+use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
@@ -72,6 +73,8 @@ class RankingComputeClassControllerTest extends ApiCommonErrorsTest
                     'position' => 1,
                     'time_seconds' => null,
                     'points_final' => 100,
+                    'upload_type' => UploadTypes::TOTAL_POINTS,
+                    'note' => null,
                 ],
             ],
             'overall' => [
@@ -81,6 +84,8 @@ class RankingComputeClassControllerTest extends ApiCommonErrorsTest
                 'position' => ScoringAlgorithm::NEEDS_POSITION,
                 'time_seconds' => null,
                 'points_final' => 100,
+                'upload_type' => UploadTypes::RANKING_COMPUTED,
+                'note' => null,
             ],
         ];
         $this->assertEquals($expectedOveralls, $overalls);

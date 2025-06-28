@@ -70,6 +70,7 @@ class RankingsTable extends AppTable
     {
         $resultData = [
             'stage_order' => $stageOrder,
+            'note' => 'ORG',
             'position' => null,
             'points_final' => null,
             'time_seconds' => null,
