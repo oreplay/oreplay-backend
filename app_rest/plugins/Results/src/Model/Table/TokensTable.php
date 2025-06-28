@@ -78,9 +78,21 @@ class TokensTable extends AppTable
         return $token;
     }
 
+    public function expireAllEventTokens(string $eventId): void
+    {
+        foreach ($this->findTokensForEvent($eventId)->all() as $token) {
+            $this->_expireToken($token);
+        }
+    }
+
     public function expireTokenForEvent(string $token, string $eventId): Token
     {
         $token = $this->getTokenForEvent($token, $eventId);
+        return $this->_expireToken($token);
+    }
+
+    private function _expireToken(Token $token): Token
+    {
         $token->expires = new FrozenTime();
         $token->deleted = $token->expires;
         /** @var Token $token */

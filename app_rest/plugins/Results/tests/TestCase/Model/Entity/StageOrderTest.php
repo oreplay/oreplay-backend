@@ -24,7 +24,7 @@ class StageOrderTest extends TestCase
         $res->setExtraNote('ORG');
         $expected = [
             'id' => 'theID',
-            'description' => 'Some Description ORG',
+            'description' => 'Some Description [ORG]',
         ];
         $this->assertEquals($expected, json_decode(json_encode($res), true));
     }

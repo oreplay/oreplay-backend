@@ -7,12 +7,16 @@ namespace Results\Test\TestCase\Model\Table;
 use Cake\TestSuite\TestCase;
 use Results\Model\Entity\Event;
 use Results\Model\Table\TokensTable;
+use Results\Test\Fixture\EventsFixture;
+use Results\Test\Fixture\FederationsFixture;
 use Results\Test\Fixture\TokensFixture;
 
 class TokensTableTest extends TestCase
 {
     protected $fixtures = [
         TokensFixture::LOAD,
+        FederationsFixture::LOAD,
+        EventsFixture::LOAD,
     ];
     private TokensTable $Tokens;
 
@@ -32,5 +36,18 @@ class TokensTableTest extends TestCase
         $this->assertEquals(Event::FIRST_EVENT, $res->foreign_key);
         $this->assertEquals('2014-07-06T13:09:01+00:00', $res->expires->toIso8601String());
         $this->assertEquals(6, strlen($res->token));
+    }
+
+    public function testFindTokensForEvent()
+    {
+        $res = $this->Tokens->findTokensForEvent(Event::FIRST_EVENT)->all()->count();
+        $this->assertEquals(1, $res);
+    }
+
+    public function testExpireAllEventTokens()
+    {
+        $this->Tokens->expireAllEventTokens(Event::FIRST_EVENT);
+        $res = $this->Tokens->find()->where(['id' => TokensFixture::FIRST_ID])->first();
+        $this->assertNull($res);
     }
 }
