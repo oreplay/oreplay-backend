@@ -28,4 +28,21 @@ class StageOrder extends AppEntity
         'modified',
         'deleted',
     ];
+
+    private string $extraNote = '';
+
+    public function setExtraNote(string $note): static
+    {
+        $this->extraNote = $note;
+        return $this;
+    }
+
+    public function _getDescription(): string
+    {
+        $description = $this->_fields['description'];
+        if ($this->extraNote) {
+            $description .= ' [' . $this->extraNote . ']';
+        }
+        return $description;
+    }
 }

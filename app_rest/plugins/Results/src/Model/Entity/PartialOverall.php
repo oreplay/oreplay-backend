@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
+use Results\Lib\Consts\UploadTypes;
+
 class PartialOverall extends RunnerResult
 {
     protected $_accessible = [
@@ -47,13 +49,25 @@ class PartialOverall extends RunnerResult
         $overall->setStage($stage);
         $overall->setPosition($pos);
         $overall->time_seconds = $time;
-        $overall->points_final = $points;
+        $overall->setPoints($points);
         return $overall;
     }
 
     private function setOriginal(RunnerResult | TeamResult $result): static
     {
         $this->_original = $result;
+        return $this;
+    }
+
+    public function setTimeSeconds(?int $timeSeconds): static
+    {
+        $this->_fields['time_seconds'] = $timeSeconds;
+        return $this;
+    }
+
+    public function setPoints(?float $points): static
+    {
+        $this->_fields['points_final'] = $points;
         return $this;
     }
 
@@ -66,10 +80,23 @@ class PartialOverall extends RunnerResult
         return null;
     }
 
+    public function isComputableOrganizer(): bool
+    {
+        return $this->getUploadType() === UploadTypes::COMPUTABLE_ORGANIZER;
+    }
+
+    public function getUploadType(): ?string
+    {
+        return $this->upload_type;
+    }
+
     private ?StageOrder $_stage = null;
 
     public function setStage(?StageOrder $stage): static
     {
+        if ($stage && $this->note) {
+            $stage->setExtraNote($this->note);
+        }
         $this->_stage = $stage;
         return $this;
     }

@@ -33,14 +33,16 @@ class ResultsFilter
         $overalls = new Overalls();
         $overalls->setParts(ResultsFilter::getParts($results));
         $overall = ResultsFilter::getFirstOverall($results);
-        if (!$overall && $overalls->hasParts()) {
-            $calc = RankingsTable::load()->getCalculator(RankingsTable::FIRST_RANKING);
-            $overall = $calc->calculateOverallScore($overalls->_getParts());
+        if ($overall) {
+            $overalls->setOverall($overall);
         }
-        if (!$overall && !$overalls->hasParts()) {
+        if (!$overalls->hasOverall() && $overalls->hasParts()) {
+            $calc = RankingsTable::load()->getCalculator(RankingsTable::FIRST_RANKING);
+            $overalls = $calc->calculateOverallScore($overalls);
+        }
+        if ($overalls->isTotallyEmpty()) {
             return null;
         }
-        $overalls->setOverall($overall);
         return $overalls;
     }
 

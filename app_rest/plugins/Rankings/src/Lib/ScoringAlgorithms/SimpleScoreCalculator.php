@@ -8,6 +8,7 @@ use Cake\Log\LogTrait;
 use Rankings\Model\Entity\Ranking;
 use Rankings\Model\Table\ParticipantInterface;
 use Results\Lib\Consts\UploadTypes;
+use Results\Model\Entity\Overalls;
 use Results\Model\Entity\PartialOverall;
 
 class SimpleScoreCalculator implements ScoringAlgorithm
@@ -54,11 +55,48 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         return (float)round($points, $this->_settings->_getRoundPrecision());
     }
 
-    public function calculateOverallScore(array $parts): PartialOverall
+    public function calculateOverallScore(Overalls $overalls): Overalls
     {
+        $parts = $overalls->_getParts();
         if (!$parts) {
-            return PartialOverall::fromValues();
+            return $overalls->setOverall(PartialOverall::fromValues());
         }
+        $partsNormal = [];
+        $partsOrg = [];
+        foreach ($parts as $part) {
+            if ($part->isComputableOrganizer()) {
+                $partsOrg[] = $part;
+            } else {
+                $partsNormal[] = $part;
+            }
+        }
+        list($sumSeconds, $sumPoints) = $this->sum($partsNormal);
+        $amountNormal = count($partsNormal);
+        if ($amountNormal) {
+            $avgSeconds = $sumSeconds / $amountNormal;
+            $avgPoints = $sumPoints / $amountNormal;
+        }
+        $amountOrg = count($partsOrg);
+        foreach ($overalls->_getParts() as $part) {
+            if ($part->isComputableOrganizer()) {
+                $part->setPoints($avgPoints);
+                $part->setTimeSeconds($avgSeconds);
+            }
+        }
+        $sumSeconds = round($sumSeconds + $avgSeconds * $amountOrg, $this->_settings->_getRoundPrecision());
+        $sumPoints = round($sumPoints + $avgPoints * $amountOrg, $this->_settings->_getRoundPrecision());
+        $res = PartialOverall::fromValues(
+            $amountNormal + $amountOrg,
+            ScoringAlgorithm::NEEDS_POSITION,
+            $sumSeconds,
+            $sumPoints,
+            UploadTypes::RANKING_COMPUTED
+        );
+        return $overalls->setOverall($res);
+    }
+
+    private function sum(array $parts): array
+    {
         $sumSeconds = null;
         $sumPoints = null;
         /** @var PartialOverall $part */
@@ -72,17 +110,6 @@ class SimpleScoreCalculator implements ScoringAlgorithm
                 $sumSeconds += $seconds;
             }
         }
-//        $amount = count($parts);
-//        if ($amount) {
-//            $sumSeconds = round($sumSeconds / $amount, $this->_settings->_getRoundPrecision());
-//            $sumPoints = round($sumPoints / $amount, $this->_settings->_getRoundPrecision());
-//        }
-        return PartialOverall::fromValues(
-            count($parts),
-            ScoringAlgorithm::NEEDS_POSITION,
-            $sumSeconds,
-            $sumPoints,
-            UploadTypes::RANKING_COMPUTED
-        );
+        return array($sumSeconds, $sumPoints);
     }
 }

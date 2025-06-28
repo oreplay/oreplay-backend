@@ -21,8 +21,8 @@ class Overalls extends AppEntity
     protected $_hidden = [
     ];
 
-    private array $_parts;
-    private PartialOverall $_overall;
+    private array $_parts = [];
+    private ?PartialOverall $_overall = null;
 
     public function setParts(array $parts): static
     {
@@ -30,6 +30,9 @@ class Overalls extends AppEntity
         return $this;
     }
 
+    /**
+     * @return PartialOverall[]
+     */
     public function _getParts(): array
     {
         return $this->_parts;
@@ -68,5 +71,15 @@ class Overalls extends AppEntity
     public function hasParts(): bool
     {
         return !empty($this->_parts);
+    }
+
+    public function hasOverall(): bool
+    {
+        return $this->_overall !== null;
+    }
+
+    public function isTotallyEmpty(): bool
+    {
+        return !$this->hasParts() && !$this->hasOverall();
     }
 }
