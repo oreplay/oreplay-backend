@@ -119,22 +119,13 @@ class Team extends AppEntity implements ParticipantInterface
 
     public function getMatchedTeam(array $runnerData, ClassEntity $class = null): ?Team
     {
-        $bibNumber = $runnerData['bib_number'] ?? null;
-        if ($this->bib_number && $this->bib_number == $bibNumber) {
+        if ($this->isSameField('bib_number', $runnerData)) {
             return $this;
         }
         $teamName = $runnerData['team_name'] ?? null;
         if ($teamName) {
             if ($this->team_name == $teamName) {
-                if ($class) {
-                    if ($this->class_id == $class->id) {
-                        return $this;
-                    } else {
-                        return null;
-                    }
-                } else {
-                    return $this;
-                }
+                return $this->isSameClass($class);
             } else {
                 return null;
             }

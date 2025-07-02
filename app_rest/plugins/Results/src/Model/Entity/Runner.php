@@ -151,27 +151,17 @@ class Runner extends AppEntity implements ParticipantInterface
 
     public function getMatchedRunner(array $runnerData, ClassEntity $class = null): ?Runner
     {
-        $dbId = $runnerData['db_id'] ?? null;
-        if ($this->db_id && $this->db_id == $dbId) {
+        if ($this->isSameField('db_id', $runnerData)) {
             return $this;
         }
-        $bibNumber = $runnerData['bib_number'] ?? null;
-        if ($this->bib_number && $this->bib_number == $bibNumber) {
+        if ($this->isSameField('bib_number', $runnerData)) {
             return $this;
         }
         $stName = $runnerData['first_name'] ?? null;
         $lastName = $runnerData['last_name'] ?? null;
         if ($stName && $lastName) {
             if ($this->first_name == $stName && $this->last_name == $lastName) {
-                if ($class) {
-                    if ($this->class_id == $class->id) {
-                        return $this;
-                    } else {
-                        return null;
-                    }
-                } else {
-                    return $this;
-                }
+                return $this->isSameClass($class);
             } else {
                 return null;
             }

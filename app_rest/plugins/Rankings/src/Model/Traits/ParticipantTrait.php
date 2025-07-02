@@ -10,6 +10,7 @@ use Rankings\Lib\ScoringAlgorithms\SimpleScoreCalculator;
 use Rankings\Model\Entity\Ranking;
 use Rankings\Model\Table\ParticipantInterface;
 use Results\Lib\ResultsFilter;
+use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Overalls;
 
 trait ParticipantTrait
@@ -41,6 +42,25 @@ trait ParticipantTrait
     private function _getLeader(): ParticipantInterface
     {
         return $this->_leader;
+    }
+
+    public function isSameField(string $field, array $runnerData): bool
+    {
+        $dbId = $runnerData[$field] ?? null;
+        return isset($this[$field]) && $this[$field] && $this[$field] == $dbId;
+    }
+
+    public function isSameClass(ClassEntity $class = null): null|static
+    {
+        if ($class) {
+            if ($this->class_id == $class->id) {
+                return $this;
+            } else {
+                return null;
+            }
+        } else {
+            return $this;
+        }
     }
 
     public function _getRankingPoints(): ?float
