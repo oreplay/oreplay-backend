@@ -107,8 +107,7 @@ class RunnersTable extends AppTable
         ParticipantInterface $participant,
         ClassEntity $class
     ): Runner {
-        $runnerData = $participant->jsonSerialize();
-        $runnerData['id'] = '';
+        $runnerData = $participant->toArrayWithoutID();
         return $this->createRunnerIfNotExists($eventId, $stageId, $runnerData, $class);
     }
 

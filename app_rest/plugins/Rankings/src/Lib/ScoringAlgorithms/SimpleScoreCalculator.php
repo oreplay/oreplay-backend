@@ -41,10 +41,10 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         if (!$runnerTime && !$leaderScore) {
             return null;
         }
-        if ($leaderScore) {
-            $runnerPoints = $runnerScore / $leaderScore;
+        if ($leaderScore && $leaderScore != '0') {
+            $runnerPoints = $this->_divide($runnerScore, $leaderScore);
         } else {
-            $runnerPoints = $leaderTime / $runnerTime;
+            $runnerPoints = $this->_divide($leaderTime, $runnerTime);
         }
         if ($runnerPoints > 1) {
             $id = ($participant['id'] ?? '');
@@ -53,6 +53,14 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         }
         $points = $runnerPoints * $this->_settings->_getMaxPoints();
         return (float)round($points, $this->_settings->_getRoundPrecision());
+    }
+
+    private function _divide($x, $y): float
+    {
+        if (!$y || $y == '0') {
+            return 0.0;
+        }
+        return (float)$x / $y;
     }
 
     public function calculateOverallScore(Overalls $overalls): Overalls
@@ -71,16 +79,18 @@ class SimpleScoreCalculator implements ScoringAlgorithm
             }
         }
         list($sumSeconds, $sumPoints) = $this->sum($partsNormal);
+        $avgSeconds = 0;
+        $avgPoints = 0;
         $amountNormal = count($partsNormal);
         if ($amountNormal) {
-            $avgSeconds = $sumSeconds / $amountNormal;
-            $avgPoints = $sumPoints / $amountNormal;
+            $avgSeconds = $this->_divide($sumSeconds, $amountNormal);
+            $avgPoints = $this->_divide($sumPoints, $amountNormal);
         }
         $amountOrg = count($partsOrg);
         foreach ($overalls->_getParts() as $part) {
             if ($part->isComputableOrganizer()) {
                 $part->setPoints($avgPoints);
-                $part->setTimeSeconds($avgSeconds);
+                $part->setTimeSeconds((int)$avgSeconds);
             }
         }
         $sumSeconds = round($sumSeconds + $avgSeconds * $amountOrg, $this->_settings->_getRoundPrecision());

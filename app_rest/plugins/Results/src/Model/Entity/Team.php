@@ -143,4 +143,12 @@ class Team extends AppEntity implements ParticipantInterface
             throw new DetailedException($msg);
         }
     }
+
+    public function toArrayWithoutID(): array
+    {
+        $participant = $this->jsonSerialize();
+        $participant['id'] = '';
+        $participant['team_name'] = $this->team_name;
+        return $participant;
+    }
 }

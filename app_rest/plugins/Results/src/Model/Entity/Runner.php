@@ -181,7 +181,10 @@ class Runner extends AppEntity implements ParticipantInterface
                 // we should allow any relay runner to be empty (but leg has to be defined)
                 return null;
             }
-            $msg = "Fields first_name [$stName] and last_name [$lastName] cannot be empty";
+            $copied = unserialize(serialize($runnerData));
+            unset($copied['stage']);
+            unset($copied['overalls']);
+            $msg = "Fields first_name [$stName] and last_name [$lastName] cannot be empty " . json_encode($copied);
             throw new DetailedException($msg);
         }
     }
@@ -205,4 +208,13 @@ class Runner extends AppEntity implements ParticipantInterface
     //        return null;
     //    }
     //}
+
+    public function toArrayWithoutID(): array
+    {
+        $participant = $this->jsonSerialize();
+        $participant['id'] = '';
+        $participant['first_name'] = $this->first_name;
+        $participant['last_name'] = $this->last_name;
+        return $participant;
+    }
 }

@@ -51,6 +51,11 @@ class SimpleScoreCalculatorTest extends TestCase
             {
                 return [];
             }
+
+            public function toArrayWithoutID(): array
+            {
+                return $this->jsonSerialize();
+            }
         };
     }
 
