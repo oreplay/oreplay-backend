@@ -48,7 +48,7 @@ class EventsController extends ApiController
         $this->flatResponse = true;
         /** @var Event $res */
         $res = $this->Events->getEventWithRelations($id);
-        if ($res->is_hidden === true) {
+        if (!$isDesktopClientAuthenticated && $res->is_hidden === true) {
             $this->_getEventFromUser($id);
         }
         if ($isDesktopClientAuthenticated) {
