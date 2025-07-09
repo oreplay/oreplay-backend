@@ -153,13 +153,7 @@ Generate test coverage with: `vendor/bin/phpunit --coverage-html ./webroot/cover
 # Working with plugins
 Plugins allow to code functionalities with a logical separation between them.
 
-Follow cakephp [plugin](https://book.cakephp.org/4/en/plugins.html) documentation:
-- Bake a plugin with `bin/cake bake plugin Thename`
-- Add new directories to `composer.json` and refresh autoload cache with `composer dumpautoload`
-  (remind the team to run this in every local laptop, or they may get errors)
-- Remember to add the new route to tests in `phpunit.xml`
-- Add new plugin to `migrationList()` in `app_rest/config/bootstrap.php`
-- Add new plugin to `bootstrap()` in `app_rest/src/Application.php`
+Docs about plugins: https://github.com/oreplay/oreplay-backend/blob/main/docs/plugins.md
 
 # Migrations
 
@@ -169,44 +163,8 @@ We are working on two different databases:
 
 Migrations should be the only way to perform changes in the database schema.
 
-Plain sql scripts should be avoided due to:
-- SQL injection
-- Lack of database motor abstraction
+Docs about migrations: https://github.com/oreplay/oreplay-backend/blob/main/docs/migrations.md
 
-Seeds: Will define the initial state of development the database
-(and could be also defining the initial basic state for the production database)
-
-More info about [phinx](https://book.cakephp.org/phinx/0/en/migrations.html) and the migration plugin on [cake book](https://book.cakephp.org/migrations/3/en/index.html)
-
-```bash
-#Go to the right folder
-cd /var/www/cplatform/public/app_rest/
-
-
-# create a new migration called 'CreateUsers'
-bin/cake bake migration CreateUsers
-# create a new migration called 'MyNewMigration' for the 'PluginName' (using -p for plugins)
-bin/cake bake migration MyNewMigration -p PluginName
-
-# execute the migration on the db
-bin/cake migrations migrate
-
-# revert the migration on the db
-bin/cake migrations rollback
-
-# create new seeds
-bin/cake bake seed Users
-
-# run seeder
-bin/cake migrations seed
-
-# run specific seeder class
-bin/cake migrations seed --seed UsersSeed
-
-
-#Run composer install to get any new possible dependency
-composer install
-```
 # Devops
 
 We will use sonarqube community edition (free). For that is needed to be installed as a docker container, with the following command:
@@ -214,3 +172,7 @@ We will use sonarqube community edition (free). For that is needed to be install
 ```bash
 docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000:9000 sonarqube:latest
 ```
+
+# O Replay upload integration for results
+
+Docs about uploads: https://github.com/oreplay/oreplay-backend/blob/main/docs/upload-results.md
