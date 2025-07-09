@@ -79,7 +79,9 @@ Example request body:
 {
  "oreplay_data_transfer": {
    "configuration": {
+     "source_vendor": "sportSoftware",
      "source": "OE2010",
+     "source_version": "12.2",
      "iof_version": 3,
      "contents": "StartList",
      "results_type": "Other"
