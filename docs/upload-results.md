@@ -10,7 +10,7 @@ Example user interface. Fields **URL** and **Token** to be filled by the user:
 
 The field **URL** should be editable, but prefilled by default to the URL https://www.oreplay.es This will allow the end user to change to a custom installation of the o-replay open source system
 
-Example request with CURL:
+Example of **GET Events request** with CURL:
 
 ```bash
 curl --location --request GET 'https://www.oreplay.es/api/v1/events/79bad6e6-7c42-4317-958d-5c83c905b0ad?client=sportSoftware' --header 'Authorization: Bearer bGb6Jt'
@@ -69,9 +69,9 @@ See below an example of a user interface to select the stage:
 
 The start lists, or results are uploaded to using a `POST` request to `/api/v1/events/<Event ID>/uploads`
 
-POST request to https://www.oreplay.es/api/v1/events/79bad6e6-7c42-4317-958d-5c83c905b0ad/uploads?client=sportSoftware&version=12.2
+`POST` request to `https://www.oreplay.es/api/v1/events/79bad6e6-7c42-4317-958d-5c83c905b0ad/uploads?version=501` with the same **Authorization** header as the GET Events request.
 
-The parameter version must have one single dot with 2 numeric values
+The parameter **version** MUST be initially 501. This is the version of the upload schema.
 
 Example request body:
 
