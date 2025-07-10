@@ -185,41 +185,6 @@ class MixedExamples
                                     [
                                         'id' => '',
                                         'uuid' => '',
-                                        'sicard' => '889818',
-                                        'sicard_alt' => '889818',
-                                        'license' => '',
-                                        'birth_date' => '',
-                                        'first_name' => 'Carlos',
-                                        'last_name' => 'One Runner Not Started Yet',
-                                        'bib_number' => '359',
-                                        'sex' => 'M',
-                                        'country' => 'Spain',
-                                        'region' => 'Madrid',
-                                        'is_nc' => false,
-                                        'runner_results' => [
-                                            [
-                                                'id' => '',
-                                                'stage_order' => (int) 1,
-                                                'start_time' => '2014-07-06T11:09:14.523+01:00',
-                                                'status_code' => StatusCode::OK,
-                                                'leg_number' => (int) 1,
-                                                'result_type' => [
-                                                    'id' => ResultType::STAGE,
-                                                    'description' => 'Stage'
-                                                ]
-                                            ],
-                                        ],
-                                        'club' => [
-                                            'id' => '',
-                                            'uuid' => '',
-                                            'oe_key' => '24738',
-                                            'short_name' => 'BRIGHTNET',
-                                            'long_name' => 'BRIGHTNET'
-                                        ]
-                                    ],
-                                    [
-                                        'id' => '',
-                                        'uuid' => '',
                                         'sicard' => '8011750',
                                         'sicard_alt' => '',
                                         'license' => '',
@@ -276,6 +241,41 @@ class MixedExamples
                                                     'description' => 'Stage'
                                                 ]
                                             ]
+                                        ],
+                                        'club' => [
+                                            'id' => '',
+                                            'uuid' => '',
+                                            'oe_key' => '24738',
+                                            'short_name' => 'BRIGHTNET',
+                                            'long_name' => 'BRIGHTNET'
+                                        ]
+                                    ],
+                                    [
+                                        'id' => '',
+                                        'uuid' => '',
+                                        'sicard' => '889818',
+                                        'sicard_alt' => '889818',
+                                        'license' => '',
+                                        'birth_date' => '',
+                                        'first_name' => 'Carlos',
+                                        'last_name' => 'One Runner Not Started Yet',
+                                        'bib_number' => '359',
+                                        'sex' => 'M',
+                                        'country' => 'Spain',
+                                        'region' => 'Madrid',
+                                        'is_nc' => false,
+                                        'runner_results' => [
+                                            [
+                                                'id' => '',
+                                                'stage_order' => (int) 1,
+                                                'start_time' => '2014-07-06T11:09:14.523+01:00',
+                                                'status_code' => StatusCode::OK,
+                                                'leg_number' => (int) 1,
+                                                'result_type' => [
+                                                    'id' => ResultType::STAGE,
+                                                    'description' => 'Stage'
+                                                ]
+                                            ],
                                         ],
                                         'club' => [
                                             'id' => '',
@@ -361,186 +361,4 @@ class MixedExamples
             ]
         ];
     }
-
-    public static function startTimesWithOneRunnerAndOneTeam()
-    {
-        $classRunner = [
-            'id' => '',
-            'uuid' => '',
-            'oe_key' => '57',
-            'long_name' => 'Individual',
-            'teams' => [],
-            'course' => [
-                'id' => '',
-                'uuid' => '',
-                'distance' => '',
-                'climb' => '',
-                'controls' => (int) 0,
-                'oe_key' => '25',
-                'short_name' => 'Full Score'
-            ],
-            'runners' => [
-                [
-                    'id' => '',
-                    'uuid' => '',
-                    'sicard' => '8530222',
-                    'sex' => 'M',
-                    'first_name' => 'Jorge',
-                    'last_name' => 'Alonsolo',
-                    'runner_results' => [
-                        (int) 0 => [
-                            'id' => '',
-                            'stage_order' => (int) 1,
-                            'start_time' => '2024-11-10T10:30:00.000+01:00',
-                            'status_code' => StatusCode::OK,
-                            'leg_number' => (int) 1
-                        ]
-                    ],
-                    'club' => [
-                        'id' => '',
-                        'uuid' => '',
-                        'oe_key' => '2690',
-                        'long_name' => 'Albacete BMT CASAS DE VES'
-                    ]
-                ]
-            ]
-        ];
-        $classTeam = [
-            'id' => '',
-            'uuid' => '',
-            'oe_key' => '76',
-            'long_name' => 'DUAL.TEAM',
-            'teams' => [
-                [
-                    'id' => '',
-                    'uuid' => '',
-                    'bib_number' => '',
-                    'team_name' => 'Couupless',
-                    'club' => [
-                        'id' => '',
-                        'uuid' => '',
-                        'oe_key' => '65',
-                        'long_name' => 'Alicante SANT_JOAN'
-                    ],
-                    'team_results' => [
-                        (int) 0 => [
-                            'id' => '',
-                            'stage_order' => (int) 1,
-                            'start_time' => '2024-11-10T10:30:00.000+01:00',
-                            'status_code' => StatusCode::OK
-                        ]
-                    ],
-                    'runners' => [
-                        [
-                            'id' => '',
-                            'uuid' => '',
-                            'sicard' => '8008999',
-                            'sex' => 'M',
-                            'first_name' => 'Paco',
-                            'last_name' => 'Morenoa',
-                            'runner_results' => [
-                                (int) 0 => [
-                                    'id' => '',
-                                    'stage_order' => (int) 1,
-                                    'start_time' => '2024-11-10T10:30:00.000+01:00',
-                                    'status_code' => StatusCode::OK,
-                                    'leg_number' => (int) 1
-                                ]
-                            ],
-                            'club' => [
-                                'id' => '',
-                                'uuid' => '',
-                                'oe_key' => '65',
-                                'long_name' => 'Alicante SANT_JOAN'
-                            ],
-                            'course' => [
-                                'id' => '',
-                                'uuid' => '',
-                                'distance' => '',
-                                'climb' => '',
-                                'controls' => (int) 0,
-                                'oe_key' => '25',
-                                'short_name' => 'Full Score'
-                            ]
-                        ],
-                        [
-                            'id' => '',
-                            'uuid' => '',
-                            'sicard' => '1398555',
-                            'sex' => 'M',
-                            'first_name' => 'Andrea',
-                            'last_name' => 'Ponceb',
-                            'runner_results' => [
-                                (int) 0 => [
-                                    'id' => '',
-                                    'stage_order' => (int) 1,
-                                    'start_time' => '2024-11-10T10:30:00.000+01:00',
-                                    'status_code' => StatusCode::OK,
-                                    'leg_number' => (int) 1
-                                ]
-                            ],
-                            'club' => [
-                                'id' => '',
-                                'uuid' => '',
-                                'oe_key' => '65',
-                                'long_name' => 'Alicante SANT_JOAN'
-                            ],
-                            'course' => [
-                                'id' => '',
-                                'uuid' => '',
-                                'distance' => '',
-                                'climb' => '',
-                                'controls' => (int) 0,
-                                'oe_key' => '25',
-                                'short_name' => 'Full Score'
-                            ]
-                        ]
-                    ]
-                ],
-            ],
-            'course' => [
-                'id' => '',
-                'uuid' => '',
-                'distance' => '',
-                'climb' => '',
-                'controls' => (int) 0,
-                'oe_key' => '25',
-                'short_name' => 'Full Score'
-            ],
-            'runners' => []
-        ];
-        return [
-            'configuration' => [
-                'file' => '/OReplayExamples/start-times-rogaining-meos.xml',
-                'extension' => 'XML',
-                'utf' => false,
-                'known_data' => true,
-                'contents' => 'StartList',
-                'results_type' => 'Other',
-                'one_stage' => true,
-                'source' => 'MeOS',
-                'iof_version' => '3.0',
-                'include_score' => false
-            ],
-            'event' => [
-                'id' => Event::FIRST_EVENT,
-                'description' => 'Test_Event',
-                'is_hidden' => false,
-                'stages' => [
-                    [
-                        'id' => StagesFixture::STAGE_FEDO_2,
-                        'description' => 'Test_Stage',
-                        'base_date' => '2024-02-01',
-                        'base_time' => '11:00:00.000+01:00',
-                        'order_number' => (int) 1,
-                        'classes' => [
-                            $classRunner,
-                            $classTeam,
-                        ]
-                    ]
-                ]
-            ]
-        ];
-    }
-
 }
