@@ -21,6 +21,7 @@ class UploadConfigChecker
     private const TYPE_SPLITS = 'Breakdown';
     private const TYPE_TOTAL_POINTS = 'TotalizationPoints';
     private const TYPE_TOTAL_TIMES = 'TotalizationTime';
+    public const TYPE_MIXED = 'Mixed';
 
     private array $_data;
     private array $_firstStage;
@@ -114,13 +115,13 @@ class UploadConfigChecker
         $resultsType = $this->_getDataTransferred()['configuration']['results_type'] ?? null;
         $totalization = $this->_getDataTransferred()['configuration']['totalization'] ?? null;
         $toRet = null;
-        if ($contents === self::LIST_START && $resultsType === self::TYPE_START) {
+        if ($contents === self::LIST_START && in_array($resultsType, [self::TYPE_START, self::TYPE_MIXED])) {
             $toRet = UploadTypes::START_LIST;
         }
         if ($contents === self::LIST_RESULT && $resultsType === self::TYPE_INTERMEDIATES) {
             $toRet = UploadTypes::INTERMEDIATES;
         }
-        if ($contents === self::LIST_RESULT && $resultsType === self::TYPE_FINISH_TIMES) {
+        if ($contents === self::LIST_RESULT && in_array($resultsType, [self::TYPE_FINISH_TIMES, self::TYPE_MIXED])) {
             $toRet = UploadTypes::FINISH_TIMES;
         }
         if ($contents === self::LIST_RESULT && $resultsType === self::TYPE_SPLITS) {

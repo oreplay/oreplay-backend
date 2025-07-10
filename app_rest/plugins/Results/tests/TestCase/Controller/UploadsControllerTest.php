@@ -46,6 +46,7 @@ use Results\Test\Fixture\TeamResultsFixture;
 use Results\Test\Fixture\TeamsFixture;
 use Results\Test\Fixture\TokensFixture;
 use Results\Test\TestCase\Controller\UploadExamples\IntermediateExamples;
+use Results\Test\TestCase\Controller\UploadExamples\MixedExamples;
 use Results\Test\TestCase\Controller\UploadExamples\RelayExamples;
 use Results\Test\TestCase\Controller\UploadExamples\ResultExamples;
 use Results\Test\TestCase\Controller\UploadExamples\StartExamples;
@@ -76,6 +77,39 @@ class UploadsControllerTest extends ApiCommonErrorsTest
     protected function _getEndpoint(): string
     {
         return ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/uploads/';
+    }
+
+    public function testAddNew_shouldAddMixedContent()
+    {
+        Cache::clear();
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = ['oreplay_data_transfer' => MixedExamples::importMixed()];
+        $this->post($this->_getEndpoint() . '?version=501', $data);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
+        $expectedMeta = [
+            'updated' => [
+                'classes' => 2,
+                'runners' => 6,
+                'courses' => 2,
+                'splits' => 3,
+                'runnerResults' => 6,
+            ],
+            'humanColor' => '#075210',
+            'human' => [''],
+            'timings' => [],
+        ];
+        $jsonDecoded['meta']['timings'] = [];
+        unset($jsonDecoded['meta']['human'][1]);
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+        $this->assertStringStartsWith('Updated 2 classes, 2 courses (', $human);
     }
 
     public function testAddNew_shouldAddStartTimes()
