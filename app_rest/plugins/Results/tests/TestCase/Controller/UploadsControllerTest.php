@@ -381,51 +381,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     }
 
-    public function testAddNew_shouldNotUpdateStartListWhenThereAreFinishTimes()
-    {
-        Cache::clear();
-        RunnerResultsTable::load()->updateAll([
-            'stage_id' => StagesFixture::STAGE_FEDO_2,
-            'finish_time' => new FrozenTime()
-        ], ['id' => RunnerResult::FIRST_RES]);
-        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
-        $ClassesTable = ClassesTable::load();
-        $ClassesTable->updateAll(
-            ['stage_id' => StagesFixture::STAGE_FEDO_2],
-            ['id' => ClassEntity::ME]);
-
-        $data = ['oreplay_data_transfer' => StartExamples::startImportSmall()];
-        $this->post($this->_getEndpoint() . '?version=300', $data);
-
-        $jsonDecoded = $this->assertJsonResponseOK();
-        $now = new FrozenTime();
-        $expectedMeta = [
-            'updated' => [
-                'classes' => 0,
-                'runners' => 0,
-            ],
-            'humanColor' => '#FF0000',
-            'human' => [
-                "\n    [ERROR - 400] ($now) Cannot add start times when there are already finish times \n"
-            ]
-        ];
-        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-
-        $addedClasses = $ClassesTable->find()
-            ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
-            ->contain(CoursesTable::name())
-            ->orderAsc('Classes.oe_key')
-            ->all();
-        $this->assertEquals(1, count($addedClasses));
-
-        $res = RunnersTable::load()
-            ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
-            ->orderAsc('last_name')
-            ->all();
-
-        $this->assertEquals(0, count($res), 'Runner count in db');
-    }
-
     public function testAddNew_shouldAddFinishTimes()
     {
         Cache::clear();
@@ -502,6 +457,51 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(31, $splitA->control->station);
     }
 
+    public function testAddNew_shouldNotUpdateStartListWhenThereAreFinishTimes()
+    {
+        Cache::clear();
+        RunnerResultsTable::load()->updateAll([
+            'stage_id' => StagesFixture::STAGE_FEDO_2,
+            'finish_time' => new FrozenTime()
+        ], ['id' => RunnerResult::FIRST_RES]);
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = ['oreplay_data_transfer' => StartExamples::startImportSmall()];
+        $this->post($this->_getEndpoint() . '?version=300', $data);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $now = new FrozenTime();
+        $expectedMeta = [
+            'updated' => [
+                'classes' => 0,
+                'runners' => 0,
+            ],
+            'humanColor' => '#FF0000',
+            'human' => [
+                "\n    [ERROR - 400] ($now) Cannot add start times when there are already finish times \n"
+            ]
+        ];
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+
+        $addedClasses = $ClassesTable->find()
+            ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->contain(CoursesTable::name())
+            ->orderAsc('Classes.oe_key')
+            ->all();
+        $this->assertEquals(1, count($addedClasses));
+
+        $res = RunnersTable::load()
+            ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
+            ->orderAsc('last_name')
+            ->all();
+
+        $this->assertEquals(0, count($res), 'Runner count in db');
+    }
+
     private function _assertRunnersWithFinishTimes($decodedData, $skipSplits = false)
     {
         $Table = RunnerResultsTable::load();
@@ -541,7 +541,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals('2024-01-28T10:18:37.000+00:00', $stage['splits'][1]['reading_time']);
         }
         $secondRunner = $decodedData[0]['runners'][1];
-        $this->assertEquals('Antonio Velazquez', $secondRunner['full_name']);
+        $this->assertEquals('Antonio Pino', $secondRunner['full_name']);
         $this->assertEquals('105', $secondRunner['bib_number']);
         $this->assertEquals('4540555', $secondRunner['sicard']);
         $this->assertEquals('Independiente', $secondRunner['club']['short_name']);

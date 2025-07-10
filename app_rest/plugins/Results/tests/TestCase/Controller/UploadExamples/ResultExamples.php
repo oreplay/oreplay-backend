@@ -116,7 +116,7 @@ class ResultExamples
                                         'sicard' => '4540555',
                                         'sex' => 'M',
                                         'first_name' => 'Antonio',
-                                        'last_name' => 'Velazquez',
+                                        'last_name' => 'Pino',
                                         'bib_number' => '105',
                                         'runner_results' => [
                                             (int) 0 => [
@@ -156,7 +156,7 @@ class ResultExamples
                                         'club' => [
                                             'id' => '',
                                             'uuid' => '',
-                                            'oe_key' => '12',
+                                            'oe_key' => '85',
                                             'short_name' => 'Independiente',
                                             'long_name' => 'Independiente'
                                         ]
