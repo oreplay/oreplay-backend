@@ -26,27 +26,15 @@ This will return the following JSON when the request is processed successfully, 
        "stages": [
            {
                "id": "19337eab-9a98-47a6-87e9-e2b1a14478f8",
-               "description": "Prueba"
+               "description": "Middle distance"
            },
            {
                "id": "e078b234-81b4-4d05-9db6-b73a453c667e",
-               "description": "Prueba relevo 2"
+               "description": "Sprint"
            },
            {
                "id": "6c33c9ef-0751-43b9-9768-20fe2a4807e6",
-               "description": "Test 2"
-           },
-           {
-               "id": "995cdc24-66f9-4a64-bba6-90d6584475ac",
-               "description": "Test"
-           },
-           {
-               "id": "21dbd1f6-491e-46c1-9d48-7917d91a0f7f",
-               "description": "adri CESA 25 larga 4 (\"2025-06-20T08:19:13.000+00:00\") CAD MAS tiene radios"
-           },
-           {
-               "id": "31c722fe-ae13-4263-bc04-fcc6e8ad8a3a",
-               "description": "adri CESA 25 larga 5 (\"2025-06-20T08:45:17.000+00:00\") radios+descarga antes del primer reset"
+               "description": "Long distance"
            }
        ]
    }
@@ -57,7 +45,7 @@ The field **description** could be displayed as soon as the response is complete
 
 If the **Token** is invalid (wrong Event_id or wrong secret), the HTTP status code will be **401** (Unauthorized)
 
-Other error codes like 400, 403, 404, 500, 502, 503 should not be used if there is no mayor error.
+Other error codes like `400`, `403`, `404`, `500`, `502`, `503` should not be used if there is no mayor error.
 They COULD be handled with a generic message like "There is a problem with the request to the server (error code 400)"
 
 The list of stages could be displayed in a dialog like this, to be selected by the user.
@@ -73,13 +61,13 @@ The start lists, or results are uploaded to using a `POST` request to `/api/v1/e
 
 The parameter **version** MUST be initially 501. This is the version of the upload schema.
 
-Example request body:
+Example request body. This is example is a draft to give a general illustration of the schema, not a proper API definition:
 
 ```json
 {
     "configuration":{
         "source_vendor":"sportSoftware",
-        "source":"OE2010",
+        "source":"OE12",
         "source_version":"12.2",
         "contents":"ResultList",
         "_values_on_contents_":"StartList | ResultList",
@@ -127,7 +115,6 @@ Example request body:
                                 "sicard":"8011750",
                                 "sicard_alt":"",
                                 "license":"",
-                                "birth_date":"",
                                 "first_name":"Francisco",
                                 "last_name":"One Runner Downloaded",
                                 "bib_number":"255",
@@ -145,32 +132,25 @@ Example request body:
                                         "status_code":"0",
                                         "time_behind":0,
                                         "time_neutralization":0,
-                                        "time_adjusted":0,
+                                        "time_adjusted":5214,
                                         "time_penalty":0,
                                         "time_bonus":0,
                                         "points_final":0,
                                         "points_adjusted":0,
                                         "points_penalty":0,
                                         "points_bonus":0,
-                                        "leg_number":1,
                                         "splits":[
                                             {
-                                                "sicard":"8011750",
                                                 "station":"31",
                                                 "points":0,
                                                 "reading_time":"2024-01-28T10:15:05.000",
-                                                "reading_milli":1706433305000,
-                                                "time_seconds":605,
                                                 "order_number":1,
                                                 "is_intermediate":false
                                             },
                                             {
-                                                "sicard":"8011750",
                                                 "station":"100",
                                                 "points":0,
                                                 "reading_time":"2024-01-28T10:18:37.000",
-                                                "reading_milli":1706433517000,
-                                                "time_seconds":817,
                                                 "order_number":2,
                                                 "is_intermediate":false
                                             }
@@ -194,8 +174,6 @@ Example request body:
                                 "uuid":"",
                                 "sicard":"889818",
                                 "sicard_alt":"889818",
-                                "license":"",
-                                "birth_date":"",
                                 "first_name":"Carlos",
                                 "last_name":"One Runner Not Started Yet",
                                 "bib_number":"359",
@@ -229,8 +207,6 @@ Example request body:
                                 "uuid":"",
                                 "sicard":"8000001",
                                 "sicard_alt":"",
-                                "license":"",
-                                "birth_date":"",
                                 "sex":"M",
                                 "first_name":"Javier",
                                 "last_name":"One Runner With Intermediates",
@@ -250,13 +226,9 @@ Example request body:
                                         "leg_number":1,
                                         "splits":[
                                             {
-                                                "sicard":"8000001",
                                                 "station":"31",
                                                 "points":0,
                                                 "reading_time":"2024-01-16T10:56:47.000+01:00",
-                                                "reading_milli":1705399007000,
-                                                "time_seconds":1607,
-                                                "bib_runner":"1",
                                                 "order_number":1,
                                                 "is_intermediate":true
                                             }
