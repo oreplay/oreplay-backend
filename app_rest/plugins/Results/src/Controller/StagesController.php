@@ -18,6 +18,7 @@ use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\RunnersTable;
 use Results\Model\Table\SplitsTable;
+use Results\Model\Table\StageOrdersTable;
 use Results\Model\Table\StagesTable;
 use Results\Model\Table\TeamResultsTable;
 use Results\Model\Table\TeamsTable;
@@ -83,6 +84,7 @@ class StagesController extends ApiController
             TeamResultsTable::load(),
             SplitsTable::load(),
             AnswersTable::load(),
+            StageOrdersTable::load(),
         ];
         $now = new FrozenTime();
         foreach ($tables as $table) {

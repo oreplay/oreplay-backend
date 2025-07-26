@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Rankings\Controller;
 
 use App\Lib\FullBaseUrl;
+use App\Model\Table\UsersTable;
+use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
 use Rankings\Model\Table\RankingsTable;
@@ -20,6 +22,7 @@ class RankingComputeClassController extends ApiController
     private const string SECRET_PARAM = 'secret';
     private RunnersTable $Runners;
     private RankingsTable $Rankings;
+    private mixed $_currentUid = null;
 
     public function initialize(): void
     {
@@ -72,13 +75,17 @@ class RankingComputeClassController extends ApiController
         }
 
         usort($participants, ResultsSorter::sortStages());
-        $saved = $this->Rankings->saveRanking($rankingId, $stageId, $classId, $participants);
-        if ($saved) {
-            $this->return = $saved;
-        } else {
-            $err = 'Class without position one runner ' . $classId . ' ' . json_encode($participants);
-            $this->log($err);
-            $this->return = ['error' => $err];
+        try {
+            $this->return = $this->Rankings->saveRanking($rankingId, $stageId, $classId, $participants);
+        } catch (BadRequestException $e) {
+            if ($this->_currentUid) {
+                // request from frontend throw exception
+                throw $e;
+            } else {
+                // from pararell php use soft error
+                $this->log($e->getMessage());
+                $this->return = ['error' => $e->getMessage()];
+            }
         }
     }
 
@@ -86,8 +93,16 @@ class RankingComputeClassController extends ApiController
     {
         $querySecret = $data[self::SECRET_PARAM] ?? null;
         unset($data[self::SECRET_PARAM]);
-        if ($querySecret !== $this->getSecret()) {
-            throw new ForbiddenException('Invalid secret in query: ' . $querySecret);
+        if ($querySecret === 'auth') {
+            // request from frontend
+            $a = $this->getLocalOauth()->verifyAuthorizationAndGetToken();
+            $this->_currentUid = $a->getUserID();
+            UsersTable::load()->getManagerOrFail($this->_currentUid);
+        } else {
+            // from pararell php
+            if ($querySecret !== $this->getSecret()) {
+                throw new ForbiddenException('Invalid secret in query: ' . $querySecret);
+            }
         }
     }
 }

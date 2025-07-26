@@ -7,6 +7,7 @@ namespace Rankings\Model\Table;
 use App\Model\Table\AppTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\EntityInterface;
+use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Rankings\Lib\RankingUploadConfigChecker;
 use Rankings\Lib\ScoringAlgorithms\SimpleScoreCalculator;
@@ -93,7 +94,7 @@ class RankingsTable extends AppTable
         string $srcStageId,
         string $classId,
         array $participants
-    ): ?EntityInterface {
+    ): EntityInterface {
         /** @var ParticipantInterface $first */
         $first = $participants[0];
         if ($first->isLeader()) {
@@ -138,7 +139,8 @@ class RankingsTable extends AppTable
             $class->addRunners($runners);
             return $classesTable->saveOrFailRetrying($class);
         } else {
-            return null;
+            $err = 'Class without position one runner ' . $classId . ' ' . json_encode($participants);
+            throw new BadRequestException($err);
         }
     }
 

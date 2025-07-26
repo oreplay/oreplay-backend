@@ -16,6 +16,7 @@ use React\Socket\Connector;
 use Rankings\Model\Table\RankingsTable;
 use Results\Controller\ApiController;
 use Results\Model\Entity\ClassEntity;
+use Results\Model\Table\ClubsTable;
 use Results\Model\Table\StageOrdersTable;
 
 class RankingComputeStageController extends ApiController
@@ -37,6 +38,7 @@ class RankingComputeStageController extends ApiController
         $rankingId = $this->request->getParam('rankingID');
         $eventId = $this->request->getParam('eventID');
         $stageId = $this->request->getParam('stageID');
+        $onlyClassList = $this->getRequest()->getQuery('only_class_list');
 
         $this->Users->getManagerOrFail($this->OAuthServer->getUserID());
 
@@ -53,36 +55,45 @@ class RankingComputeStageController extends ApiController
 
         $loop = Loop::get();
         $browser = new Browser($loop, new Connector());
+        $urls = [];
         $responsesOk = [];
         $responsesErr = [];
         foreach ($classes as $class) {
             $classId = $class->id;
-            RankingComputeClassController::rankingRequest(
-                $browser,
-                "/$rankingId/events/$eventId/stages/$stageId/classes/$classId/compute/"
-            )
-                ->then(
-                    function (Response $response) use ($class, &$responsesOk) {
-                        $decodeRes = $this->_decodeRes($response, $class);
-                        $responsesOk[] = $decodeRes;
-                    },
-                    function (\Exception $e) use ($class, &$responsesErr) {
-                        if ($e instanceof ResponseException) {
-                            $decodeRes = $this->_decodeRes($e->getResponse(), $class);
-                            $responsesErr[] = $decodeRes;
-                        } else {
-                            $responsesErr[] = $e->getMessage();
+            if ($onlyClassList) {
+                $urls[] = "/rankings/$rankingId/events/$eventId/stages/$stageId/classes/$classId/compute/";
+            } else {
+                RankingComputeClassController::rankingRequest(
+                    $browser,
+                    "/$rankingId/events/$eventId/stages/$stageId/classes/$classId/compute/"
+                )
+                    ->then(
+                        function (Response $response) use ($class, &$responsesOk) {
+                            $decodeRes = $this->_decodeRes($response, $class);
+                            $responsesOk[] = $decodeRes;
+                        },
+                        function (\Exception $e) use ($class, &$responsesErr) {
+                            if ($e instanceof ResponseException) {
+                                $decodeRes = $this->_decodeRes($e->getResponse(), $class);
+                                $responsesErr[] = $decodeRes;
+                            } else {
+                                $responsesErr[] = $e->getMessage();
+                            }
                         }
-                    }
-                );
+                    );
+            }
         }
 
-        $loop->run();
+        if ($onlyClassList) {
+            $this->return = $urls;
+        } else {
+            $loop->run();
 
-        if ($responsesErr) {
-            throw new InternalErrorException('Ranking compute errors: ' . json_encode($responsesErr));
+            if ($responsesErr) {
+                throw new InternalErrorException('Ranking compute errors: ' . json_encode($responsesErr));
+            }
+            $this->return = $responsesOk;
         }
-        $this->return = $responsesOk;
     }
 
     private function _decodeRes(ResponseInterface $response, ClassEntity $class): array
