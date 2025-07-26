@@ -10,11 +10,13 @@ use Results\Model\Entity\Stage;
 use Results\Model\Table\ClubsTable;
 use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\EventsFixture;
+use Results\Test\Fixture\StagesFixture;
 
 class ClubsTableTest extends TestCase
 {
     protected $fixtures = [
         EventsFixture::LOAD,
+        StagesFixture::LOAD,
         ClubsFixture::LOAD,
     ];
     private ClubsTable $Clubs;
@@ -37,5 +39,17 @@ class ClubsTableTest extends TestCase
         $this->assertEquals('1769', $club->oe_key);
         $this->assertEquals('Valencia VALENCIA-O', $club->long_name);
         $this->assertEquals('Valencia VALENCIA-O', $club->short_name);
+    }
+
+    public function testCopyClubs(): void
+    {
+        $this->assertEquals(1, $this->Clubs->find()->where(['stage_id' => Stage::FIRST_STAGE])->all()->count());
+        $newStage = StagesFixture::STAGE_FEDO_2;
+        $this->assertEquals(0, $this->Clubs->find()->where(['stage_id' => $newStage])->all()->count());
+
+        $clubs = $this->Clubs->copyClubs(Stage::FIRST_STAGE, Event::FIRST_EVENT, $newStage);
+
+        $this->assertEquals(1, $this->Clubs->find()->where(['stage_id' => $newStage])->all()->count());
+        $this->assertEquals(1, count($clubs));
     }
 }

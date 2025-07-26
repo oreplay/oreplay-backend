@@ -48,6 +48,9 @@ class RankingComputeStageController extends ApiController
         $rk = $this->Rankings->getCached($rankingId);
         $this->StageOrders->getAllCreatingOne($stageId, $rk->getEventId(), $rk->getStageId());
 
+        $clubTable = ClubsTable::load();
+        $clubTable->copyClubs($stageId, $rk->getEventId(), $rk->getStageId());
+
         $loop = Loop::get();
         $browser = new Browser($loop, new Connector());
         $responsesOk = [];

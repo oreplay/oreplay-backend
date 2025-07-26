@@ -6,6 +6,7 @@ namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
 use Cake\Datasource\EntityInterface;
+use Cake\Log\LogTrait;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
 use Results\Model\Entity\ClassEntity;
@@ -18,6 +19,7 @@ use Results\Model\Entity\ClassEntity;
  */
 class ClassesTable extends AppTable
 {
+    use LogTrait;
     protected $_entityClass = ClassEntity::class;
 
     public function initialize(array $config): void
@@ -119,6 +121,7 @@ class ClassesTable extends AppTable
                     return $this->saveOrFail($class);
                 });
             } catch (\PDOException $e) {
+                $this->log('Error saving, will retry: ' . $e->getCode() . ' ' . $e->getMessage());
                 if ($e->getCode() === '40001' && $attempt < $maxRetries) {
                     $attempt++;
                     $around100ms = random_int(81000, 102000);

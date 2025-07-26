@@ -30,6 +30,22 @@ class ClubsTable extends AppTable
         return $table;
     }
 
+    public function copyClubs(string $srcStageId, string $targetEventId, string $targetStageId)
+    {
+        $clubs = $this->find()->where(['stage_id' => $srcStageId]);
+        $clubsToSave = [];
+        foreach ($clubs as $club) {
+            $clubArray = $club->toArray();
+            unset($clubArray['id']);
+            unset($clubArray['event_id']);
+            unset($clubArray['stage_id']);
+            unset($clubArray['created']);
+            unset($clubArray['modified']);
+            $clubsToSave[] = $this->createIfNotExists($targetEventId, $targetStageId, $clubArray);
+        }
+        return $this->saveMany($clubsToSave);
+    }
+
     public function createIfNotExists(string $eventId, string $stageId, array $data): Club
     {
         /** @var Club $club */
