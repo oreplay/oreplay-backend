@@ -12,6 +12,8 @@ use Results\Lib\Consts\StatusCode;
  * @property integer $time_seconds
  * @property float|string $points_final
  * @property integer $status_code
+ * @property mixed $is_nc
+ * @property mixed $contributory
  * @property mixed $stage_order
  * @property integer $time_behind
  * @property string $upload_type
@@ -40,6 +42,8 @@ class RunnerResult extends AppEntity implements ParticipantResultsEntity
         'start_time' => true,
         'finish_time' => true,
         'position' => true,
+        'is_nc' => true,
+        'contributory' => true,
         'status_code' => true,
         'time_seconds' => true,
         'time_behind' => true,
