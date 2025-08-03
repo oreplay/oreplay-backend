@@ -93,21 +93,21 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         return $this->_settings->_getOverallSettings()['maxRacesCounted'];
     }
 
-    public function hasFewComputable(int $partsNormalAmount, int $totalRaces = null): bool
+    public function hasFewComputable(int $amountRacesParticipated, int $totalRaces = null): bool
     {
         if ($totalRaces === null) {
             $totalRaces = $this->_getTotalRaces();
         }
-        return $partsNormalAmount <= $totalRaces * $this->_getOrgComputableConstant();
+        return $amountRacesParticipated <= $totalRaces * $this->_getOrgComputableConstant();
     }
 
-    public function getOrgComputable(int $partsNormalAmount, int $totalRaces = null): int
+    public function getOrgComputable(int $amountRacesParticipated, int $totalRaces = null): int
     {
         if ($totalRaces === null) {
             $totalRaces = $this->_getTotalRaces();
         }
-        if ($this->hasFewComputable($partsNormalAmount, $totalRaces)) {
-            return $partsNormalAmount;
+        if ($this->hasFewComputable($amountRacesParticipated, $totalRaces)) {
+            return $amountRacesParticipated;
         }
         $amountToReturn = $totalRaces * $this->_getOrgComputableConstant();
         return (int)round($amountToReturn);
