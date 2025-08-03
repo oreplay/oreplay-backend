@@ -78,7 +78,7 @@ class RankingComputeClassControllerTest extends ApiCommonErrorsTest
                     'note' => null,
                     'status_code' => '0',
                     'is_nc' => null,
-                    'contributory' => null,
+                    'contributory' => true,
                 ],
             ],
             'overall' => [

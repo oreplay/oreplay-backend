@@ -92,14 +92,17 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         return $this->_settings->_getOverallSettings()['maxRacesCounted'];
     }
 
-    public function hasFewComputable(int $partsNormalAmount): bool
+    public function hasFewComputable(int $partsNormalAmount, int $totalRaces = null): bool
     {
-        return $partsNormalAmount <= $this->_getTotalRaces() * $this->_getOrgComputableConstant();
+        if ($totalRaces === null) {
+            $totalRaces = $this->_getTotalRaces();
+        }
+        return $partsNormalAmount <= $totalRaces * $this->_getOrgComputableConstant();
     }
 
-    public function getOrgComputable(int $partsNormalAmount): int
+    public function getOrgComputable(int $partsNormalAmount, int $totalRaces = null): int
     {
-        if ($this->hasFewComputable($partsNormalAmount)) {
+        if ($this->hasFewComputable($partsNormalAmount, $totalRaces)) {
             return $partsNormalAmount;
         }
         $amountToReturn = $partsNormalAmount * $this->_getOrgComputableConstant();
@@ -139,8 +142,12 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         list($sumSeconds, $sumPoints) = $this->sum($partsToSum);
 
         $amountOrg = count($partsOrg);
-        $sumSeconds = $this->_round($sumSeconds);
-        $sumPoints = $this->_round($sumPoints);
+        if ($sumSeconds) {
+            $sumSeconds = $this->_round($sumSeconds);
+        }
+        if ($sumPoints) {
+            $sumPoints = $this->_round($sumPoints);
+        }
         $res = PartialOverall::fromValues(
             $amountNormal + $amountOrg,
             ScoringAlgorithm::NEEDS_POSITION,
