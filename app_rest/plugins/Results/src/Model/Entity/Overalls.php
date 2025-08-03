@@ -38,6 +38,31 @@ class Overalls extends AppEntity
         return $this->_parts;
     }
 
+    public function updateComputedOrganizers(?float $avgPoints, ?int $avgSeconds)
+    {
+        foreach ($this->_getParts() as $part) {
+            if ($part->isComputableOrganizer()) {
+                $part->setPoints($avgPoints);
+                $part->setTimeSeconds($avgSeconds);
+            }
+        }
+    }
+
+    public function getBestParts(int $maxAmount): array
+    {
+        $parts = $this->_getParts();
+        usort($parts, PartialOverall::sortTotals());
+        $toRet = [];
+        foreach ($parts as &$part) {
+            $isBestPart = count($toRet) <= $maxAmount;
+            if ($isBestPart) {
+                $toRet[] = $part;
+            }
+            $part->setContributory($isBestPart);
+        }
+        return $toRet;
+    }
+
     public function setOverall(PartialOverall $overall): static
     {
         $this->_overall = $overall;

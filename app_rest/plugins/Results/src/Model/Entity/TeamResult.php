@@ -10,6 +10,9 @@ use Cake\I18n\FrozenTime;
  * @property FrozenTime $start_time
  * @property FrozenTime $finish_time
  * @property mixed $position
+ * @property integer $status_code
+ * @property mixed $is_nc
+ * @property mixed $contributory
  * @property mixed $time_seconds
  * @property float|string $points_final
  * @property mixed $stage_order

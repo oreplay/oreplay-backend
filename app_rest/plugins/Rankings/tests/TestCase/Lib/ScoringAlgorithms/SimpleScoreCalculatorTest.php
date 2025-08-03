@@ -72,6 +72,75 @@ class SimpleScoreCalculatorTest extends TestCase
         $this->assertEquals(0, $points);
     }
 
+    public function testHasFewComputable()
+    {
+        $settings = RankingsTable::load()->getCached(RankingsTable::FIRST_RANKING);
+        $calc = new SimpleScoreCalculator($settings);
+
+        $parts = 1;
+        $this->assertFalse($calc->hasFewComputable($parts, 2));
+        $this->assertFalse($calc->hasFewComputable($parts, 3));
+        $this->assertTrue($calc->hasFewComputable($parts, 4));
+
+        $parts = 2;
+        $this->assertFalse($calc->hasFewComputable($parts, 2));
+        $this->assertFalse($calc->hasFewComputable($parts, 3));
+        $this->assertFalse($calc->hasFewComputable($parts, 4));
+        $this->assertFalse($calc->hasFewComputable($parts, 5));
+        $this->assertFalse($calc->hasFewComputable($parts, 6));
+        $this->assertTrue($calc->hasFewComputable($parts, 7));
+
+        $parts = 3;
+        $this->assertFalse($calc->hasFewComputable($parts, 2));
+        $this->assertFalse($calc->hasFewComputable($parts, 3));
+        $this->assertFalse($calc->hasFewComputable($parts, 4));
+        $this->assertFalse($calc->hasFewComputable($parts, 5));
+        $this->assertFalse($calc->hasFewComputable($parts, 6));
+        $this->assertFalse($calc->hasFewComputable($parts, 7));
+        $this->assertFalse($calc->hasFewComputable($parts, 8));
+        $this->assertFalse($calc->hasFewComputable($parts, 9));
+        $this->assertTrue($calc->hasFewComputable($parts, 10));
+        $this->assertTrue($calc->hasFewComputable($parts, 11));
+    }
+
+    public function testGetOrgComputable()
+    {
+        $settings = RankingsTable::load()->getCached(RankingsTable::FIRST_RANKING);
+        $calc = new SimpleScoreCalculator($settings);
+
+        // with few computable
+        $hasFewComputable = 9999;
+        $parts = 1;
+        $this->assertEquals(1, $calc->getOrgComputable($parts, $hasFewComputable));
+        $parts = 2;
+        $this->assertEquals(2, $calc->getOrgComputable($parts, $hasFewComputable));
+        $parts = 4;
+        $this->assertEquals(4, $calc->getOrgComputable($parts, $hasFewComputable));
+        $parts = 6;
+        $this->assertEquals(6, $calc->getOrgComputable($parts, $hasFewComputable));
+        $parts = 8;
+        $this->assertEquals(8, $calc->getOrgComputable($parts, $hasFewComputable));
+        $parts = 10;
+        $this->assertEquals(10, $calc->getOrgComputable($parts, $hasFewComputable));
+        $parts = 12;
+        $this->assertEquals(12, $calc->getOrgComputable($parts, $hasFewComputable));
+
+        // without few computable
+        $hasManyComputable = 1;
+        $this->assertEquals(0, $calc->getOrgComputable(1, $hasManyComputable));
+        $this->assertEquals(1, $calc->getOrgComputable(2, $hasManyComputable));
+        $this->assertEquals(1, $calc->getOrgComputable(3, $hasManyComputable));
+        $this->assertEquals(1, $calc->getOrgComputable(4, $hasManyComputable));
+        $this->assertEquals(2, $calc->getOrgComputable(5, $hasManyComputable));
+        $this->assertEquals(2, $calc->getOrgComputable(6, $hasManyComputable));
+        $this->assertEquals(2, $calc->getOrgComputable(7, $hasManyComputable));
+        $this->assertEquals(2, $calc->getOrgComputable(8, $hasManyComputable));
+        $this->assertEquals(3, $calc->getOrgComputable(9, $hasManyComputable));
+        $this->assertEquals(3, $calc->getOrgComputable(10, $hasManyComputable));
+        $this->assertEquals(3, $calc->getOrgComputable(11, $hasManyComputable));
+        $this->assertEquals(4, $calc->getOrgComputable(12, $hasManyComputable));
+    }
+
     public function testCalculateOverallScore()
     {
         $overalls = new Overalls();
@@ -132,6 +201,9 @@ class SimpleScoreCalculatorTest extends TestCase
                     'upload_type' => null,
                     'stage' => null,
                     'position' => 2,
+                    'status_code' => null,
+                    'is_nc' => false,
+                    'contributory' => null,
                     'time_seconds' => 0,
                     'time_behind' => null,
                     'points_final' => 50,
@@ -146,6 +218,9 @@ class SimpleScoreCalculatorTest extends TestCase
                     'upload_type' => UploadTypes::COMPUTABLE_ORGANIZER,
                     'stage' => null,
                     'position' => null,
+                    'status_code' => null,
+                    'is_nc' => false,
+                    'contributory' => null,
                     'time_seconds' => 0,
                     'time_behind' => null,
                     'points_final' => 66.25,
@@ -160,6 +235,9 @@ class SimpleScoreCalculatorTest extends TestCase
                     'upload_type' => null,
                     'stage' => null,
                     'position' => 4,
+                    'status_code' => null,
+                    'is_nc' => false,
+                    'contributory' => null,
                     'time_seconds' => 0,
                     'time_behind' => null,
                     'points_final' => 82.5,
@@ -174,6 +252,9 @@ class SimpleScoreCalculatorTest extends TestCase
                 'stage_order' => 3,
                 'stage' => null,
                 'position' => ScoringAlgorithm::NEEDS_POSITION,
+                'status_code' => null,
+                'is_nc' => false,
+                'contributory' => null,
                 'time_seconds' => 0.0,
                 'time_behind' => null,
                 'points_final' => 198.8,

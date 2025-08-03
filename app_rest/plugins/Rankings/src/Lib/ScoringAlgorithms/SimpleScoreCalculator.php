@@ -52,7 +52,7 @@ class SimpleScoreCalculator implements ScoringAlgorithm
             $this->log('Invalid points calculation for runner id: ' . $id);
         }
         $points = $runnerPoints * $this->_settings->_getMaxPoints();
-        return (float)round($points, $this->_settings->_getRoundPrecision());
+        return $this->_round($points);
     }
 
     private function _divide($x, $y): float
@@ -63,6 +63,49 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         return (float)$x / $y;
     }
 
+    private function _round(float|int $number): float
+    {
+        if ($this->_settings->isFloorInsteadOfRound()) {
+            return floor($number);
+        }
+        return round($number, $this->_settings->_getRoundPrecision());
+    }
+
+    private function _getOrgComputableConstant(): float
+    {
+        // how many races will be considered in the org avg
+        // e.g. use 0.3 to use 30% of the total races in the circuit to calculate organizer average
+        return $this->_settings->_getOverallSettings()['organizerScoringFraction'];
+    }
+
+    private function _getTotalRaces(): int
+    {
+        // number of races in this circuit
+        // e.g. use 9 if there are 9 races in the circuit
+        return $this->_settings->_getOverallSettings()['totalCircuitRaces'];
+    }
+
+    private function _getMaxRacesCounted(): int
+    {
+        // max number of races counted for each participant
+        // e.g. use 6 if only 6 out of 9 races should be used to compute the total result
+        return $this->_settings->_getOverallSettings()['maxRacesCounted'];
+    }
+
+    public function hasFewComputable(int $partsNormalAmount): bool
+    {
+        return $partsNormalAmount <= $this->_getTotalRaces() * $this->_getOrgComputableConstant();
+    }
+
+    public function getOrgComputable(int $partsNormalAmount): int
+    {
+        if ($this->hasFewComputable($partsNormalAmount)) {
+            return $partsNormalAmount;
+        }
+        $amountToReturn = $partsNormalAmount * $this->_getOrgComputableConstant();
+        return (int)round($amountToReturn);
+    }
+
     public function calculateOverallScore(Overalls $overalls): Overalls
     {
         $parts = $overalls->_getParts();
@@ -71,30 +114,33 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         }
         $partsNormal = [];
         $partsOrg = [];
-        foreach ($parts as $part) {
+        foreach ($parts as &$part) {
             if ($part->isComputableOrganizer()) {
                 $partsOrg[] = $part;
             } else {
                 $partsNormal[] = $part;
             }
         }
-        list($sumSeconds, $sumPoints) = $this->sum($partsNormal);
+        usort($partsNormal, PartialOverall::sortTotals());
+        $orgComputable = array_slice($partsNormal, 0, $this->getOrgComputable(count($partsNormal)));
+
+        list($sumSeconds, $sumPoints) = $this->sum($orgComputable);
         $avgSeconds = 0;
         $avgPoints = 0;
-        $amountNormal = count($partsNormal);
+        $amountNormal = count($orgComputable);
         if ($amountNormal) {
             $avgSeconds = $this->_divide($sumSeconds, $amountNormal);
             $avgPoints = $this->_divide($sumPoints, $amountNormal);
         }
+        $overalls->updateComputedOrganizers($this->_round($avgPoints), (int)$avgSeconds);
+
+        $partsToSum = $overalls->getBestParts($this->_getMaxRacesCounted());
+
+        list($sumSeconds, $sumPoints) = $this->sum($partsToSum);
+
         $amountOrg = count($partsOrg);
-        foreach ($overalls->_getParts() as $part) {
-            if ($part->isComputableOrganizer()) {
-                $part->setPoints($avgPoints);
-                $part->setTimeSeconds((int)$avgSeconds);
-            }
-        }
-        $sumSeconds = round($sumSeconds + $avgSeconds * $amountOrg, $this->_settings->_getRoundPrecision());
-        $sumPoints = round($sumPoints + $avgPoints * $amountOrg, $this->_settings->_getRoundPrecision());
+        $sumSeconds = $this->_round($sumSeconds);
+        $sumPoints = $this->_round($sumPoints);
         $res = PartialOverall::fromValues(
             $amountNormal + $amountOrg,
             ScoringAlgorithm::NEEDS_POSITION,

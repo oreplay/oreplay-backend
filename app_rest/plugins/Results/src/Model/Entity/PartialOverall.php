@@ -129,4 +129,26 @@ class PartialOverall extends RunnerResult
         $this->_fields['position'] = $position;
         return $this;
     }
+
+    public function setContributory(bool $contributory): static
+    {
+        $this->_fields['contributory'] = $contributory;
+        return $this;
+    }
+
+    public static function sortTotals(): \Closure
+    {
+        return function (PartialOverall $a, PartialOverall $b): int {
+            $pointsA = $a['points_final'] ?? null;
+            $timeA = $a['time_seconds'] ?? null;
+
+            $pointsB = $b['points_final'] ?? null;
+            $timeB = $b['time_seconds'] ?? null;
+
+            if ($pointsA !== $pointsB) {
+                return $pointsB <=> $pointsA;
+            }
+            return $timeA <=> $timeB;
+        };
+    }
 }

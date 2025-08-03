@@ -18,6 +18,8 @@ use Results\Model\Entity\AppEntity;
  */
 class Ranking extends AppEntity
 {
+    public const int USE_FLOOR_INSTEAD_OF_ROUND = -1;
+
     protected $_accessible = [
         '*' => false,
         'id' => false,
@@ -32,8 +34,14 @@ class Ranking extends AppEntity
         return (float)($this->_fields['max_points'] ?? 0.0);
     }
 
+    public function isFloorInsteadOfRound(): bool
+    {
+        return $this->_getRoundPrecision() === self::USE_FLOOR_INSTEAD_OF_ROUND;
+    }
+
     public function _getRoundPrecision(): int
     {
+        // keep in mind self::USE_FLOOR_INSTEAD_OF_ROUND
         return $this->_fields['round_precision'] ?? 0;
     }
 
@@ -49,6 +57,15 @@ class Ranking extends AppEntity
     {
         $settings = json_decode((string)$this->status_scores);
         return $settings[$status] ?? null;
+    }
+
+    public function _getOverallSettings(): ?array
+    {
+        $s = $this->_fields['overall_settings'] ?? null;
+        if (!$s) {
+            return null;
+        }
+        return json_decode($s, true);
     }
 
     public function getEventId(): string

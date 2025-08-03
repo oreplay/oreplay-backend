@@ -7,12 +7,12 @@ namespace Rankings\Model\Table;
 use App\Model\Table\AppTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\EntityInterface;
-use Cake\Http\Exception\BadRequestException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Rankings\Lib\RankingUploadConfigChecker;
 use Rankings\Lib\ScoringAlgorithms\SimpleScoreCalculator;
 use Rankings\Lib\ScoringAlgorithms\ScoringAlgorithm;
 use Rankings\Model\Entity\Ranking;
+use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
 use Results\Lib\UploadHelper;
@@ -46,9 +46,19 @@ class RankingsTable extends AppTable
         return $table;
     }
 
+    public function deleteCache(string $rankingId): void
+    {
+        Cache::delete($this->_getCacheKey($rankingId));
+    }
+
+    private function _getCacheKey(string $rankingId): string
+    {
+        return '_getRankingSettings_' . $rankingId;
+    }
+
     public function getCached(string $rankingId): Ranking
     {
-        $cacheKey = '_getRankingSettings_' . $rankingId;
+        $cacheKey = $this->_getCacheKey($rankingId);
         $res = Cache::read($cacheKey);
         if ($res) {
             return $res;
@@ -140,7 +150,7 @@ class RankingsTable extends AppTable
             return $classesTable->saveOrFailRetrying($class);
         } else {
             $err = 'Class without position one runner ' . $classId . ' ' . json_encode($participants);
-            throw new BadRequestException($err);
+            throw new DetailedException($err);
         }
     }
 

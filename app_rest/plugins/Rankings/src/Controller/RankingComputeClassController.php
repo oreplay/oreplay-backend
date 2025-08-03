@@ -6,12 +6,12 @@ namespace Rankings\Controller;
 
 use App\Lib\FullBaseUrl;
 use App\Model\Table\UsersTable;
-use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\NotFoundException;
 use Rankings\Model\Table\RankingsTable;
 use React\Http\Browser;
 use React\Promise\PromiseInterface;
+use RestApi\Lib\Exception\DetailedException;
 use RestApi\Lib\Helpers\CookieHelper;
 use Results\Controller\ApiController;
 use Results\Lib\ResultsSorter;
@@ -77,12 +77,12 @@ class RankingComputeClassController extends ApiController
         usort($participants, ResultsSorter::sortStages());
         try {
             $this->return = $this->Rankings->saveRanking($rankingId, $stageId, $classId, $participants);
-        } catch (BadRequestException $e) {
+        } catch (DetailedException $e) {
             if ($this->_currentUid) {
                 // request from frontend throw exception
                 throw $e;
             } else {
-                // from pararell php use soft error
+                // from parallel php use soft error
                 $this->log($e->getMessage());
                 $this->return = ['error' => $e->getMessage()];
             }
