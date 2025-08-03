@@ -74,7 +74,8 @@ class SimpleScoreCalculator implements ScoringAlgorithm
     private function _getOrgComputableConstant(): float
     {
         // how many races will be considered in the org avg
-        // e.g. use 0.3 to use 30% of the total races in the circuit to calculate organizer average
+        // e.g. use 0.3 to use 30% of the races (where the organizer was taking place) in the
+        // circuit to calculate organizer average (participated in 4, used for org avg 4*0.3=1.2=2)
         return $this->_settings->_getOverallSettings()['organizerScoringFraction'];
     }
 
@@ -102,10 +103,13 @@ class SimpleScoreCalculator implements ScoringAlgorithm
 
     public function getOrgComputable(int $partsNormalAmount, int $totalRaces = null): int
     {
+        if ($totalRaces === null) {
+            $totalRaces = $this->_getTotalRaces();
+        }
         if ($this->hasFewComputable($partsNormalAmount, $totalRaces)) {
             return $partsNormalAmount;
         }
-        $amountToReturn = $partsNormalAmount * $this->_getOrgComputableConstant();
+        $amountToReturn = $totalRaces * $this->_getOrgComputableConstant();
         return (int)round($amountToReturn);
     }
 
