@@ -85,6 +85,11 @@ class PartialOverall extends RunnerResult
         return $this->getUploadType() === UploadTypes::COMPUTABLE_ORGANIZER;
     }
 
+    public function hasMoreThanZero(): bool
+    {
+        return $this->getPoints() > 0;
+    }
+
     public function getUploadType(): ?string
     {
         return $this->upload_type;
