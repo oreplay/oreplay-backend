@@ -93,6 +93,13 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         return $this->_settings->_getOverallSettings()['maxRacesCounted'];
     }
 
+    private function _getMinAsOrg(): int
+    {
+        // min points got as organizer
+        // e.g. if the participant should get 19 points he is getting 50 instead
+        return $this->_settings->_getOverallSettings()['minPointsAsOrg'] ?? 0;
+    }
+
     public function hasFewComputable(int $amountRacesParticipated, int $totalRaces = null): bool
     {
         if ($totalRaces === null) {
@@ -124,7 +131,7 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         foreach ($parts as &$part) {
             if ($part->isComputableOrganizer()) {
                 $partsOrg[] = $part;
-            } else {
+            } else if ($part->hasMoreThanZero()) {
                 $partsNormal[] = $part;
             }
         }
@@ -138,6 +145,9 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         if ($amountNormal) {
             $avgSeconds = $this->_divide($sumSeconds, $amountNormal);
             $avgPoints = $this->_divide($sumPoints, $amountNormal);
+            if ($avgPoints < $this->_getMinAsOrg()) {
+                $avgPoints = $this->_getMinAsOrg();
+            }
         }
         $overalls->updateComputedOrganizers($this->_round($avgPoints), (int)$avgSeconds);
 

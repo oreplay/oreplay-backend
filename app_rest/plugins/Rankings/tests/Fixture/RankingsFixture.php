@@ -27,7 +27,8 @@ class RankingsFixture extends RestApiFixture
             'nc_false' => null,
             'status_scores' => '[null,0,10,10,0,10]',
             'excluded_class_names' => '["O NEGRO F","PROM"]',
-            'overall_settings' => '{"totalCircuitRaces":9,"maxRacesCounted":5,"organizerScoringFraction":0.3}',
+            // phpcs:ignore
+            'overall_settings' => '{"totalCircuitRaces":9,"maxRacesCounted":5,"organizerScoringFraction":0.3,"minPointsAsOrg":50}',
             'created' => '2024-01-02 10:00:18',
             'modified' => '2024-01-02 10:00:18',
             'deleted' => null,

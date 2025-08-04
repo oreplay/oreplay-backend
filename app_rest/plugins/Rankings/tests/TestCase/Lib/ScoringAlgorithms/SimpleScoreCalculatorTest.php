@@ -130,7 +130,14 @@ class SimpleScoreCalculatorTest extends TestCase
         $this->assertEquals(1, $calc->getOrgComputable(2, 3));
         $this->assertEquals(1, $calc->getOrgComputable(3, 4));
         $this->assertEquals(2, $calc->getOrgComputable(4, 5));
+
+        $this->assertEquals(1, $calc->getOrgComputable(1, 6));
+        $this->assertEquals(2, $calc->getOrgComputable(2, 6));
+        $this->assertEquals(2, $calc->getOrgComputable(3, 6));
+        $this->assertEquals(2, $calc->getOrgComputable(4, 6));
         $this->assertEquals(2, $calc->getOrgComputable(5, 6));
+        $this->assertEquals(2, $calc->getOrgComputable(6, 6));
+
         $this->assertEquals(2, $calc->getOrgComputable(6, 7));
 
         $this->assertEquals(1, $calc->getOrgComputable(1, 8));
@@ -142,7 +149,16 @@ class SimpleScoreCalculatorTest extends TestCase
         $this->assertEquals(2, $calc->getOrgComputable(7, 8));
         $this->assertEquals(2, $calc->getOrgComputable(8, 8));
 
+        $this->assertEquals(1, $calc->getOrgComputable(1, 9));
+        $this->assertEquals(2, $calc->getOrgComputable(2, 9));
+        $this->assertEquals(3, $calc->getOrgComputable(3, 9));
+        $this->assertEquals(3, $calc->getOrgComputable(4, 9));
+        $this->assertEquals(3, $calc->getOrgComputable(5, 9));
+        $this->assertEquals(3, $calc->getOrgComputable(6, 9));
+        $this->assertEquals(3, $calc->getOrgComputable(7, 9));
         $this->assertEquals(3, $calc->getOrgComputable(8, 9));
+        $this->assertEquals(3, $calc->getOrgComputable(9, 9));
+
         $this->assertEquals(3, $calc->getOrgComputable(9, 10));
         $this->assertEquals(3, $calc->getOrgComputable(10, 11));
         $this->assertEquals(4, $calc->getOrgComputable(11, 12));
