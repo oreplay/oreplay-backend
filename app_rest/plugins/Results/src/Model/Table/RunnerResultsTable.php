@@ -164,7 +164,7 @@ class RunnerResultsTable extends AppTable
 
         $uploadType = $helper->getChecker()->preCheckType();
 
-        if ($uploadType != UploadTypes::TOTAL_POINTS) {
+        if ($uploadType !== UploadTypes::TOTAL_POINTS) {
             $existingResults = $helper->getExistingDbResultsForThisRunner($runner, $resultToSave);
             $existingResultsAmount = count($existingResults);
             if ($existingResultsAmount) {
