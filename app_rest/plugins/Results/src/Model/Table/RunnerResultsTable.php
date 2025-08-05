@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Results\Model\Table;
 
@@ -9,6 +9,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Results\Lib\UploadHelper;
+use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
@@ -150,7 +151,7 @@ class RunnerResultsTable extends AppTable
             ->all();
     }
 
-    private function _newResultWithType(array $resultData, UploadHelper $helper): RunnerResult
+    private function _newResultWithType(array $resultData, Runner $runner, UploadHelper $helper): RunnerResult
     {
         if ($helper->getChecker()->isTotals()) {
             $resultType = $resultData['result_type']['id'] ?? null;
@@ -160,8 +161,26 @@ class RunnerResultsTable extends AppTable
             }
         }
         $resultToSave = $this->fillNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
-        $resultToSave->upload_type = $helper->getChecker()->preCheckType();
 
+        $uploadType = $helper->getChecker()->preCheckType();
+
+        if ($uploadType != UploadTypes::TOTAL_POINTS) {
+            $existingResults = $helper->getExistingDbResultsForThisRunner($runner, $resultToSave);
+            $existingResultsAmount = count($existingResults);
+            if ($existingResultsAmount) {
+                if ($existingResultsAmount === 1) {
+                    $prevType = $existingResults[0]->upload_type ?? null;
+                    if (
+                        $prevType === UploadTypes::FINISH_TIMES ||
+                        $prevType === UploadTypes::SPLITS
+                    ) {
+                        $uploadType = $prevType;
+                    }
+                }
+            }
+        }
+
+        $resultToSave->upload_type = $uploadType;
         $resultToSave->result_type = $this->ResultTypes
             ->getCachedWithDefault($helper->getChecker(), $resultData['result_type']['id'] ?? null);
 
@@ -170,7 +189,7 @@ class RunnerResultsTable extends AppTable
 
     public function createSimpleRunnerResult(array $resultData, Runner $runner, UploadHelper $helper): Runner
     {
-        $runnerResultToSave = $this->_newResultWithType($resultData, $helper);
+        $runnerResultToSave = $this->_newResultWithType($resultData, $runner, $helper);
         $runnerResultToSave->class_id = $helper->getCurrentClassId();
         return $runner->addRunnerResult($runnerResultToSave);
     }
@@ -178,7 +197,7 @@ class RunnerResultsTable extends AppTable
     public function createRunnerResult(array $resultData, Runner $runner, UploadHelper $helper): Runner
     {
         $helper->getMetrics()->startRunnerResultsTime();
-        $runnerResultToSave = $this->_newResultWithType($resultData, $helper);
+        $runnerResultToSave = $this->_newResultWithType($resultData, $runner, $helper);
         $runnerResultToSave->class_id = $helper->getCurrentClassId();
 
         $existingRunnerResults = $helper->getExistingDbResultsForThisRunner($runner, $runnerResultToSave);
