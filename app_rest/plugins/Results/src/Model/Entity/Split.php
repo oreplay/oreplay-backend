@@ -127,7 +127,11 @@ class Split extends AppEntity
                 // we should only check station and time
                 //$isSameOrder = $this->order_number === $last->order_number;
                 $isSameStation = $this->station === $last->station;
-                $isSameReadingTime = $this->isSameTime($last->reading_time);
+                if ($last->reading_time) {
+                    $isSameReadingTime = $this->isSameTime($last->reading_time);
+                } else {
+                    $isSameReadingTime = $this->reading_time == $last->reading_time;
+                }
                 if ($isSameStation && $isSameReadingTime) {
                     return new SplitCompareReason(false,
                         '12 skip duplicated download with same time and station');
