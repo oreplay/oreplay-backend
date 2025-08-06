@@ -24,9 +24,10 @@ class SplitTest extends TestCase
     public function testShouldDisplayCurrent()
     {
         $msg = '3 keep repeated split as revisited control';
-        $differentOrderNumber = $this->_newSplit();
-        $differentOrderNumber->order_number = '1';
-        $res = $this->_newSplit()->shouldDisplayCurrent($differentOrderNumber);
+        $differentTime = $this->_newSplit();
+        $differentTime->order_number = '1';
+        $differentTime->reading_time = new FrozenTime('2024-01-01 11:19:01');
+        $res = $this->_newSplit()->shouldDisplayCurrent($differentTime);
         $this->assertEquals($msg, $res->reason());
         $this->assertTrue($res->shouldDisplay(), $msg);
         //
@@ -37,7 +38,7 @@ class SplitTest extends TestCase
         $this->assertEquals($msg, $res->reason());
         $this->assertTrue($res->shouldDisplay(), $msg);
         //
-        $msg = '12 skip duplicated download with same time and order';
+        $msg = '12 skip duplicated download with same time and station';
         $revisited = $this->_newSplit();
         $res = $revisited->shouldDisplayCurrent($revisited);
         $this->assertEquals($msg, $res->reason());
