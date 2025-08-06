@@ -164,6 +164,13 @@ class RunnersTable extends AppTable
                         'is_intermediate' => 'ASC', // 2nd no radio before radio
                         SplitsTable::field('created') => 'DESC' // 4th db created
                     ];
+                    if ($filters['forceSameDay'] ?? null) {
+                        // station order should be reverted when fixing jwlNAilf/197
+                        $order = array_merge(
+                            [SplitsTable::field('station') => 'ASC'], // 1st exclude bad days on reading times
+                            $order
+                        );
+                    }
                     $station = $filters['station'] ?? null;
                     if ($station) {
                         if (is_array($station)) {
