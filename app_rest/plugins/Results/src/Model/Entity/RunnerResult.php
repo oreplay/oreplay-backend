@@ -73,27 +73,6 @@ class RunnerResult extends AppEntity implements ParticipantResultsEntity
         'deleted',
     ];
 
-    /**
-     * @return Split[]
-     */
-    public function getSplits(): array
-    {
-        return $this->_fields['splits'] ?? [];
-    }
-
-    public function replaceSplits(array $splits)
-    {
-        $this->_fields['splits'] = $splits;
-    }
-
-    public function setIDsToUpdate(RunnerResult $runnerResult): RunnerResult
-    {
-        $this->id = $runnerResult->id;
-        $this->upload_hash = $runnerResult->upload_hash;
-        $this->setDirty('upload_hash');
-        return $this;
-    }
-
     public function hasInvalidFinishTime(): bool
     {
         return !$this->time_seconds && $this->finish_time instanceof FrozenTime;

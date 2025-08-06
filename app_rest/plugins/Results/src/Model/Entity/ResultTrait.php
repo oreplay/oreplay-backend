@@ -62,4 +62,17 @@ trait ResultTrait
         // has position (all controls ok) and no reading_time (one control is not ok)
         return $this->position && !$s->reading_time;
     }
+
+    /**
+     * @return Split[]
+     */
+    public function getSplits(): array
+    {
+        return $this->_fields['splits'] ?? [];
+    }
+
+    public function replaceSplits(array $splits)
+    {
+        $this->_fields['splits'] = $splits;
+    }
 }

@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
+use Results\Lib\Consts\UploadTypes;
 use Results\Lib\UploadHelper;
 
 trait ResultTraitMatcher
@@ -22,6 +23,24 @@ trait ResultTraitMatcher
             return false;
         }
         return true;
+    }
+
+    public function isIntermediates(): bool
+    {
+        return $this->upload_type === UploadTypes::INTERMEDIATES;
+    }
+
+    public function isSplits(): bool
+    {
+        return $this->upload_type === UploadTypes::SPLITS;
+    }
+
+    public function setIDsToUpdate(TeamResult | RunnerResult $oldResult): static
+    {
+        $this->id = $oldResult->id;
+        $this->upload_hash = $oldResult->upload_hash;
+        $this->setDirty('upload_hash');
+        return $this;
     }
 
     public function setHash(array $resultData)
