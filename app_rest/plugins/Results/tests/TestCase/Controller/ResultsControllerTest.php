@@ -85,14 +85,29 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals([], $bodyDecoded['data']);
     }
 
-    public function testGetList_filteredByExistingClub()
+    public function testGetList_filteredByExistingClubAndStation()
     {
-        $this->get($this->_getEndpoint() . '?club_id='.ClubsFixture::CLUB_1);
+        $this->get($this->_getEndpoint() . '?club_id='.ClubsFixture::CLUB_1 . '&station=31');
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals(2, count($bodyDecoded['data']));
         $this->assertEquals($this->_getFirstTeam(), $bodyDecoded['data'][0]);
         $this->assertEquals($this->_getSecondRunner(), $bodyDecoded['data'][1]);
+    }
+
+    public function testGetList_filteredByStation()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->get($this->_getEndpoint() . '?&station=3145');
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals(2, count($bodyDecoded['data']));
+        $expectedTeam = $this->_getFirstTeam();
+        $expectedTeam['stage']['splits'] = [];
+        $this->assertEquals($expectedTeam, $bodyDecoded['data'][0]);
+        $expected = $this->_getSecondRunner();
+        $expected['stage']['splits'] = [];
+        $this->assertEquals($expected, $bodyDecoded['data'][1]);
     }
 
     public function testGetList_filteredByName()

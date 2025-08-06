@@ -55,17 +55,11 @@ class TeamsTable extends AppTable
                 'team_name LIKE' => '%'.$filters['text'].'%',
             ]);
         }
-        return $q->contain(ClubsTable::name())
-            ->contain(ClassesTable::name())
-            ->contain(RunnersTable::name(), function (Query $q) {
-                return RunnersTable::mainRunnerContain($q);
-            })
-            ->contain(
-                TeamResultsTable::name()
-                . '.' . SplitsTable::name()
-                . '.' . ControlsTable::name()
-                . '.' . ControlTypesTable::name()
-            );
+        $q = RunnersTable::mainRunnerContain($q, TeamResultsTable::name(), $filters);
+        return $q
+            ->contain(RunnersTable::name(), function (Query $q) use ($filters) {
+                return RunnersTable::mainRunnerContain($q, RunnerResultsTable::name(), $filters);
+            });
     }
 
     public function matchTeam(array $teamData, ClassEntity $class): Team

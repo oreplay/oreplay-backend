@@ -34,6 +34,7 @@ trait ResultTrait
         foreach ($this->getSplits() as $split) {
             if ($lastSplit) {
                 $reason = $split->compareWithoutDay($this->_compareWithoutDay)->shouldDisplayCurrent($lastSplit);
+                $split->setReason($reason);
                 if ($reason->shouldDisplay() && !$this->_hasPositionButNoTime($split)) {
                     // skip split if it has position (all controls ok) and no reading_time
                     $lastSplit = $split;

@@ -36,6 +36,7 @@ class Split extends AppEntity
     ];
 
     protected $_virtual = [
+        //'debug_reason',
     ];
 
     protected $_hidden = [
@@ -64,6 +65,7 @@ class Split extends AppEntity
     ];
 
     private bool $_compareWithoutDay = false;
+    private ?SplitCompareReason $_reason = null;
 
     public function addControl(Control $control): self
     {
@@ -88,9 +90,7 @@ class Split extends AppEntity
 
     public function shouldDisplayCurrent(Split $last): SplitCompareReason
     {
-        // if ($this->station != $last->station) {
-        //     return new SplitCompareReason(true, '1 foot-o with order numbers');
-        // }
+        // splits here should be ordered as defined in RunnersTable::mainRunnerContain()
         if ($this->isRadio()) {
             if (!$this->reading_time) {
                 return new SplitCompareReason(false,
@@ -123,12 +123,14 @@ class Split extends AppEntity
             }
         } else {
             if ($this->reading_time) {
-                $isSameOrder = $this->order_number === $last->order_number;
+                // when having one radio and one not radio, we will have different order_number
+                // we should only check station and time
+                //$isSameOrder = $this->order_number === $last->order_number;
                 $isSameStation = $this->station === $last->station;
                 $isSameReadingTime = $this->isSameTime($last->reading_time);
-                if ($isSameOrder && $isSameStation && $isSameReadingTime) {
+                if ($isSameStation && $isSameReadingTime) {
                     return new SplitCompareReason(false,
-                        '12 skip duplicated download with same time and order');
+                        '12 skip duplicated download with same time and station');
                 }
                 return new SplitCompareReason(true,
                     '3 keep repeated split as revisited control');
@@ -148,6 +150,17 @@ class Split extends AppEntity
     {
         $this->_compareWithoutDay = $compareWithoutDay;
         return $this;
+    }
+
+    public function setReason(SplitCompareReason $reason): static
+    {
+        $this->_reason = $reason;
+        return $this;
+    }
+
+    public function _getDebugReason(): ?string
+    {
+        return $this->_reason?->reason();
     }
 
     public function isSameTime(FrozenTime $time): bool

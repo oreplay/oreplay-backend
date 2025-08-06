@@ -149,21 +149,30 @@ class RunnersTable extends AppTable
                 ]
             ]);
         }
-        return $this->mainRunnerContain($q);
+        return $this->mainRunnerContain($q, RunnerResultsTable::name(), $filters);
     }
 
-    public static function mainRunnerContain($q)
+    public static function mainRunnerContain($q, string $resultsTableName, array $filters = [])
     {
         return $q->contain(ClubsTable::name())
             ->contain(ClassesTable::name())
-            ->contain(RunnerResultsTable::name(), function (Query $q) {
-                return $q->contain(SplitsTable::name(), function (Query $q) {
+            ->contain($resultsTableName, function (Query $q) use ($filters) {
+                return $q->contain(SplitsTable::name(), function (Query $q) use ($filters) {
                     $order = [
                         //'order_number' => 'DESC', // order number will change from splits or radios export
                         'reading_time' => 'DESC', // 1st punch time (latest first, null last)
                         'is_intermediate' => 'ASC', // 2nd no radio before radio
                         SplitsTable::field('created') => 'DESC' // 4th db created
                     ];
+                    $station = $filters['station'] ?? null;
+                    if ($station) {
+                        if (is_array($station)) {
+                            $in = ' in';
+                        } else {
+                            $in = '';
+                        }
+                        $q->where([SplitsTable::field('station') . $in => $station]);
+                    }
                     return $q
                         ->order($order, true)
                         ->contain(ControlsTable::name(), function (Query $q) {

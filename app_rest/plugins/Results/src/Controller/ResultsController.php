@@ -32,6 +32,8 @@ class ResultsController extends ApiController
         $eventId = $this->request->getParam('eventID');
         $stageId = $this->request->getParam('stageID');
         $filters = $this->request->getQueryParams();
+        // uncomment next line after upgrade rest api plugin 0.7.12
+        //$filters = \RestApi\Lib\Helpers\PaginatorHelper::processQueryFiltersStatic($filters);
         $teams = $this->Teams->findTeamsInStage($eventId, $stageId, $filters)->toArray();
         $runners = $this->Runners->findRunnersInStage($eventId, $stageId, $filters)->toArray();
         $isSameDay = (bool)($filters['forceSameDay'] ?? false);
