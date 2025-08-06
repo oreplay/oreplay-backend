@@ -125,7 +125,7 @@ class Split extends AppEntity
             if ($this->reading_time) {
                 $isSameOrder = $this->order_number === $last->order_number;
                 $isSameStation = $this->station === $last->station;
-                $isSameReadingTime = $this->reading_time == $last->reading_time;
+                $isSameReadingTime = $this->isSameTime($last->reading_time);
                 if ($isSameOrder && $isSameStation && $isSameReadingTime) {
                     return new SplitCompareReason(false,
                         '12 skip duplicated download with same time and order');
