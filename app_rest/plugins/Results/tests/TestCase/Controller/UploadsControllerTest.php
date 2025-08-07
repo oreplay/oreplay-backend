@@ -8,6 +8,7 @@ use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Cake\Cache\Cache;
 use Cake\I18n\FrozenTime;
+use Cake\ORM\Query;
 use Results\Controller\UploadsController;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ClassEntity;
@@ -948,5 +949,161 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->_assertNewOptionalTables(0, 0, 0, 0);
         $this->_assertNewBasicTables(2, 1, 1, 2, 6);
         $this->_assertNewResultsTables(0, 0);
+    }
+
+    public function testAddNew_shouldAddSplitsAndLaterIntermediatesWithRadios()
+    {
+        Cache::clear();
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        // 1st upload partial splits from a download
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $position = 154;
+        $data = IntermediateExamples::intermediateResults();
+        $s1time = '2024-01-16T09:56:47+00:00';
+        $s2time = '2024-01-16T09:58:47+00:00';
+        $data = $this->_prepare1stUploadPartialSplitsFromDownload($data, $position, $s1time, $s2time);
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
+        $this->_assert1stUploadPartialSplitsFromDownload($position, $s1time, $s2time);
+
+        // 2nd upload intermediates from radios
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $data = ['oreplay_data_transfer' => IntermediateExamples::intermediateResults()];
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
+        $this->_assert2ndUploadPartialSplitsFromDownload($position, $s1time, $s2time);
+    }
+
+    private function _prepare1stUploadPartialSplitsFromDownload(array $data, int $position, string $s1time, string $s2time): array
+    {
+        $data['configuration'] = [
+            'file' => '/path/tmp/SplitResults-edited.xml',
+            'extension' => 'XML',
+            'utf' => true,
+            'known_data' => true,
+            'contents' => 'ResultList',
+            'results_type' => 'Breakdown',
+            'one_stage' => true,
+            'source' => 'OEv12',
+            'iof_version' => '3.0'
+        ];
+        $data['event']['stages'][0]['classes'][0]['runners'][0]['runner_results'][0]['position'] = $position;
+        $data['event']['stages'][0]['classes'][0]['runners'][0]['runner_results'][0]['splits'] = [
+            (int)0 => [
+                'sicard' => '8000001',
+                'station' => '32',
+                'points' => (int)0,
+                'reading_time' => $s1time,
+                'reading_milli' => (int)1705399007000,
+                'time_seconds' => (int)1607,
+                'bib_runner' => '1',
+                'order_number' => (int)1
+            ],
+            (int)1 => [
+                'sicard' => '8000001',
+                'station' => '100',
+                'points' => (int)0,
+                'reading_time' => $s2time,
+                'time_seconds' => (int)1727,
+                'bib_runner' => '1',
+                'order_number' => (int)2
+            ]
+        ];
+        $data['event']['stages'][0]['classes'][0]['runners'][1]['runner_results'][0]['splits'] = [];
+        return ['oreplay_data_transfer' => $data];
+    }
+
+    private function _assert1stUploadPartialSplitsFromDownload(int $position, string $s1time, string $s2time): void
+    {
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
+        $expectedMeta = [
+            'updated' => [
+                'classes' => 1,
+                'runners' => 2,
+                'courses' => 1,
+                'splits' => 2,
+                'runnerResults' => 2,
+            ],
+            'humanColor' => '#075210',
+            'human' => [''],
+            'timings' => [],
+        ];
+        $jsonDecoded['meta']['timings'] = [];
+        unset($jsonDecoded['meta']['human'][1]);
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta'], $human);
+        $this->assertStringStartsWith('Updated 1 classes, 1 courses (', $human);
+        $results = RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->contain(SplitsTable::name())
+            ->orderAsc('start_time')->all();
+        $this->assertEquals(2, count($results));
+        $this->assertEquals(UploadTypes::SPLITS, $results->first()->upload_type);
+        $this->assertEquals($position, $results->first()->position);
+        $splits = $results->first()->splits;
+        $this->assertEquals(2, count($splits));
+        $this->_assertSplit($splits[0], '32', false, $s1time);
+        $this->_assertSplit($splits[1], '100', false, $s2time);
+        $this->assertEquals(UploadTypes::SPLITS, $results->last()->upload_type);
+        $this->assertEquals(0, $results->last()->position);
+        $this->assertEquals([], $results->last()->splits);
+    }
+
+    private function _assert2ndUploadPartialSplitsFromDownload(int $position, string $s1time, string $s2time): void
+    {
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
+        $expectedMeta = [
+            'updated' => [
+                'classes' => 1,
+                'runners' => 2,
+                'courses' => 1,
+                'splits' => 4,
+                'runnerResults' => 2,
+            ],
+            'humanColor' => '#075210',
+            'human' => [''],
+            'timings' => [],
+        ];
+        $jsonDecoded['meta']['timings'] = [];
+        unset($jsonDecoded['meta']['human'][1]);
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+        $this->assertStringStartsWith('Updated 1 classes, 1 courses (', $human);
+        $results = RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->contain(SplitsTable::name(), function (Query $q) {
+                return $q->orderAsc('reading_time')
+                    ->orderAsc('station')
+                    ->orderAsc('is_intermediate');
+            })
+            ->orderAsc('start_time')->all();
+        $this->assertEquals(2, count($results));
+        $this->assertEquals(UploadTypes::SPLITS, $results->first()->upload_type);
+        $this->assertEquals($position, $results->first()->position);
+        $splits = $results->first()->splits;
+        $this->assertEquals(4, count($splits));
+        $this->_assertSplit($splits[0], '100', true, null);
+        $this->_assertSplit($splits[1], '32', false, $s1time);
+        $this->_assertSplit($splits[2], '32', true, $s1time);
+        $this->_assertSplit($splits[3], '100', false, $s2time);
+        $this->assertEquals(UploadTypes::SPLITS, $results->last()->upload_type);
+        $this->assertEquals(0, $results->last()->position);
+        $this->assertEquals(2, count($results->last()->splits));
+    }
+
+    private function _assertSplit(mixed $split, string $station, bool $isRadio, ?string $readingTime): void
+    {
+        $this->assertEquals('8000001', $split->sicard);
+        $this->assertEquals($station, $split->station);
+        $this->assertEquals($isRadio, $split->is_intermediate);
+        if ($readingTime === null) {
+            $this->assertEquals($readingTime, $split->reading_time);
+        } else {
+            $this->assertEquals($readingTime, $split->reading_time->toIso8601String());
+        }
     }
 }

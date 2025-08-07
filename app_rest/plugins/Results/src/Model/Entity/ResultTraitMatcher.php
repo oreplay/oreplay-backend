@@ -36,6 +36,11 @@ trait ResultTraitMatcher
         return $this->upload_type === UploadTypes::SPLITS;
     }
 
+    public function setUploadTypeSplits(): void
+    {
+        $this->upload_type = UploadTypes::SPLITS;
+    }
+
     public function setIDsToUpdate(TeamResult | RunnerResult $oldResult): static
     {
         $this->id = $oldResult->id;

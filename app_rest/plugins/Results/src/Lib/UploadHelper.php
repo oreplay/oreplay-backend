@@ -140,6 +140,10 @@ class UploadHelper implements UploadInterface
                 // if there is more than one result, we remove them all to avoid duplicates
                 $participant = $participant->removeAllExistingResults($existingResults);
             }
+            $isRadiosAfterDownload = $resultToSave->isIntermediates() && $existingResults[0]->isSplits();
+            if ($isRadiosAfterDownload) {
+                $resultToSave->setUploadTypeSplits();
+            }
         }
         $this->getMetrics()->endRunnerResultsTime();
         return $participant;
