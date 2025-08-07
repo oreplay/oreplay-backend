@@ -98,7 +98,8 @@ class SplitsTable extends AppTable
     public function uploadAllSplits(
         $splits,
         ParticipantResultsEntity $runnerResultToSave,
-        UploadHelper $helper
+        UploadHelper $helper,
+        string $warningMessage = ''
     ): ParticipantResultsEntity {
         $helper->getMetrics()->startSplitsTime();
         if ($splits && !$runnerResultToSave->hasSameSplits($splits)) {
@@ -109,6 +110,10 @@ class SplitsTable extends AppTable
             $runnerResultToSave = $this->uploadForEachSplit($runnerResultToSave, $splits, $helper);
         }
         $helper->getMetrics()->endSplitsTime();
+        if ($runnerResultToSave->hasInvalidFinishTime()) {
+            $helper->getMetrics()
+                ->setWarning('Runner results has finish_times without time_seconds' . $warningMessage);
+        }
         return $runnerResultToSave;
     }
 

@@ -73,11 +73,6 @@ class RunnerResult extends AppEntity implements ParticipantResultsEntity
         'deleted',
     ];
 
-    public function hasInvalidFinishTime(): bool
-    {
-        return !$this->time_seconds && $this->finish_time instanceof FrozenTime;
-    }
-
     public function isDNS(): bool
     {
         return $this->status_code == StatusCode::DNS;

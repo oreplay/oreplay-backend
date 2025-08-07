@@ -64,17 +64,17 @@ class TeamResultsTable extends AppTable
         return $resultToSave;
     }
 
-    public function createTeamResult(array $resultData, Team $team, UploadHelper $helper): Team
+    public function createTeamResult(array $resultData, Team $participant, UploadHelper $helper): Team
     {
         $helper->getMetrics()->startRunnerResultsTime();
         $teamResultToSave = $this->_newResultWithType($resultData, $helper);
 
-        $team = $helper->processRunnerResults($teamResultToSave, $team);
+        $participant = $helper->processRunnerResults($teamResultToSave, $participant);
 
         $splits = $resultData['splits'] ?? [];
         /** @var TeamResult $teamResultToSave */
         $teamResultToSave = $this->Splits->uploadAllSplits($splits, $teamResultToSave, $helper); // NOT TESTED
         // needs testing in UploadsControllerTest
-        return $team->addTeamResult($teamResultToSave);
+        return $participant->addTeamResult($teamResultToSave);
     }
 }

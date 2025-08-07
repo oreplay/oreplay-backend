@@ -175,21 +175,18 @@ class RunnerResultsTable extends AppTable
         return $runner->addRunnerResult($runnerResultToSave);
     }
 
-    public function createRunnerResult(array $resultData, Runner $runner, UploadHelper $helper): Runner
+    public function createRunnerResult(array $resultData, Runner $participant, UploadHelper $helper): Runner
     {
         $helper->getMetrics()->startRunnerResultsTime();
         $runnerResultToSave = $this->_newResultWithType($resultData, $helper);
         $runnerResultToSave->class_id = $helper->getCurrentClassId();
 
-        $runner = $helper->processRunnerResults($runnerResultToSave, $runner);
+        $participant = $helper->processRunnerResults($runnerResultToSave, $participant);
 
         $splits = $resultData['splits'] ?? [];
+        $warningMsg = 'card: ' . $participant->sicard;
         /** @var RunnerResult $runnerResultToSave */
-        $runnerResultToSave = $this->Splits->uploadAllSplits($splits, $runnerResultToSave, $helper);
-        if ($runnerResultToSave->hasInvalidFinishTime()) {
-            $helper->getMetrics()
-                ->setWarning('Runner results has finish_times without time_seconds card:' . $runner->sicard);
-        }
-        return $runner->addRunnerResult($runnerResultToSave);
+        $runnerResultToSave = $this->Splits->uploadAllSplits($splits, $runnerResultToSave, $helper, $warningMsg);
+        return $participant->addRunnerResult($runnerResultToSave);
     }
 }

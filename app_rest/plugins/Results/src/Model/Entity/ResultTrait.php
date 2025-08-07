@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
+use Cake\I18n\FrozenTime;
+
 trait ResultTrait
 {
     private array $_splitsToRemove = [];
@@ -74,5 +76,10 @@ trait ResultTrait
     public function replaceSplits(array $splits)
     {
         $this->_fields['splits'] = $splits;
+    }
+
+    public function hasInvalidFinishTime(): bool
+    {
+        return !$this->time_seconds && $this->finish_time instanceof FrozenTime;
     }
 }
