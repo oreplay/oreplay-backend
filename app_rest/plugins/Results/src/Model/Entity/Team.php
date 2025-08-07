@@ -73,6 +73,19 @@ class Team extends AppEntity implements ParticipantInterface
         return $this;
     }
 
+    /**
+     * @param TeamResult[] $existingResults
+     * @return $this
+     */
+    public function removeAllExistingResults(array $existingResults): static
+    {
+        foreach ($existingResults as $existingResult) {
+            $existingResult->setSoftDeleted();
+            $this->addTeamResult($existingResult);
+        }
+        return $this;
+    }
+
     public function addRunner(Runner $runner): Team
     {
         if (!isset($this->runners)) {

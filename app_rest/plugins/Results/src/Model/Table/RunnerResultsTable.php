@@ -188,12 +188,8 @@ class RunnerResultsTable extends AppTable
                 // if there is only one existing result, we reuse the ID to replace the db row
                 $runnerResultToSave->setIDsToUpdate($existingRunnerResults[0]);
             } else {
-                // if there is more than one result, we keep them all in the runner
-                /** @var RunnerResult $existingResult */
-                foreach ($existingRunnerResults as $existingResult) {
-                    $existingResult->setSoftDeleted();
-                    $runner = $runner->addRunnerResult($existingResult);
-                }
+                // if there is more than one result, we remove them all to avoid duplicates
+                $runner = $runner->removeAllExistingResults($existingRunnerResults);
             }
         }
         $helper->getMetrics()->endRunnerResultsTime();

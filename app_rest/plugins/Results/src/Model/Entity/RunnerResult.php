@@ -117,9 +117,4 @@ class RunnerResult extends AppEntity implements ParticipantResultsEntity
     {
         return $this->_matchingData['Classes'] ?? null;
     }
-
-    public function setSoftDeleted()
-    {
-        $this->deleted = new FrozenTime();
-    }
 }

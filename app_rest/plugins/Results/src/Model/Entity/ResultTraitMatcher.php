@@ -65,4 +65,9 @@ trait ResultTraitMatcher
         $this->setDirty('splits');
         $this->_fields['splits'][] = $split;
     }
+
+    public function setSoftDeleted(): void
+    {
+        $this->deleted = new FrozenTime();
+    }
 }

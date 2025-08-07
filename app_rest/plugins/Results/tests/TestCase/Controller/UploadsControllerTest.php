@@ -415,7 +415,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     }
 
-    public function testAddNew_shouldAddFinishTimes()
+    public function testAddNew_shouldAddFinishTimesTwice()
     {
         Cache::clear();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
@@ -801,7 +801,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         return count($fixture->records);
     }
 
-    public function testAddNew_shouldAddRelayResultsWithoutSplits()
+    public function testAddNew_shouldAddRelayResultsWithoutSplitsTwice()
     {
         Cache::clear();
         $ClassesTable = ClassesTable::load();
@@ -887,7 +887,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->_assertNewResultsTables(0, 0);
     }
 
-    public function testAddNew_shouldAddTotalsWithPoints()
+    public function testAddNew_shouldAddTotalsWithPointsTwice()
     {
         Cache::clear();
         $ClassesTable = ClassesTable::load();

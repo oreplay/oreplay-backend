@@ -88,6 +88,19 @@ class Runner extends AppEntity implements ParticipantInterface
         return $this;
     }
 
+    /**
+     * @param RunnerResult[] $existingResults
+     * @return $this
+     */
+    public function removeAllExistingResults(array $existingResults): static
+    {
+        foreach ($existingResults as $existingResult) {
+            $existingResult->setSoftDeleted();
+            $this->addRunnerResult($existingResult);
+        }
+        return $this;
+    }
+
     public function addClub(Club $club): Runner
     {
         $this->club = $club;
