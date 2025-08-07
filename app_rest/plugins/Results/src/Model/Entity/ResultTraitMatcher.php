@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
+use Cake\I18n\FrozenTime;
 use Results\Lib\Consts\UploadTypes;
 use Results\Lib\UploadHelper;
 

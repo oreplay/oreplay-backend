@@ -116,18 +116,33 @@ class UploadHelper implements UploadInterface
         $this->setExistingControls($RunnerResults->Splits->Controls->getAllControls($this));
     }
 
-    public function getExistingDbResultsForThisRunner(
-        Runner $runner,
-        RunnerResult $runnerResultToSave
+    public function getExistingDbResults(
+        Runner|Team $participant,
+        RunnerResult|TeamResult $resultToSave
     ): array {
-        return $this->_existingRunnerResults->getExistingDbDataForThisId($runner->id, $runnerResultToSave);
+        if ($resultToSave instanceof RunnerResult) {
+            $storage = $this->_existingRunnerResults;
+        } else {
+            $storage = $this->_existingTeamResults;
+        }
+        return $storage->getExistingDbDataForThisId($participant->id, $resultToSave);
     }
 
-    public function getExistingDbResultsForThisTeam(
-        Team $team,
-        TeamResult $teamResultToSave
-    ): array {
-        return $this->_existingTeamResults->getExistingDbDataForThisId($team->id, $teamResultToSave);
+    public function processRunnerResults(RunnerResult|TeamResult $resultToSave, Runner|Team $participant): Runner|Team
+    {
+        $existingResults = $this->getExistingDbResults($participant, $resultToSave);
+        $existingResultAmount = count($existingResults);
+        if ($existingResultAmount) {
+            if ($existingResultAmount === 1) {
+                // if there is only one existing result, we reuse the ID to replace the db row
+                $resultToSave->setIDsToUpdate($existingResults[0]);
+            } else {
+                // if there is more than one result, we remove them all to avoid duplicates
+                $participant = $participant->removeAllExistingResults($existingResults);
+            }
+        }
+        $this->getMetrics()->endRunnerResultsTime();
+        return $participant;
     }
 
     public function getChecker(): UploadConfigChecker

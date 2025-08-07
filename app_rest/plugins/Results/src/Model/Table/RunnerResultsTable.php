@@ -181,18 +181,7 @@ class RunnerResultsTable extends AppTable
         $runnerResultToSave = $this->_newResultWithType($resultData, $helper);
         $runnerResultToSave->class_id = $helper->getCurrentClassId();
 
-        $existingRunnerResults = $helper->getExistingDbResultsForThisRunner($runner, $runnerResultToSave);
-        $existingRunnerResultsAmount = count($existingRunnerResults);
-        if ($existingRunnerResultsAmount) {
-            if ($existingRunnerResultsAmount === 1) {
-                // if there is only one existing result, we reuse the ID to replace the db row
-                $runnerResultToSave->setIDsToUpdate($existingRunnerResults[0]);
-            } else {
-                // if there is more than one result, we remove them all to avoid duplicates
-                $runner = $runner->removeAllExistingResults($existingRunnerResults);
-            }
-        }
-        $helper->getMetrics()->endRunnerResultsTime();
+        $runner = $helper->processRunnerResults($runnerResultToSave, $runner);
 
         $splits = $resultData['splits'] ?? [];
         /** @var RunnerResult $runnerResultToSave */

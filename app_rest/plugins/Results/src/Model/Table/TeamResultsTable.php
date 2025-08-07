@@ -69,18 +69,7 @@ class TeamResultsTable extends AppTable
         $helper->getMetrics()->startRunnerResultsTime();
         $teamResultToSave = $this->_newResultWithType($resultData, $helper);
 
-        $existingTeamResults = $helper->getExistingDbResultsForThisTeam($team, $teamResultToSave);
-        $existingTeamResultsAmount = count($existingTeamResults);
-        if ($existingTeamResultsAmount) {
-            if ($existingTeamResultsAmount === 1) {
-                // if there is only one existing result, we reuse the ID to replace the db row
-                $teamResultToSave->setIDsToUpdate($existingTeamResults[0]);
-            } else {
-                // if there is more than one result, we remove them all to avoid duplicates
-                $team = $team->removeAllExistingResults($existingTeamResults);
-            }
-        }
-        $helper->getMetrics()->endRunnerResultsTime();
+        $team = $helper->processRunnerResults($teamResultToSave, $team);
 
         $splits = $resultData['splits'] ?? [];
         /** @var TeamResult $teamResultToSave */
