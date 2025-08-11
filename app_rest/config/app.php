@@ -71,6 +71,10 @@ return [
         ],
         'Cors' => [
             'ClassName' => \App\Controller\Component\ApiCorsComponent::class,
+            'AllowHeaders' => [
+                'Baggage',
+                'sentry-trace'
+            ],
             'AllowOrigin' => [
                 '*',
                 'http://localhost:3000',
