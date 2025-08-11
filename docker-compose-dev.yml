@@ -7,6 +7,7 @@ services:
       context: .
       dockerfile: docker/Dockerfile
     command: bash -c "php-fpm8.3 && nginx -g 'daemon off;'"
+    working_dir: /var/www/cplatform/public/app_rest
     ports:
       - '80:80'
       - '443:443'
