@@ -68,6 +68,15 @@ class ClassEntity extends AppEntity
     {
         if ($this->splits && is_array($this->splits)) {
             usort($this->splits, function ($a, $b) {
+                if ($a->reading_time === null && $b->reading_time === null) {
+                    return 0;
+                }
+                if ($a->reading_time === null) {
+                    return 1; // null goes after non-null
+                }
+                if ($b->reading_time === null) {
+                    return -1; // non-null goes before null
+                }
                 return $a->reading_time <=> $b->reading_time; // Ascending order
             });
             /** @var Split $s */

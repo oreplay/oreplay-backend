@@ -188,23 +188,23 @@ class ClassesTableTest extends TestCase
         $this->assertEquals('M Elite', $res[1]['long_name']);
         $expected = [
             [
-                'station' => '100',
-                'id' => '2e0a9e34-ad82-4f41-a46e-d76427705281'
-            ],
-            [
                 'station' => '31',
                 'id' => 'd5b1e69b-c62d-40f2-95ef-ae2582e4593a'
             ],
             [
                 'station' => '182',
                 'id' => '2e0a9e34-ad82-4f41-a46e-d76427705282'
-            ]
+            ],
+            [
+                'station' => '100',
+                'id' => '2e0a9e34-ad82-4f41-a46e-d76427705281'
+            ],
         ];
         $this->assertEquals($expected, json_decode(json_encode($res[1]), true)['splits']);
         $times = [
-            null,
             '2024-01-02 10:00:10.321',
             '2024-01-02 10:00:10.322',
+            null,
         ];
         foreach ($times as $i => $time) {
             $this->assertEquals($time, $res[1]['splits'][$i]->reading_time, $i . '');

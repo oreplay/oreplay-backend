@@ -66,7 +66,7 @@ class ClassesTable extends AppTable
 
     public function getByStageWithRadios(string $eventId, string $stageId)
     {
-        $res = $this->find()->where([
+        $query = $this->find()->where([
             'event_id' => $eventId,
             'stage_id' => $stageId,
         ])
@@ -89,8 +89,8 @@ class ClassesTable extends AppTable
                     ->group(['station', 'class_id'])
                     ->order(['station' => 'DESC'], true);
             })
-            ->order(['CAST(oe_key AS UNSIGNED)' => 'ASC', 'short_name' => 'ASC'])
-            ->all();
+            ->order(['CAST(oe_key AS UNSIGNED)' => 'ASC', 'short_name' => 'ASC']);
+        $res = $query->all();
         /** @var ClassEntity $r */
         foreach ($res as $r) {
             $r->setSplitsAsSimpleArray();
