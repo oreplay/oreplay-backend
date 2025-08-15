@@ -139,4 +139,75 @@ class ClassesTableTest extends TestCase
         ];
         $this->assertEquals($second, $res[1]['splits'][1]->toArray());
     }
+
+    public function testGetByStageWithRadios_with()
+    {
+        $split = new Split(
+            [
+                'id' => '2e0a9e34-ad82-4f41-a46e-d76427705281',
+                'event_id' => Event::FIRST_EVENT,
+                'stage_id' => Stage::FIRST_STAGE,
+                'sicard' => '8000001',
+                'is_intermediate' => true,
+                'station' => 100,
+                'reading_time' => null,
+                'control_id' => ControlsFixture::CONTROL_31,
+                'class_id' => ClassEntity::ME,
+                'created' => '2024-01-02 09:10:10',
+                'modified' => '2024-01-02 09:10:10',
+            ]
+        );
+        SplitsTable::load()->save($split);
+        $splitId = '2e0a9e34-ad82-4f41-a46e-d76427705282';
+        $split = new Split(
+            [
+                'id' => $splitId,
+                'event_id' => Event::FIRST_EVENT,
+                'stage_id' => Stage::FIRST_STAGE,
+                'sicard' => '8000002',
+                'is_intermediate' => true,
+                'station' => 182,
+                'reading_time' => '2024-01-02 10:00:10.322',
+                'control_id' => null,
+                'class_id' => ClassEntity::ME,
+                'created' => '2024-01-02 09:10:10',
+                'modified' => '2024-01-02 09:10:10',
+            ]
+        );
+        SplitsTable::load()->save($split);
+
+        $res = $this->Classes
+            ->getByStageWithRadios(Event::FIRST_EVENT, Stage::FIRST_STAGE)
+            ->toArray();
+        $this->assertEquals(2, count($res));
+
+        $this->assertEquals('FE', $res[0]['short_name']);
+        $this->assertEquals('F Elite', $res[0]['long_name']);
+        $this->assertEquals([], $res[0]['splits']);
+        $this->assertEquals('ME', $res[1]['short_name']);
+        $this->assertEquals('M Elite', $res[1]['long_name']);
+        $expected = [
+            [
+                'station' => '100',
+                'id' => '2e0a9e34-ad82-4f41-a46e-d76427705281'
+            ],
+            [
+                'station' => '31',
+                'id' => 'd5b1e69b-c62d-40f2-95ef-ae2582e4593a'
+            ],
+            [
+                'station' => '182',
+                'id' => '2e0a9e34-ad82-4f41-a46e-d76427705282'
+            ]
+        ];
+        $this->assertEquals($expected, json_decode(json_encode($res[1]), true)['splits']);
+        $times = [
+            null,
+            '2024-01-02 10:00:10.321',
+            '2024-01-02 10:00:10.322',
+        ];
+        foreach ($times as $i => $time) {
+            $this->assertEquals($time, $res[1]['splits'][$i]->reading_time, $i . '');
+        }
+    }
 }
