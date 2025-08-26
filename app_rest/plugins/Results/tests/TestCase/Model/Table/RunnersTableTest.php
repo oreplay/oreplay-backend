@@ -317,7 +317,8 @@ class RunnersTableTest extends TestCase
         } catch (DetailedException $e) {
             $exception = $e->getMessage();
         }
-        $this->assertEquals('Fields first_name [] and last_name [] cannot be empty {"param":"badParam"}', $exception);
+        $this->assertEquals('Fields first_name [] and last_name [] cannot be empty '
+            . 'when bib_number and db_id is also empty {"param":"badParam"}', $exception);
     }
 
     public function testSortTotals()

@@ -185,9 +185,14 @@ class Runner extends AppEntity implements ParticipantInterface
                 return null;
             }
             $copied = unserialize(serialize($runnerData));
+            unset($copied['club']);
             unset($copied['stage']);
+            unset($copied['runner_results']);
+            unset($copied['team_results']);
             unset($copied['overalls']);
-            $msg = "Fields first_name [$stName] and last_name [$lastName] cannot be empty " . json_encode($copied);
+            $msg = "Fields first_name [$stName] and last_name [$lastName] cannot be empty "
+                . 'when bib_number and db_id is also empty '
+                . json_encode($copied);
             throw new DetailedException($msg);
         }
     }
