@@ -61,6 +61,26 @@ class RunnerResultTest extends TestCase
         $runnerResult->addSplit($split);
 
         $this->assertEquals([$firstExpected], $this->_getSplitsWithoutRadios($runnerResult));
+
+        // when reading time is null we should not return this radio
+        $runnerResult = new RunnerResult();
+        $runnerResult->id = 'mainID';
+        $runnerResult->position = 0;
+        $split1 = new Split();
+        $split1->id = 'downloadID1';
+        $split1->is_intermediate = true;
+        $split1->reading_time = null;
+        $runnerResult->addSplit($split1);
+
+        $split2 = new Split();
+        $split2->id = 'downloadID1';
+        $split2->is_intermediate = true;
+        $split2->reading_time = new FrozenTime('2025-05-21 09:50:00');
+        $runnerResult->addSplit($split2);
+
+        $this->assertEquals([$split2], $runnerResult->getSplitsWithoutRadios());
+
+
     }
 
     private function _getSplitsWithoutRadios(RunnerResult $runnerResult)

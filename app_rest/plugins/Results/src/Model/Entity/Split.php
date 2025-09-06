@@ -78,6 +78,11 @@ class Split extends AppEntity
         return $this->is_intermediate;
     }
 
+    public function isRadioWithoutTime(): bool
+    {
+        return !$this->reading_time && $this->isRadio();
+    }
+
     public function isRadioFinish(): bool
     {
         return $this->isRadio() && $this->station > 19 && $this->station < 30;

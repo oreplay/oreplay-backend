@@ -34,6 +34,10 @@ trait ResultTrait
         $lastSplit = null;
         /** @var Split $split */
         foreach ($this->getSplits() as $split) {
+            if ($split->isRadioWithoutTime()) {
+                // skip split if is radio without reading time
+                continue;
+            }
             if ($lastSplit) {
                 $reason = $split->compareWithoutDay($this->_compareWithoutDay)->shouldDisplayCurrent($lastSplit);
                 $split->setReason($reason);
