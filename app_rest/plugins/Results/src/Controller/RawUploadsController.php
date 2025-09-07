@@ -4,11 +4,13 @@ declare(strict_types = 1);
 
 namespace Results\Controller;
 
+use App\Lib\FullBaseUrl;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\UploadHelper;
+use Results\Model\Entity\UploadLog;
 use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\TokensTable;
 use Results\Model\Table\UploadLogsTable;
@@ -20,7 +22,32 @@ class RawUploadsController extends ApiController
         return true;
     }
 
-    protected function getData($id)
+    protected function getList()
+    {
+        $eventId = $this->_checkSecret();
+        $stageId = $this->request->getQuery('stage_id');
+        $res = UploadLogsTable::load()->getByEventId($eventId, $stageId);
+        $secret = $this->request->getParam('eventID');
+        $toRet = [];
+        /** @var UploadLog $record */
+        foreach ($res as $record) {
+            $url = FullBaseUrl::host().'/api/v1/events/'.$secret.'/rawUploads/';
+            /** @var FrozenTime $created */
+            $created = $record->created;
+            $elem = [
+                'link_upload' => $url . $created->toIso8601String(),
+                'upload_type' => $record->upload_type,
+                'state' => $record->state,
+            ];
+            if (!$stageId) {
+                $elem['link_stage'] = $url . '?stage_id='.$record->stage_id;
+            }
+            $toRet[] = $elem;
+        }
+        $this->return = $toRet;
+    }
+
+    private function _checkSecret(): string
     {
         $secret = $this->request->getParam('eventID');
         $eventId = substr($secret, 0, 36);
@@ -29,6 +56,12 @@ class RawUploadsController extends ApiController
         if (!$isDesktopClientAuthenticated) {
             throw new DetailedException('Invalid event secret ' . $secret);
         }
+        return $eventId;
+    }
+
+    protected function getData($id)
+    {
+        $eventId = $this->_checkSecret();
 
         $created = new FrozenTime($id);
         if (!$created) {

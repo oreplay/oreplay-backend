@@ -27,6 +27,15 @@ class UploadLogsTable extends AppTable
         return $table;
     }
 
+    public function getByEventId(string $eventId, string $stageId = null)
+    {
+        $q = $this->find()->where(['event_id' => $eventId]);
+        if ($stageId) {
+            $q->where(['stage_id' => $stageId]);
+        }
+        return $q->orderDesc('created')->all();
+    }
+
     public function saveClearLog(string $eventId, string $stageId): UploadLog
     {
         /** @var UploadLog $log */
