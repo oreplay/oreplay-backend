@@ -466,6 +466,8 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->_assertRunnersWithFinishTimes($decodedData);
         $expectedControlAmount = $this->controlsAmount() + 2;
         $this->assertEquals($expectedControlAmount, ControlsTable::load()->find()->all()->count());
+        $runnerResultAmount = 3;
+        $this->assertEquals($runnerResultAmount, RunnerResultsTable::load()->find()->all()->count());
 
         // second upload should not add again results
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
@@ -490,6 +492,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(false, $splitA->is_intermediate);
         $this->assertEquals(1, $splitA->order_number);
         $this->assertEquals(31, $splitA->control->station);
+        $this->assertEquals($runnerResultAmount, RunnerResultsTable::load()->find()->all()->count());
     }
 
     public function testAddNew_shouldNotUpdateStartListWhenThereAreFinishTimes()
