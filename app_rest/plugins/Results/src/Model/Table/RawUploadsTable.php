@@ -57,6 +57,15 @@ class RawUploadsTable extends AppTable
         return $res;
     }
 
+    public function getByUploadLogId(string $uploadLogId): RawUpload
+    {
+        /** @var RawUpload $res */
+        $res = $this->find()
+            ->where(['upload_log_id' => $uploadLogId])
+            ->firstOrFail();
+        return $res;
+    }
+
     public function getReUploadedData(array $data, string $eventId): ?array
     {
         $arrayKeys = array_keys($data);

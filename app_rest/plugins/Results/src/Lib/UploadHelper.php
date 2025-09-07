@@ -10,6 +10,7 @@ use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Team;
 use Results\Model\Entity\TeamResult;
+use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\StagesTable;
 use Results\Model\Table\TeamResultsTable;
@@ -36,7 +37,26 @@ class UploadHelper implements UploadInterface
         }
         $this->_data = $data;
         $this->_eventId = $eventID;
+        $uploadLogId = '';
+        if ($uploadLogId) {
+            $this->_data = $this->_loadFromRawUploads($uploadLogId);
+        }
         $this->_metrics = new UploadMetrics();
+    }
+
+    private function _loadFromRawUploads(string $uploadLogId): array
+    {
+        if (!$uploadLogId) {
+            return $this->_data;
+        }
+        $oldChecker = new UploadConfigChecker($this->_data);
+        $newStageId = $oldChecker->validateStructure($this->_eventId)->getStageId();
+
+        $raw = RawUploadsTable::load()->getByUploadLogId($uploadLogId);
+        $this->_data = json_decode($raw->file_data, true);
+        $this->_data['oreplay_data_transfer']['event']['id'] = $this->_eventId;
+        $this->_data['oreplay_data_transfer']['event']['stages'][0]['id'] = $newStageId;
+        return $this->_data;
     }
 
     public function getMetrics(): UploadMetrics
