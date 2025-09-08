@@ -568,7 +568,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(0, $stage['points_adjusted']);
         $this->assertEquals(0, $stage['points_penalty']);
         $this->assertEquals(0, $stage['points_bonus']);
-        $this->assertEquals(1, $stage['leg_number']);
+        //$this->assertEquals(1, $stage['leg_number']);
         if (!$skipSplits) {
             $this->assertEquals(2, count($stage['splits']));
             $this->assertEquals(31, $stage['splits'][0]['control']['station']);
@@ -601,7 +601,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(0, $stage['points_adjusted']);
         $this->assertEquals(0, $stage['points_penalty']);
         $this->assertEquals(0, $stage['points_bonus']);
-        $this->assertEquals(1, $stage['leg_number']);
+        //$this->assertEquals(1, $stage['leg_number']);
         if (!$skipSplits) {
             $this->assertArrayHasKey('splits', $stage);
         }

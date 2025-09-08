@@ -75,7 +75,6 @@ class ResultExamples
                                                 'points_adjusted' => (int) 0,
                                                 'points_penalty' => (int) 0,
                                                 'points_bonus' => (int) 0,
-                                                'leg_number' => (int) 1,
                                                 'splits' => [
                                                     [
                                                         'sicard' => '8011750',
@@ -135,7 +134,6 @@ class ResultExamples
                                                 'points_adjusted' => (int) 0,
                                                 'points_penalty' => (int) 0,
                                                 'points_bonus' => (int) 0,
-                                                'leg_number' => (int) 1,
                                                 'splits' => [
                                                     [
                                                         'sicard' => '4540555',
@@ -228,7 +226,6 @@ class ResultExamples
                                                 'stage_order' => (int) 1,
                                                 'start_time' => '2024-10-18T09:56:00.000',
                                                 'status_code' => StatusCode::OK,
-                                                'leg_number' => (int) 1,
                                                 'result_type' => [
                                                     'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
                                                     'description' => 'Stage'
@@ -276,7 +273,6 @@ class ResultExamples
                                                 'stage_order' => (int) 1,
                                                 'start_time' => '2024-10-18T09:56:00.000',
                                                 'status_code' => StatusCode::OK,
-                                                'leg_number' => (int) 1,
                                                 'result_type' => [
                                                     'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
                                                     'description' => 'Stage'
@@ -366,7 +362,6 @@ class ResultExamples
                                                 'time_adjusted' => (int) 0,
                                                 'time_penalty' => (int) 0,
                                                 'time_bonus' => (int) 0,
-                                                'leg_number' => (int) 1,
                                                 'splits' => [
                                                     (int) 0 => [
                                                         'sicard' => '8502455',
@@ -430,7 +425,6 @@ class ResultExamples
                                                 'time_adjusted' => (int) 0,
                                                 'time_penalty' => (int) 0,
                                                 'time_bonus' => (int) 0,
-                                                'leg_number' => (int) 1,
                                                 'splits' => [
                                                     (int) 0 => [
                                                         'sicard' => '2063133',

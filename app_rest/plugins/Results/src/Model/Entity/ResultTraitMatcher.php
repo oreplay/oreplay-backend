@@ -17,7 +17,7 @@ trait ResultTraitMatcher
 
     public function isSameResult(ParticipantResultsEntity $runnerResultToSave): bool
     {
-        if ($this->leg_number != $runnerResultToSave->leg_number) {
+        if ($runnerResultToSave->leg_number && $this->leg_number != $runnerResultToSave->leg_number) {
             return false;
         }
         if ($this->result_type_id != $runnerResultToSave->result_type->id) {
