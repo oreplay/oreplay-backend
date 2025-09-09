@@ -89,6 +89,17 @@ class ResultExamples
                                                         'sicard' => '8011750',
                                                         'station' => '33',
                                                         'points' => 0,
+                                                        'status' => '',
+                                                        'reading_time' => '2024-01-28T10:18:37.000',
+                                                        'reading_milli' => 1706433517000,
+                                                        'time_seconds' => 817,
+                                                        'order_number' => 2
+                                                    ],
+                                                    [
+                                                        'sicard' => '8011750',
+                                                        'station' => '33',
+                                                        'points' => 0,
+                                                        'status' => 'Additional',
                                                         'reading_time' => '2024-01-28T10:18:37.000',
                                                         'reading_milli' => 1706433517000,
                                                         'time_seconds' => 817,

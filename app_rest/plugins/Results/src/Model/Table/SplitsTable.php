@@ -70,6 +70,15 @@ class SplitsTable extends AppTable
         return $this->deleteAll(['runner_id' => $runnerId]);
     }
 
+    private function _skipSplit(array $split): bool
+    {
+        if (($split['status'] ?? '') === Split::STATUS_ADDITIONAL) {
+            // additional punches out of the course are not stored
+            return true;
+        }
+        return false;
+    }
+
     public function uploadForEachSplit(
         ParticipantResultsEntity $resultToSave,
         array $splits,
@@ -77,6 +86,10 @@ class SplitsTable extends AppTable
     ): ParticipantResultsEntity {
         if ($splits) {
             foreach ($splits as $split) {
+                if ($this->_skipSplit($split)) {
+                    // additional punches out of the course are not stored
+                    continue;
+                }
                 $split['is_intermediate'] = $helper->getChecker()->isIntermediates();
                 //if ($split['is_intermediate'] && !isset($split['reading_time'])) {
                 //    // do not save radio splits without time

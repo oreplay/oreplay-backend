@@ -24,6 +24,8 @@ use Results\Lib\SplitCompareReason;
  */
 class Split extends AppEntity
 {
+    public const string STATUS_ADDITIONAL = 'Additional';
+
     protected $_accessible = [
         '*' => false,
         'id' => false,
