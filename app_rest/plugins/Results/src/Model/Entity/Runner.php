@@ -172,18 +172,25 @@ class Runner extends AppEntity implements ParticipantInterface
         }
         $stName = $runnerData['first_name'] ?? null;
         $lastName = $runnerData['last_name'] ?? null;
-        if ($stName && $lastName) {
-            if ($this->first_name == $stName && $this->last_name == $lastName) {
+        if (!$stName && !$lastName) {
+            $fullName = '';
+        } else {
+            $fullName = implode(' ', [$stName, $lastName]);
+        }
+        if ($fullName) {
+            if ($fullName == implode(' ', [$this->first_name, $this->last_name])) {
                 return $this->isSameClass($class);
             } else {
                 return null;
             }
         } else {
+            /*
             $legNumber = $runnerData['runner_results'][0]['leg_number'] ?? 0;
             if ($legNumber > 0 && in_array($lastName, ['nn', 'N.N.'])) {
                 // we should allow any relay runner to be empty (but leg has to be defined)
                 return null;
             }
+            //*/
             $copied = unserialize(serialize($runnerData));
             unset($copied['club']);
             unset($copied['stage']);

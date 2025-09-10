@@ -71,7 +71,7 @@ class RunnerTest extends TestCase
         $json = '{"first_name":"","last_name":""}';
         $this->assertEquals('Fields first_name [] and last_name [] cannot be empty '
             . 'when bib_number and db_id is also empty ' . $json, $exception);
-        // if no leg defined we throw exception
+        // if no leg defined we do not throw exception
         $runnerData = [
             'first_name' => '',
             'last_name' => 'nn',
@@ -79,6 +79,8 @@ class RunnerTest extends TestCase
             ],
         ];
         $exception = 'no exception';
+        $this->assertNull($runnerResult->getMatchedRunner($runnerData));
+        /*
         try {
             $runnerResult->getMatchedRunner($runnerData);
         } catch (DetailedException $e) {
@@ -87,6 +89,7 @@ class RunnerTest extends TestCase
         $json = '{"first_name":"","last_name":"nn"}';
         $this->assertEquals('Fields first_name [] and last_name [nn] cannot be empty '
             . 'when bib_number and db_id is also empty ' . $json, $exception);
+        //*/
     }
 
     public function testGetOveralls()
