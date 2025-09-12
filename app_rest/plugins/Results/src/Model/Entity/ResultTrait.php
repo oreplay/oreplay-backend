@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Model\Entity;
 
 use Cake\I18n\FrozenTime;
+use Results\Lib\Consts\StatusCode;
 
 trait ResultTrait
 {
@@ -84,6 +85,9 @@ trait ResultTrait
 
     public function hasInvalidFinishTime(): bool
     {
+        if ($this->status_code !== StatusCode::OK) {
+            return false;
+        }
         return !$this->time_seconds && $this->finish_time instanceof FrozenTime;
     }
 }

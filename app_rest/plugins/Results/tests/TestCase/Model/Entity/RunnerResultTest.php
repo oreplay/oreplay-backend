@@ -6,6 +6,7 @@ namespace Results\Test\TestCase\Model\Entity;
 
 use Cake\I18n\FrozenTime;
 use Cake\TestSuite\TestCase;
+use Results\Lib\Consts\StatusCode;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Split;
 
@@ -92,6 +93,9 @@ class RunnerResultTest extends TestCase
     {
         $runnerResult = new RunnerResult();
         $this->assertFalse($runnerResult->hasInvalidFinishTime());
+        $runnerResult->finish_time = new FrozenTime();
+        $this->assertFalse($runnerResult->hasInvalidFinishTime());
+        $runnerResult->status_code = StatusCode::OK;
         $runnerResult->finish_time = new FrozenTime();
         $this->assertTrue($runnerResult->hasInvalidFinishTime());
         $runnerResult->time_seconds = 250;
