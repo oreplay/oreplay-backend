@@ -75,6 +75,9 @@ class RankingComputeClassControllerTest extends ApiCommonErrorsTest
                     'points_final' => 100,
                     'upload_type' => UploadTypes::TOTAL_POINTS,
                     'note' => null,
+                    'status_code' => '0',
+                    'is_nc' => null,
+                    'contributory' => null,
                 ],
             ],
             'overall' => [
@@ -82,10 +85,13 @@ class RankingComputeClassControllerTest extends ApiCommonErrorsTest
                 'stage_order' => 1,
                 'stage' => null,
                 'position' => ScoringAlgorithm::NEEDS_POSITION,
-                'time_seconds' => null,
+                'time_seconds' => 0,
                 'points_final' => 100,
                 'upload_type' => UploadTypes::RANKING_COMPUTED,
                 'note' => null,
+                'status_code' => null,
+                'is_nc' => null,
+                'contributory' => null,
             ],
         ];
         $this->assertEquals($expectedOveralls, $overalls);
