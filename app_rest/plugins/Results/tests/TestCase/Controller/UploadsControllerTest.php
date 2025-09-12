@@ -839,7 +839,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'runners' => 4,
             'courses' => 1,
             'splits' => 0,
-            'runnerResults' => 4,
+            'runnerResults' => 5,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
         $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 1 courses (', $human);
@@ -886,7 +886,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 //            $this->assertEquals(ResultType::STAGE,
 //                $value->getRunnerResults()[0]->result_type_id);
 //        }
-        $this->_assertNewOptionalTables(0, 1, 1, 0);
+        $this->_assertNewOptionalTables(0, 1, 2, 0);
         $this->_assertNewBasicTables(1, 1, 1, 3, 3);
         $this->_assertNewResultsTables(0, 0);
     }

@@ -19,13 +19,20 @@ class ResultsFilter
         if (!$results) {
             return null;
         }
+        $toRet = null;
         /** @var TeamResult|RunnerResult $res */
         foreach ($results as $res) {
             if ($res->result_type_id === ResultType::STAGE) {
-                return $res;
+                if ($res->leg_number && $res->leg_number !== '0') {
+                    if (!$toRet || $toRet->leg_number < $res->leg_number) {
+                        $toRet = $res;
+                    }
+                } else {
+                    return $res;
+                }
             }
         }
-        return null;
+        return $toRet;
     }
 
     public static function getOveralls(array $results = null): ?Overalls

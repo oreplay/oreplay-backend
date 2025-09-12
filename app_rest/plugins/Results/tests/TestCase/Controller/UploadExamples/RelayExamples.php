@@ -158,18 +158,33 @@ class RelayExamples
                 'long_name' => 'Galicia'
             ],
             'team_results' => [
-                (int) 0 => [
+                [
                     'id' => '',
                     'position' => (int) 1,
                     'start_time' => '2001-01-01T10:35:00.000+01:00',
-                    'time_seconds' => (int) 3600,
+                    'time_seconds' => 1745,
                     'status_code' => '0',
                     'time_behind' => (int) 0,
+                    'leg_number' => 1,
                     'result_type' => [
                         'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
                         'description' => 'Stage'
                     ]
-                ]
+                ],
+                [
+                    // we have as many team results as legs in a relay
+                    'id' => '',
+                    'position' => 1,
+                    'start_time' => '2001-01-01T10:35:00.000+01:00',
+                    'time_seconds' => 2935,
+                    'status_code' => '0',
+                    'time_behind' => (int) 0,
+                    'leg_number' => 2,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ],
             ],
             'runners' => [
                 $runnerA,

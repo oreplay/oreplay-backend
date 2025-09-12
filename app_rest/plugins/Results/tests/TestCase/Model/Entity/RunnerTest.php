@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Test\TestCase\Model\Entity;
 
+use App\Lib\Consts\StatusCodes;
 use Cake\I18n\FrozenTime;
 use Cake\TestSuite\TestCase;
 use Rankings\Test\Fixture\RankingsFixture;
@@ -163,5 +164,35 @@ class RunnerTest extends TestCase
         ];
         $this->assertEquals($expected, json_decode(json_encode($runner->_getOveralls()), true));
         $this->assertEquals(null, $runner->_getStage());
+    }
+
+    public function test_getStage()
+    {
+        $res1 = new RunnerResult();
+        $res1->id = 'mainID1';
+        $res1->result_type_id = ResultType::STAGE;
+        $res1->position = 41;
+        $res1->status_code = StatusCodes::OK;
+
+        $res2 = new RunnerResult();
+        $res2->id = 'mainID2';
+        $res2->result_type_id = ResultType::STAGE;
+        $res2->position = 0;
+        $res2->status_code = StatusCodes::MP;
+
+        $teamResult = new Runner();
+        $teamResult->id = 'mainID';
+        $teamResult->team_name = 'Team name';
+        $teamResult->created = new FrozenTime();
+        $teamResult->addRunnerResult($res1);
+        $teamResult->addRunnerResult($res2);
+
+        $expected = [
+            'id' => 'mainID1',
+            'result_type_id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+            'position' => 41,
+            'status_code' => 0,
+        ];
+        $this->assertEquals($expected, $teamResult->_getStage()->toArray());
     }
 }
