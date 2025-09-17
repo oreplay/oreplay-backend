@@ -13,7 +13,7 @@ class StageTypesSeed extends AbstractSeed
         $data = [
             [
                 'id' => StageType::CLASSIC,
-                'description' => 'Foot-O, MTBO, Ski-O',
+                'description' => 'Classic',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
@@ -40,8 +40,8 @@ class StageTypesSeed extends AbstractSeed
                 'deleted' => null,
             ],
             [
-                'id' => StageType::ROGAINE,
-                'description' => 'Rogaine',
+                'id' => StageType::SCORE,
+                'description' => 'Score',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,
@@ -62,7 +62,21 @@ class StageTypesSeed extends AbstractSeed
             ],
             [
                 'id' => StageType::TOTALS,
-                'description' => 'Totals',
+                'description' => 'Overall',
+                'created' => $now,
+                'modified' => $now,
+                'deleted' => null,
+            ],
+            [
+                'id' => StageType::ONE_MAN_RELAY,
+                'description' => 'One Man Relay',
+                'created' => $now,
+                'modified' => $now,
+                'deleted' => null,
+            ],
+            [
+                'id' => StageType::RANKING,
+                'description' => 'Ranking',
                 'created' => $now,
                 'modified' => $now,
                 'deleted' => null,

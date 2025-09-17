@@ -41,7 +41,7 @@ class StageTypesFixture extends RestApiFixture
             'deleted' => null,
         ],
         [
-            'id' => StageType::ROGAINE,
+            'id' => StageType::SCORE,
             'description' => 'Rogaine',
             'created' => '2023-01-01 10:01:00',
             'modified' => '2023-01-01 10:01:00',

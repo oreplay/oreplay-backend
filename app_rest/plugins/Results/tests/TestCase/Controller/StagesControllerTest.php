@@ -130,7 +130,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
         $data = [
             'description' => 'Some stage',
-            'stage_type_id' => StageType::ROGAINE,
+            'stage_type_id' => StageType::SCORE,
         ];
         $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, $data);
 
