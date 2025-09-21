@@ -236,6 +236,602 @@ class RelayExamples
         ];
     }
 
+    public static function twoTeamsWith2Runners4LegsEach()
+    {
+        $teamA = [
+            'id' => '',
+            'uuid' => '',
+            'bib_number' => '102',
+            'team_name' => 'Alicante ALICANTE-O AlicanteO-2',
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'oe_key' => '257',
+                'short_name' => 'Alicante ALICANTE-O',
+                'long_name' => 'Alicante ALICANTE-O'
+            ],
+            'team_results' => [
+                (int)0 => [
+                    'id' => '',
+                    'position' => (int)2,
+                    'contributory' => true,
+                    'stage_order' => (int)1,
+                    'time_seconds' => (int)664,
+                    'status_code' => '0',
+                    'time_behind' => (int)25,
+                    'time_neutralization' => (int)0,
+                    'time_adjusted' => (int)0,
+                    'time_penalty' => (int)0,
+                    'time_bonus' => (int)0,
+                    'leg_number' => (int)1,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ],
+                (int)1 => [
+                    'id' => '',
+                    'contributory' => true,
+                    'stage_order' => (int)1,
+                    'time_seconds' => (int)1444,
+                    'status_code' => '0',
+                    'time_neutralization' => (int)0,
+                    'time_adjusted' => (int)0,
+                    'time_penalty' => (int)0,
+                    'time_bonus' => (int)0,
+                    'leg_number' => (int)2,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ],
+                (int)2 => [
+                    'id' => '',
+                    'contributory' => true,
+                    'stage_order' => (int)1,
+                    'time_seconds' => (int)2896,
+                    'status_code' => '0',
+                    'time_neutralization' => (int)0,
+                    'time_adjusted' => (int)0,
+                    'time_penalty' => (int)0,
+                    'time_bonus' => (int)0,
+                    'leg_number' => (int)3,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ],
+                (int)3 => [
+                    'id' => '',
+                    'contributory' => true,
+                    'stage_order' => (int)1,
+                    'time_seconds' => (int)4159,
+                    'status_code' => '0',
+                    'time_neutralization' => (int)0,
+                    'time_adjusted' => (int)0,
+                    'time_penalty' => (int)0,
+                    'time_bonus' => (int)0,
+                    'leg_number' => (int)4,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'runners' => [
+                (int)0 => [
+                    'id' => '',
+                    'uuid' => '',
+                    'sicard' => '1008699',
+                    'sex' => 'F',
+                    'first_name' => 'Cris',
+                    'last_name' => 'Leiva',
+                    'db_id' => '12834',
+                    'sicard_alt' => '',
+                    'is_nc' => false,
+                    'runner_results' => [
+                        (int)0 => [
+                            'id' => '',
+                            'contributory' => false,
+                            'stage_order' => (int)1,
+                            'start_time' => '2025-09-13T11:59:00.000+02:00',
+                            'finish_time' => '2025-09-13T12:10:04.000+02:00',
+                            'time_seconds' => (int)664,
+                            'status_code' => '0',
+                            'time_neutralization' => (int)0,
+                            'time_adjusted' => (int)0,
+                            'time_penalty' => (int)0,
+                            'time_bonus' => (int)0,
+                            'leg_number' => (int)1,
+                            'result_type' => [
+                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                'description' => 'Stage'
+                            ]
+                        ]
+                    ],
+                    'club' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'oe_key' => '257',
+                        'short_name' => 'Alicante ALICANTE-O',
+                        'long_name' => 'Alicante ALICANTE-O'
+                    ],
+                    'course' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'distance' => '2100.0',
+                        'climb' => '18.0',
+                        'controls' => (int)18,
+                        'oe_key' => '9004',
+                        'short_name' => '#14 aBaB'
+                    ]
+                ],
+                (int)1 => [
+                    'id' => '',
+                    'uuid' => '',
+                    'sicard' => '8643979',
+                    'sex' => 'M',
+                    'first_name' => 'Violeta',
+                    'last_name' => 'Rodriguez',
+                    'db_id' => '28845',
+                    'sicard_alt' => '',
+                    'is_nc' => false,
+                    'runner_results' => [
+                        (int)0 => [
+                            'id' => '',
+                            'contributory' => false,
+                            'stage_order' => (int)1,
+                            'start_time' => '2025-09-13T12:10:04.000+02:00',
+                            'finish_time' => '2025-09-13T12:23:04.000+02:00',
+                            'time_seconds' => (int)780,
+                            'status_code' => '0',
+                            'time_neutralization' => (int)0,
+                            'time_adjusted' => (int)0,
+                            'time_penalty' => (int)0,
+                            'time_bonus' => (int)0,
+                            'leg_number' => (int)2,
+                            'result_type' => [
+                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                'description' => 'Stage'
+                            ]
+                        ]
+                    ],
+                    'club' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'oe_key' => '257',
+                        'short_name' => 'Alicante ALICANTE-O',
+                        'long_name' => 'Alicante ALICANTE-O'
+                    ],
+                    'course' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'distance' => '2650.0',
+                        'climb' => '23.0',
+                        'controls' => (int)19,
+                        'oe_key' => '9004',
+                        'short_name' => '#6 bBaB'
+                    ]
+                ],
+                (int)2 => [
+                    'id' => '',
+                    'uuid' => '',
+                    'sicard' => '1008699',
+                    'sex' => 'F',
+                    'first_name' => 'Cris',
+                    'last_name' => 'Leiva',
+                    'db_id' => '12834',
+                    'sicard_alt' => '',
+                    'is_nc' => false,
+                    'runner_results' => [
+                        (int)0 => [
+                            'id' => '',
+                            'contributory' => false,
+                            'stage_order' => (int)1,
+                            'start_time' => '2025-09-13T12:23:04.000+02:00',
+                            'finish_time' => '2025-09-13T12:47:16.000+02:00',
+                            'time_seconds' => (int)1452,
+                            'status_code' => '0',
+                            'time_neutralization' => (int)0,
+                            'time_adjusted' => (int)0,
+                            'time_penalty' => (int)0,
+                            'time_bonus' => (int)0,
+                            'leg_number' => (int)3,
+                            'result_type' => [
+                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                'description' => 'Stage'
+                            ]
+                        ]
+                    ],
+                    'club' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'oe_key' => '257',
+                        'short_name' => 'Alicante ALICANTE-O',
+                        'long_name' => 'Alicante ALICANTE-O'
+                    ],
+                    'course' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'distance' => '2575.0',
+                        'climb' => '47.0',
+                        'controls' => (int)22,
+                        'oe_key' => '9004',
+                        'short_name' => '#11 aAbA'
+                    ]
+                ],
+                (int)3 => [
+                    'id' => '',
+                    'uuid' => '',
+                    'sicard' => '8643979',
+                    'sex' => 'M',
+                    'first_name' => 'Violeta',
+                    'last_name' => 'Rodriguez',
+                    'db_id' => '28845',
+                    'sicard_alt' => '',
+                    'is_nc' => false,
+                    'runner_results' => [
+                        (int)0 => [
+                            'id' => '',
+                            'contributory' => false,
+                            'stage_order' => (int)1,
+                            'start_time' => '2025-09-13T12:47:16.000+02:00',
+                            'finish_time' => '2025-09-13T13:08:19.000+02:00',
+                            'time_seconds' => (int)1263,
+                            'status_code' => '0',
+                            'time_neutralization' => (int)0,
+                            'time_adjusted' => (int)0,
+                            'time_penalty' => (int)0,
+                            'time_bonus' => (int)0,
+                            'leg_number' => (int)4,
+                            'result_type' => [
+                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                'description' => 'Stage'
+                            ]
+                        ]
+                    ],
+                    'club' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'oe_key' => '257',
+                        'short_name' => 'Alicante ALICANTE-O',
+                        'long_name' => 'Alicante ALICANTE-O'
+                    ],
+                    'course' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'distance' => '2875.0',
+                        'climb' => '53.0',
+                        'controls' => (int)25,
+                        'oe_key' => '9004',
+                        'short_name' => '#3 bAbA'
+                    ]
+                ]
+            ]
+        ];
+        $teamB = [
+            'id' => '',
+            'uuid' => '',
+            'bib_number' => '108',
+            'team_name' => 'Murcia MURCIA-O GOE',
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'oe_key' => '53',
+                'short_name' => 'Murcia MURCIA-O',
+                'long_name' => 'Murcia MURCIA-O'
+            ],
+            'team_results' => [
+                (int)0 => [
+                    'id' => '',
+                    'contributory' => true,
+                    'stage_order' => (int)1,
+                    'status_code' => '9',
+                    'time_neutralization' => (int)0,
+                    'time_adjusted' => (int)0,
+                    'time_penalty' => (int)0,
+                    'time_bonus' => (int)0,
+                    'leg_number' => (int)1,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ],
+                (int)1 => [
+                    'id' => '',
+                    'contributory' => true,
+                    'stage_order' => (int)1,
+                    'status_code' => '9',
+                    'time_neutralization' => (int)0,
+                    'time_adjusted' => (int)0,
+                    'time_penalty' => (int)0,
+                    'time_bonus' => (int)0,
+                    'leg_number' => (int)2,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ],
+                (int)2 => [
+                    'id' => '',
+                    'contributory' => true,
+                    'stage_order' => (int)1,
+                    'status_code' => '9',
+                    'time_neutralization' => (int)0,
+                    'time_adjusted' => (int)0,
+                    'time_penalty' => (int)0,
+                    'time_bonus' => (int)0,
+                    'leg_number' => (int)3,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ],
+                (int)3 => [
+                    'id' => '',
+                    'contributory' => true,
+                    'stage_order' => (int)1,
+                    'status_code' => '9',
+                    'time_neutralization' => (int)0,
+                    'time_adjusted' => (int)0,
+                    'time_penalty' => (int)0,
+                    'time_bonus' => (int)0,
+                    'leg_number' => (int)4,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'runners' => [
+                (int)0 => [
+                    'id' => '',
+                    'uuid' => '',
+                    'sicard' => '8197411',
+                    'sex' => 'F',
+                    'first_name' => 'Estrella',
+                    'last_name' => 'Alonso',
+                    'db_id' => '83389',
+                    'sicard_alt' => '',
+                    'is_nc' => false,
+                    'runner_results' => [
+                        (int)0 => [
+                            'id' => '',
+                            'contributory' => false,
+                            'stage_order' => (int)1,
+                            'start_time' => '2025-09-13T11:59:00.000+02:00',
+                            'finish_time' => '2025-09-13T12:12:46.000+02:00',
+                            'time_seconds' => (int)826,
+                            'status_code' => '3',
+                            'time_neutralization' => (int)0,
+                            'time_adjusted' => (int)0,
+                            'time_penalty' => (int)0,
+                            'time_bonus' => (int)0,
+                            'leg_number' => (int)1,
+                            'result_type' => [
+                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                'description' => 'Stage'
+                            ]
+                        ]
+                    ],
+                    'club' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'oe_key' => '53',
+                        'short_name' => 'Murcia MURCIA-O',
+                        'long_name' => 'Murcia MURCIA-O'
+                    ],
+                    'course' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'distance' => '2125.0',
+                        'climb' => '20.0',
+                        'controls' => (int)18,
+                        'oe_key' => '9004',
+                        'short_name' => '#9 aAaA'
+                    ]
+                ],
+                (int)1 => [
+                    'id' => '',
+                    'uuid' => '',
+                    'sicard' => '8059555',
+                    'sex' => 'M',
+                    'first_name' => 'Cesar',
+                    'last_name' => 'Gurrea',
+                    'db_id' => '36956',
+                    'sicard_alt' => '',
+                    'is_nc' => false,
+                    'runner_results' => [
+                        (int)0 => [
+                            'id' => '',
+                            'contributory' => false,
+                            'stage_order' => (int)1,
+                            'start_time' => '2025-09-13T12:12:46.000+02:00',
+                            'finish_time' => '2025-09-13T12:31:28.000+02:00',
+                            'time_seconds' => (int)1122,
+                            'status_code' => '0',
+                            'time_neutralization' => (int)0,
+                            'time_adjusted' => (int)0,
+                            'time_penalty' => (int)0,
+                            'time_bonus' => (int)0,
+                            'leg_number' => (int)2,
+                            'result_type' => [
+                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                'description' => 'Stage'
+                            ]
+                        ]
+                    ],
+                    'club' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'oe_key' => '53',
+                        'short_name' => 'Murcia MURCIA-O',
+                        'long_name' => 'Murcia MURCIA-O'
+                    ],
+                    'course' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'distance' => '2750.0',
+                        'climb' => '23.0',
+                        'controls' => (int)20,
+                        'oe_key' => '9004',
+                        'short_name' => '#2 bBaA'
+                    ]
+                ],
+                (int)2 => [
+                    'id' => '',
+                    'uuid' => '',
+                    'sicard' => '8197411',
+                    'sex' => 'F',
+                    'first_name' => 'Estrella',
+                    'last_name' => 'Alonso',
+                    'db_id' => '83389',
+                    'sicard_alt' => '',
+                    'is_nc' => false,
+                    'runner_results' => [
+                        (int)0 => [
+                            'id' => '',
+                            'contributory' => false,
+                            'stage_order' => (int)1,
+                            'start_time' => '2025-09-13T12:31:28.000+02:00',
+                            'finish_time' => '2025-09-13T12:54:53.000+02:00',
+                            'time_seconds' => (int)1405,
+                            'status_code' => '0',
+                            'time_neutralization' => (int)0,
+                            'time_adjusted' => (int)0,
+                            'time_penalty' => (int)0,
+                            'time_bonus' => (int)0,
+                            'leg_number' => (int)3,
+                            'result_type' => [
+                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                'description' => 'Stage'
+                            ]
+                        ]
+                    ],
+                    'club' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'oe_key' => '53',
+                        'short_name' => 'Murcia MURCIA-O',
+                        'long_name' => 'Murcia MURCIA-O'
+                    ],
+                    'course' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'distance' => '2525.0',
+                        'climb' => '45.0',
+                        'controls' => (int)22,
+                        'oe_key' => '9004',
+                        'short_name' => '#16 aBbB'
+                    ]
+                ],
+                (int)3 => [
+                    'id' => '',
+                    'uuid' => '',
+                    'sicard' => '8059555',
+                    'sex' => 'M',
+                    'first_name' => 'Cesar',
+                    'last_name' => 'Gurrea',
+                    'db_id' => '36956',
+                    'sicard_alt' => '',
+                    'is_nc' => false,
+                    'runner_results' => [
+                        (int)0 => [
+                            'id' => '',
+                            'contributory' => false,
+                            'stage_order' => (int)1,
+                            'start_time' => '2025-09-13T12:54:53.000+02:00',
+                            'finish_time' => '2025-09-13T13:24:03.000+02:00',
+                            'time_seconds' => (int)1750,
+                            'status_code' => '3',
+                            'time_neutralization' => (int)0,
+                            'time_adjusted' => (int)0,
+                            'time_penalty' => (int)0,
+                            'time_bonus' => (int)0,
+                            'leg_number' => (int)4,
+                            'result_type' => [
+                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                'description' => 'Stage'
+                            ]
+                        ]
+                    ],
+                    'club' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'oe_key' => '53',
+                        'short_name' => 'Murcia MURCIA-O',
+                        'long_name' => 'Murcia MURCIA-O'
+                    ],
+                    'course' => [
+                        'id' => '',
+                        'uuid' => '',
+                        'distance' => '2775.0',
+                        'climb' => '53.0',
+                        'controls' => (int)24,
+                        'oe_key' => '9004',
+                        'short_name' => '#7 bAbB'
+                    ]
+                ]
+            ]
+        ];
+        return [
+            'configuration' => [
+                'file' => '17relevoOS/tmp/CampeonatoAutonómicodeRelevosM_20250913_140711.xml',
+                'extension' => 'XML',
+                'utf' => false,
+                'known_data' => true,
+                'contents' => 'ResultList',
+                'results_type' => 'Totals',
+                'one_stage' => true,
+                'source' => 'OS2010',
+                'iof_version' => '3.0',
+                'include_score' => false,
+                'trailo_type' => 'Other',
+                'trailo_at' => 'Other',
+                'trailo_normal' => '0',
+                'trailo_group' => '0',
+                'totalization' => 'Other'
+            ],
+            'event' => [
+                'id' => Event::FIRST_EVENT,
+                'description' => 'relevo fedocv',
+                'is_hidden' => false,
+                'stages' => [
+                    [
+                        'id' => StagesFixture::STAGE_FEDO_2,
+                        'description' => 'CampeonatoAutonómicodeRelevosM_FINAL-simple.xml 1',
+                        'base_date' => '2025-09-14',
+                        'base_time' => '10:30:00.000+02:00',
+                        'order_number' => (int)1,
+                        'classes' => [
+                            [
+                                'id' => '',
+                                'uuid' => '',
+                                'oe_key' => '1260',
+                                'short_name' => 'SENIOR',
+                                'long_name' => 'SENIOR',
+                                'teams' => [
+                                    $teamA,
+                                    $teamB
+                                ],
+                                'course' => [
+                                    'id' => '',
+                                    'uuid' => '',
+                                    'distance' => '2225.0',
+                                    'climb' => '20.0',
+                                    'controls' => (int)18,
+                                    'oe_key' => '9004',
+                                    'short_name' => '#10 aBaA'
+                                ],
+                                'runners' => []
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+    }
+
     public static function intermediateResults()
     {
         $classA = [

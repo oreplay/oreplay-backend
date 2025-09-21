@@ -805,6 +805,32 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         return count($fixture->records);
     }
 
+    public function testAddNew_shouldAddRelayResultsWithoutSamePersonRunningTwice()
+    {
+        Cache::clear();
+        $RunnersTable = RunnersTable::load();
+        $existingRunners = $RunnersTable->find()->all()->count();
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $data = ['oreplay_data_transfer' => RelayExamples::twoTeamsWith2Runners4LegsEach()];
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 1 courses (', $jsonDecoded['meta']['human'][0]);
+        $expected = [
+            'classes' => 1,
+            'courses' => 1,
+            'runners' => 10,
+            'splits' => 0,
+            'runnerResults' => 16
+        ];
+        $this->assertEquals($expected, $jsonDecoded['meta']['updated']);
+        $this->assertEquals(8, $RunnersTable->find()->all()->count() - $existingRunners);
+    }
+
     public function testAddNew_shouldAddRelayResultsWithoutSplitsTwice()
     {
         Cache::clear();

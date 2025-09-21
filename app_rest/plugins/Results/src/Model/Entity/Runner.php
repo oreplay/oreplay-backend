@@ -164,6 +164,12 @@ class Runner extends AppEntity implements ParticipantInterface
 
     public function getMatchedRunner(array $runnerData, ClassEntity $class = null): ?Runner
     {
+        if ($this->leg_number) {
+            $leg = $runnerData['runner_results'][0]['leg_number'] ?? null;
+            if ($leg && $leg != $this->leg_number) {
+                return null;
+            }
+        }
         if ($this->isSameField('db_id', $runnerData)) {
             return $this;
         }
