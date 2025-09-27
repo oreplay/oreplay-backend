@@ -30,6 +30,7 @@ trait ResultTrait
     public function getSplitsWithoutRadios(): array
     {
         $this->_splitsToRemove = [];
+        $countRadios = 0;
         $splitsToRet = [];
         /** @var Split $lastSplit */
         $lastSplit = null;
@@ -46,6 +47,9 @@ trait ResultTrait
                     // skip split if it has position (all controls ok) and no reading_time
                     $lastSplit = $split;
                     $splitsToRet[] = $lastSplit;
+                    if ($lastSplit->isRadio()) {
+                        $countRadios++;
+                    }
                 } else {
                     $this->_splitsToRemove[] = $split->id;
                 }
@@ -53,8 +57,22 @@ trait ResultTrait
                 if (!$this->_hasPositionButNoTime($split)) {
                     $lastSplit = $split;
                     $splitsToRet[] = $lastSplit;
+                    if ($lastSplit->isRadio()) {
+                        $countRadios++;
+                    }
                 }
             }
+        }
+        $countNoRadios = count($splitsToRet) - $countRadios;
+        $wasRunnerAlreadyDownloaded = $countNoRadios > $countRadios;
+        if ($countRadios && $wasRunnerAlreadyDownloaded) {
+            /** @var Split $split */
+            foreach ($splitsToRet as $k => $split) {
+                if ($split->isRadio()) {
+                    unset($splitsToRet[$k]);
+                }
+            }
+            $splitsToRet = array_values($splitsToRet);
         }
         return $splitsToRet;
     }
