@@ -476,7 +476,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $jsonDecoded = $this->assertJsonResponseOK();
         $decodedData = $jsonDecoded['data'];
         $this->assertEquals($expectedRunnerAmount, count($res), 'Runner count in db');
-        $this->assertEquals(1, count($decodedData), json_encode($decodedData));
+        $this->assertEquals(1, count($decodedData), json_encode($jsonDecoded));
         $this->assertEquals($expectedRunnerAmount, count($decodedData[0]['runners']), json_encode($decodedData));
         $this->_assertRunnersWithFinishTimes($decodedData, true);
         $this->assertEquals($expectedControlAmount, ControlsTable::load()->find()->all()->count());
