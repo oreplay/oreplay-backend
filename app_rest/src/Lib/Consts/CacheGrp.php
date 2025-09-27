@@ -9,6 +9,7 @@ class CacheGrp
     const DEFAULT = 'default';
     const ACL = 'acl';
     const UPLOAD = 'upload';
+    const SHORT = 'short';
     const EXTRALONG = 'extralong';
     const CORE = '_cake_core_';
     const MODEL = '_cake_model_';

@@ -155,6 +155,13 @@ return [
             'duration' => '+1 day',
             'url' => env('CACHE_DEFAULT_URL', null),
         ],
+        CacheGrp::SHORT => [
+            'className' => MemcachedEngine::class,
+            'prefix' => env('TAG_VERSION', '') . '_' . CacheGrp::SHORT . '_',
+            'path' => CACHE,
+            'duration' => '+5 minutes',
+            'url' => env('CACHE_DEFAULT_URL', null),
+        ],
         CacheGrp::EXTRALONG => [
             'className' => MemcachedEngine::class,
             'prefix' => env('TAG_VERSION', ''). '_' . CacheGrp::EXTRALONG . '_',

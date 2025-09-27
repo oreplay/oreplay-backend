@@ -66,6 +66,7 @@ class ClassesTable extends AppTable
 
     public function getByStageWithRadios(string $eventId, string $stageId)
     {
+        $stationsInClass = $this->Splits->getStationsFromLeaderInStage($eventId, $stageId);
         $query = $this->find()->where([
             'event_id' => $eventId,
             'stage_id' => $stageId,
@@ -93,7 +94,8 @@ class ClassesTable extends AppTable
         $res = $query->all();
         /** @var ClassEntity $r */
         foreach ($res as $r) {
-            $r->setSplitsAsSimpleArray();
+            $courseStations = $stationsInClass[$r->id] ?? [];
+            $r->setSplitsAsSimpleArray($courseStations);
         }
         return $res;
     }

@@ -5,10 +5,13 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Model\Table;
 
 use Cake\TestSuite\TestCase;
+use Results\Model\Entity\Event;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Split;
+use Results\Model\Entity\Stage;
 use Results\Model\Table\SplitsTable;
 use Results\Test\Fixture\EventsFixture;
+use Results\Test\Fixture\RunnerResultsFixture;
 use Results\Test\Fixture\SplitsFixture;
 
 class SplitsTableTest extends TestCase
@@ -16,6 +19,7 @@ class SplitsTableTest extends TestCase
     protected $fixtures = [
         EventsFixture::LOAD,
         SplitsFixture::LOAD,
+        RunnerResultsFixture::LOAD,
     ];
     /** @var SplitsTable Runners */
     private $Splits;
@@ -41,6 +45,15 @@ class SplitsTableTest extends TestCase
             'created' => '2024-01-02T10:00:10.000+00:00',
         ];
         $this->assertEquals($expected, $array);
+    }
+
+    public function testGetStationsFromLeaderInStage()
+    {
+        $res = $this->Splits->getStationsFromLeaderInStage(Event::FIRST_EVENT, Stage::FIRST_STAGE);
+        $expected = [
+            'd8a87faf-68a4-487b-8f28-6e0ead6c1a57' => ['31']
+        ];
+        $this->assertEquals($expected, $res);
     }
 
     public function testDeleteAllByRunnerId()
