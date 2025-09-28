@@ -125,6 +125,7 @@ class PartialOverall extends RunnerResult
             'time_seconds' => $this->time_seconds,
             'time_behind' => $this->time_behind,
             'points_final' => $this->points_final,
+            'points_behind' => null,
             'note' => $this->note,
         ];
     }

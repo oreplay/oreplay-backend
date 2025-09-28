@@ -183,6 +183,7 @@ class SimpleScoreCalculatorTest extends TestCase
             'time_seconds' => null,
             'time_behind' => null,
             'points_final' => null,
+            'points_behind' => null,
             'upload_type' => null,
             'note' => null,
         ];
@@ -204,6 +205,7 @@ class SimpleScoreCalculatorTest extends TestCase
             'time_seconds' => 0,
             'time_behind' => null,
             'points_final' => 132,
+            'points_behind' => null,
             'upload_type' => UploadTypes::RANKING_COMPUTED,
             'note' => null,
         ];
@@ -231,6 +233,7 @@ class SimpleScoreCalculatorTest extends TestCase
                     'time_seconds' => 0,
                     'time_behind' => null,
                     'points_final' => 50,
+                    'points_behind' => null,
                     'note' => null,
                 ],
                 [
@@ -245,6 +248,7 @@ class SimpleScoreCalculatorTest extends TestCase
                     'time_seconds' => 0,
                     'time_behind' => null,
                     'points_final' => 66,
+                    'points_behind' => null,
                     'note' => null,
                 ],
                 [
@@ -259,6 +263,7 @@ class SimpleScoreCalculatorTest extends TestCase
                     'time_seconds' => 0,
                     'time_behind' => null,
                     'points_final' => 82.5,
+                    'points_behind' => null,
                     'note' => null,
                 ],
             ],
@@ -273,6 +278,7 @@ class SimpleScoreCalculatorTest extends TestCase
                 'time_seconds' => 0,
                 'time_behind' => null,
                 'points_final' => 198,
+                'points_behind' => null,
                 'upload_type' => UploadTypes::RANKING_COMPUTED,
                 'note' => null,
             ]
