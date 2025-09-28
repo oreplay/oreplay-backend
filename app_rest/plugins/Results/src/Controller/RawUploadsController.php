@@ -35,7 +35,7 @@ class RawUploadsController extends ApiController
             /** @var FrozenTime $created */
             $created = $record->created;
             $elem = [
-                'link_upload' => $url . $created->toIso8601String(),
+                'link_upload' => $url . urlencode($created->toIso8601String()),
                 'upload_type' => $record->upload_type,
                 'state' => $record->state,
             ];
