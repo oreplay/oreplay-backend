@@ -54,7 +54,7 @@ class Overalls extends AppEntity
         usort($parts, PartialOverall::sortTotals());
         $toRet = [];
         foreach ($parts as &$part) {
-            $isBestPart = count($toRet) <= $maxAmount;
+            $isBestPart = count($toRet) < $maxAmount;
             if ($isBestPart) {
                 $toRet[] = $part;
             }
