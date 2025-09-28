@@ -232,9 +232,6 @@ class SimpleScoreCalculatorTest extends TestCase
                     'time_behind' => null,
                     'points_final' => 50,
                     'note' => null,
-                    'status_code' => null,
-                    'is_nc' => null,
-                    'contributory' => null,
                 ],
                 [
                     'id' => '',
@@ -249,9 +246,6 @@ class SimpleScoreCalculatorTest extends TestCase
                     'time_behind' => null,
                     'points_final' => 66,
                     'note' => null,
-                    'status_code' => null,
-                    'is_nc' => null,
-                    'contributory' => null,
                 ],
                 [
                     'id' => '',
@@ -266,9 +260,6 @@ class SimpleScoreCalculatorTest extends TestCase
                     'time_behind' => null,
                     'points_final' => 82.5,
                     'note' => null,
-                    'status_code' => null,
-                    'is_nc' => null,
-                    'contributory' => null,
                 ],
             ],
             'overall' => [
@@ -283,9 +274,6 @@ class SimpleScoreCalculatorTest extends TestCase
                 'time_behind' => null,
                 'points_final' => 198,
                 'upload_type' => UploadTypes::RANKING_COMPUTED,
-                'status_code' => null,
-                'is_nc' => null,
-                'contributory' => null,
                 'note' => null,
             ]
         ];

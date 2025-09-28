@@ -46,7 +46,8 @@ class RankingsTableTest extends TestCase
         $overallSettings = [
             'totalCircuitRaces' => 9, // number of races in this circuit
             'maxRacesCounted' => 5, // max number of races counted for each participant
-            'organizerScoringFraction' => 0.3 // how many races will be considered in the org avg
+            'organizerScoringFraction' => 0.3, // how many races will be considered in the org avg
+            'minPointsAsOrg' => 50, // min points got as organizer
         ];
         $this->assertEquals($overallSettings, $ranking->_getOverallSettings());
         $this->assertEquals(StagesFixture::STAGE_RANKING, $ranking->getStageId());
