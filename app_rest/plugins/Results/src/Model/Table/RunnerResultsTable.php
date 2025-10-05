@@ -73,6 +73,11 @@ class RunnerResultsTable extends AppTable
                 'dns' => $query->func()->sum(
                     "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::DNS . "' THEN 1 ELSE 0 END"
                 ),
+                'bestTime' => $query->func()->min(
+                    "CASE WHEN " . RunnerResultsTable::field('time_seconds') . " > 0 THEN "
+                    . RunnerResultsTable::field('time_seconds') . " ELSE NULL END"
+                )
+
             ])
             ->where([
                 RunnerResultsTable::field('event_id') => $eventId,
