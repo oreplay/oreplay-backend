@@ -67,7 +67,7 @@ class RunnerResultsTable extends AppTable
                 'ot' => $query->func()->sum(
                     "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::OT . "' THEN 1 ELSE 0 END"
                 ),
-                'dqf' => $query->func()->sum(
+                'dsq' => $query->func()->sum(
                     "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::DQF . "' THEN 1 ELSE 0 END"
                 ),
                 'dns' => $query->func()->sum(
