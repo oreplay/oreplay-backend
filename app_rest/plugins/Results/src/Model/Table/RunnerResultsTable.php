@@ -41,16 +41,16 @@ class RunnerResultsTable extends AppTable
     public function getNotClassesStats(string $eventId, string $stageId, array $classNames, string $sex): array
     {
         $classCondition = [ClassesTable::field('short_name') . ' not in' => $classNames];
-        return $this->_getClassStats($classCondition, $eventId, $stageId, $sex);
+        return $this->_getFedoClassStats($classCondition, $eventId, $stageId, $sex);
     }
 
-    public function getClassesStats(string $eventId, string $stageId, array $classNames, string $sex): array
+    public function getFedoClassesStats(string $eventId, string $stageId, array $classNames, string $sex): array
     {
         $classCondition = [ClassesTable::field('short_name') . ' in' => $classNames];
-        return $this->_getClassStats($classCondition, $eventId, $stageId, $sex);
+        return $this->_getFedoClassStats($classCondition, $eventId, $stageId, $sex);
     }
 
-    public function _getClassStats(array $classCondition, string $eventId, string $stageId, string $sex = null): array
+    public function _getFedoClassStats(array $classCondition, string $eventId, string $stageId, string $sex = null): array
     {
         $query = $this->find()
             ->where([

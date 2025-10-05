@@ -17,7 +17,7 @@ use Results\Test\Fixture\RunnerResultsFixture;
 use Results\Test\Fixture\RunnersFixture;
 use Results\Test\Fixture\SplitsFixture;
 
-class StatsControllerTest extends ApiCommonErrorsTest
+class FedoStatsControllerTest extends ApiCommonErrorsTest
 {
     protected $fixtures = [
         EventsFixture::LOAD,

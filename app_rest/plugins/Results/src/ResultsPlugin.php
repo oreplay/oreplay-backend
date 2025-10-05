@@ -16,8 +16,8 @@ class ResultsPlugin extends RestPlugin
             \Results\Controller\ResultsController::route()
         );
         $builder->connect(
-            '/events/{eventID}/stages/{stageID}/stats/*',
-            \Results\Controller\StatsController::route()
+            '/events/{eventID}/stages/{stageID}/fedo-stats/*',
+            \Results\Controller\FedoStatsController::route()
         );
         $builder->connect(
             '/events/{eventID}/uploads/*',

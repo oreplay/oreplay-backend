@@ -9,7 +9,7 @@ use Results\Model\Table\RunnerResultsTable;
 /**
  * @property RunnerResultsTable $RunnerResults
  */
-class StatsController extends ApiController
+class FedoStatsController extends ApiController
 {
     public function initialize(): void
     {
@@ -48,14 +48,14 @@ class StatsController extends ApiController
         $table = $this->RunnerResults;
         $this->return = [
             'officialSub20' => [
-                'M' => $table->getClassesStats($eventId, $stageId, $officialSub20M, 'M'),
-                'F' => $table->getClassesStats($eventId, $stageId, $officialSub20F, 'F'),
-                'any' => $table->getClassesStats($eventId, $stageId, $officialSub20, ''),
+                'M' => $table->getFedoClassesStats($eventId, $stageId, $officialSub20M, 'M'),
+                'F' => $table->getFedoClassesStats($eventId, $stageId, $officialSub20F, 'F'),
+                'any' => $table->getFedoClassesStats($eventId, $stageId, $officialSub20, ''),
             ],
             'officialSenior' => [
-                'M' => $table->getClassesStats($eventId, $stageId, $officialSeniorM, 'M'),
-                'F' => $table->getClassesStats($eventId, $stageId, $officialSeniorF, 'F'),
-                'any' => $table->getClassesStats($eventId, $stageId, $officialSenior, ''),
+                'M' => $table->getFedoClassesStats($eventId, $stageId, $officialSeniorM, 'M'),
+                'F' => $table->getFedoClassesStats($eventId, $stageId, $officialSeniorF, 'F'),
+                'any' => $table->getFedoClassesStats($eventId, $stageId, $officialSenior, ''),
             ],
             'others' => [
                 'M' => $table->getNotClassesStats($eventId, $stageId, $all, 'M'),
