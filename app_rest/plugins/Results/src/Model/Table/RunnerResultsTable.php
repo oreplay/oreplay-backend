@@ -8,6 +8,7 @@ use App\Model\Table\AppTable;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Results\Lib\Consts\StatusCode;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
@@ -29,6 +30,7 @@ class RunnerResultsTable extends AppTable
         RunnersTable::addHasMany($this);
         SplitsTable::addBelongsTo($this)->setSort(SplitsTable::defaultOrder());
         ResultTypesTable::addHasMany($this);
+        ClassesTable::addHasMany($this);
     }
 
     public static function load(): self
@@ -42,6 +44,46 @@ class RunnerResultsTable extends AppTable
     {
         $classCondition = [ClassesTable::field('short_name') . ' not in' => $classNames];
         return $this->_getFedoClassStats($classCondition, $eventId, $stageId, $sex);
+    }
+
+    public function getClassesStats(string $eventId, string $stageId): array
+    {
+        $query = $this->find();
+
+        $query
+            ->select([
+                'class' => 'Classes.short_name',
+                'total' => $query->func()->count('*'),
+
+                'ok' => $query->func()->sum(
+                    "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::OK . "' THEN 1 ELSE 0 END"
+                ),
+                'mp' => $query->func()->sum(
+                    "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::MP . "' THEN 1 ELSE 0 END"
+                ),
+                'dnf' => $query->func()->sum(
+                    "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::DNF . "' THEN 1 ELSE 0 END"
+                ),
+                'ot' => $query->func()->sum(
+                    "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::OT . "' THEN 1 ELSE 0 END"
+                ),
+                'dqf' => $query->func()->sum(
+                    "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::DQF . "' THEN 1 ELSE 0 END"
+                ),
+                'dns' => $query->func()->sum(
+                    "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::DNS . "' THEN 1 ELSE 0 END"
+                ),
+            ])
+            ->where([
+                RunnerResultsTable::field('event_id') => $eventId,
+                RunnerResultsTable::field('stage_id') => $stageId,
+            ])
+            ->contain(['Classes']) // assuming relation RunnerResults.belongsTo('Classes')
+            ->group(['Classes.short_name','Classes.oe_key'])
+            ->order(['CAST(Classes.oe_key AS UNSIGNED)' => 'ASC','Classes.short_name' => 'ASC'])
+            ->enableHydration(false);
+
+        return $query->toArray();
     }
 
     public function getFedoClassesStats(string $eventId, string $stageId, array $classNames, string $sex): array
