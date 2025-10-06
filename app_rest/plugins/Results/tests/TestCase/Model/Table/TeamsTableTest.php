@@ -70,4 +70,18 @@ class TeamsTableTest extends TestCase
         $this->assertEquals('2', $runnerB->leg_number);
         $this->assertEquals(null, $runnerB->_getStage());
     }
+
+    public function testGetMissingLegs()
+    {
+        $runners = [[1], [2], [3]]; // not real structure
+        $results = [
+            [1], // missing
+            ['leg_number' => 2], // existing leg 2
+            [3] // missing
+        ];
+        $res = $this->Teams->getMissingLegs($runners, $results);
+
+        $expected = [1, 3];
+        $this->assertEquals($expected, $res);
+    }
 }

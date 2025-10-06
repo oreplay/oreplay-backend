@@ -831,6 +831,99 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(8, $RunnersTable->find()->all()->count() - $existingRunners);
     }
 
+    public function testAddNew_shouldAddRelayResultsWithEvolution()
+    {
+        Cache::clear();
+        $RunnersTable = RunnersTable::load();
+        $existingRunners = $RunnersTable->find()->all()->count();
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $data = ['oreplay_data_transfer' => RelayExamples::oneTeamLeg2()];
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 1 courses (', $jsonDecoded['meta']['human'][0]);
+        $this->assertEquals(4, $RunnersTable->find()->all()->count() - $existingRunners);
+        $expected = [
+            'classes' => 1,
+            'courses' => 1,
+            'runners' => 5,
+            'splits' => 0,
+            'runnerResults' => 8
+        ];
+        $this->assertEquals($expected, $jsonDecoded['meta']['updated']);
+        /** @var Team $team */
+        $team = TeamsTable::load()->findTeamsInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)->first();
+        $expectedTeamResult1 = [
+            'result_type_id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+            'start_time' => null,
+            'finish_time' => null,
+            'upload_type' => 'res_finish',
+            'time_seconds' => (int) 0,
+            'position' => (int) 0,
+            'status_code' => '0',
+            'is_nc' => false,
+            'contributory' => null,
+            'time_behind' => (int) 0,
+            'time_neutralization' => (int) 0,
+            'time_adjusted' => (int) 0,
+            'time_penalty' => (int) 0,
+            'time_bonus' => (int) 0,
+            'points_final' => '0.0000',
+            'points_adjusted' => '0.0000',
+            'points_penalty' => '0.0000',
+            'points_bonus' => '0.0000',
+            'leg_number' => (int) 4,
+            'note' => null,
+            'splits' => []
+        ];
+        $stage = json_decode(json_encode($team->_getStage()), true);
+        unset($stage['created']);
+        $this->assertEqualsNoId($expectedTeamResult1, $stage);
+        $results1 = TeamResultsTable::load()->find()->where(['team_id' => $team->id])->all();
+        $this->assertEquals(4, $results1->count());
+
+        // second
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $data = ['oreplay_data_transfer' => RelayExamples::oneTeamLeg4()];
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 1 courses (', $jsonDecoded['meta']['human'][0]);
+        $this->assertEquals($expected, $jsonDecoded['meta']['updated']);
+        $this->assertEquals(4, $RunnersTable->find()->all()->count() - $existingRunners);
+        /** @var Team $team */
+        $team = TeamsTable::load()->findTeamsInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)->first();
+        $expectedTeamResult1 = [
+            'result_type_id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+            'start_time' => null,
+            'finish_time' => null,
+            'upload_type' => 'res_finish',
+            'time_seconds' => (int) 4277,
+            'position' => (int) 0,
+            'status_code' => '0',
+            'is_nc' => false,
+            'contributory' => null,
+            'time_behind' => (int) 0,
+            'time_neutralization' => (int) 0,
+            'time_adjusted' => (int) 0,
+            'time_penalty' => (int) 0,
+            'time_bonus' => (int) 0,
+            'points_final' => '0.0000',
+            'points_adjusted' => '0.0000',
+            'points_penalty' => '0.0000',
+            'points_bonus' => '0.0000',
+            'leg_number' => (int) 4,
+            'note' => null,
+            'splits' => []
+        ];
+        $stage = json_decode(json_encode($team->_getStage()), true);
+        unset($stage['created']);
+        $this->assertEqualsNoId($expectedTeamResult1, $stage);
+    }
+
     public function testAddNew_shouldAddRelayResultsWithoutSplitsTwice()
     {
         Cache::clear();

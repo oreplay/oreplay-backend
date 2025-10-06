@@ -227,14 +227,18 @@ class UploadMetrics
         if ($participantCount && !$this->splitCount) {
             if (in_array($type, [UploadTypes::FINISH_TIMES, UploadTypes::INTERMEDIATES, UploadTypes::SPLITS])) {
                 if (!$this->_formatExtraMessage()) {
-                    $humanColor = Color::RED;
-                    $this->setWarning('Uploading results without splits');
+                    if ($this->teamCount > 0) {
+                        $humanColor = Color::ORANGE;
+                        $this->setWarning('Uploading results without splits');
+                    }
                 }
             }
         }
         $extraMessage = $this->_formatExtraMessage();
         if ($extraMessage) {
-            $humanColor = Color::RED;
+            if ($humanColor !== Color::ORANGE) {
+                $humanColor = Color::RED;
+            }
         }
         return [
             'meta' => [

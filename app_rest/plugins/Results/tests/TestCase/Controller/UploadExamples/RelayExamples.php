@@ -832,178 +832,323 @@ class RelayExamples
         ];
     }
 
-    public static function intermediateResults()
+    public static function oneTeamLeg2()
     {
-        $classA = [
+        $runner1finished = [
             'id' => '',
             'uuid' => '',
-            'oe_key' => '1',
-            'short_name' => 'E',
-            'long_name' => 'Elite',
-            'teams' => [],
+            'sicard' => '8580871',
+            'sex' => 'F',
+            'first_name' => 'Ele',
+            'last_name' => 'Cano',
+            'db_id' => '99999909',
+            'sicard_alt' => '',
+            'is_nc' => false,
+            'runner_results' => [
+                (int) 0 => [
+                    'id' => '',
+                    'contributory' => false,
+                    'stage_order' => (int) 1,
+                    'start_time' => '2025-10-05T10:30:00.000+02:00',
+                    'finish_time' => '2025-10-05T10:48:54.000+02:00',
+                    'time_seconds' => (int) 1134,
+                    'status_code' => '0',
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'leg_number' => (int) 1,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'oe_key' => '1',
+                'short_name' => 'ACD',
+                'long_name' => 'ACD'
+            ],
             'course' => [
                 'id' => '',
                 'uuid' => '',
-                'distance' => '5000.0',
-                'climb' => '120.0',
-                'controls' => (int) 4,
+                'distance' => '2075.0',
+                'climb' => '30.0',
+                'controls' => (int) 19,
+                'oe_key' => '9001',
+                'short_name' => '#22 BBB'
+            ]
+        ];
+        $runner2finished = [
+            'id' => '',
+            'uuid' => '',
+            'sicard' => '8580873',
+            'sex' => 'M',
+            'first_name' => 'Javi',
+            'last_name' => 'Carn',
+            'db_id' => '99999913',
+            'sicard_alt' => '',
+            'is_nc' => false,
+            'runner_results' => [
+                (int) 0 => [
+                    'id' => '',
+                    'contributory' => false,
+                    'stage_order' => (int) 1,
+                    'start_time' => '2025-10-05T10:48:54.000+02:00',
+                    'finish_time' => '2025-10-05T11:07:31.000+02:00',
+                    'time_seconds' => (int) 1117,
+                    'status_code' => '0',
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'leg_number' => (int) 2,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'club' => [
+                'id' => '',
+                'uuid' => '',
                 'oe_key' => '1',
-                'short_name' => 'R1'
+                'short_name' => 'ACD',
+                'long_name' => 'ACD'
             ],
-            'classes_controls' => [
+            'course' => [
+                'id' => '',
+                'uuid' => '',
+                'distance' => '2125.0',
+                'climb' => '30.0',
+                'controls' => (int) 19,
+                'oe_key' => '9001',
+                'short_name' => '#43 CCC'
+            ]
+        ];
+        $runner3 = [
+            'id' => '',
+            'uuid' => '',
+            'sicard' => '8580875',
+            'sex' => 'M',
+            'first_name' => 'Dani',
+            'last_name' => 'Torres',
+            'db_id' => '99999912',
+            'sicard_alt' => '',
+            'is_nc' => false,
+            'runner_results' => [
                 (int) 0 => [
-                    'control' => [
-                        'station' => '32'
-                    ]
-                ],
-                (int) 1 => [
-                    'control' => [
-                        'station' => '100'
+                    'id' => '',
+                    'contributory' => false,
+                    'stage_order' => (int) 1,
+                    'start_time' => '2025-10-05T11:07:31.000+02:00',
+                    'status_code' => '0',
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'leg_number' => (int) 3,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
                     ]
                 ]
             ],
-            'runners' => [
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'oe_key' => '1',
+                'short_name' => 'ACD',
+                'long_name' => 'ACD'
+            ],
+            'course' => [
+                'id' => '',
+                'uuid' => '',
+                'distance' => '2150.0',
+                'climb' => '30.0',
+                'controls' => (int) 19,
+                'oe_key' => '9001',
+                'short_name' => '#64 DDD'
+            ]
+        ];
+        $runner4 = [
+            'id' => '',
+            'uuid' => '',
+            'sicard' => '8580869',
+            'sex' => 'F',
+            'first_name' => 'Lu',
+            'last_name' => 'Martin',
+            'db_id' => '99999910',
+            'sicard_alt' => '',
+            'is_nc' => false,
+            'runner_results' => [
                 (int) 0 => [
                     'id' => '',
-                    'uuid' => '',
-                    'sicard' => '8000001',
-                    'sex' => 'M',
-                    'first_name' => 'Javier',
-                    'last_name' => 'Arufe Varela',
-                    'bib_number' => '1',
-                    'runner_results' => [
-                        (int) 0 => [
-                            'id' => '',
-                            'start_time' => '2024-01-16T10:30:00.000+01:00',
-                            'status_code' => StatusCode::OK,
-                            'time_neutralization' => (int) 0,
-                            'time_adjusted' => (int) 0,
-                            'time_penalty' => (int) 0,
-                            'time_bonus' => (int) 0,
-                            'leg_number' => (int) 1,
-                            'splits' => [
-                                (int) 0 => [
-                                    'sicard' => '8000001',
-                                    'station' => '32',
-                                    'points' => (int) 0,
-                                    'reading_time' => '2024-01-16T10:56:47.000+01:00',
-                                    'reading_milli' => (int) 1705399007000,
-                                    'time_seconds' => (int) 1607,
-                                    'bib_runner' => '1',
-                                    'order_number' => (int) 1
-                                ],
-                                (int) 1 => [
-                                    'sicard' => '8000001',
-                                    'station' => '100',
-                                    'points' => (int) 0,
-                                    'bib_runner' => '1',
-                                    'order_number' => (int) 2
-                                ]
-                            ],
-                            'result_type' => [
-                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
-                                'description' => 'Stage'
-                            ]
-                        ]
-                    ],
-                    'club' => [
-                        'id' => '',
-                        'uuid' => '',
-                        'oe_key' => '1',
-                        'short_name' => 'A Coruña LICEO',
-                        'long_name' => 'A Coruña LICEO'
-                    ]
-                ],
-                (int) 1 => [
-                    'id' => '',
-                    'uuid' => '',
-                    'sicard' => '8000002',
-                    'sex' => 'M',
-                    'first_name' => 'Natalia',
-                    'last_name' => 'Pedre Fernández',
-                    'bib_number' => '2',
-                    'runner_results' => [
-                        (int) 0 => [
-                            'id' => '',
-                            'start_time' => '2024-01-16T10:40:00.000+01:00',
-                            'status_code' => StatusCode::OK,
-                            'time_neutralization' => (int) 0,
-                            'time_adjusted' => (int) 0,
-                            'time_penalty' => (int) 0,
-                            'time_bonus' => (int) 0,
-                            'leg_number' => (int) 1,
-                            'splits' => [
-                                (int) 0 => [
-                                    'sicard' => '8000002',
-                                    'station' => '32',
-                                    'points' => (int) 0,
-                                    'reading_time' => '2024-01-16T10:59:54.000+01:00',
-                                    'reading_milli' => (int) 1705399194000,
-                                    'time_seconds' => (int) 1194,
-                                    'bib_runner' => '2',
-                                    'order_number' => (int) 1
-                                ],
-                                (int) 1 => [
-                                    'sicard' => '8000002',
-                                    'station' => '100',
-                                    'points' => (int) 0,
-                                    'bib_runner' => '2',
-                                    'order_number' => (int) 2
-                                ]
-                            ],
-                            'result_type' => [
-                                'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
-                                'description' => 'Stage'
-                            ]
-                        ]
-                    ],
-                    'club' => [
-                        'id' => '',
-                        'uuid' => '',
-                        'oe_key' => '1',
-                        'short_name' => 'A Coruña LICEO',
-                        'long_name' => 'A Coruña LICEO'
+                    'contributory' => false,
+                    'stage_order' => (int) 1,
+                    'status_code' => '0',
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'leg_number' => (int) 4,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
                     ]
                 ]
+            ],
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'oe_key' => '1',
+                'short_name' => 'ACD',
+                'long_name' => 'ACD'
+            ],
+            'course' => [
+                'id' => '',
+                'uuid' => '',
+                'distance' => '2075.0',
+                'climb' => '30.0',
+                'controls' => (int) 19,
+                'oe_key' => '9001',
+                'short_name' => '#1 AAA'
             ]
         ];
         return [
             'configuration' => [
-                'file' => '/OReplayExamples/OE12_SimplestTest_03_Intermediate.xml',
+                'file' => 'tmp/04_20251005_111937098_posta3.xml',
                 'extension' => 'XML',
                 'utf' => true,
                 'known_data' => true,
                 'contents' => 'ResultList',
-                'results_type' => 'Radiocontrols',
+                'results_type' => 'Totals',
                 'one_stage' => true,
-                'source' => 'OEv12',
+                'source' => 'OSv12',
                 'iof_version' => '3.0',
                 'include_score' => false,
                 'trailo_type' => 'Other',
                 'trailo_at' => 'Other',
                 'trailo_normal' => '0',
-                'trailo_group' => '0'
+                'trailo_group' => '0',
+                'totalization' => 'Other'
             ],
             'event' => [
                 'id' => Event::FIRST_EVENT,
-                'description' => 'Test_Event',
+                'description' => 'relevo inter',
                 'is_hidden' => false,
                 'stages' => [
-                    [
+                    (int) 0 => [
                         'id' => StagesFixture::STAGE_FEDO_2,
-                        'description' => 'iterim1',
-                        'base_date' => '2024-01-16',
+                        'description' => '04_20251005_111937098_posta3',
+                        'base_date' => '2025-10-05',
                         'base_time' => '10:30:00.000+01:00',
-                        'controls' => [
-                            (int) 0 => [
-                                'station' => '32'
-                            ],
-                            (int) 1 => [
-                                'station' => '100'
-                            ]
-                        ],
+                        'order_number' => (int) 1,
                         'classes' => [
-                            $classA,
+                            (int) 0 => [
+                                'id' => '',
+                                'uuid' => '',
+                                'oe_key' => '10',
+                                'short_name' => 'Relevo',
+                                'long_name' => 'Relevo',
+                                'teams' => [
+                                    (int) 0 => [
+                                        'id' => '',
+                                        'uuid' => '',
+                                        'bib_number' => '4',
+                                        'team_name' => 'ACD ACD',
+                                        'club' => [
+                                            'id' => '',
+                                            'uuid' => '',
+                                            'oe_key' => '1',
+                                            'short_name' => 'ACD',
+                                            'long_name' => 'ACD'
+                                        ],
+                                        'team_results' => [
+                                            (int) 0 => [
+                                                'id' => '',
+                                                'position' => (int) 2,
+                                                'contributory' => true,
+                                                'stage_order' => (int) 1,
+                                                'time_seconds' => (int) 1134,
+                                                'status_code' => '0',
+                                                'time_behind' => (int) 19,
+                                                'time_neutralization' => (int) 0,
+                                                'time_adjusted' => (int) 0,
+                                                'time_penalty' => (int) 0,
+                                                'time_bonus' => (int) 0,
+                                                'leg_number' => (int) 1, // $runner1finished
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ],
+                                            (int) 1 => [
+                                                'id' => '',
+                                                'contributory' => true,
+                                                'stage_order' => (int) 1,
+                                                'time_seconds' => (int) 2251,
+                                                'status_code' => '0',
+                                                'time_neutralization' => (int) 0,
+                                                'time_adjusted' => (int) 0,
+                                                'time_penalty' => (int) 0,
+                                                'time_bonus' => (int) 0,
+                                                'leg_number' => (int) 2, // $runner2finished
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ],
+                                            (int) 2 => [ // $runner3
+                                                'id' => '',
+                                                'contributory' => true,
+                                                'stage_order' => (int) 1,
+                                                'status_code' => '0',
+                                                'time_neutralization' => (int) 0,
+                                                'time_adjusted' => (int) 0,
+                                                'time_penalty' => (int) 0,
+                                                'time_bonus' => (int) 0,
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ],
+                                            (int) 3 => [ // $runner4
+                                                'id' => '',
+                                                'contributory' => true,
+                                                'stage_order' => (int) 1,
+                                                'status_code' => '0',
+                                                'time_neutralization' => (int) 0,
+                                                'time_adjusted' => (int) 0,
+                                                'time_penalty' => (int) 0,
+                                                'time_bonus' => (int) 0,
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ]
+                                        ],
+                                        'runners' => [
+                                            $runner1finished,
+                                            $runner2finished,
+                                            $runner3,
+                                            $runner4
+                                        ]
+                                    ]
+                                ],
+                                'course' => [
+                                    'id' => '',
+                                    'uuid' => '',
+                                    'distance' => '2075.0',
+                                    'climb' => '30.0',
+                                    'controls' => (int) 19,
+                                    'oe_key' => '9001',
+                                    'short_name' => '#1 AAA'
+                                ],
+                                'runners' => []
+                            ]
                         ]
                     ]
                 ]
@@ -1011,94 +1156,275 @@ class RelayExamples
         ];
     }
 
-    public static function simpleTotalPoints($timeSeconds = 2931)
+    public static function oneTeamLeg4()
     {
+        $runner1finished = [
+            'id' => '',
+            'uuid' => '',
+            'sicard' => '8580871',
+            'sex' => 'F',
+            'first_name' => 'Ele',
+            'last_name' => 'Cano',
+            'db_id' => '99999909',
+            'sicard_alt' => '',
+            'is_nc' => false,
+            'runner_results' => [
+                (int) 0 => [
+                    'id' => '',
+                    'contributory' => false,
+                    'stage_order' => (int) 1,
+                    'start_time' => '2025-10-05T10:30:00.000+02:00',
+                    'finish_time' => '2025-10-05T10:48:54.000+02:00',
+                    'time_seconds' => (int) 1134,
+                    'status_code' => '0',
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'leg_number' => (int) 1,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'oe_key' => '1',
+                'short_name' => 'ACD',
+                'long_name' => 'ACD'
+            ],
+            'course' => [
+                'id' => '',
+                'uuid' => '',
+                'distance' => '2075.0',
+                'climb' => '30.0',
+                'controls' => (int) 19,
+                'oe_key' => '9001',
+                'short_name' => '#22 BBB'
+            ]
+        ];
+        $runner2finished = [
+            'id' => '',
+            'uuid' => '',
+            'sicard' => '8580873',
+            'sex' => 'M',
+            'first_name' => 'Javi',
+            'last_name' => 'Carn',
+            'db_id' => '99999913',
+            'sicard_alt' => '',
+            'is_nc' => false,
+            'runner_results' => [
+                (int) 0 => [
+                    'id' => '',
+                    'contributory' => false,
+                    'stage_order' => (int) 1,
+                    'start_time' => '2025-10-05T10:48:54.000+02:00',
+                    'finish_time' => '2025-10-05T11:07:31.000+02:00',
+                    'time_seconds' => (int) 1117,
+                    'status_code' => '0',
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'leg_number' => (int) 2,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'oe_key' => '1',
+                'short_name' => 'ACD',
+                'long_name' => 'ACD'
+            ],
+            'course' => [
+                'id' => '',
+                'uuid' => '',
+                'distance' => '2125.0',
+                'climb' => '30.0',
+                'controls' => (int) 19,
+                'oe_key' => '9001',
+                'short_name' => '#43 CCC'
+            ]
+        ];
+        $runner3finished = [
+            'id' => '',
+            'uuid' => '',
+            'sicard' => '8580875',
+            'sex' => 'M',
+            'first_name' => 'Dani',
+            'last_name' => 'Torres',
+            'db_id' => '99999912',
+            'sicard_alt' => '',
+            'is_nc' => false,
+            'runner_results' => [
+                (int) 0 => [
+                    'id' => '',
+                    'contributory' => false,
+                    'stage_order' => (int) 1,
+                    'start_time' => '2025-10-05T11:07:31.000+02:00',
+                    'finish_time' => '2025-10-05T11:22:56.000+02:00',
+                    'time_seconds' => (int) 925,
+                    'status_code' => '0',
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'leg_number' => (int) 3,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'oe_key' => '1',
+                'short_name' => 'ACD',
+                'long_name' => 'ACD'
+            ],
+            'course' => [
+                'id' => '',
+                'uuid' => '',
+                'distance' => '2150.0',
+                'climb' => '30.0',
+                'controls' => (int) 19,
+                'oe_key' => '9001',
+                'short_name' => '#64 DDD'
+            ]
+        ];
+        $runner4finished = [
+            'id' => '',
+            'uuid' => '',
+            'sicard' => '8580869',
+            'sex' => 'F',
+            'first_name' => 'Lu',
+            'last_name' => 'Martin',
+            'db_id' => '99999910',
+            'sicard_alt' => '',
+            'is_nc' => false,
+            'runner_results' => [
+                (int) 0 => [
+                    'id' => '',
+                    'contributory' => false,
+                    'stage_order' => (int) 1,
+                    'start_time' => '2025-10-05T11:22:56.000+02:00',
+                    'finish_time' => '2025-10-05T11:41:17.000+02:00',
+                    'time_seconds' => (int) 1101,
+                    'status_code' => '0',
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'leg_number' => (int) 4,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'oe_key' => '1',
+                'short_name' => 'ACD',
+                'long_name' => 'ACD'
+            ],
+            'course' => [
+                'id' => '',
+                'uuid' => '',
+                'distance' => '2075.0',
+                'climb' => '30.0',
+                'controls' => (int) 19,
+                'oe_key' => '9001',
+                'short_name' => '#1 AAA'
+            ]
+        ];
         return [
             'configuration' => [
-                'cSeparator' => ';',
-                'cEncoding' => 'ISO-8859-1',
-                'file' => '/OReplayExamples/12totalizadores/tmp/TOTALES.csv',
-                'extension' => 'CSV',
-                'utf' => false,
+                'file' => 'tmp/14_20251005_114519726_posta2.xml',
+                'extension' => 'XML',
+                'utf' => true,
                 'known_data' => true,
                 'contents' => 'ResultList',
                 'results_type' => 'Totals',
-                'one_stage' => false,
-                'source' => 'OEv12',
-                'iof_version' => 'Other',
+                'one_stage' => true,
+                'source' => 'OSv12',
+                'iof_version' => '3.0',
                 'include_score' => false,
                 'trailo_type' => 'Other',
                 'trailo_at' => 'Other',
                 'trailo_normal' => '0',
                 'trailo_group' => '0',
-                'totalization' => 'TotalizationPoints'
+                'totalization' => 'Other'
             ],
             'event' => [
                 'id' => Event::FIRST_EVENT,
-                'description' => 'Totals',
+                'description' => 'relevo inter',
                 'is_hidden' => false,
                 'stages' => [
                     (int) 0 => [
                         'id' => StagesFixture::STAGE_FEDO_2,
-                        'description' => 'puntos',
+                        'description' => '14_20251005_114519726_posta2',
+                        'base_date' => '2025-10-05',
+                        'base_time' => '10:30:00.000+01:00',
+                        'order_number' => (int) 1,
                         'classes' => [
                             (int) 0 => [
                                 'id' => '',
                                 'uuid' => '',
-                                'oe_key' => '14',
-                                'short_name' => 'F-E',
-                                'long_name' => 'F-E',
-                                'runners' => [
+                                'oe_key' => '10',
+                                'short_name' => 'Relevo',
+                                'long_name' => 'Relevo',
+                                'teams' => [
                                     (int) 0 => [
                                         'id' => '',
                                         'uuid' => '',
-                                        'sicard' => '8653333',
-                                        'sex' => 'F',
-                                        'email' => '',
-                                        'first_name' => 'Nerea',
-                                        'last_name' => 'Pita',
-                                        'db_id' => '8331',
-                                        'iof_id' => '33642',
                                         'bib_number' => '4',
-                                        'bib_alt' => '2876',
-                                        'sicard_alt' => '',
-                                        'runner_results' => [
+                                        'team_name' => 'ACD ACD',
+                                        'club' => [
+                                            'id' => '',
+                                            'uuid' => '',
+                                            'oe_key' => '1',
+                                            'short_name' => 'ACD',
+                                            'long_name' => 'ACD'
+                                        ],
+                                        'team_results' => [
                                             (int) 0 => [
                                                 'id' => '',
-                                                'position' => (int) 1,
+                                                'contributory' => true,
                                                 'stage_order' => (int) 1,
-                                                'time_seconds' => (int) $timeSeconds,
-                                                'time_behind' => (int) 140,
+                                                'time_seconds' => (int) 1134,
+                                                'status_code' => '0',
                                                 'time_neutralization' => (int) 0,
                                                 'time_adjusted' => (int) 0,
                                                 'time_penalty' => (int) 0,
                                                 'time_bonus' => (int) 0,
-                                                'points_final' => (int) 1856,
-                                                'points_adjusted' => (int) 0,
-                                                'points_penalty' => (int) 0,
-                                                'points_bonus' => (int) 0,
                                                 'leg_number' => (int) 1,
                                                 'result_type' => [
-                                                    'id' => '5542d38b-8bd3-40f4-913d-2c38048a0b04',
-                                                    'description' => 'Overall'
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
                                                 ]
                                             ],
                                             (int) 1 => [
                                                 'id' => '',
-                                                'position' => (int) 4,
+                                                'position' => (int) 2,
+                                                'contributory' => true,
                                                 'stage_order' => (int) 1,
-                                                'time_seconds' => (int) 2083,
+                                                'time_seconds' => (int) 2251,
                                                 'status_code' => '0',
-                                                'time_behind' => (int) 275,
+                                                'time_behind' => (int) 318,
                                                 'time_neutralization' => (int) 0,
                                                 'time_adjusted' => (int) 0,
                                                 'time_penalty' => (int) 0,
                                                 'time_bonus' => (int) 0,
-                                                'points_final' => (int) 868,
-                                                'points_adjusted' => (int) 0,
-                                                'points_penalty' => (int) 0,
-                                                'points_bonus' => (int) 0,
-                                                'leg_number' => (int) 1,
+                                                'leg_number' => (int) 2,
                                                 'result_type' => [
                                                     'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
                                                     'description' => 'Stage'
@@ -1106,122 +1432,55 @@ class RelayExamples
                                             ],
                                             (int) 2 => [
                                                 'id' => '',
-                                                'position' => (int) 2,
-                                                'stage_order' => (int) 2,
-                                                'time_seconds' => (int) 848,
+                                                'contributory' => true,
+                                                'stage_order' => (int) 1,
+                                                'time_seconds' => (int) 3176,
                                                 'status_code' => '0',
-                                                'time_behind' => (int) 10,
                                                 'time_neutralization' => (int) 0,
                                                 'time_adjusted' => (int) 0,
                                                 'time_penalty' => (int) 0,
                                                 'time_bonus' => (int) 0,
-                                                'points_final' => (int) 988,
-                                                'points_adjusted' => (int) 0,
-                                                'points_penalty' => (int) 0,
-                                                'points_bonus' => (int) 0,
-                                                'leg_number' => (int) 1,
+                                                'leg_number' => (int) 3,
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ],
+                                            (int) 3 => [
+                                                'id' => '',
+                                                'contributory' => true,
+                                                'stage_order' => (int) 1,
+                                                'time_seconds' => (int) 4277,
+                                                'status_code' => '0',
+                                                'time_neutralization' => (int) 0,
+                                                'time_adjusted' => (int) 0,
+                                                'time_penalty' => (int) 0,
+                                                'time_bonus' => (int) 0,
+                                                'leg_number' => (int) 4,
                                                 'result_type' => [
                                                     'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
                                                     'description' => 'Stage'
                                                 ]
                                             ]
                                         ],
-                                        'club' => [
-                                            'id' => '',
-                                            'uuid' => '',
-                                            'city' => 'Toledo',
-                                            'oe_key' => '68',
-                                            'short_name' => 'TOLEDO-O',
-                                            'long_name' => 'TOLEDO-O'
-                                        ]
-                                    ],
-                                    (int) 1 => [
-                                        'id' => '',
-                                        'uuid' => '',
-                                        'sicard' => '8650888',
-                                        'sex' => 'F',
-                                        'email' => '',
-                                        'first_name' => 'Marta',
-                                        'last_name' => 'Alonso',
-                                        'db_id' => '3501',
-                                        'iof_id' => '20222',
-                                        'bib_number' => '6',
-                                        'bib_alt' => '3981',
-                                        'sicard_alt' => '',
-                                        'runner_results' => [
-                                            (int) 0 => [
-                                                'id' => '',
-                                                'position' => (int) 2,
-                                                'stage_order' => (int) 1,
-                                                'time_seconds' => (int) 2791,
-                                                'time_behind' => (int) 0,
-                                                'time_neutralization' => (int) 0,
-                                                'time_adjusted' => (int) 0,
-                                                'time_penalty' => (int) 0,
-                                                'time_bonus' => (int) 0,
-                                                'points_final' => (int) 1852,
-                                                'points_adjusted' => (int) 0,
-                                                'points_penalty' => (int) 0,
-                                                'points_bonus' => (int) 0,
-                                                'leg_number' => (int) 1,
-                                                'result_type' => [
-                                                    'id' => '5542d38b-8bd3-40f4-913d-2c38048a0b04',
-                                                    'description' => 'Overall'
-                                                ]
-                                            ],
-                                            (int) 1 => [
-                                                'id' => '',
-                                                'position' => (int) 1,
-                                                'stage_order' => (int) 1,
-                                                'time_seconds' => (int) 1808,
-                                                'status_code' => '0',
-                                                'time_behind' => (int) 0,
-                                                'time_neutralization' => (int) 0,
-                                                'time_adjusted' => (int) 0,
-                                                'time_penalty' => (int) 0,
-                                                'time_bonus' => (int) 0,
-                                                'points_final' => (int) 1000,
-                                                'points_adjusted' => (int) 0,
-                                                'points_penalty' => (int) 0,
-                                                'points_bonus' => (int) 0,
-                                                'leg_number' => (int) 1,
-                                                'result_type' => [
-                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
-                                                    'description' => 'Stage'
-                                                ]
-                                            ],
-                                            (int) 2 => [
-                                                'id' => '',
-                                                'position' => (int) 5,
-                                                'stage_order' => (int) 2,
-                                                'time_seconds' => (int) 983,
-                                                'status_code' => '0',
-                                                'time_behind' => (int) 145,
-                                                'time_neutralization' => (int) 0,
-                                                'time_adjusted' => (int) 0,
-                                                'time_penalty' => (int) 0,
-                                                'time_bonus' => (int) 0,
-                                                'points_final' => (int) 852,
-                                                'points_adjusted' => (int) 0,
-                                                'points_penalty' => (int) 0,
-                                                'points_bonus' => (int) 0,
-                                                'leg_number' => (int) 1,
-                                                'result_type' => [
-                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
-                                                    'description' => 'Stage'
-                                                ]
-                                            ]
-                                        ],
-                                        'club' => [
-                                            'id' => '',
-                                            'uuid' => '',
-                                            'city' => 'Cáceres',
-                                            'oe_key' => '117',
-                                            'short_name' => 'VIA_PLATA',
-                                            'long_name' => 'VIA_PLATA'
+                                        'runners' => [
+                                            $runner1finished,
+                                            $runner2finished,
+                                            $runner3finished,
+                                            $runner4finished,
                                         ]
                                     ]
-                                ]
+                                ],
+                                'course' => [
+                                    'id' => '',
+                                    'uuid' => '',
+                                    'distance' => '2075.0',
+                                    'climb' => '30.0',
+                                    'controls' => (int) 19,
+                                    'oe_key' => '9001',
+                                    'short_name' => '#1 AAA'
+                                ],
+                                'runners' => []
                             ]
                         ]
                     ]

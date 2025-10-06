@@ -93,6 +93,29 @@ class TeamsTable extends AppTable
         return $team;
     }
 
+    public function getMissingLegs(mixed $runners, mixed $results): array
+    {
+        $totalResults = count($runners);
+        $hasSameRunnersAsResults = count($runners) && $totalResults;
+        if (!$hasSameRunnersAsResults) {
+            return [];
+        }
+        $legs = [];
+        foreach ($results as $current) {
+            $currentLeg = $current['leg_number'] ?? null;
+            if ($currentLeg) {
+                $legs[$currentLeg] = $currentLeg;
+            }
+        }
+        $missingLegs = [];
+        for ($i = 1; $i <= $totalResults; $i++) {
+            if (!isset($legs[$i])) {
+                $missingLegs[] = $i;
+            }
+        }
+        return $missingLegs;
+    }
+
     public function createTeamWithResults(array $teamData, ClassEntity $class, UploadHelper $helper): Team
     {
         $helper->getMetrics()->startClubsTime();
@@ -103,11 +126,19 @@ class TeamsTable extends AppTable
         if (!$results) {
             $helper->getMetrics()->setWarning('Team without team_results');
         }
+        $runners = $teamData['runners'] ?? [];
+        $missingLegs = $this->getMissingLegs($runners, $results);
         foreach ($results as $resultData) {
+            $isRelayLegNotFinished = $missingLegs
+                && !($resultData['time_seconds'] ?? null)
+                && !($resultData['points_final'] ?? null)
+                && !($resultData['leg_number'] ?? null);
+            if ($isRelayLegNotFinished) {
+                $resultData['leg_number'] = array_pop($missingLegs);
+            }
             $helper->getMetrics()->addOneTeamResultToCounter();
             $team = $this->TeamResults->createTeamResult($resultData, $team, $helper);
         }
-        $runners = $teamData['runners'] ?? [];
         if (!$runners) {
             $helper->getMetrics()->setWarning('Team without runners ' . $teamData['team_name'] ?? '');
         }
