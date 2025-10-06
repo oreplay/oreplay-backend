@@ -33,7 +33,7 @@ class FedoStatsControllerTest extends ApiCommonErrorsTest
     protected function _getEndpoint(): string
     {
         return ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/stages/'
-            . Stage::FIRST_STAGE . '/stats/';
+            . Stage::FIRST_STAGE . '/stats-fedo/';
     }
 
     public function testGetList()

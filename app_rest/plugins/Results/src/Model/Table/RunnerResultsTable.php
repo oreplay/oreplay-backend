@@ -46,6 +46,11 @@ class RunnerResultsTable extends AppTable
         return $this->_getFedoClassStats($classCondition, $eventId, $stageId, $sex);
     }
 
+    private function _caseWhenStatusCode(string $code): string
+    {
+        return 'CASE WHEN ' . RunnerResultsTable::field('status_code') . " = '" . $code . "' THEN 1 ELSE 0 END";
+    }
+
     public function getClassesStats(string $eventId, string $stageId): array
     {
         $query = $this->find();
@@ -56,22 +61,22 @@ class RunnerResultsTable extends AppTable
                 'total' => $query->func()->count('*'),
 
                 'ok' => $query->func()->sum(
-                    "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::OK . "' THEN 1 ELSE 0 END"
+                    $this->_caseWhenStatusCode(StatusCode::OK)
                 ),
                 'mp' => $query->func()->sum(
-                    "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::MP . "' THEN 1 ELSE 0 END"
+                    $this->_caseWhenStatusCode(StatusCode::MP)
                 ),
                 'dnf' => $query->func()->sum(
-                    "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::DNF . "' THEN 1 ELSE 0 END"
+                    $this->_caseWhenStatusCode(StatusCode::DNF)
                 ),
                 'ot' => $query->func()->sum(
-                    "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::OT . "' THEN 1 ELSE 0 END"
+                    $this->_caseWhenStatusCode(StatusCode::OT)
                 ),
                 'dsq' => $query->func()->sum(
-                    "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::DQF . "' THEN 1 ELSE 0 END"
+                    $this->_caseWhenStatusCode(StatusCode::DQF)
                 ),
                 'dns' => $query->func()->sum(
-                    "CASE WHEN " . RunnerResultsTable::field('status_code') . " = '" . StatusCode::DNS . "' THEN 1 ELSE 0 END"
+                    $this->_caseWhenStatusCode(StatusCode::DNS)
                 ),
                 'bestTime' => $query->func()->min(
                     "CASE WHEN " . RunnerResultsTable::field('time_seconds') . " > 0 THEN "
@@ -97,11 +102,11 @@ class RunnerResultsTable extends AppTable
         return $this->_getFedoClassStats($classCondition, $eventId, $stageId, $sex);
     }
 
-    public function _getFedoClassStats(array $classCondition, string $eventId, string $stageId, string $sex = null): array
+    public function _getFedoClassStats(array $classCondition, string $eId, string $stageId, string $sex = null): array
     {
         $query = $this->find()
             ->where([
-                RunnerResultsTable::field('event_id') => $eventId,
+                RunnerResultsTable::field('event_id') => $eId,
                 RunnerResultsTable::field('stage_id') => $stageId,
             ])
             ->matching(RunnersTable::name() . '.' . ClassesTable::name(), function ($q) use ($classCondition) {
