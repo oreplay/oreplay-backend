@@ -46,6 +46,7 @@ class ProxyFrontendController extends ApiController
 
     private function _getFallbackHtml(string $description, string $html = ''): string
     {
+        $version = SwaggerJsonController::version();
         $url = $this->_getFrontDomain();
         return '<!doctype html>
             <html lang="en" translate="no">
@@ -83,6 +84,8 @@ class ProxyFrontendController extends ApiController
                 />
                 <meta data-hid="og:type" property="og:type" content="website" />
                 <title>O-Replay</title>
+                <script>console.log("SSR v' . $version . '")</script>
+                <script>window._ssr="' . $version . '"</script>
                 <script type="module" crossorigin src="' . $url . '/assets/index-CTkAvaXf.js"></script>
               </head>
               <body style="margin: 0; height: 100vh">
