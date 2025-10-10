@@ -17,6 +17,7 @@ use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Split;
+use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageType;
 use Results\Model\Entity\Team;
 use Results\Model\Table\AnswersTable;
@@ -642,7 +643,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'runnerResults' => 2,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 2 classes, 2 courses (', $human);
+        $this->assertStringContainsString('Updated 2 classes, 2 courses (', $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -1071,6 +1072,100 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->_assertNewOptionalTables(0, 0, 0, 0);
         $this->_assertNewBasicTables(2, 1, 1, 2, 6);
         $this->_assertNewResultsTables(0, 0);
+    }
+
+    public function testAddNew_shouldAddTotalsIn2Stages()
+    {
+        Cache::clear();
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $data = ['oreplay_data_transfer' => TotalsExamples::stage1RealTotalPoints()];
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
+        $expectedMeta = [
+            'classes' => 1,
+            'runners' => 1,
+            'courses' => 1,
+            'splits' => 0,
+            'runnerResults' => 2,
+        ];
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
+        $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 1 courses (0', $human);
+        /** @var Stage $stage */
+        $stage = StagesTable::load()->find()
+            ->where(['stage_type_id' => StageType::TOTALS])->orderDesc('created')->first();
+        $this->assertEquals('', $stage->description);
+        $runners = RunnersTable::load()
+            ->findRunnersInStage(Event::FIRST_EVENT, $stage->id)
+            ->orderDesc('first_name')->toArray();
+        $results = json_decode(json_encode($runners), true);
+        $this->assertEquals('Paco Fernandez', $results[0]['full_name']);
+        $this->assertEquals(1000, $results[0]['overalls']['overall']['points_final']);
+        $this->assertEquals(2053, $results[0]['overalls']['overall']['time_seconds']);
+        $this->assertEquals(1, $results[0]['overalls']['overall']['position']);
+        $this->assertEquals(1, count($results[0]['overalls']['parts']));
+        $this->assertEquals(1000, $results[0]['overalls']['parts'][0]['points_final']);
+        $this->assertEquals(2053, $results[0]['overalls']['parts'][0]['time_seconds']);
+        $this->assertEquals(1, $results[0]['overalls']['parts'][0]['position']);
+        $this->assertEquals(1, $results[0]['overalls']['parts'][0]['stage_order']);
+        // runner 2
+        //$this->assertEquals('Elmar Martinez', $results[1]['full_name']);
+        //$this->assertEquals(960, $results[1]['overalls']['overall']['points_final']);
+        //$this->assertEquals(2138, $results[1]['overalls']['overall']['time_seconds']);
+        //$this->assertEquals(2, $results[1]['overalls']['overall']['position']);
+        //$this->assertEquals(1, count($results[1]['overalls']['parts']));
+        //$this->assertEquals(960, $results[1]['overalls']['parts'][0]['points_final']);
+        //$this->assertEquals(2138, $results[1]['overalls']['parts'][0]['time_seconds']);
+        //$this->assertEquals(2, $results[1]['overalls']['parts'][0]['position']);
+        //$this->assertEquals(1, $results[1]['overalls']['parts'][0]['stage_order']);
+
+        // upload second stage
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $dataTransfer = TotalsExamples::stage2RealTotalPoints();
+        $data = ['oreplay_data_transfer' => $dataTransfer];
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
+        $expectedMeta = [
+            'classes' => 1,
+            'runners' => 1,
+            'courses' => 1,
+            'splits' => 0,
+            'runnerResults' => 3,
+        ];
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
+        $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 1 courses (0', $human);
+        /** @var Stage $stage */
+        $stage = StagesTable::load()->find()
+            ->where(['stage_type_id' => StageType::TOTALS])->orderDesc('created')->first();
+        $this->assertEquals('', $stage->description);
+        $runners = RunnersTable::load()
+            ->findRunnersInStage(Event::FIRST_EVENT, $stage->id)
+            ->orderDesc('first_name')->toArray();
+        $results = json_decode(json_encode($runners), true);
+        $this->assertEquals('Paco Fernandez', $results[0]['full_name']);
+        $this->assertEquals(2000, $results[0]['overalls']['overall']['points_final']);
+        $this->assertEquals(2937, $results[0]['overalls']['overall']['time_seconds']);
+        $this->assertEquals(1, $results[0]['overalls']['overall']['position']);
+        $this->assertEquals(1, $results[0]['overalls']['overall']['stage_order']);
+        $this->assertEquals(2, count($results[0]['overalls']['parts']));
+        $this->assertEquals(1000, $results[0]['overalls']['parts'][0]['points_final']);
+        $this->assertEquals(2053, $results[0]['overalls']['parts'][0]['time_seconds']);
+        $this->assertEquals(1, $results[0]['overalls']['parts'][0]['position']);
+        $this->assertEquals(1, $results[0]['overalls']['parts'][0]['stage_order']);
+        $this->assertEquals(1000, $results[0]['overalls']['parts'][1]['points_final']);
+        $this->assertEquals(884, $results[0]['overalls']['parts'][1]['time_seconds']);
+        $this->assertEquals(1, $results[0]['overalls']['parts'][1]['position']);
+        $this->assertEquals(2, $results[0]['overalls']['parts'][1]['stage_order']);
+        $resultsPaco = RunnerResultsTable::load()->find()->where(['runner_id' => $results[0]['id']])->all();
+        $this->assertEquals($expectedMeta['runnerResults'], count($resultsPaco), 'Amount of results for Paco');
     }
 
     public function testAddNew_shouldAddSplitsAndLaterIntermediatesWithRadios()

@@ -226,4 +226,438 @@ class TotalsExamples
             ]
         ];
     }
+
+    public static function stage1RealTotalPoints(): array
+    {
+        $runner1 = [
+            'id' => '',
+            'uuid' => '',
+            'sicard' => '8664000',
+            'sex' => 'M',
+            'telephone1' => '',
+            'telephone2' => '',
+            'email' => '',
+            'first_name' => 'Paco',
+            'last_name' => 'Fernandez',
+            'db_id' => '11600',
+            'iof_id' => '',
+            'bib_number' => '2800',
+            'bib_alt' => '',
+            'sicard_alt' => '',
+            'is_nc' => false,
+            'runner_results' => [
+                (int) 0 => [
+                    'id' => '',
+                    'position' => (int) 1,
+                    'contributory' => false,
+                    'stage_order' => (int) 1,
+                    'time_seconds' => (int) 2053,
+                    'time_behind' => (int) 0,
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'points_final' => (int) 1000,
+                    'points_adjusted' => (int) 0,
+                    'points_penalty' => (int) 0,
+                    'points_bonus' => (int) 0,
+                    'leg_number' => (int) 1,
+                    'result_type' => [
+                        'id' => '5542d38b-8bd3-40f4-913d-2c38048a0b04',
+                        'description' => 'Overall'
+                    ]
+                ],
+                (int) 1 => [
+                    'id' => '',
+                    'position' => (int) 1,
+                    'contributory' => true,
+                    'stage_order' => (int) 1,
+                    'time_seconds' => (int) 2053,
+                    'status_code' => '0',
+                    'time_behind' => (int) 0,
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'points_final' => (int) 1000,
+                    'points_adjusted' => (int) 0,
+                    'points_penalty' => (int) 0,
+                    'points_bonus' => (int) 0,
+                    'leg_number' => (int) 1,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'city' => 'Toledo',
+                'oe_key' => '68',
+                'short_name' => 'TOLEDO-O',
+                'long_name' => 'TOLEDO-O'
+            ]
+        ];
+        $runner2 = [
+            'id' => '',
+            'uuid' => '',
+            'sicard' => '8650855',
+            'sex' => 'M',
+            'telephone1' => '',
+            'telephone2' => '682404888',
+            'email' => '',
+            'first_name' => 'Elmar',
+            'last_name' => 'Martinez',
+            'db_id' => '8888',
+            'iof_id' => '',
+            'bib_number' => '3399',
+            'bib_alt' => '',
+            'sicard_alt' => '',
+            'is_nc' => false,
+            'runner_results' => [
+                (int) 0 => [
+                    'id' => '',
+                    'position' => (int) 2,
+                    'contributory' => false,
+                    'stage_order' => (int) 1,
+                    'time_seconds' => (int) 2138,
+                    'time_behind' => (int) 85,
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'points_final' => (int) 960,
+                    'points_adjusted' => (int) 0,
+                    'points_penalty' => (int) 0,
+                    'points_bonus' => (int) 0,
+                    'leg_number' => (int) 1,
+                    'result_type' => [
+                        'id' => '5542d38b-8bd3-40f4-913d-2c38048a0b04',
+                        'description' => 'Overall'
+                    ]
+                ],
+                (int) 1 => [
+                    'id' => '',
+                    'position' => (int) 2,
+                    'contributory' => true,
+                    'stage_order' => (int) 1,
+                    'time_seconds' => (int) 2138,
+                    'status_code' => '0',
+                    'time_behind' => (int) 85,
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'points_final' => (int) 960,
+                    'points_adjusted' => (int) 0,
+                    'points_penalty' => (int) 0,
+                    'points_bonus' => (int) 0,
+                    'leg_number' => (int) 1,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'city' => 'Girona',
+                'oe_key' => '6',
+                'short_name' => 'ALIGOTS',
+                'long_name' => 'ALIGOTS'
+            ]
+        ];
+        return [
+            'configuration' => [
+                'cSeparator' => ';',
+                'cEncoding' => 'ISO-8859-1',
+                'file' => 'tmp/E1 puntos CSV.csv',
+                'extension' => 'CSV',
+                'utf' => false,
+                'known_data' => true,
+                'contents' => 'ResultList',
+                'results_type' => 'Totals',
+                'one_stage' => false,
+                'source' => 'OEv12',
+                'iof_version' => 'Other',
+                'include_score' => true,
+                'trailo_type' => 'Other',
+                'trailo_at' => 'Other',
+                'trailo_normal' => '0',
+                'trailo_group' => '0',
+                'totalization' => 'TotalizationPoints'
+            ],
+            'event' => [
+                'id' => Event::FIRST_EVENT,
+                'description' => 'Totals test',
+                'is_hidden' => false,
+                'stages' => [
+                    (int) 0 => [
+                        'id' => StagesFixture::STAGE_FEDO_2,
+                        'description' => '04_20251005_111937098_posta3',
+                        'base_date' => '2025-09-09',
+                        'base_time' => '10:00:00.000+02:00',
+                        'order_number' => (int) 1,
+                        'classes' => [
+                            (int) 0 => [
+                                'id' => '',
+                                'uuid' => '',
+                                'oe_key' => '2',
+                                'short_name' => 'M-E',
+                                'long_name' => 'M-E',
+                                'runners' => [
+                                    $runner1,
+                                    //$runner2,
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+    }
+
+    public static function stage2RealTotalPoints(): array
+    {
+        $runner1 = [
+            'id' => '',
+            'uuid' => '',
+            'sicard' => '8664000',
+            'sex' => 'M',
+            'telephone1' => '',
+            'telephone2' => '',
+            'email' => '',
+            'first_name' => 'Paco',
+            'last_name' => 'Fernandez',
+            'db_id' => '11600',
+            'iof_id' => '',
+            'bib_number' => '2800',
+            'bib_alt' => '',
+            'sicard_alt' => '',
+            'is_nc' => false,
+            'runner_results' => [
+                (int) 0 => [
+                    'id' => '',
+                    '_test_note' => 'Paco 1',
+                    'position' => (int) 1,
+                    'contributory' => false,
+                    'stage_order' => (int) 1,
+                    'time_seconds' => (int) 2937,
+                    'time_behind' => (int) 0,
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'points_final' => (int) 2000,
+                    'points_adjusted' => (int) 0,
+                    'points_penalty' => (int) 0,
+                    'points_bonus' => (int) 0,
+                    'leg_number' => (int) 1,
+                    'result_type' => [
+                        'id' => '5542d38b-8bd3-40f4-913d-2c38048a0b04',
+                        'description' => 'Overall'
+                    ]
+                ],
+                (int) 1 => [
+                    'id' => '',
+                    '_test_note' => 'Paco 2',
+                    'position' => (int) 1,
+                    'contributory' => true,
+                    'stage_order' => (int) 1,
+                    'time_seconds' => (int) 2053,
+                    'status_code' => '0',
+                    'time_behind' => (int) 0,
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'points_final' => (int) 1000,
+                    'points_adjusted' => (int) 0,
+                    'points_penalty' => (int) 0,
+                    'points_bonus' => (int) 0,
+                    'leg_number' => (int) 1,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ],
+                (int) 2 => [
+                    'id' => '',
+                    '_test_note' => 'Paco 3',
+                    'position' => (int) 1,
+                    'contributory' => true,
+                    'stage_order' => (int) 2,
+                    'time_seconds' => (int) 884,
+                    'status_code' => '0',
+                    'time_behind' => (int) 0,
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'points_final' => (int) 1000,
+                    'points_adjusted' => (int) 0,
+                    'points_penalty' => (int) 0,
+                    'points_bonus' => (int) 0,
+                    'leg_number' => (int) 1,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'city' => 'Toledo',
+                'oe_key' => '68',
+                'short_name' => 'TOLEDO-O',
+                'long_name' => 'TOLEDO-O'
+            ]
+        ];
+        $runner2 = [
+            'id' => '',
+            'uuid' => '',
+            'sicard' => '8650855',
+            'sex' => 'M',
+            'telephone1' => '',
+            'telephone2' => '682404888',
+            'email' => '',
+            'first_name' => 'Elmar',
+            'last_name' => 'Martinez',
+            'db_id' => '8888',
+            'iof_id' => '',
+            'bib_number' => '3399',
+            'bib_alt' => '',
+            'sicard_alt' => '',
+            'is_nc' => false,
+            'runner_results' => [
+                (int) 0 => [
+                    'id' => '',
+                    '_test_note' => 'Elmar 1',
+                    'position' => (int) 2,
+                    'contributory' => false,
+                    'stage_order' => (int) 1,
+                    'time_seconds' => (int) 3100,
+                    'time_behind' => (int) 163,
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'points_final' => (int) 1880,
+                    'points_adjusted' => (int) 0,
+                    'points_penalty' => (int) 0,
+                    'points_bonus' => (int) 0,
+                    'leg_number' => (int) 1,
+                    'result_type' => [
+                        'id' => '5542d38b-8bd3-40f4-913d-2c38048a0b04',
+                        'description' => 'Overall'
+                    ]
+                ],
+                (int) 1 => [
+                    'id' => '',
+                    '_test_note' => 'Elmar 2',
+                    'position' => (int) 2,
+                    'contributory' => true,
+                    'stage_order' => (int) 1,
+                    'time_seconds' => (int) 2138,
+                    'status_code' => '0',
+                    'time_behind' => (int) 85,
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'points_final' => (int) 960,
+                    'points_adjusted' => (int) 0,
+                    'points_penalty' => (int) 0,
+                    'points_bonus' => (int) 0,
+                    'leg_number' => (int) 1,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ],
+                (int) 2 => [
+                    'id' => '',
+                    '_test_note' => 'Elmar 3',
+                    'position' => (int) 3,
+                    'contributory' => true,
+                    'stage_order' => (int) 2,
+                    'time_seconds' => (int) 961,
+                    'status_code' => '0',
+                    'time_behind' => (int) 77,
+                    'time_neutralization' => (int) 0,
+                    'time_adjusted' => (int) 0,
+                    'time_penalty' => (int) 0,
+                    'time_bonus' => (int) 0,
+                    'points_final' => (int) 920,
+                    'points_adjusted' => (int) 0,
+                    'points_penalty' => (int) 0,
+                    'points_bonus' => (int) 0,
+                    'leg_number' => (int) 1,
+                    'result_type' => [
+                        'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                        'description' => 'Stage'
+                    ]
+                ]
+            ],
+            'club' => [
+                'id' => '',
+                'uuid' => '',
+                'city' => 'Girona',
+                'oe_key' => '6',
+                'short_name' => 'ALIGOTS',
+                'long_name' => 'ALIGOTS'
+            ]
+        ];
+        return [
+            'configuration' => [
+                'cSeparator' => ';',
+                'cEncoding' => 'ISO-8859-1',
+                'file' => 'tmp/E2 puntos CSV.csv',
+                'extension' => 'CSV',
+                'utf' => false,
+                'known_data' => true,
+                'contents' => 'ResultList',
+                'results_type' => 'Totals',
+                'one_stage' => false,
+                'source' => 'OEv12',
+                'iof_version' => 'Other',
+                'include_score' => true,
+                'trailo_type' => 'Other',
+                'trailo_at' => 'Other',
+                'trailo_normal' => '0',
+                'trailo_group' => '0',
+                'totalization' => 'TotalizationPoints'
+            ],
+            'event' => [
+                'id' => Event::FIRST_EVENT,
+                'description' => 'Totals test',
+                'is_hidden' => false,
+                'stages' => [
+                    (int) 0 => [
+                        'id' => StagesFixture::STAGE_FEDO_2,
+                        'description' => '04_20251005_111937098_posta3',
+                        'base_date' => '2025-09-09',
+                        'base_time' => '10:00:00.000+02:00',
+                        'order_number' => (int) 1,
+                        'classes' => [
+                            (int) 0 => [
+                                'id' => '',
+                                'uuid' => '',
+                                'oe_key' => '2',
+                                'short_name' => 'M-E',
+                                'long_name' => 'M-E',
+                                'runners' => [
+                                    $runner1,
+                                    //$runner2,
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+    }
 }
