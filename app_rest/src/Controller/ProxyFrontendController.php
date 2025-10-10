@@ -20,10 +20,10 @@ class ProxyFrontendController extends ApiController
 
     protected function getData($id)
     {
-
-        $lang = $this->getRequest()->getParam('lang');
-        $path = $lang . '/' . $id;
-        $queryString = $this->_getQueryString($path);
+        $path = '/' . $id;
+        if (str_starts_with($path, '/locales/')) {
+            $this->redirect($this->_getFrontDomain() . $path);
+        }
         $lang = $this->_getSimpleLang();
 
         $html = '';
