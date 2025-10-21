@@ -44,8 +44,7 @@ class ResultsFilter
             $overalls->setOverall($overall);
         }
         if (!$overalls->hasOverall() && $overalls->hasParts()) {
-            $ranking = RankingsTable::FIRST_RANKING;
-            $calc = RankingsTable::load()->getCalculator($ranking);
+            $calc = RankingsTable::load()->getCalculatorByStage($results[0]->stage_id);
             $overalls = $calc->calculateOverallScore($overalls);
         }
         if ($overalls->isTotallyEmpty()) {

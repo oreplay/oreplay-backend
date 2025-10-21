@@ -51,6 +51,32 @@ class RankingsTable extends AppTable
         Cache::delete($this->_getCacheKey($rankingId));
     }
 
+    private function _getCacheKeyByStage(string $rankingId): string
+    {
+        return '_getRankingSettingsByStage_' . $rankingId;
+    }
+
+    public function getCachedByStage(string $stageId): Ranking
+    {
+        $cacheKey = $this->_getCacheKeyByStage($stageId);
+        $res = Cache::read($cacheKey);
+        if ($res) {
+            return $res;
+        }
+        /** @var Ranking $res */
+        $res = $this->find()
+            ->where(['stage_id' => $stageId])
+            ->firstOrFail();
+        Cache::write($cacheKey, $res);
+        return $res;
+    }
+
+    public static function getCalculatorByStage(string $stageId)
+    {
+        $settings = RankingsTable::load()->getCachedByStage($stageId);
+        return self::getCalculator($settings->id);
+    }
+
     private function _getCacheKey(string $rankingId): string
     {
         return '_getRankingSettings_' . $rankingId;
