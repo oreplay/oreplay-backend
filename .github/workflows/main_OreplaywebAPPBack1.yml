@@ -6,7 +6,7 @@ name: Build and deploy container app to Azure Web App - OreplaywebAPPBack1
 on:
   push:
     branches:
-      - main
+      - build-azure
   workflow_dispatch:
 
 jobs:
