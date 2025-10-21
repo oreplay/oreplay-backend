@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
+use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
 
 class PartialOverall extends RunnerResult
@@ -50,6 +51,7 @@ class PartialOverall extends RunnerResult
         $overall->setPosition($pos);
         $overall->time_seconds = $time;
         $overall->setPoints($points);
+        $overall->status_code = StatusCode::OK;
         return $overall;
     }
 
