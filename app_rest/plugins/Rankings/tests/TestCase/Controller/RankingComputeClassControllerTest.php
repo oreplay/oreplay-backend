@@ -10,6 +10,7 @@ use Rankings\Controller\RankingComputeClassController;
 use Rankings\Lib\ScoringAlgorithms\ScoringAlgorithm;
 use Rankings\Model\Table\RankingsTable;
 use Rankings\Test\Fixture\RankingsFixture;
+use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
@@ -87,13 +88,13 @@ class RankingComputeClassControllerTest extends ApiCommonErrorsTest
                 'stage_order' => 1,
                 'stage' => null,
                 'position' => ScoringAlgorithm::NEEDS_POSITION,
-                'time_seconds' => 0,
+                'time_seconds' => null,
                 'time_behind' => null,
                 'points_final' => 100,
                 'points_behind' => null,
                 'upload_type' => UploadTypes::RANKING_COMPUTED,
                 'note' => null,
-                'status_code' => null,
+                'status_code' => StatusCode::OK,
                 'is_nc' => null,
                 'contributory' => null,
             ],

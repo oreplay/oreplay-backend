@@ -9,6 +9,7 @@ use Cake\I18n\FrozenTime;
 use Cake\TestSuite\TestCase;
 use Rankings\Test\Fixture\RankingsFixture;
 use RestApi\Lib\Exception\DetailedException;
+use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
@@ -132,7 +133,7 @@ class RunnerTest extends TestCase
                     'time_seconds' => 234,
                     'time_behind' => null,
                     'points_final' => 895,
-                    'points_behind' => 0,
+                    'points_behind' => null,
                     'upload_type' => null,
                     'note' => null,
                 ],
@@ -157,7 +158,7 @@ class RunnerTest extends TestCase
                 'stage_order' => 2,
                 'stage' => null,
                 'position' => -1,
-                'status_code' => null,
+                'status_code' => StatusCode::OK,
                 'is_nc' => null,
                 'contributory' => null,
                 'time_seconds' => 499,

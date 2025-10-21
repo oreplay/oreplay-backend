@@ -11,6 +11,7 @@ use Rankings\Model\Table\ParticipantInterface;
 use Rankings\Model\Table\RankingsTable;
 use Rankings\Model\Traits\ParticipantTrait;
 use Rankings\Test\Fixture\RankingsFixture;
+use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\Club;
 use Results\Model\Entity\Overalls;
@@ -199,12 +200,12 @@ class SimpleScoreCalculatorTest extends TestCase
             'stage_order' => 2,
             'stage' => null,
             'position' => ScoringAlgorithm::NEEDS_POSITION,
-            'status_code' => null,
+            'status_code' => StatusCode::OK,
             'is_nc' => null,
             'contributory' => null,
             'time_seconds' => 0,
             'time_behind' => null,
-            'points_final' => 132,
+            'points_final' => 132.0,
             'points_behind' => null,
             'upload_type' => UploadTypes::RANKING_COMPUTED,
             'note' => null,
@@ -227,7 +228,7 @@ class SimpleScoreCalculatorTest extends TestCase
                     'upload_type' => null,
                     'stage' => null,
                     'position' => 2,
-                    'status_code' => null,
+                    'status_code' => StatusCode::OK,
                     'is_nc' => null,
                     'contributory' => true,
                     'time_seconds' => 0,
@@ -257,7 +258,7 @@ class SimpleScoreCalculatorTest extends TestCase
                     'upload_type' => null,
                     'stage' => null,
                     'position' => 4,
-                    'status_code' => null,
+                    'status_code' => StatusCode::OK,
                     'is_nc' => null,
                     'contributory' => true,
                     'time_seconds' => 0,
@@ -283,6 +284,7 @@ class SimpleScoreCalculatorTest extends TestCase
                 'note' => null,
             ]
         ];
+        $expected['overall']['status_code'] = StatusCode::OK;
         $this->assertEquals($expected, json_decode(json_encode($overalls), true));
     }
 }

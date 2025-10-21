@@ -51,7 +51,9 @@ class PartialOverall extends RunnerResult
         $overall->setPosition($pos);
         $overall->time_seconds = $time;
         $overall->setPoints($points);
-        $overall->status_code = StatusCode::OK;
+        if ($pos || $time || $points) {
+            $overall->status_code = StatusCode::OK;
+        }
         return $overall;
     }
 
