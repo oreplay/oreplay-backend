@@ -86,7 +86,7 @@ class ProxyFrontendController extends ApiController
                 <title>O-Replay</title>
                 <script>console.log("SSR v' . $version . '")</script>
                 <script>window._ssr="' . $version . '"</script>
-                <script type="module" crossorigin src="' . $url . '/assets/index-CTkAvaXf.js"></script>
+                <script type="module" crossorigin src="' . $url . '/assets/index-37OCdeyT.js"></script>
               </head>
               <body style="margin: 0; height: 100vh">
                 <div id="root">' . $html . '</div>
