@@ -24,15 +24,21 @@ class ReadablePointsCsv implements RestRenderer
     public function render()
     {
         $toReturn = '';
-        foreach (json_decode(json_encode($this->_results), true) as $classGroup) {
+        $resultsArray = json_decode(json_encode($this->_results), true);
+        foreach ($resultsArray as $classGroup) {
             $toReturn .= $this->_convertToCsv($classGroup);
         }
         return $toReturn;
     }
 
-    public function setResults(array $toRet): static
+    public function setResults(array $results): static
     {
-        $this->_results = $toRet;
+        $isAssociativeArray = isset($results[0]);
+        if ($isAssociativeArray) {
+            // convert associative array to a map
+            $results = ['short_class' => $results];
+        }
+        $this->_results = $results;
         return $this;
     }
 

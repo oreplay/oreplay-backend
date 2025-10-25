@@ -87,7 +87,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
 
     public function testGetList_filteredByExistingClubAndStation()
     {
-        $this->get($this->_getEndpoint() . '?club_id='.ClubsFixture::CLUB_1 . '&station=31');
+        $this->get($this->_getEndpoint() . '?club_id='.ClubsFixture::CLUB_1 . '&station=31&output=json');
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals(2, count($bodyDecoded['data']));

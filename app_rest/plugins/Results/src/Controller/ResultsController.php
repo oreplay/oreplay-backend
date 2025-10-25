@@ -71,7 +71,7 @@ class ResultsController extends ApiController
             switch ($outputType) {
                 case 'ReadablePointsCsv':
                     $renderer = new ReadablePointsCsv();
-                    return $renderer->setResults([$results]);
+                    return $renderer->setResults($results);
             }
         }
         return $results;
