@@ -6,7 +6,7 @@ namespace Results\Test\TestCase\Model\Table;
 
 use Cake\TestSuite\TestCase;
 use Results\Model\Entity\Event;
-use Results\Model\Entity\Runner;
+use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Split;
 use Results\Model\Entity\Stage;
 use Results\Model\Table\SplitsTable;
@@ -59,7 +59,7 @@ class SplitsTableTest extends TestCase
     public function testDeleteAllByRunnerId()
     {
         /** @var Split $res */
-        $res = $this->Splits->deleteAllByRunnerId(Runner::FIRST_RUNNER);
+        $res = $this->Splits->deleteAllByRunnerResultId(RunnerResult::FIRST_RES);
         $this->assertEquals(2, $res);
 
         $res = $this->Splits->findById(SplitsFixture::SPLIT_1)->first();

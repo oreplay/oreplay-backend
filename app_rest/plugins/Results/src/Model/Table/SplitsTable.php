@@ -67,9 +67,9 @@ class SplitsTable extends AppTable
         return $entity;
     }
 
-    public function deleteAllByRunnerId(string $runnerId): int
+    public function deleteAllByRunnerResultId(string $runnerId): int
     {
-        return $this->deleteAll(['runner_id' => $runnerId]);
+        return $this->deleteAll(['runner_result_id' => $runnerId]);
     }
 
     private function _skipSplit(array $split): bool
@@ -120,7 +120,7 @@ class SplitsTable extends AppTable
         if ($splits && !$runnerResultToSave->hasSameSplits($splits)) {
             $runnerResultToSave->setHash($splits);
             if (!$helper->getChecker()->isIntermediates()) {
-                $this->deleteAllByRunnerId($runnerResultToSave->getId());
+                $this->deleteAllByRunnerResultId($runnerResultToSave->getId());
             }
             $runnerResultToSave = $this->uploadForEachSplit($runnerResultToSave, $splits, $helper);
         }
