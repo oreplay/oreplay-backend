@@ -4,17 +4,19 @@ declare(strict_types = 1);
 
 namespace Results\Controller;
 
+use RestApi\Lib\RestRenderer;
+use RestApi\Model\Table\RestApiTable;
+use Results\Lib\Output\ReadablePointsCsv;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Team;
 use Results\Model\Table\RunnersTable;
 use Results\Model\Table\TeamsTable;
 
-/**
- * @property RunnersTable $Runners
- * @property TeamsTable $Teams
- */
 class ResultsController extends ApiController
 {
+    protected RestApiTable $Teams;
+    protected RunnersTable $Runners;
+
     public function initialize(): void
     {
         parent::initialize();
@@ -32,6 +34,12 @@ class ResultsController extends ApiController
         $eventId = $this->request->getParam('eventID');
         $stageId = $this->request->getParam('stageID');
         $filters = $this->request->getQueryParams();
+        $toRet = $this->_getResults($eventId, $stageId, $filters);
+        $this->return = $this->_parseOutput($toRet, $filters['output'] ?? null);
+    }
+
+    protected function _getResults(mixed $eventId, mixed $stageId, array $filters): RestRenderer|array
+    {
         // uncomment next line after upgrade rest api plugin 0.7.12
         //$filters = \RestApi\Lib\Helpers\PaginatorHelper::processQueryFiltersStatic($filters);
         $teams = $this->Teams->findTeamsInStage($eventId, $stageId, $filters)->toArray();
@@ -54,6 +62,18 @@ class ResultsController extends ApiController
         if ($isAllTotals) {
             $toRet = RunnersTable::sortTotals($toRet);
         }
-        $this->return = $toRet;
+        return $toRet;
+    }
+
+    protected function _parseOutput(array $results, ?string $outputType): RestRenderer|array
+    {
+        if ($outputType) {
+            switch ($outputType) {
+                case 'ReadablePointsCsv':
+                    $renderer = new ReadablePointsCsv();
+                    return $renderer->setResults([$results]);
+            }
+        }
+        return $results;
     }
 }
