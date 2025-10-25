@@ -19,4 +19,6 @@ We are still in development mode, there is a lot of management functionality mis
   - To-do: create UI to make this request
 - Check runners in 2 different classes
   - To-do: API and UI to get them all and set them as not contributory
-- Check clubs added twice (with different names)
+- Check clubs added twice (with different names) from `/api/v1/events/1b11e6b0-53f5-42c4-ae7f-4f9a56827efd/stages/00669e78-f62a-4a99-8eda-70c0dfd09df3/results?output=DuplicatedRunners`
+  - To-do: API and UI to hide duplicated runners
+- An export can be downloaded from `/api/v1/events/{ranking_event_id}/stages/{ranking_stage_id}/resultsByClass?output=ReadablePointsCsv`

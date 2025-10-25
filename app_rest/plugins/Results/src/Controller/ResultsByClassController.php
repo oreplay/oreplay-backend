@@ -6,7 +6,7 @@ namespace Results\Controller;
 
 use Results\Model\Entity\ClassEntity;
 
-class ResultsExportController extends ResultsController
+class ResultsByClassController extends ResultsController
 {
     public function getList()
     {

@@ -6,6 +6,7 @@ namespace Results\Controller;
 
 use RestApi\Lib\RestRenderer;
 use RestApi\Model\Table\RestApiTable;
+use Results\Lib\Output\DuplicatedRunners;
 use Results\Lib\Output\ReadablePointsCsv;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Team;
@@ -35,7 +36,7 @@ class ResultsController extends ApiController
         $stageId = $this->request->getParam('stageID');
         $filters = $this->request->getQueryParams();
         $toRet = $this->_getResults($eventId, $stageId, $filters);
-        $this->return = $this->_parseOutput($toRet, $filters['output'] ?? null);
+        $this->return = $this->_parseOutput($toRet, $filters);
     }
 
     protected function _getResults(mixed $eventId, mixed $stageId, array $filters): RestRenderer|array
@@ -65,13 +66,16 @@ class ResultsController extends ApiController
         return $toRet;
     }
 
-    protected function _parseOutput(array $results, ?string $outputType): RestRenderer|array
+    protected function _parseOutput(array $results, array $filters): RestRenderer|array
     {
+        $outputType = $filters['output'] ?? null;
         if ($outputType) {
             switch ($outputType) {
                 case 'ReadablePointsCsv':
                     $renderer = new ReadablePointsCsv();
                     return $renderer->setResults($results);
+                case 'DuplicatedRunners':
+                    return DuplicatedRunners::setResults($results, $filters);
             }
         }
         return $results;
