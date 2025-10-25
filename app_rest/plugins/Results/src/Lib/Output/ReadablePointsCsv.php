@@ -96,8 +96,6 @@ class ReadablePointsCsv implements RestRenderer
 
             $parts = '';
         }
-
-        $toRet .= "\n";
         return $toRet;
     }
 }

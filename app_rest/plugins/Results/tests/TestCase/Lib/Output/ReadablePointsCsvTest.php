@@ -23,7 +23,6 @@ class ReadablePointsCsvTest extends TestCase
             2;Noelia Orozco;GALLAECIA_RAID;318;-;;67;;75;;76;;100;;
             3;Elena Ponce;ARTABROS;275;0;(not contributory);79;;61;;51;;84;;
 
-
             CSV;
         $this->assertEquals($expected, $csv);
     }

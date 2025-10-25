@@ -157,6 +157,8 @@ class RunnersTable extends AppTable
         return $q->contain(ClubsTable::name())
             ->contain(ClassesTable::name())
             ->contain($resultsTableName, function (Query $q) use ($filters) {
+                // We may need to refactor this, if this contains results in:
+                // from splits join controls join control types where Splits.runner_result_id in many ids
                 return $q->contain(SplitsTable::name(), function (Query $q) use ($filters) {
                     $order = [
                         //'order_number' => 'DESC', // order number will change from splits or radios export
