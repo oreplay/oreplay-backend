@@ -137,6 +137,7 @@ class RunnersTable extends AppTable
             $q->where(['class_id' => $filters['class_id']]);
         }
         if ($filters['club_id'] ?? null) {
+            $q->where(['team_id is NULL']);
             $q->where(['club_id' => $filters['club_id']]);
         }
         if ($filters['text'] ?? null) {
