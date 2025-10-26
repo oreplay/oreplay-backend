@@ -219,4 +219,16 @@ class RunnersTable extends AppTable
         $helper->getMetrics()->addToRunnerCounter(1);
         return $runner;
     }
+
+    public function removeFromRanking(string $id, string $note): int
+    {
+        $fields = [
+            'points_final = points_final * -1',
+            'note' => $note,
+            'is_nc' => true
+        ];
+        $resUpdated = $this->RunnerResults->updateAll($fields, ['runner_id' => $id]);
+        $runnersUpdated = $this->updateAll(['bib_number = bib_number * -1', 'is_nc' => true], ['id' => $id]);
+        return $resUpdated + $runnersUpdated;
+    }
 }

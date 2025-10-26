@@ -4,10 +4,12 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
+use App\Lib\FullBaseUrl;
 use Cake\I18n\FrozenTime;
 use Rankings\Model\Table\ParticipantInterface;
 use Rankings\Model\Traits\ParticipantTrait;
 use RestApi\Lib\Exception\DetailedException;
+use Results\Lib\Output\DuplicatedRunners;
 use Results\Lib\ResultsFilter;
 
 /**
@@ -237,5 +239,26 @@ class Runner extends AppEntity implements ParticipantInterface
         $participant['first_name'] = $this->first_name;
         $participant['last_name'] = $this->last_name;
         return $participant;
+    }
+
+    public function toSimpleDeduplicationArray(): array
+    {
+        $id = $this->id;
+        $event = $this->event_id;
+        $stage = $this->stage_id;
+        $param = DuplicatedRunners::PARAM_REMOVE_FROM_RANKING;
+        $parts = $this->_getOveralls()?->_getParts();
+        return [
+            'id' => $this->id,
+            'full_name' => $this->full_name,
+            'bib_number' => $this->bib_number,
+            //'db_id' => $this->db_id,
+            'class' => $this->class?->short_name,
+            'partials_size' => count((array)$parts),
+            //'position' => $this->_getOveralls()?->_getOverall()?->position,
+            'points' => $this->_getOveralls()?->_getOverall()?->points_final,
+            'invalidate_link' => FullBaseUrl::host()
+                . "/api/v1/events/$event/stages/$stage/results?output=DuplicatedRunners&simplify=true&$param=$id",
+        ];
     }
 }

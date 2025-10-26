@@ -75,6 +75,8 @@ class ResultsController extends ApiController
                     $renderer = new ReadablePointsCsv();
                     return $renderer->setResults($results);
                 case 'DuplicatedRunners':
+                    // TODO if not user with rights we sould remove the filter
+                    //unset($filters['remove_from_ranking_runner_id'])
                     return DuplicatedRunners::setResults($results, $filters);
             }
         }

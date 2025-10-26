@@ -345,4 +345,20 @@ class RunnersTableTest extends TestCase
         $runner1->runner_results = [$overall];
         return $runner1;
     }
+
+    public function testRemoveFromRanking()
+    {
+        $newNote = 'F-22';
+        $this->Runners->removeFromRanking(Runner::FIRST_RUNNER, $newNote);
+
+        $res = $this->Runners->RunnerResults->find()->where(['runner_id' => Runner::FIRST_RUNNER])->first();
+        $this->assertEquals(Runner::FIRST_RUNNER, $res->runner_id);
+        $this->assertEquals(null, $res->points_final);
+        $this->assertEquals($newNote, $res->note);
+        $this->assertEquals(true, $res->is_nc);
+        $runner = $this->Runners->get(Runner::FIRST_RUNNER);
+        $this->assertEquals(Runner::FIRST_RUNNER, $runner->id);
+        $this->assertEquals('-4444', $runner->bib_number);
+        $this->assertEquals(true, $runner->is_nc);
+    }
 }

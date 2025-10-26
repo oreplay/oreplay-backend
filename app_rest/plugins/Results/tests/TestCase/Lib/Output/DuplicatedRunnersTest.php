@@ -15,22 +15,29 @@ class DuplicatedRunnersTest extends TestCase
 
     public function testSetResults()
     {
+        $filters = [];
         $renderer = new DuplicatedRunners();
-        $duplicates = $renderer->setResults($this->_getResults());
+        $duplicates = $renderer->setResults($this->_getResults(), $filters);
         $expected = [
             [
                 'id' => 449,
                 'bib_number' => 4999,
                 'full_name' => '',
-                'stage' => null,
-                'overalls' => null,
+                'class' => null,
+                'partials_size' => 0,
+                'points' => null,
+                'invalidate_link' => 'http://dev.example.com/api/v1/events//stages//results'
+                    .'?output=DuplicatedRunners&simplify=true&remove_from_ranking_runner_id=449'
             ],
             [
-                'id' => 552,
-                'bib_number' => 5222,
+                'id' => 333,
+                'bib_number' => 4999,
                 'full_name' => '',
-                'stage' => null,
-                'overalls' => null,
+                'class' => null,
+                'partials_size' => 0,
+                'points' => null,
+                'invalidate_link' => 'http://dev.example.com/api/v1/events//stages//results'
+                    .'?output=DuplicatedRunners&simplify=true&remove_from_ranking_runner_id=333'
             ],
         ];
         $this->assertEquals($expected, json_decode(json_encode($duplicates), true));
