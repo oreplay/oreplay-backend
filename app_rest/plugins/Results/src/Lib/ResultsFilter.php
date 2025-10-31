@@ -24,7 +24,8 @@ class ResultsFilter
         foreach ($results as $res) {
             if ($res->result_type_id === ResultType::STAGE) {
                 if ($res->leg_number && $res->leg_number !== '0') {
-                    if (!$toRet || $toRet->leg_number < $res->leg_number) {
+                    $isBiggerLegNumberInRelay = !$toRet || $toRet->leg_number < $res->leg_number;
+                    if ($isBiggerLegNumberInRelay) {
                         $toRet = $res;
                     }
                 } else {

@@ -60,6 +60,8 @@ class TeamTest extends TestCase
             'position' => 0,
             'status_code' => StatusCodes::MP,
             'leg_number' => 2,
+            'start_time' => null,
+            'finish_time' => null,
         ];
         $this->assertEquals($expected, $teamResult->_getStage()->toArray());
     }

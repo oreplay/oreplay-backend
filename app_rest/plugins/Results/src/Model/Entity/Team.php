@@ -8,6 +8,7 @@ use Rankings\Model\Table\ParticipantInterface;
 use Rankings\Model\Traits\ParticipantTrait;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\ResultsFilter;
+use Results\Lib\TeamRunnerHelper;
 
 /**
  * @property string $team_name
@@ -15,6 +16,7 @@ use Results\Lib\ResultsFilter;
  * @property string $class_id
  * @property bool $is_nc
  * @property TeamResult[] $team_results
+ * @property Runner[] $runners
  */
 class Team extends AppEntity implements ParticipantInterface
 {
@@ -115,11 +117,29 @@ class Team extends AppEntity implements ParticipantInterface
         return $this->team_results;
     }
 
+    /**
+     * @return Runner[]|null
+     */
+    public function getRunnerList(): ?array
+    {
+        return $this->runners;
+    }
+
+    private function teamStartAndFinish(): TeamRunnerHelper
+    {
+        $h = new TeamRunnerHelper();
+        $h->setFromRunners($this->getRunnerList());
+        return $h;
+    }
+
     public function _getStage(): ?TeamResult
     {
         /** @var TeamResult $res */
         $res = ResultsFilter::getFirstStage($this->getResultList());
         if ($res) {
+            if (!$res->start_time || !$res->finish_time) {
+                $res->setStartAndFinish($this->teamStartAndFinish());
+            }
             $res->cleanSplitsWithoutRadios();
         }
         return $res;

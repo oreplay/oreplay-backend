@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Model\Entity;
 
 use Cake\I18n\FrozenTime;
+use Results\Lib\TeamRunnerHelper;
 
 /**
  * @property FrozenTime $start_time
@@ -68,4 +69,14 @@ class TeamResult extends AppEntity implements ParticipantResultsEntity
         'team_id',
         'team_uuid',
     ];
+
+    public function setStartAndFinish(TeamRunnerHelper $h): void
+    {
+        if (!$this->start_time) {
+            $this->start_time = $h->getFirstStart();
+        }
+        if (!$this->finish_time) {
+            $this->finish_time = $h->getLastFinish();
+        }
+    }
 }
