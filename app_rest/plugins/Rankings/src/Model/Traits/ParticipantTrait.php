@@ -9,6 +9,7 @@ use Rankings\Lib\ScoringAlgorithms\ScoringAlgorithm;
 use Rankings\Lib\ScoringAlgorithms\SimpleScoreCalculator;
 use Rankings\Model\Entity\Ranking;
 use Rankings\Model\Table\ParticipantInterface;
+use Results\Lib\Consts\StatusCode;
 use Results\Lib\ResultsFilter;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Overalls;
@@ -31,6 +32,12 @@ trait ParticipantTrait
     {
         $stage = $this->_getStage();
         return $stage && $stage->position === 1;
+    }
+
+    public function isStatusOk(): bool
+    {
+        $stage = $this->_getStage();
+        return $stage && $stage->status_code == StatusCode::OK;
     }
 
     public function setLeader(ParticipantInterface $runner): ParticipantInterface

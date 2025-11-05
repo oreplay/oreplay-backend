@@ -22,7 +22,7 @@ class ResultsFilter
         $toRet = null;
         /** @var TeamResult|RunnerResult $res */
         foreach ($results as $res) {
-            if ($res->result_type_id === ResultType::STAGE) {
+            if ($res->isResultTypeStage()) {
                 if ($res->leg_number && $res->leg_number !== '0') {
                     $isBiggerLegNumberInRelay = !$toRet || $toRet->leg_number < $res->leg_number;
                     if ($isBiggerLegNumberInRelay) {

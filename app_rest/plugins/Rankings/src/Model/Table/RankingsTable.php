@@ -125,14 +125,36 @@ class RankingsTable extends AppTable
         return $res;
     }
 
+    /**
+     * @param ParticipantInterface[] $participants
+     * @return ParticipantInterface
+     */
+    public function getFirstParticipant(array $participants, string $classId = ''): ParticipantInterface
+    {
+        if (!$participants) {
+            $err = 'Class without participants ' . $classId . ' ' . json_encode($participants);
+            throw new DetailedException($err);
+        }
+        $first = $participants[0];
+
+        if (!$first->isLeader()) {
+            foreach ($participants as $participant) {
+                if ($participant->isStatusOk()) {
+                    $err = 'Class without position one participant ' . $classId . ' ' . json_encode($participants);
+                    throw new DetailedException($err);
+                }
+            }
+        }
+        return $first;
+    }
+
     public function saveRanking(
         string $rankingName,
         string $srcStageId,
         string $classId,
         array $participants
     ): EntityInterface {
-        /** @var ParticipantInterface $first */
-        $first = $participants[0];
+        $first = $this->getFirstParticipant($participants);
         if ($first->isLeader()) {
             $rk = $this->getCached($rankingName);
 

@@ -2,7 +2,7 @@
 
 We are still in development mode, there is a lot of management functionality missing.
 
-- Upload race results (the **results event**) to a stage normally (as for any other event like if no ranking is used)
+- Upload race results (the **results event**) to a stage normally (as for any other event in the same way as if no ranking is used; but take care that NC or not official class, are used for those runners not participating in ranking)
 - Create a new event and stage to be used to display the ranking (the **ranking event**)
   - Create a new entry in the db with the configuration (include results event and stage IDs)
   - Run sql statements in `rankings` table. Customize parameters

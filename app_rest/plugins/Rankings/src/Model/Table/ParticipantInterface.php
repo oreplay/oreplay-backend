@@ -16,4 +16,6 @@ interface ParticipantInterface
     public function _getClub(): ?Club;
     public function getResultList();
     public function toArrayWithoutID(): array;
+    public function isStatusOk(): bool;
+    public function isLeader(): bool;
 }

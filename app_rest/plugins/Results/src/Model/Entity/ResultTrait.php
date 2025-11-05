@@ -108,4 +108,12 @@ trait ResultTrait
         }
         return !$this->time_seconds && $this->finish_time instanceof FrozenTime;
     }
+
+    public function isResultTypeStage(): bool
+    {
+        if (!$this->result_type_id && $this->result_type) {
+            return $this->result_type->id === ResultType::STAGE;
+        }
+        return $this->result_type_id === ResultType::STAGE;
+    }
 }

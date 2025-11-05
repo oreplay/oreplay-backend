@@ -8,6 +8,9 @@ use Cake\TestSuite\TestCase;
 use Rankings\Model\Table\RankingsTable;
 use Rankings\Test\Fixture\RankingsFixture;
 use Results\Lib\Consts\StatusCode;
+use Results\Model\Entity\ResultType;
+use Results\Model\Entity\Runner;
+use Results\Model\Entity\RunnerResult;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\StagesFixture;
 
@@ -54,5 +57,45 @@ class RankingsTableTest extends TestCase
         $excluded = ['O NEGRO F', 'PROM'];
         $this->assertEquals($excluded, $ranking->getExcludedClassNames());
         $this->Rankings->deleteCache(RankingsTable::FIRST_RANKING);
+    }
+
+    public function testGetFirstParticipant_shouldThrowWhenNoParticipants()
+    {
+        $participants = [];
+        $this->expectExceptionMessage('Class without participants');
+        $this->Rankings->getFirstParticipant($participants);
+    }
+
+    public function testGetFirstParticipant_shouldThrowWhenNotFirst()
+    {
+        $participant = new Runner();
+        $runnerResult = new RunnerResult();
+        $runnerResult->position = 2;
+        $runnerResult->status_code = StatusCode::OK;
+        $runnerResult->result_type = new ResultType();
+        $runnerResult->result_type->id = ResultType::STAGE;
+        $participant->runner_results = [$runnerResult];
+        $participants = [
+            $participant
+        ];
+        $this->expectExceptionMessage('Class without position one participant');
+        $this->Rankings->getFirstParticipant($participants);
+    }
+
+    public function testGetFirstParticipant_shouldNotThrowWhenAllNotOk()
+    {
+        $participant = new Runner();
+        $runnerResult = new RunnerResult();
+        $runnerResult->position = null;
+        $runnerResult->status_code = StatusCode::DNS;
+        $runnerResult->result_type = new ResultType();
+        $runnerResult->result_type->id = ResultType::STAGE;
+        $participant->runner_results = [$runnerResult];
+        $participants = [
+            $participant
+        ];
+        $first = $this->Rankings->getFirstParticipant($participants);
+        $this->assertFalse($first->isStatusOk());
+        $this->assertFalse($first->isLeader());
     }
 }
