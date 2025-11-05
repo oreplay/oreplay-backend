@@ -155,51 +155,46 @@ class RankingsTable extends AppTable
         array $participants
     ): EntityInterface {
         $first = $this->getFirstParticipant($participants);
-        if ($first->isLeader()) {
-            $rk = $this->getCached($rankingName);
+        $rk = $this->getCached($rankingName);
 
-            $classesTable = ClassesTable::load();
-            $class = $classesTable->duplicateIfNotExists($classId, $rk->getEventId(), $rk->getStageId());
-            $stages = StageOrdersTable::load()->getAllCreatingOne($srcStageId, $rk->getEventId(), $rk->getStageId());
-            $runners = [];
+        $classesTable = ClassesTable::load();
+        $class = $classesTable->duplicateIfNotExists($classId, $rk->getEventId(), $rk->getStageId());
+        $stages = StageOrdersTable::load()->getAllCreatingOne($srcStageId, $rk->getEventId(), $rk->getStageId());
+        $runners = [];
 
-            $clubTable = ClubsTable::load();
+        $clubTable = ClubsTable::load();
 
-            /** @var ParticipantInterface $participant */
-            foreach ($participants as $participant) {
-                $participant->setSettings($rk);
-                $participant->setLeader($first);
+        /** @var ParticipantInterface $participant */
+        foreach ($participants as $participant) {
+            $participant->setSettings($rk);
+            $participant->setLeader($first);
 
-                $resultData = [
-                    'id' => '',
-                    'stage_order' => $stages->count(),
-                    'position' => $participant->_getStage()->position,
-                    'points_final' => $participant->_getRankingPoints(),
-                    'time_seconds' => null,
-                    'status_code' => StatusCode::OK,
-                    'result_type' => [
-                        'id' => ResultType::PARTIAL_OVERALL,
-                    ]
-                ];
+            $resultData = [
+                'id' => '',
+                'stage_order' => $stages->count(),
+                'position' => $participant->_getStage()->position,
+                'points_final' => $participant->_getRankingPoints(),
+                'time_seconds' => null,
+                'status_code' => StatusCode::OK,
+                'result_type' => [
+                    'id' => ResultType::PARTIAL_OVERALL,
+                ]
+            ];
 
-                $Runners = RunnersTable::load();
-                $runner = $Runners->duplicateIfNotExists($rk->getEventId(), $rk->getStageId(), $participant, $class);
-                $runner = $Runners->RunnerResults
-                    ->createSimpleRunnerResult($resultData, $runner, $this->_getHelper($rk, $class));
+            $Runners = RunnersTable::load();
+            $runner = $Runners->duplicateIfNotExists($rk->getEventId(), $rk->getStageId(), $participant, $class);
+            $runner = $Runners->RunnerResults
+                ->createSimpleRunnerResult($resultData, $runner, $this->_getHelper($rk, $class));
 
-                if ($participant->_getClub()) {
-                    $club = $participant->_getClub()->toArray();
-                    unset($club['id']);
-                    $runner->addClub($clubTable->createIfNotExists($rk->getEventId(), $rk->getStageId(), $club));
-                }
-                $runners[] = $runner;
+            if ($participant->_getClub()) {
+                $club = $participant->_getClub()->toArray();
+                unset($club['id']);
+                $runner->addClub($clubTable->createIfNotExists($rk->getEventId(), $rk->getStageId(), $club));
             }
-            $class->addRunners($runners);
-            return $classesTable->saveOrFailRetrying($class);
-        } else {
-            $err = 'Class without position one runner ' . $classId . ' ' . json_encode($participants);
-            throw new DetailedException($err);
+            $runners[] = $runner;
         }
+        $class->addRunners($runners);
+        return $classesTable->saveOrFailRetrying($class);
     }
 
     private function _getHelper(Ranking $rk, ClassEntity $class): UploadHelper
