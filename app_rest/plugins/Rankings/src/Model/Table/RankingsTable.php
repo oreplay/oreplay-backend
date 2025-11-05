@@ -127,6 +127,7 @@ class RankingsTable extends AppTable
 
     /**
      * @param ParticipantInterface[] $participants
+     * @param string $classId
      * @return ParticipantInterface
      */
     public function getFirstParticipant(array $participants, string $classId = ''): ParticipantInterface
@@ -136,7 +137,8 @@ class RankingsTable extends AppTable
             throw new DetailedException($err);
         }
         $first = $participants[0];
-
+        // maybe we actually do not care about this, and the position 1 should always be the first one
+        // (lets check if this causes issues in the future, otherwise we could remove the following if)
         if (!$first->isLeader()) {
             foreach ($participants as $participant) {
                 if ($participant->isStatusOk()) {
