@@ -231,4 +231,35 @@ class RunnersTable extends AppTable
         $runnersUpdated = $this->updateAll(['bib_number = bib_number * -1', 'is_nc' => true], ['id' => $id]);
         return $resUpdated + $runnersUpdated;
     }
+
+    /**
+     * @param Runner[] $runnersFrom
+     * @param Runner[] $runnersTo
+     * @return int
+     */
+    public function moveRunnerResultsFromClassTo(array $runnersFrom, array $runnersTo): int
+    {
+        $matchedRunners = 0;
+        foreach ($runnersFrom as $runnerFrom) {
+            foreach ($runnersTo as $runnerTo) {
+                if ($runnerFrom->isSameDbIdOrBib($runnerTo)) {
+                    $fields = ['class_id' => $runnerTo->class_id, 'runner_id' => $runnerTo->id];
+                    $conditions = ['runner_id' => $runnerFrom->id];
+                    $this->RunnerResults->updateAll($fields, $conditions);
+                    $this->softDelete($runnerFrom->id);
+                    $matchedRunners++;
+                }
+            }
+        }
+        return $matchedRunners;
+    }
+
+    public function moveRunnersFromClassTo(string $fromClassId, string $toClassId): int
+    {
+        $fields = ['class_id' => $toClassId];
+        $conditions = ['class_id' => $fromClassId];
+        $run = $this->updateAll($fields, $conditions);
+        $res = $this->RunnerResults->updateAll($fields, $conditions);
+        return $run + $res;
+    }
 }

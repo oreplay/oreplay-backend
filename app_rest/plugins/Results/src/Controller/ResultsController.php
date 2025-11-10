@@ -72,7 +72,7 @@ class ResultsController extends ApiController
         if ($outputType) {
             switch ($outputType) {
                 case 'ReadablePointsCsv':
-                    $renderer = new ReadablePointsCsv();
+                    $renderer = new ReadablePointsCsv($filters['contrib_text'] ?? null);
                     return $renderer->setResults($results);
                 case 'DuplicatedRunners':
                     // TODO if not user with rights we sould remove the filter

@@ -361,4 +361,11 @@ class RunnersTableTest extends TestCase
         $this->assertEquals('-4444', $runner->bib_number);
         $this->assertEquals(true, $runner->is_nc);
     }
+
+    public function testMoveRunnersFromClassTo()
+    {
+        $this->Runners->RunnerResults->updateAll(['class_id' => ClassEntity::ME], ['id' => RunnerResult::FIRST_RES]);
+        $returnedValue = $this->Runners->moveRunnersFromClassTo(ClassEntity::ME, ClassEntity::FE);
+        $this->assertEquals(2, $returnedValue);
+    }
 }

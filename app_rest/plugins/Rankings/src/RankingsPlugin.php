@@ -25,5 +25,9 @@ class RankingsPlugin extends RestPlugin
             '/rankings/{rankingID}/events/{eventID}/stages/{stageID}/runnerResults/*',
             \Rankings\Controller\RankingRunnerManagementController::route()
         );
+        $builder->connect(
+            '/rankings/{rankingID}/classMerger/*',
+            \Rankings\Controller\RankingClassMergerController::route()
+        );
     }
 }

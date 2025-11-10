@@ -164,6 +164,17 @@ class Runner extends AppEntity implements ParticipantInterface
         return implode(' ', $res);
     }
 
+    public function isSameDbIdOrBib(Runner $tmpRunner): bool
+    {
+        $tmpRunnerArray = [
+            'db_id' => $tmpRunner->db_id,
+            'bib_number' => $tmpRunner->bib_number,
+        ];
+        $isSameDbId = $this->isSameField('db_id', $tmpRunnerArray);
+        $isSameBib = $this->isSameField('bib_number', $tmpRunnerArray);
+        return $isSameDbId || $isSameBib;
+    }
+
     public function getMatchedRunner(array $runnerData, ClassEntity $class = null): ?Runner
     {
         if ($this->leg_number) {

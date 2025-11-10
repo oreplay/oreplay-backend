@@ -10,6 +10,20 @@ use RestApi\Lib\RestRenderer;
 class ReadablePointsCsv implements RestRenderer
 {
     private array $_results;
+    private ?string $_notContributoryText = null;
+
+    public function __construct(string $notContributoryText = null)
+    {
+        $this->_notContributoryText = $notContributoryText;
+    }
+
+    private function _getNotContributoryText(): string
+    {
+        if ($this->_notContributoryText) {
+            return $this->_notContributoryText;
+        }
+        return '(not contributory)';
+    }
 
     public function setHeadersForDownload(Response $response, $title = null): Response
     {
@@ -72,7 +86,7 @@ class ReadablePointsCsv implements RestRenderer
                 $array = [];
 
                 if (!($part['contributory'] ?? null)) {
-                    $array[] = '(not contributory)';
+                    $array[] = $this->_getNotContributoryText();
                 }
 
                 if (!empty($part['note'])) {

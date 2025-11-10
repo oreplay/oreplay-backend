@@ -19,16 +19,10 @@ class DuplicatedRunners
         foreach ($results as $currentRunner) {
             /** @var Runner $tmpRunner */
             foreach ($results as $tmpRunner) {
-                $tmpRunnerArray = [
-                    'db_id' => $tmpRunner->db_id,
-                    'bib_number' => $tmpRunner->bib_number,
-                ];
-                $isSameDbId = $currentRunner->isSameField('db_id', $tmpRunnerArray);
-                $isSameBib = $currentRunner->isSameField('bib_number', $tmpRunnerArray);
                 $currentId = $currentRunner->db_id . '_' . $currentRunner->bib_number;
                 $tmpId = $tmpRunner->db_id . '_' . $tmpRunner->bib_number;
                 if ($currentRunner->id !== $tmpRunner->id) {
-                    if ($isSameDbId || $isSameBib) {
+                    if ($currentRunner->isSameDbIdOrBib($tmpRunner)) {
                         $sameId = !isset($duplicatedRunners[$currentId]) && !isset($duplicatedRunners[$tmpId]);
                         if ($sameId) {
                             $removed = self::removeFromRanking($filters, $tmpRunner, $currentRunner);
