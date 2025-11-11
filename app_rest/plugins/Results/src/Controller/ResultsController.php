@@ -75,9 +75,10 @@ class ResultsController extends ApiController
                     $renderer = new ReadablePointsCsv($filters['contrib_text'] ?? null);
                     return $renderer->setResults($results);
                 case 'DuplicatedRunners':
-                    if (!$this->OAuthServer->isManagerUser()) {
-                        unset($filters['remove_from_ranking_runner_id']);
-                    }
+                    // TODO if not user with rights we should remove the filter
+                    //if (!$this->OAuthServer->isManagerUser()) { // TODO public endpoint dont have OAuthServer
+                    //    unset($filters[DuplicatedRunners::PARAM_REMOVE_FROM_RANKING]);
+                    //}
                     return DuplicatedRunners::setResults($results, $filters);
             }
         }

@@ -102,8 +102,15 @@ class ReadablePointsCsv implements RestRenderer
                 $toRet .= $runner['class']['short_name'] . "\n";
             }
 
-            $toRet .= "{$runner['overalls']['overall']['position']};"
-                . "{$runner['full_name']};"
+            if ($runner['is_nc'] ?? false) {
+                $fullName = 'NC ' . $runner['full_name'];
+                $position = 'NC';
+            } else {
+                $fullName = $runner['full_name'];
+                $position = $runner['overalls']['overall']['position'];
+            }
+            $toRet .= "{$position};"
+                . "{$fullName};"
                 . "{$runner['club']['short_name']};"
                 . "{$runner['overalls']['overall']['points_final']};"
                 . "{$parts}\n";

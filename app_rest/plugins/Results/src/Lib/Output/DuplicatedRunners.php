@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Lib\Output;
 
+use Cake\Http\Exception\BadRequestException;
 use Results\Model\Entity\Runner;
 use Results\Model\Table\RunnersTable;
 
@@ -17,6 +18,9 @@ class DuplicatedRunners
         $duplicatedRunners = [];
         /** @var Runner $currentRunner */
         foreach ($results as $currentRunner) {
+            if (!($currentRunner instanceof Runner)) {
+                throw new BadRequestException('Current runner is not a Runner');
+            }
             /** @var Runner $tmpRunner */
             foreach ($results as $tmpRunner) {
                 $currentId = $currentRunner->db_id . '_' . $currentRunner->bib_number;

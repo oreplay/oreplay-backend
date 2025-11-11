@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Rankings\Controller;
 
 use Cake\Http\Exception\ForbiddenException;
+use Cake\Http\Exception\NotFoundException;
 use Rankings\Model\Table\RankingsTable;
 use Results\Controller\ApiController;
 use Results\Model\Table\RunnersTable;
@@ -39,6 +40,12 @@ class RankingClassMergerController extends ApiController
         $stageId = $rk->getStageId();
         $fromClass = $this->Runners->Classes->getByShortName($eventId, $stageId, $fromShortName);
         $toClass = $this->Runners->Classes->getByShortName($eventId, $stageId, $toShortName);
+        if (!$fromClass) {
+            throw new NotFoundException('Class from not found ' . $fromShortName);
+        }
+        if (!$toClass) {
+            throw new NotFoundException('Class to not found ' . $toShortName);
+        }
 
         $runFrom = $this->Runners->findRunnersInStage($eventId, $stageId, ['class_id' => $fromClass->id])->toArray();
         $runTo = $this->Runners->findRunnersInStage($eventId, $stageId, ['class_id' => $toClass->id])->toArray();
