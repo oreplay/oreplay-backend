@@ -29,6 +29,7 @@ class RankingClassMergerController extends ApiController
 
     protected function getList()
     {
+        // this can result in copying one runner from one class to another where he participated, but not the target
         if (!$this->OAuthServer->isManagerUser()) {
             throw new ForbiddenException('Only manager users can manage rankings.');
         }
@@ -49,6 +50,7 @@ class RankingClassMergerController extends ApiController
 
         $runFrom = $this->Runners->findRunnersInStage($eventId, $stageId, ['class_id' => $fromClass->id])->toArray();
         $runTo = $this->Runners->findRunnersInStage($eventId, $stageId, ['class_id' => $toClass->id])->toArray();
+        // this can result in copying one runner from one class to another where he participated, but not the target
         $matchedRunners = $this->Runners->moveRunnerResultsFromClassTo($runFrom, $runTo);
         $this->Runners->moveRunnersFromClassTo($fromClass->id, $toClass->id);
         $this->Runners->Classes->softDelete($fromClass->id);
