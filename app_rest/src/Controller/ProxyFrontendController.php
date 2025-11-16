@@ -4,7 +4,11 @@ declare(strict_types = 1);
 
 namespace App\Controller;
 
+use App\Lib\Consts\CacheGrp;
+use Cake\Cache\Cache;
+use Cake\Http\Client;
 use Cake\Http\Exception\NotFoundException;
+use RestApi\Lib\Exception\DetailedException;
 
 class ProxyFrontendController extends ApiController
 {
@@ -48,6 +52,7 @@ class ProxyFrontendController extends ApiController
     {
         $version = SwaggerJsonController::version();
         $url = $this->_getFrontDomain();
+        $index = $this->_getIndexJson($url);
         return '<!doctype html>
             <html lang="en" translate="no">
               <head>
@@ -86,13 +91,46 @@ class ProxyFrontendController extends ApiController
                 <title>O-Replay</title>
                 <script>console.log("SSR v' . $version . '")</script>
                 <script>window._ssr="' . $version . '"</script>
-                <script type="module" crossorigin src="' . $url . '/assets/index-37OCdeyT.js"></script>
+                <script type="module" crossorigin src="' . $url . '/assets/' . $index . '"></script>
               </head>
               <body style="margin: 0; height: 100vh">
                 <div id="root">' . $html . '</div>
                 <noscript>' . $description . '</noscript>
               </body>
             </html>';
+    }
+
+    private function _getIndexJson(string $url): string
+    {
+        $string = $this->_makeHttpRequest($url);
+        preg_match('/index-[A-Za-z0-9]+\.js/', $string, $matches);
+        if (!isset($matches[0])) {
+            throw new DetailedException('Index response: ' . $string);
+        }
+        return $matches[0];
+    }
+
+    private function _makeHttpRequest(string $url): string
+    {
+        $cacheKey = '_cachedPage' . md5($url);
+        $cacheGroup = CacheGrp::DEFAULT;
+        $res = Cache::read($cacheKey, $cacheGroup);
+        if ($res) {
+            return $res;
+        }
+        $http = new Client(['curl' => [CURLOPT_TIMEOUT_MS => 1200], 'redirect' => false]);
+
+        $response = $http->get($url);
+        $statusCode = $response->getStatusCode();
+        if ($statusCode < 500) {
+            $stringBody = $response->getBody()->getContents();
+        } else {
+            throw new DetailedException('ex' . ($statusCode - 300));
+        }
+        if ($statusCode === 200) {
+            Cache::write($cacheKey, $stringBody, $cacheGroup);
+        }
+        return $stringBody;
     }
 
     private function _getDescription(string $lang)
