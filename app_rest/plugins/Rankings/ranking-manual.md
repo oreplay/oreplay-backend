@@ -22,4 +22,4 @@ We are still in development mode, there is a lot of management functionality mis
   - If 2 classes need to be merged in one sharing results the endpoint `/api/v1/rankings/{ranking_id}/classMerger?from_class=M-40&to_class=M-35`
 - Check clubs added twice (with different names)
   - To-do: API and UI to hide duplicated runners
-- An export can be downloaded from `/api/v1/events/{ranking_event_id}/stages/{ranking_stage_id}/resultsByClass?output=ReadablePointsCsv&contrib_text=(descarte)`
+- An export can be downloaded from `/api/v1/events/{ranking_event_id}/stages/{ranking_stage_id}/resultsByClass?output=ReadablePointsCsv&contrib_text=(dst.)`
