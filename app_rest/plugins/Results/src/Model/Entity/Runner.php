@@ -118,6 +118,11 @@ class Runner extends AppEntity implements ParticipantInterface
         return $this->_fields['club'] ?? null;
     }
 
+    public function _getClass(): ?ClassEntity
+    {
+        return $this->_fields['class'] ?? null;
+    }
+
     public function _getStage(): ?RunnerResult
     {
         /** @var RunnerResult $res */

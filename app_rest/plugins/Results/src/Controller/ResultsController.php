@@ -7,6 +7,7 @@ namespace Results\Controller;
 use App\Model\Table\UsersTable;
 use RestApi\Lib\RestRenderer;
 use RestApi\Model\Table\RestApiTable;
+use Results\Lib\Output\AgeGroupClubs;
 use Results\Lib\Output\DuplicatedRunners;
 use Results\Lib\Output\ReadablePointsCsv;
 use Results\Model\Entity\Runner;
@@ -91,6 +92,9 @@ class ResultsController extends ApiController
             switch ($outputType) {
                 case 'ReadablePointsCsv':
                     $renderer = new ReadablePointsCsv($filters['contrib_text'] ?? null);
+                    return $renderer->setResults($results);
+                case 'AgeGroupClubs':
+                    $renderer = new AgeGroupClubs();
                     return $renderer->setResults($results);
                 case 'DuplicatedRunners':
                     if (isset($filters[DuplicatedRunners::PARAM_REMOVE_FROM_RANKING])) {
