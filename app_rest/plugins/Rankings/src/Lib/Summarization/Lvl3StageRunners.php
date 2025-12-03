@@ -4,16 +4,16 @@ declare(strict_types = 1);
 
 namespace Rankings\Lib\Summarization;
 
-class StageRunners
+class Lvl3StageRunners
 {
-    /** @var AgeGroupRunners[] */
+    /** @var Lvl4AgeGroupRunners[] */
     private array $_ageGroupMap = [];
 
     public function addRunnerToStage(SummaryRunner $runner): void
     {
         $ageGroup = $runner->getAgeGroup();
         if (!isset($this->_ageGroupMap[$ageGroup])) {
-            $this->_ageGroupMap[$ageGroup] = new AgeGroupRunners();
+            $this->_ageGroupMap[$ageGroup] = new Lvl4AgeGroupRunners();
         }
         $this->_ageGroupMap[$ageGroup]->addRunnerToAgeGroup($runner);
     }

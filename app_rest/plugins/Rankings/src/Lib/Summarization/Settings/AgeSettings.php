@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Rankings\Lib\Summarization;
+namespace Rankings\Lib\Summarization\Settings;
 
 class AgeSettings
 {

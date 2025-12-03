@@ -4,12 +4,13 @@ declare(strict_types = 1);
 
 namespace Rankings\Lib\Summarization;
 
+use Rankings\Lib\Summarization\Settings\AgeGroupDefinitions;
 use Results\Model\Entity\Club;
 use Results\Model\Entity\Runner;
 
-class ClubWithRunners
+class Lvl2ClubWithRunners
 {
-    /** @var StageRunners[] */
+    /** @var Lvl3StageRunners[] */
     private array $_stages = [];
     private Club $_club;
 
@@ -27,7 +28,7 @@ class ClubWithRunners
         for ($i = 0; $i < $amountOfStages; $i++) {
             $stage_order = $i + 1;
             if (!isset($this->_stages[$stage_order])) {
-                $this->_stages[$stage_order] = new StageRunners();
+                $this->_stages[$stage_order] = new Lvl3StageRunners();
             }
             $r = new SummaryRunner($runner, $this->_ageGroupDefinitions, $stage_order);
             if ($r->getComputablePoints() !== null) {

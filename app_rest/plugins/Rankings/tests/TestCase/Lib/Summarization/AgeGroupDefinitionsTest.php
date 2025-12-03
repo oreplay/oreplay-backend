@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace Rankings\Test\Lib\Summarization;
 
 use Cake\TestSuite\TestCase;
-use Rankings\Lib\Summarization\AgeGroupDefinitions;
+use Rankings\Lib\Summarization\Settings\AgeGroupDefinitions;
 
 class AgeGroupDefinitionsTest extends TestCase
 {

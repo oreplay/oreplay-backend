@@ -5,9 +5,10 @@ declare(strict_types = 1);
 namespace Rankings\Lib\Summarization;
 
 use Cake\Http\Exception\InternalErrorException;
+use Rankings\Lib\Summarization\Settings\AgeGroupDefinitions;
 use Results\Model\Entity\Runner;
 
-class ClubList
+class Lvl1ClubList
 {
     private array $_clubs = [];
 
@@ -19,18 +20,18 @@ class ClubList
         }
         $clubId = $club->id;
         if (!isset($this->_clubs[$clubId])) {
-            $this->_clubs[$clubId] = new ClubWithRunners($ageGroupDefinitions, $club);
+            $this->_clubs[$clubId] = new Lvl2ClubWithRunners($ageGroupDefinitions, $club);
         }
         $this->_clubs[$clubId]->addRunnerToClub($runner);
     }
 
     /**
-     * @return array<ClubWithRunners>
+     * @return array<Lvl2ClubWithRunners>
      */
     public function getOrderedByPointsPerClub(): array
     {
         $runnersList = array_values($this->_clubs);
-        usort($runnersList, function (ClubWithRunners $a, ClubWithRunners $b) {
+        usort($runnersList, function (Lvl2ClubWithRunners $a, Lvl2ClubWithRunners $b) {
             return $b->getPointsPerClub() <=> $a->getPointsPerClub();
         });
         return $runnersList;

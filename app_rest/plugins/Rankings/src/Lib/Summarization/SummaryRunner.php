@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Rankings\Lib\Summarization;
 
+use Rankings\Lib\Summarization\Settings\AgeGroupDefinitions;
+use Rankings\Lib\Summarization\Settings\AgeSettings;
 use Results\Model\Entity\Runner;
 
 class SummaryRunner
@@ -15,9 +17,11 @@ class SummaryRunner
     private ?AgeSettings $_ageSettings = null;
     private bool $_excludedFromPoints = false;
     private bool $is_nc;
+    private AgeGroupDefinitions $_ageGroupDefinitions;
 
     public function __construct(Runner $runner, AgeGroupDefinitions $ageGroupDefinitions, int $stageOrder)
     {
+        $this->_ageGroupDefinitions = $ageGroupDefinitions;
         if ($runner->_getClass()) {
             $this->_className = $runner->_getClass()->short_name;
             $this->_ageSettings = $ageGroupDefinitions->getAgeSettings($this->_className);
@@ -39,7 +43,7 @@ class SummaryRunner
         if ($this->is_nc) {
             return null;
         }
-        return floor($this->_points * $this->_ageSettings->getClassRatio());
+        return $this->_ageGroupDefinitions->round($this->_points * $this->_ageSettings->getClassRatio());
     }
 
     public function toSummary(): string

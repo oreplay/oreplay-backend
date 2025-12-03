@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace Rankings\Lib\Summarization;
 
-class AgeGroupRunners
+class Lvl4AgeGroupRunners
 {
     /** @var SummaryRunner[] */
     private array $_runners;
@@ -52,7 +52,7 @@ class AgeGroupRunners
         return '"' . implode("\n", $runnersArray) . '"';
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         $runnersArray = [];
         foreach ($this->_runners as $runner) {
