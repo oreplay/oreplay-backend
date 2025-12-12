@@ -112,7 +112,7 @@ class ProxyFrontendController extends ApiController
 
     private function _makeHttpRequest(string $url): string
     {
-        $cacheKey = '_cachedPage' . md5($url);
+        $cacheKey = '_cachedPage' . md5($url); // NOSONAR
         $cacheGroup = CacheGrp::DEFAULT;
         $res = Cache::read($cacheKey, $cacheGroup);
         if ($res) {
