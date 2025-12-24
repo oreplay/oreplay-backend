@@ -12,6 +12,7 @@ use Results\Model\Table\StagesTable;
 
 class UploadConfigChecker
 {
+    private const ENTRY_LIST = 'EntryList';
     private const LIST_START = 'StartList';
     private const LIST_RESULT = 'ResultList';
 
@@ -33,7 +34,7 @@ class UploadConfigChecker
 
     public function isStartLists(): bool
     {
-        return $this->preCheckType() === UploadTypes::START_LIST;
+        return in_array($this->preCheckType(), [UploadTypes::START_LIST, UploadTypes::ENTRY_LIST]);
     }
 
     public function isTotals(): bool
@@ -132,6 +133,9 @@ class UploadConfigChecker
         }
         if ($totalization === self::TYPE_TOTAL_TIMES) {
             $toRet = UploadTypes::TOTAL_TIMES;
+        }
+        if ($contents === self::ENTRY_LIST && $resultsType === self::TYPE_START) {
+            $toRet = UploadTypes::ENTRY_LIST;
         }
         if ($toRet) {
             return $toRet;

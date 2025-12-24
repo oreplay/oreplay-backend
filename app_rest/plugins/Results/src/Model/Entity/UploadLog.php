@@ -51,7 +51,7 @@ class UploadLog extends AppEntity
 
     public function setUploadState(): int
     {
-        if ($this->upload_type === UploadTypes::START_LIST) {
+        if (in_array($this->upload_type, [UploadTypes::START_LIST, UploadTypes::ENTRY_LIST])) {
             $this->state = self::STATE_START;
         } else {
             $this->state = self::STATE_RESULT;
