@@ -10,7 +10,7 @@ use Results\Model\Entity\Control;
 
 class UploadHelperTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
     ];
 
     public function testGetExistingControlByStation()

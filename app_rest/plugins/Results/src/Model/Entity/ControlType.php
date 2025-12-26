@@ -12,12 +12,12 @@ class ControlType extends AppEntity
     public const CLEAR = 'b62d2a14-6896-4371-80be-55db2160542b';
     public const CHECK = '7b4b9e47-36ed-4b04-8345-0078bbcd7872';
 
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'created',
         'modified',
         'deleted',

@@ -16,7 +16,7 @@ use Results\Test\Fixture\StagesFixture;
 
 class RankingsTableTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         RankingsFixture::LOAD,
     ];
 

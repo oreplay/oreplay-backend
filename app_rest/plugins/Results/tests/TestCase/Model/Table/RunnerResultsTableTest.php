@@ -23,7 +23,7 @@ use Results\Test\Fixture\TeamResultsFixture;
 
 class RunnerResultsTableTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         RunnersFixture::LOAD,
         RunnerResultsFixture::LOAD,
         TeamResultsFixture::LOAD,
@@ -32,8 +32,7 @@ class RunnerResultsTableTest extends TestCase
         StagesFixture::LOAD,
         ResultTypesFixture::LOAD,
     ];
-    /** @var RunnerResultsTable Runners */
-    private $RunnerResults;
+    private RunnerResultsTable $RunnerResults;
 
     public function setUp(): void
     {

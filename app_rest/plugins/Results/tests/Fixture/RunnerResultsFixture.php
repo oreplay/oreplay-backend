@@ -15,7 +15,7 @@ class RunnerResultsFixture extends RestApiFixture
 {
     public const LOAD = 'plugin.Results.RunnerResults';
 
-    public $records = [
+    public array $records = [
         [
             'id' => RunnerResult::FIRST_RES,
             'event_id' => Event::FIRST_EVENT,

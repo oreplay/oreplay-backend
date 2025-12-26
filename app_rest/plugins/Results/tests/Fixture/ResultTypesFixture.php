@@ -11,7 +11,7 @@ class ResultTypesFixture extends RestApiFixture
 {
     const LOAD = 'plugin.Results.ResultTypes';
 
-    public $records = [
+    public array $records = [
         [
             'id' => ResultType::OVERALL,
             'description' => 'Overall',

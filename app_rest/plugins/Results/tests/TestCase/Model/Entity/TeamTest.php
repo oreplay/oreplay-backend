@@ -14,7 +14,7 @@ use Results\Model\Entity\TeamResult;
 
 class TeamTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         RankingsFixture::LOAD,
     ];
 

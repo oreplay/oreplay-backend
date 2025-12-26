@@ -6,11 +6,10 @@ namespace Results\Controller;
 
 use Results\Model\Table\RunnerResultsTable;
 
-/**
- * @property RunnerResultsTable $RunnerResults
- */
 class StatsController extends ApiController
 {
+    private RunnerResultsTable $RunnerResults;
+
     public function initialize(): void
     {
         parent::initialize();

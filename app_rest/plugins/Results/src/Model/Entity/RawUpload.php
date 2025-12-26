@@ -12,12 +12,12 @@ namespace Results\Model\Entity;
  */
 class RawUpload extends AppEntity
 {
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
     ];
 
     public function getDataAsArray(): array

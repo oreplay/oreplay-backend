@@ -8,7 +8,7 @@ class AddUploadTypeValues extends AbstractMigration
 {
     public function change(): void
     {
-        $this->getQueryBuilder()
+        $this->getQueryBuilder('update')
             ->update('runner_results')
             ->set('upload_type', 'res_splits')
             ->where(['upload_type IS NULL'])

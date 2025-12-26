@@ -26,7 +26,7 @@ use Results\Test\Fixture\TokensFixture;
 
 class CpiServerControllerTest extends ApiCommonErrorsTest
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         FederationsFixture::LOAD,
         EventsFixture::LOAD,
         ControlTypesFixture::LOAD,

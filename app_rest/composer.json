@@ -12,7 +12,7 @@
         "mobiledetect/mobiledetectlib": "^2.8",
         "bshaffer/oauth2-server-php": "~1.7",
         "freefri/cake-rest-api": "^0.7.17",
-        "freefri/cake-rest-api-oauth": "^0.1.2",
+        "freefri/cake-rest-api-oauth": "^0.2.0",
         "react/http": "^1.11",
         "ext-json": "*"
     },

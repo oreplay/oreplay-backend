@@ -11,7 +11,7 @@ use App\Test\Fixture\UsersFixture;
 
 class MeControllerTest extends ApiCommonErrorsTest
 {
-    public $fixtures = [
+    public array $fixtures = [
         OauthClientsFixture::LOAD,
         OauthAccessTokensFixture::LOAD,
         UsersFixture::LOAD

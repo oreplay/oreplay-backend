@@ -14,7 +14,7 @@ use Results\Test\Fixture\StagesFixture;
 
 class ClubsTableTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         EventsFixture::LOAD,
         StagesFixture::LOAD,
         ClubsFixture::LOAD,

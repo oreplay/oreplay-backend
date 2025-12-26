@@ -17,7 +17,7 @@ class UploadLogsFixture extends RestApiFixture
 
     public const FIRST = 'f3414e0b-e605-494d-89f0-85d0bfbab2a0';
 
-    public $records = [
+    public array $records = [
         [
             'id' => UploadLogsFixture::FIRST,
             'event_id' => Event::FIRST_EVENT,

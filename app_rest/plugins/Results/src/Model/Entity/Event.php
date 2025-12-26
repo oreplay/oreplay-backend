@@ -24,7 +24,7 @@ class Event extends AppEntity
     public const FOURTH_EVENT = '8f3b5adc-23b9-4790-a116-b83Af4760ad9';
 
 
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'is_hidden' => true,
@@ -39,11 +39,11 @@ class Event extends AppEntity
         'organizer_id' => true,
     ];
 
-    protected $_virtual = [
+    protected array $_virtual = [
         '_links',
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'deleted',
     ];
 

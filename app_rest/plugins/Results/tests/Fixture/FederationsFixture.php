@@ -11,7 +11,7 @@ class FederationsFixture extends RestApiFixture
 {
     const LOAD = 'plugin.Results.Federations';
 
-    public $records = [
+    public array $records = [
         [
             'id' => Federation::FEDO,
             'description' => 'FEDO SICO',

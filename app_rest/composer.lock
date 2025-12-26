@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3dbb934b1461b080ec72fa4f5a7048c3",
+    "content-hash": "b474023419beea88317e8528a16b13af",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
@@ -1255,34 +1255,34 @@
         },
         {
             "name": "freefri/cake-rest-api-oauth",
-            "version": "0.1.2",
+            "version": "0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/freefri/cake-rest-api-oauth.git",
-                "reference": "4473e42cd70dcee8ced1f209890a755d07b45eff"
+                "reference": "4957ed101b5ec2832143f3664e40dd61306aa0d7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/freefri/cake-rest-api-oauth/zipball/4473e42cd70dcee8ced1f209890a755d07b45eff",
-                "reference": "4473e42cd70dcee8ced1f209890a755d07b45eff",
+                "url": "https://api.github.com/repos/freefri/cake-rest-api-oauth/zipball/4957ed101b5ec2832143f3664e40dd61306aa0d7",
+                "reference": "4957ed101b5ec2832143f3664e40dd61306aa0d7",
                 "shasum": ""
             },
             "require": {
                 "bshaffer/oauth2-server-php": "~1.14",
-                "cakephp/cakephp": "^4.4 || ^5.2.5",
-                "cakephp/migrations": "^3.2 || ^4.6",
+                "cakephp/cakephp": "^5.2.5",
+                "cakephp/migrations": "^4.6",
                 "composer/composer": "^2.0",
-                "eduplex-api/cake-api-swagger": "^0.1.4 || ^0.3",
+                "eduplex-api/cake-api-swagger": "^0.3",
                 "ext-json": "*",
                 "ext-mbstring": "*",
                 "firebase/php-jwt": "5.*",
-                "freefri/cake-rest-api": "^0.5.23 || ^0.7.15",
-                "php": ">=7.4 || >=8.2"
+                "freefri/cake-rest-api": "^0.7.15",
+                "php": ">=8.2"
             },
             "require-dev": {
                 "cakephp/cakephp-codesniffer": "4.*",
-                "freefri/cake-rest-api-fake-app": "^0.1.6",
-                "phpunit/phpunit": "~8.5.0 || ^9.3 || ^10.1"
+                "freefri/cake-rest-api-fake-app": "^0.3.3",
+                "phpunit/phpunit": "^9.3 || ^10.1"
             },
             "suggest": {
                 "phpstan/phpstan": "PHPStan focuses on finding errors in your code without actually running it. It catches whole classes of bugs even before you write tests for the code."
@@ -1320,7 +1320,7 @@
                 "issues": "https://github.com/freefri/cake-rest-api-oauth/issues",
                 "source": "https://github.com/freefri/cake-rest-api-oauth"
             },
-            "time": "2025-12-24T13:38:19+00:00"
+            "time": "2025-12-24T14:09:36+00:00"
         },
         {
             "name": "justinrainbow/json-schema",

@@ -17,7 +17,7 @@ class ControlsFixture extends RestApiFixture
     public const CONTROL_81 = '1676ccff-b6f5-4d8b-b228-ccafc6e9fece';
     public const CONTROL_82 = '216b168d-99a0-415f-a52d-10cd9116d6c7';
 
-    public $records = [
+    public array $records = [
         [
             'id' => ControlsFixture::CONTROL_31,
             'event_id' => Event::FIRST_EVENT,

@@ -27,7 +27,7 @@ class Split extends AppEntity
     public const string STATUS_ADDITIONAL = 'Additional';
     public const string STATUS_MISSING = 'Missing';
 
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'sicard' => true,
@@ -38,11 +38,11 @@ class Split extends AppEntity
         'is_intermediate' => true,
     ];
 
-    protected $_virtual = [
+    protected array $_virtual = [
         //'debug_reason',
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'event_id',
         'stage_id',
         'stage_order',

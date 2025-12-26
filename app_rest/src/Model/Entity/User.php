@@ -22,7 +22,7 @@ class User extends Entity
         parent::__construct($properties, $options);
     }
 
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
 
@@ -32,7 +32,7 @@ class User extends Entity
         'last_name' => true,
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'is_admin',
         'is_super',
         'deleted',

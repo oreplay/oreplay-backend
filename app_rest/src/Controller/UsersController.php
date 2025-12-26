@@ -7,11 +7,10 @@ namespace App\Controller;
 use App\Model\Entity\User;
 use App\Model\Table\UsersTable;
 
-/**
- * @property UsersTable $Users
- */
 class UsersController extends ApiController
 {
+    private UsersTable $Users;
+
     public function initialize(): void
     {
         parent::initialize();

@@ -17,7 +17,7 @@ class AddUploadTypeToTeamsResults extends AbstractMigration
         ]);
         $table->update();
 
-        $this->getQueryBuilder()
+        $this->getQueryBuilder('update')
             ->update($tableName)
             ->set('upload_type', 'res_splits')
             ->where(['upload_type IS NULL'])

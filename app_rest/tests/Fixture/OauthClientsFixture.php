@@ -11,8 +11,8 @@ class OauthClientsFixture extends RestApiFixture
     const LOAD = 'app.OauthClients';
     const DASHBOARD_CLI = '2658';
 
-    public $table = 'oauth_clients';
-    public $records = [];
+    public string $table = 'oauth_clients';
+    public array $records = [];
 
     public function __construct()
     {

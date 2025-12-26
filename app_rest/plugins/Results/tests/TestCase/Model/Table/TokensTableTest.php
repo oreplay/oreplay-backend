@@ -13,7 +13,7 @@ use Results\Test\Fixture\TokensFixture;
 
 class TokensTableTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         TokensFixture::LOAD,
         FederationsFixture::LOAD,
         EventsFixture::LOAD,

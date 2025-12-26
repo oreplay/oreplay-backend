@@ -9,7 +9,7 @@ use Results\Lib\UploadMetrics;
 
 class UploadMetricsTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
     ];
 
     public function testToArray()

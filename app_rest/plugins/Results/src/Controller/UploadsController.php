@@ -12,7 +12,6 @@ use Cake\Core\Configure;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
-use Results\Lib\DeferredResolution\FireAndForget;
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
@@ -23,15 +22,12 @@ use Results\Model\Table\TeamsTable;
 use Results\Model\Table\TokensTable;
 use Results\Model\Table\UploadLogsTable;
 
-/**
- * @property RunnersTable $Runners
- * @property ClassesTable $Classes
- */
 class UploadsController extends ApiController
 {
     public const NEW_VERSION = 402;
 
     private UploadHelper $_helper;
+    private ClassesTable $Classes;
 
     public function isPublicController(): bool
     {

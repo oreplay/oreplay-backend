@@ -12,7 +12,7 @@ use Results\Test\Fixture\StagesFixture;
 
 class RawUploadsTableTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         RawUploadsFixture::LOAD,
     ];
 

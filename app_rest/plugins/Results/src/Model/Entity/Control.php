@@ -11,16 +11,16 @@ namespace Results\Model\Entity;
  */
 class Control extends AppEntity
 {
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'station' => true,
     ];
 
-    protected $_virtual = [
+    protected array $_virtual = [
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'event_id',
         'stage_id',
         'control_name',

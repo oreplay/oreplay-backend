@@ -24,7 +24,7 @@ class Team extends AppEntity implements ParticipantInterface
 
     public const FIRST_TEAM = '8ea9f351-4141-4ff2-891d-9e2a904bc296';
 
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'team_name' => true,
@@ -33,13 +33,13 @@ class Team extends AppEntity implements ParticipantInterface
         'eligibility' => true,
     ];
 
-    protected $_virtual = [
+    protected array $_virtual = [
         'full_name',
         'stage',
         'overalls',
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'event_id',
         'stage_id',
         'team_name',

@@ -29,7 +29,7 @@ class TeamResult extends AppEntity implements ParticipantResultsEntity
     use ResultTrait;
     use ResultTraitMatcher;
 
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'start_time' => true,
@@ -51,10 +51,10 @@ class TeamResult extends AppEntity implements ParticipantResultsEntity
         'leg_number' => true,
     ];
 
-    protected $_virtual = [
+    protected array $_virtual = [
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'event_id',
         'stage_id',
         'runner_id',

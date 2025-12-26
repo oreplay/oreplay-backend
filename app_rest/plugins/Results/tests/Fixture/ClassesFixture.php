@@ -13,7 +13,7 @@ class ClassesFixture extends RestApiFixture
 {
     public const LOAD = 'plugin.Results.Classes';
 
-    public $records = [
+    public array $records = [
         [
             'id' => ClassEntity::ME,
             'event_id' => Event::FIRST_EVENT,

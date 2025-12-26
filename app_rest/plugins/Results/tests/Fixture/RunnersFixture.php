@@ -18,7 +18,7 @@ class RunnersFixture extends RestApiFixture
     public const RUNNER_RAID_ID = '3c3b3cb5-1b86-491f-a6ef-f7d12e3d41b7';
     public const RUNNER_UUID = '7232f069-a361-474a-9ec4-5c51c2b4407e';
 
-    public $records = [];
+    public array $records = [];
 
     public function __construct()
     {

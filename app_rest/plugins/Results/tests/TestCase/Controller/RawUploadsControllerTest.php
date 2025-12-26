@@ -22,7 +22,7 @@ use Results\Test\TestCase\Controller\UploadExamples\StartExamples;
 
 class RawUploadsControllerTest extends ApiCommonErrorsTest
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         EventsFixture::LOAD,
         StagesFixture::LOAD,
         TokensFixture::LOAD,

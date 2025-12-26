@@ -13,7 +13,7 @@ class TokensFixture extends RestApiFixture
     public const FIRST_TOKEN = 'bBMEWb';
     public const FIRST_ID = 'fa349e58-00b4-4db5-8e2e-ce25e7669adf';
 
-    public $records = [
+    public array $records = [
         [
             'id' => TokensFixture::FIRST_ID,
             'foreign_model' => 'Event',

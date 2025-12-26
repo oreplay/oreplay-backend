@@ -14,7 +14,7 @@ use Cake\TestSuite\TestCase;
 
 class UsersTableTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         UsersFixture::LOAD
     ];
 

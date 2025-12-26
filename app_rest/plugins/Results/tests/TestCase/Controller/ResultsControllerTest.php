@@ -29,7 +29,7 @@ use Results\Test\Fixture\TeamsFixture;
 
 class ResultsControllerTest extends ApiCommonErrorsTest
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         EventsFixture::LOAD,
         ClubsFixture::LOAD,
         ClassesFixture::LOAD,

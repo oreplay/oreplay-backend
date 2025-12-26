@@ -9,7 +9,7 @@ use App\Model\Table\UsersTable;
 
 class UsersControllerTest extends ApiCommonErrorsTest
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         'app.Users'
     ];
 

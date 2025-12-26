@@ -16,7 +16,7 @@ class StagesFixture extends RestApiFixture
     public const string STAGE_RAID = '91c54cd6-98de-441c-a71c-cda466c1abc3';
     public const string STAGE_RANKING = 'e662499c-4d66-4675-8501-905bcfe28a41';
 
-    public $records = [
+    public array $records = [
         [
             'id' => Stage::FIRST_STAGE,
             'event_id' => Event::FIRST_EVENT,

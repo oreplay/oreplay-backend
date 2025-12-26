@@ -20,12 +20,12 @@ class Ranking extends AppEntity
 {
     public const int USE_FLOOR_INSTEAD_OF_ROUND = -1;
 
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'deleted',
     ];
 

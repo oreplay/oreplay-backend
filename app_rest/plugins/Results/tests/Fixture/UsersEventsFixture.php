@@ -12,7 +12,7 @@ class UsersEventsFixture extends RestApiFixture
 {
     public const LOAD = 'plugin.Results.UsersEvents';
 
-    public $records = [
+    public array $records = [
         [
             'user_id' => UsersFixture::USER_ADMIN_ID,
             'event_id' => Event::FIRST_EVENT,

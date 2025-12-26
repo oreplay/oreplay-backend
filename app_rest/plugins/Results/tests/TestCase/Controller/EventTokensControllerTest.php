@@ -19,7 +19,7 @@ use Results\Test\Fixture\StagesFixture;
 
 class EventTokensControllerTest extends ApiCommonErrorsTest
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         FederationsFixture::LOAD,
         EventsFixture::LOAD,
         StagesFixture::LOAD,

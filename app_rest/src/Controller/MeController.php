@@ -8,12 +8,10 @@ use App\Model\Entity\User;
 use App\Model\Table\UsersTable;
 use RestApi\Lib\Helpers\CookieHelper;
 
-/**
- * @property UsersTable $Users
- */
 class MeController extends ApiController
 {
     private $tokenFromCookie;
+    private UsersTable $Users;
 
     public function initialize(): void
     {

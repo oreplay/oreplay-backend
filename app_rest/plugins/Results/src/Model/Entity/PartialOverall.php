@@ -9,12 +9,12 @@ use Results\Lib\Consts\UploadTypes;
 
 class PartialOverall extends RunnerResult
 {
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
     ];
 
     public function __construct(array $properties = [], array $options = [])

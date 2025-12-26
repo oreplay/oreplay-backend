@@ -14,7 +14,7 @@ class RawUploadsFixture extends RestApiFixture
 
     public const FIRST = '8b299215-d9ad-4854-9173-342063f9a410';
 
-    public $records = [
+    public array $records = [
         [
             'id' => RawUploadsFixture::FIRST,
             'event_id' => Event::FIRST_EVENT,

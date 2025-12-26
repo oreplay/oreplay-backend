@@ -14,7 +14,7 @@ use Results\Test\Fixture\TokensFixture;
 
 class PayloadParserTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
     ];
 
     public function testGetEventId()

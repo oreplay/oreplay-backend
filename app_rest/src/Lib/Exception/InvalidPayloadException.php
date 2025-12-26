@@ -8,5 +8,5 @@ use RestApi\Lib\Exception\DetailedException;
 
 class InvalidPayloadException extends DetailedException
 {
-    protected $_defaultCode = 400;
+    protected int $_defaultCode = 400;
 }

@@ -14,13 +14,13 @@ class ResultType extends AppEntity
     public const TRAIL_TIMED = '935acae9-1bad-4a79-9010-018008a6766a';
     public const RAID_SECTION = '9ce3b477-ea6a-409e-8516-3cb4fe85ad31';
 
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'description' => true,
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'created',
         'modified',
         'deleted',

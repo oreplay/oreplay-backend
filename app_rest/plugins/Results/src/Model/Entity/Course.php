@@ -17,7 +17,7 @@ namespace Results\Model\Entity;
  */
 class Course extends AppEntity
 {
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'short_name' => true,
@@ -27,10 +27,10 @@ class Course extends AppEntity
         'controls' => true,
     ];
 
-    protected $_virtual = [
+    protected array $_virtual = [
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'event_id',
         'stage_id',
         'uuid',

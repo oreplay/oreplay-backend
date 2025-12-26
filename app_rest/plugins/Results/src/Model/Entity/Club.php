@@ -13,7 +13,7 @@ namespace Results\Model\Entity;
  */
 class Club extends AppEntity
 {
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'short_name' => true,
@@ -21,7 +21,7 @@ class Club extends AppEntity
         'oe_key' => true,
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'event_id',
         'stage_id',
         'uuid',

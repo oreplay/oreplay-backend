@@ -21,12 +21,12 @@ class UploadLog extends AppEntity
     private const STATE_RESULT = 2;
     public const STATE_ENDED = 3;
 
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'id',
         'event_id',
         'stage_id',

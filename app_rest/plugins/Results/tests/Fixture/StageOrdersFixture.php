@@ -13,7 +13,7 @@ class StageOrdersFixture extends RestApiFixture
     public const LOAD = 'plugin.Results.StageOrders';
     public const STAGE_1 = '83dc3504-9edd-4bbd-80b8-589aa0359c2e';
 
-    public $records = [
+    public array $records = [
         [
             'id' => StageOrdersFixture::STAGE_1,
             'event_id' => Event::FIRST_EVENT,

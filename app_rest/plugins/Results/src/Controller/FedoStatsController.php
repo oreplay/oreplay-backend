@@ -6,11 +6,10 @@ namespace Results\Controller;
 
 use Results\Model\Table\RunnerResultsTable;
 
-/**
- * @property RunnerResultsTable $RunnerResults
- */
 class FedoStatsController extends ApiController
 {
+    private RunnerResultsTable $RunnerResults;
+
     public function initialize(): void
     {
         parent::initialize();

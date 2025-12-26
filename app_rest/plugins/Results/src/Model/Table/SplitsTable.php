@@ -41,7 +41,7 @@ class SplitsTable extends AppTable
         return ['reading_time' => 'ASC'];
     }
 
-    protected function _insert(EntityInterface $entity, array $data)
+    protected function _insert(EntityInterface $entity, array $data): EntityInterface|false
     {
         return parent::_insert($entity, $data);
     }

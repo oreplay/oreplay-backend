@@ -9,7 +9,7 @@ use Results\Lib\Output\ReadablePointsCsv;
 
 class ReadablePointsCsvTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
     ];
 
     public function testRender()

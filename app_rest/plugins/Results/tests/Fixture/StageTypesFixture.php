@@ -11,7 +11,7 @@ class StageTypesFixture extends RestApiFixture
 {
     const LOAD = 'plugin.Results.StageTypes';
 
-    public $records = [
+    public array $records = [
         [
             'id' => StageType::CLASSIC,
             'description' => 'Foot-O, MTBO, Ski-O',

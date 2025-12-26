@@ -11,7 +11,7 @@ class OrganizersFixture extends RestApiFixture
 {
     public const LOAD = 'plugin.Results.Organizers';
 
-    public $records = [
+    public array $records = [
         [
             'id' => Organizer::ID,
             'external_id' => null,

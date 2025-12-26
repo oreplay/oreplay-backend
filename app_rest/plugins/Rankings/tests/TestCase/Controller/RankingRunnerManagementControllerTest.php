@@ -28,7 +28,7 @@ use Results\Test\Fixture\StagesFixture;
 
 class RankingRunnerManagementControllerTest extends ApiCommonErrorsTest
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         EventsFixture::LOAD,
         StagesFixture::LOAD,
         ClubsFixture::LOAD,

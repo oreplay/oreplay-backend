@@ -16,7 +16,7 @@ use Results\Test\Fixture\SplitsFixture;
 
 class SplitsTableTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         EventsFixture::LOAD,
         SplitsFixture::LOAD,
         RunnerResultsFixture::LOAD,

@@ -15,16 +15,16 @@ use Cake\I18n\FrozenTime;
  */
 class Token extends AppEntity
 {
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'expires' => true,
     ];
 
-    protected $_virtual = [
+    protected array $_virtual = [
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'id',
         'foreign_model',
         'foreign_key',

@@ -11,7 +11,7 @@ class ControlTypesFixture extends RestApiFixture
 {
     const LOAD = 'plugin.Results.ControlTypes';
 
-    public $records = [
+    public array $records = [
         [
             'id' => ControlType::NORMAL,
             'description' => 'Normal Control',

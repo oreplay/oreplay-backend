@@ -21,7 +21,7 @@ use Results\Test\Fixture\StagesFixture;
 
 class ClassesTableTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         EventsFixture::LOAD,
         ClassesFixture::LOAD,
         StagesFixture::LOAD,

@@ -15,7 +15,7 @@ class RankingsFixture extends RestApiFixture
 {
     public const LOAD = 'plugin.Rankings.Rankings';
 
-    public $records = [
+    public array $records = [
         [
             'id' => RankingsTable::FIRST_RANKING,
             'scoring_algorithm' => SimpleScoreCalculator::class,

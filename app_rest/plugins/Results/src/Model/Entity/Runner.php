@@ -36,7 +36,7 @@ class Runner extends AppEntity implements ParticipantInterface
 
     public const FIRST_RUNNER = 'd08fa43b-ddf8-47f6-9a59-2f1828881765';
 
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'first_name' => true,
@@ -49,13 +49,13 @@ class Runner extends AppEntity implements ParticipantInterface
         'eligibility' => true,
     ];
 
-    protected $_virtual = [
+    protected array $_virtual = [
         'full_name',
         'stage',
         'overalls',
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'event_id',
         'stage_id',
         'first_name',

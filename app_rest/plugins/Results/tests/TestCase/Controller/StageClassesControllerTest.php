@@ -16,7 +16,7 @@ use Results\Test\Fixture\SplitsFixture;
 
 class StageClassesControllerTest extends ApiCommonErrorsTest
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         EventsFixture::LOAD,
         ClassesFixture::LOAD,
         SplitsFixture::LOAD,

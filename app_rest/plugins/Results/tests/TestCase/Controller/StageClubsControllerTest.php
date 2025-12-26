@@ -13,7 +13,7 @@ use Results\Test\Fixture\EventsFixture;
 
 class StageClubsControllerTest extends ApiCommonErrorsTest
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         EventsFixture::LOAD,
         ClubsFixture::LOAD,
     ];

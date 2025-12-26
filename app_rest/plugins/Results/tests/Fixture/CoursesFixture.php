@@ -13,7 +13,7 @@ class CoursesFixture extends RestApiFixture
     public const LOAD = 'plugin.Results.Courses';
     public const COURSE_1 = '19f0c2f8-bc90-4665-beab-ec218c4f01b2';
 
-    public $records = [
+    public array $records = [
         [
             'id' => CoursesFixture::COURSE_1,
             'event_id' => Event::FIRST_EVENT,

@@ -14,15 +14,15 @@ use Cake\I18n\FrozenTime;
  */
 class UsersEvent extends AppEntity
 {
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
     ];
 
-    protected $_virtual = [
+    protected array $_virtual = [
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'deleted',
     ];
 }

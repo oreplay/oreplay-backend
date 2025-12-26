@@ -20,7 +20,7 @@ use Results\Model\Entity\ClassEntity;
 class ClassesTable extends AppTable
 {
     use LogTrait;
-    protected $_entityClass = ClassEntity::class;
+    protected ?string $_entityClass = ClassEntity::class;
 
     public function initialize(array $config): void
     {

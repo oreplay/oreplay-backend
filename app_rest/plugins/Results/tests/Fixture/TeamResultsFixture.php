@@ -15,7 +15,7 @@ class TeamResultsFixture extends RestApiFixture
 
     public const TEAM_RESULT_1 = '85c52ee5-99f5-4a49-9b5f-4648e48b4861';
 
-    public $records = [
+    public array $records = [
         [
             'id' => TeamResultsFixture::TEAM_RESULT_1,
             'event_id' => EventsFixture::FIRST_RAID,

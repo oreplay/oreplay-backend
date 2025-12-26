@@ -20,7 +20,7 @@ use Results\Test\Fixture\UploadLogsFixture;
 
 class EventsTableTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         EventsFixture::LOAD,
         FederationsFixture::LOAD,
         StagesFixture::LOAD,

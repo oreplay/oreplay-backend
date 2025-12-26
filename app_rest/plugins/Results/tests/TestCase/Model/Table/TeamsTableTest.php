@@ -22,7 +22,7 @@ use Results\Test\Fixture\TeamsFixture;
 
 class TeamsTableTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         RunnersFixture::LOAD,
         RunnerResultsFixture::LOAD,
         TeamResultsFixture::LOAD,

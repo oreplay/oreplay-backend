@@ -13,13 +13,13 @@ namespace Results\Model\Entity;
  */
 class StageOrder extends AppEntity
 {
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'description' => true,
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'event_id',
         'stage_id',
         'original_stage_id',

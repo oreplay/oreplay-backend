@@ -12,7 +12,7 @@ use App\Test\Fixture\UsersFixture;
 
 class PingControllerTest extends ApiCommonErrorsTest
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         UsersFixture::LOAD,
     ];
 

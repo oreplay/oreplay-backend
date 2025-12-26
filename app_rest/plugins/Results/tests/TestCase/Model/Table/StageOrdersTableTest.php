@@ -16,7 +16,7 @@ use Results\Test\Fixture\StagesFixture;
 
 class StageOrdersTableTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         StageOrdersFixture::LOAD,
         FederationsFixture::LOAD,
         EventsFixture::LOAD,

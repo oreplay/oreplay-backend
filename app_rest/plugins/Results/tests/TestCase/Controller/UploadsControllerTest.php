@@ -57,7 +57,7 @@ use Results\Test\TestCase\Controller\UploadExamples\TotalsExamples;
 
 class UploadsControllerTest extends ApiCommonErrorsTest
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         EventsFixture::LOAD,
         StagesFixture::LOAD,
         ClubsFixture::LOAD,

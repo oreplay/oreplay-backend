@@ -11,7 +11,7 @@ use Results\Test\Fixture\OrganizersFixture;
 
 class OrganizersControllerTest extends ApiCommonErrorsTest
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         OrganizersFixture::LOAD,
     ];
 
@@ -34,7 +34,7 @@ class OrganizersControllerTest extends ApiCommonErrorsTest
                 'region' => 'ES-VC',
             ],
         ];
-        
+
         $this->assertEquals($expected, $bodyDecoded['data']);
     }
 }

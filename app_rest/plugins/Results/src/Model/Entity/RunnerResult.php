@@ -36,7 +36,7 @@ class RunnerResult extends AppEntity implements ParticipantResultsEntity
 
     public const FIRST_RES = '635af121-db7b-4c5e-82ab-79208e45568f';
 
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'start_time' => true,
@@ -60,10 +60,10 @@ class RunnerResult extends AppEntity implements ParticipantResultsEntity
         'leg_number' => true,
     ];
 
-    protected $_virtual = [
+    protected array $_virtual = [
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'event_id',
         'stage_id',
         'runner_id',

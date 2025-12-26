@@ -8,11 +8,10 @@ use Cake\Http\Exception\BadRequestException;
 use Results\Model\Entity\Event;
 use Results\Model\Table\TokensTable;
 
-/**
- * @property TokensTable $EventTokens
- */
 class EventTokensController extends ApiController
 {
+    private TokensTable $EventTokens;
+
     public function initialize(): void
     {
         parent::initialize();

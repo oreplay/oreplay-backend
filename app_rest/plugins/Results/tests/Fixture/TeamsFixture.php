@@ -14,7 +14,7 @@ class TeamsFixture extends RestApiFixture
 {
     public const LOAD = 'plugin.Results.Teams';
 
-    public $records = [
+    public array $records = [
         [
             'id' => Team::FIRST_TEAM,
             'event_id' => Event::FIRST_EVENT,

@@ -19,19 +19,19 @@ class Stage extends AppEntity
 {
     public const FIRST_STAGE = '51d63e99-5d7c-4382-a541-8567015d8eed';
 
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'description' => true,
         'stage_type_id' => true,
     ];
 
-    protected $_virtual = [
+    protected array $_virtual = [
         'last_logs',
         '_links',
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'event_id',
         'base_date',
         'base_time',

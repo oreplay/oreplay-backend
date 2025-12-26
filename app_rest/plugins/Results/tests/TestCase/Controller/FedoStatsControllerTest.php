@@ -19,7 +19,7 @@ use Results\Test\Fixture\SplitsFixture;
 
 class FedoStatsControllerTest extends ApiCommonErrorsTest
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         EventsFixture::LOAD,
         ClubsFixture::LOAD,
         ClassesFixture::LOAD,

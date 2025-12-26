@@ -6,11 +6,10 @@ namespace Results\Controller;
 
 use Results\Model\Table\ClassesTable;
 
-/**
- * @property ClassesTable $Classes
- */
 class StageClassesController extends ApiController
 {
+    private ClassesTable $Classes;
+
     public function isPublicController(): bool
     {
         return true;

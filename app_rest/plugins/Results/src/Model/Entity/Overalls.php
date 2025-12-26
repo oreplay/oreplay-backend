@@ -13,12 +13,12 @@ namespace Results\Model\Entity;
  */
 class Overalls extends AppEntity
 {
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
     ];
 
     private array $_parts = [];

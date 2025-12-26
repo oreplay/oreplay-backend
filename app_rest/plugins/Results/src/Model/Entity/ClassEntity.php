@@ -22,7 +22,7 @@ class ClassEntity extends AppEntity
     public const ME = 'd8a87faf-68a4-487b-8f28-6e0ead6c1a57';
     public const FE = 'd8a87faf-68a4-487b-8f28-6e0ead6c1a56';
 
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'short_name' => true,
@@ -30,10 +30,10 @@ class ClassEntity extends AppEntity
         'oe_key' => true,
     ];
 
-    protected $_virtual = [
+    protected array $_virtual = [
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'event_id',
         'stage_id',
         'course_id',

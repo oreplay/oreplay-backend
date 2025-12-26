@@ -19,7 +19,7 @@ use Results\Test\Fixture\TeamsFixture;
 
 class TeamResultsTableTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         TeamsFixture::LOAD,
         TeamResultsFixture::LOAD,
         SplitsFixture::LOAD,

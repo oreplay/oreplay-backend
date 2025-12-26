@@ -12,13 +12,13 @@ class Federation extends AppEntity
     public const FEDO = 'FEDO';
     public const IOF = 'IOF';
 
-    protected $_accessible = [
+    protected array $_accessible = [
         '*' => false,
         'id' => false,
         'description' => true,
     ];
 
-    protected $_hidden = [
+    protected array $_hidden = [
         'created',
         'modified',
         'deleted',

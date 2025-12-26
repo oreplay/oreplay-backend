@@ -27,7 +27,7 @@ use Results\Test\Fixture\UsersEventsFixture;
 
 class StagesControllerTest extends ApiCommonErrorsTest
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         FederationsFixture::LOAD,
         UsersEventsFixture::LOAD,
         UsersFixture::LOAD,

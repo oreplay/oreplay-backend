@@ -18,6 +18,8 @@ abstract class ApiController extends RestApiController
     const ROUTE_PREFIX = '/api/v1';
 
     private $_localOauth = null;
+    private ApiRestCorsComponent $ApiCors;
+    public $OAuthServer;
 
     protected function _setUserLang(): void
     {
@@ -25,7 +27,9 @@ abstract class ApiController extends RestApiController
 
     protected function _loadOAuthServerComponent(): OAuthServerComponent
     {
-        $this->loadComponentFromClass(OAuthServerComponent::class);
+        /** @var OAuthServerComponent $oauthComponent */
+        $oauthComponent = $this->loadComponentFromClass(OAuthServerComponent::class);
+        $this->OAuthServer = $oauthComponent;
         return $this->OAuthServer;
     }
 

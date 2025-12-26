@@ -10,7 +10,7 @@ use Results\Model\Entity\Runner;
 
 class DuplicatedRunnersTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
     ];
 
     public function testSetResults()

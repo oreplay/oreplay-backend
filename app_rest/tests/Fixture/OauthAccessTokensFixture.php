@@ -11,8 +11,8 @@ class OauthAccessTokensFixture extends RestApiFixture
     const LOAD = 'app.OauthAccessTokens';
     const ACCESS_ADMIN_PROVIDER = '555ca191ca768883333c916a0c05bc72bdbbc89';
 
-    public $table = 'oauth_access_tokens';
-    public $records = [];
+    public string $table = 'oauth_access_tokens';
+    public array $records = [];
 
     public function __construct()
     {

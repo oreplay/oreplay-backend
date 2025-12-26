@@ -14,7 +14,7 @@ use Results\Test\Fixture\UsersEventsFixture;
 
 class UsersEventsTableTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         UsersFixture::LOAD,
         EventsFixture::LOAD,
         UsersEventsFixture::LOAD,

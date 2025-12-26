@@ -34,7 +34,7 @@ class TeamResultsTable extends AppTable
         return $table;
     }
 
-    protected function _insert(EntityInterface $entity, array $data)
+    protected function _insert(EntityInterface $entity, array $data): EntityInterface|false
     {
         return parent::_insert($entity, $data);
     }

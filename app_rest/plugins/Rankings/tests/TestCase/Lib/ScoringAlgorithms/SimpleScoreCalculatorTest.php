@@ -23,7 +23,7 @@ class SimpleScoreCalculatorTest extends TestCase
 {
     protected $traitObject;
 
-    protected $fixtures = [
+    protected array $fixtures = [
         RankingsFixture::LOAD,
     ];
 

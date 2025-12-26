@@ -20,7 +20,7 @@ class SplitsFixture extends RestApiFixture
     public const SPLIT_2 = 'b8e6927d-a17b-4d24-a10e-bb1f2ed9061c';
     public const SPLIT_1_RADIO = 'd5b1e69b-c62d-40f2-95ef-ae2582e4593a';
 
-    public $records = [
+    public array $records = [
         [
             'id' => self::SPLIT_1,
             'event_id' => Event::FIRST_EVENT,

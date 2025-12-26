@@ -18,7 +18,7 @@ use Results\Test\Fixture\StagesFixture;
 
 class RunnerTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         RankingsFixture::LOAD,
     ];
 

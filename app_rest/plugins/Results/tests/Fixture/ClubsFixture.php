@@ -13,7 +13,7 @@ class ClubsFixture extends RestApiFixture
     public const LOAD = 'plugin.Results.Clubs';
     public const CLUB_1 = '83dc3504-9edd-4bbd-80b8-589aa0359c3e';
 
-    public $records = [
+    public array $records = [
         [
             'id' => ClubsFixture::CLUB_1,
             'event_id' => Event::FIRST_EVENT,

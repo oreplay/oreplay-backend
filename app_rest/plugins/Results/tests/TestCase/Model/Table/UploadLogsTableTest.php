@@ -13,7 +13,7 @@ use Results\Test\Fixture\UploadLogsFixture;
 
 class UploadLogsTableTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
         UploadLogsFixture::LOAD,
     ];
     private UploadLogsTable $UploadLogs;
