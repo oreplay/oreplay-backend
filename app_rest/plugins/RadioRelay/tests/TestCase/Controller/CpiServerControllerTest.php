@@ -73,7 +73,7 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($expected, $res);
 
         /** @var Split $last */
-        $last = SplitsTable::load()->find()->orderDesc('created')->first();
+        $last = SplitsTable::load()->find()->orderByDesc('created')->first();
         $expected = [
             'is_intermediate' => true,
             'reading_time' => new FrozenTime('2025-03-08 11:50:00.000000+00:00'),
@@ -119,7 +119,7 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($expected, $res);
 
         /** @var Split $last */
-        $last = SplitsTable::load()->find()->orderDesc('created')->first();
+        $last = SplitsTable::load()->find()->orderByDesc('created')->first();
         $expected = [
             'is_intermediate' => true,
             'reading_time' => new FrozenTime('2025-03-08 11:50:00.000000+00:00'),

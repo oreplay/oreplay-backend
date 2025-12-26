@@ -77,7 +77,7 @@ class ClubsTable extends AppTable
             'event_id' => $eventId,
             'stage_id' => $stageId,
         ])
-            ->order(['short_name' => 'ASC']);
+            ->orderBy(['short_name' => 'ASC']);
     }
 
     public function fillNewWithStage(array $data, string $eventId, string $stageId)

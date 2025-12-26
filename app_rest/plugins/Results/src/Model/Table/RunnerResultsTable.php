@@ -89,8 +89,8 @@ class RunnerResultsTable extends AppTable
                 RunnerResultsTable::field('stage_id') => $stageId,
             ])
             ->contain(['Classes']) // assuming relation RunnerResults.belongsTo('Classes')
-            ->group(['Classes.short_name','Classes.oe_key'])
-            ->order(['CAST(Classes.oe_key AS UNSIGNED)' => 'ASC','Classes.short_name' => 'ASC'])
+            ->groupBy(['Classes.short_name','Classes.oe_key'])
+            ->orderBy(['CAST(Classes.oe_key AS UNSIGNED)' => 'ASC','Classes.short_name' => 'ASC'])
             ->enableHydration(false);
 
         return $query->toArray();
@@ -112,7 +112,7 @@ class RunnerResultsTable extends AppTable
             ->matching(RunnersTable::name() . '.' . ClassesTable::name(), function ($q) use ($classCondition) {
                 return $q->where($classCondition);
             })
-            ->order([RunnerResultsTable::field('runner_id') => 'ASC']);
+            ->orderBy([RunnerResultsTable::field('runner_id') => 'ASC']);
         if ($sex) {
             $query->matching(RunnersTable::name(), function ($q) use ($sex) {
                 return $q->where([RunnersTable::field('sex') => $sex]);
@@ -198,7 +198,7 @@ class RunnerResultsTable extends AppTable
     public function getAllResults(UploadHelper $helper): ResultSetInterface
     {
         return $this->findWhereEventAndStage($helper)
-            ->orderAsc('runner_id')
+            ->orderByAsc('runner_id')
             ->all();
     }
 

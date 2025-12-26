@@ -164,7 +164,7 @@ class SplitsTable extends AppTable
                     RunnerResultsTable::field('position') => 1,
                 ]);
             })
-            ->order(['reading_time' => 'ASC'])
+            ->orderBy(['reading_time' => 'ASC'])
             ->all();
         $stations = [];
         /** @var Split $split */

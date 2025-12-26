@@ -36,7 +36,7 @@ class StageOrdersTable extends AppTable
         return $this->find()
             ->cache($this->_cacheKeyGetAllInStage($stageId), CacheGrp::DEFAULT)
             ->where(['stage_id' => $stageId])
-            ->orderAsc('created')
+            ->orderByAsc('created')
             ->all();
     }
 

@@ -39,7 +39,7 @@ class StagesController extends ApiController
         $eventId = $this->request->getParam('eventID');
         $this->return = $this->Stages->find()
             ->where(['event_id' => $eventId])
-            ->orderAsc('created')->all();
+            ->orderByAsc('created')->all();
     }
 
     protected function getData($id)

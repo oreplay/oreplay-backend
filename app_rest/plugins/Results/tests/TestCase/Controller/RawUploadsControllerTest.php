@@ -54,7 +54,7 @@ class RawUploadsControllerTest extends ApiCommonErrorsTest
         //$this->assertEquals('', $decodedData['info']);
 
         /** @var RawUpload $raw */
-        $raw = RawUploadsTable::load()->find()->orderDesc('created')->first();
+        $raw = RawUploadsTable::load()->find()->orderByDesc('created')->first();
         $this->assertEquals(
             $data['oreplay_data_transfer']['event']['description'],
             $raw->getDataAsArray()['oreplay_data_transfer']['event']['description'],

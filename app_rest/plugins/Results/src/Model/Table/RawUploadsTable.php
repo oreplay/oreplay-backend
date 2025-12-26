@@ -51,7 +51,7 @@ class RawUploadsTable extends AppTable
         /** @var RawUpload $res */
         $res = $this->find()
             ->where(['created >=' => $created, 'event_id' => $eventId])
-            ->orderAsc('created')
+            ->orderByAsc('created')
             ->limit(1)
             ->firstOrFail();
         return $res;

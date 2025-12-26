@@ -33,7 +33,7 @@ class UploadLogsTable extends AppTable
         if ($stageId) {
             $q->where(['stage_id' => $stageId]);
         }
-        return $q->orderDesc('created')->all();
+        return $q->orderByDesc('created')->all();
     }
 
     public function saveClearLog(string $eventId, string $stageId): UploadLog

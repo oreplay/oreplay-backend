@@ -49,7 +49,7 @@ class TeamResultsTable extends AppTable
     public function getAllResults(UploadHelper $helper): ResultSetInterface
     {
         return $this->findWhereEventAndStage($helper)
-            ->orderAsc('team_id')
+            ->orderByAsc('team_id')
             ->all();
     }
 

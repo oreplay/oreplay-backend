@@ -111,9 +111,9 @@ class EventsTable extends AppTable
         }
 
         if ($when === 'future') {
-            $query->orderAsc('initial_date');
+            $query->orderByAsc('initial_date');
         } else {
-            $query->orderDesc('initial_date');
+            $query->orderByDesc('initial_date');
         }
         // Return query
         return $query->contain(OrganizersTable::name());

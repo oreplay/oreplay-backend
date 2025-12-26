@@ -89,10 +89,10 @@ class ClassesTable extends AppTable
                 return $q
                     ->select($select)
                     ->where(['is_intermediate' => true])
-                    ->group(['station', 'class_id'])
-                    ->order(['station' => 'DESC'], true);
+                    ->groupBy(['station', 'class_id'])
+                    ->orderBy(['station' => 'DESC'], true);
             })
-            ->order(['CAST(oe_key AS UNSIGNED)' => 'ASC', 'short_name' => 'ASC']);
+            ->orderBy(['CAST(oe_key AS UNSIGNED)' => 'ASC', 'short_name' => 'ASC']);
         $res = $query->all();
         /** @var ClassEntity $r */
         foreach ($res as $r) {

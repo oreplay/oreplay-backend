@@ -64,7 +64,7 @@ class RunnersTable extends AppTable
                 'stage_id' => $stageId,
             ])
             ->contain(RunnerResultsTable::name())
-            ->order(['modified' => 'DESC']);
+            ->orderBy(['modified' => 'DESC']);
     }
 
     public function matchRunner(array $runnerData, ClassEntity $class): Runner
@@ -184,7 +184,7 @@ class RunnersTable extends AppTable
                         $q->where([SplitsTable::field('station') . $in => $station]);
                     }
                     return $q
-                        ->order($order, true)
+                        ->orderBy($order, true)
                         ->contain(ControlsTable::name(), function (Query $q) {
                             return $q->contain(ControlTypesTable::name());
                         });

@@ -145,7 +145,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
             ->contain(CoursesTable::name())
-            ->orderAsc('Classes.oe_key')
+            ->orderByAsc('Classes.oe_key')
             ->all();
         $this->assertEquals(2, count($addedClasses));
         $expectedClasses = ['ME', 'WE'];
@@ -156,7 +156,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $res = RunnersTable::load()
             ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
-            ->orderAsc('last_name')
+            ->orderByAsc('last_name')
             ->all();
 
         $this->assertEquals(4, count($res), 'Runner count in db');
@@ -320,7 +320,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 'Classes.created >' => new FrozenTime('-1 minute')
             ])
             ->contain(CoursesTable::name())
-            ->orderAsc('Classes.oe_key')
+            ->orderByAsc('Classes.oe_key')
             ->all();
         $this->assertEquals(2, count($addedClasses));
         $expectedClasses = ['Individual', 'DUAL.TEAM'];
@@ -332,7 +332,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $res = RunnersTable::load()
             ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
             ->where(['Runners.created >' => new FrozenTime('-1 minute')])
-            ->orderAsc('last_name')
+            ->orderByAsc('last_name')
             ->all();
 
         $this->assertEquals(3, count($res), 'Runner count in db');
@@ -407,7 +407,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $dbSplits = SplitsTable::load()->find()
             ->where(['Splits.created >' => new FrozenTime('-1 minute')])
             ->contain(ControlsTable::name())
-            ->order(['Splits.order_number' => 'ASC', 'Splits.reading_time' => 'ASC'])
+            ->orderBy(['Splits.order_number' => 'ASC', 'Splits.reading_time' => 'ASC'])
             ->all();
         $this->assertEquals(4, $dbSplits->count());
         /** @var Split $splitA */
@@ -462,7 +462,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $dbSplits = SplitsTable::load()->find()
             ->where(['Splits.created >' => new FrozenTime('-1 minute')])
             ->contain(ControlsTable::name())
-            ->order(['Splits.order_number' => 'ASC', 'Splits.reading_time' => 'ASC'])
+            ->orderBy(['Splits.order_number' => 'ASC', 'Splits.reading_time' => 'ASC'])
             ->all();
         $this->assertEquals(6, $dbSplits->count());
         /** @var Split $splitA */
@@ -537,7 +537,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
             ->contain(CoursesTable::name())
-            ->orderAsc('Classes.oe_key')
+            ->orderByAsc('Classes.oe_key')
             ->all();
         $this->assertEquals(2, count($addedClasses));
         $expectedClasses = ['ME', '10 Mas30F'];
@@ -547,7 +547,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $res = RunnersTable::load()
             ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
-            ->orderAsc('last_name')
+            ->orderByAsc('last_name')
             ->all();
 
         $this->assertEquals($expectedRunnerAmount, count($res), 'Runner count in db');
@@ -573,7 +573,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $dbSplits = SplitsTable::load()->find()
             ->where(['Splits.created >' => new FrozenTime('-1 minute')])
             ->contain(ControlsTable::name())
-            ->order(['Splits.order_number' => 'ASC', 'Splits.reading_time' => 'ASC'])
+            ->orderBy(['Splits.order_number' => 'ASC', 'Splits.reading_time' => 'ASC'])
             ->all();
         $this->assertEquals($expectedSplits, $dbSplits->count());
         /** @var Split $splitA */
@@ -631,7 +631,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
             ->contain(CoursesTable::name())
-            ->orderAsc('Classes.oe_key')
+            ->orderByAsc('Classes.oe_key')
             ->all();
         $this->assertEquals(2, count($addedClasses));
         $expectedClasses = ['ME', '10 Mas30F'];
@@ -641,7 +641,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $res = RunnersTable::load()
             ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
-            ->orderAsc('last_name')
+            ->orderByAsc('last_name')
             ->all();
 
         $this->assertEquals($expectedRunnerAmount, count($res), 'Runner count in db');
@@ -655,7 +655,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $dbSplits = SplitsTable::load()->find()
             ->where(['Splits.created >' => new FrozenTime('-1 minute')])
             ->contain(ControlsTable::name())
-            ->order(['Splits.order_number' => 'ASC', 'Splits.reading_time' => 'ASC'])
+            ->orderBy(['Splits.order_number' => 'ASC', 'Splits.reading_time' => 'ASC'])
             ->all();
         $this->assertEquals(4, $dbSplits->count());
 
@@ -678,7 +678,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $dbSplits = SplitsTable::load()->find()
             ->where(['Splits.created >' => new FrozenTime('-1 minute')])
             ->contain(ControlsTable::name())
-            ->order(['Splits.order_number' => 'ASC', 'Splits.reading_time' => 'ASC'])
+            ->orderBy(['Splits.order_number' => 'ASC', 'Splits.reading_time' => 'ASC'])
             ->all();
         $this->assertEquals(3, $dbSplits->count());
         /** @var Split $splitA */
@@ -722,13 +722,13 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
             ->contain(CoursesTable::name())
-            ->orderAsc('Classes.oe_key')
+            ->orderByAsc('Classes.oe_key')
             ->all();
         $this->assertEquals(1, count($addedClasses));
 
         $res = RunnersTable::load()
             ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
-            ->orderAsc('last_name')
+            ->orderByAsc('last_name')
             ->all();
 
         $this->assertEquals(0, count($res), 'Runner count in db');
@@ -841,7 +841,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
             ->contain(CoursesTable::name())
-            ->orderAsc('Classes.oe_key')
+            ->orderByAsc('Classes.oe_key')
             ->all();
         $this->assertEquals(3, count($addedClasses));
         $expectedClasses = ['ME', 'U-10', 'O ROJO F'];
@@ -852,7 +852,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $res = RunnersTable::load()
             ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
-            ->orderAsc('last_name')
+            ->orderByAsc('last_name')
             ->all();
 
         $this->assertEquals(2, count($res), 'Runner count in db');
@@ -901,7 +901,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
             ->contain(CoursesTable::name())
-            ->orderAsc('Classes.oe_key')
+            ->orderByAsc('Classes.oe_key')
             ->all();
         $this->assertEquals(3, count($addedClasses));
         $expectedClasses = ['ME', 'U-10', 'O ROJO F'];
@@ -912,7 +912,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $res = RunnersTable::load()
             ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
-            ->orderAsc('last_name')
+            ->orderByAsc('last_name')
             ->all();
 
         $this->assertEquals(2, count($res), 'Runner count in db');
@@ -1160,7 +1160,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
             ->contain(CoursesTable::name())
-            ->orderAsc('Classes.oe_key')
+            ->orderByAsc('Classes.oe_key')
             ->all();
         $this->assertEquals(2, count($addedClasses));
         $expectedClasses = ['ME', 'SENIOR FEM'];
@@ -1171,7 +1171,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $res = RunnersTable::load()
             ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
-            ->orderAsc('last_name')
+            ->orderByAsc('last_name')
             ->all();
 
         $this->assertEquals(3, count($res), 'Runner count in db');
@@ -1242,12 +1242,12 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
         $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 1 courses (0', $human);
 
-        $newStage = StagesTable::load()->find()->orderDesc('created')->firstOrFail();
+        $newStage = StagesTable::load()->find()->orderByDesc('created')->firstOrFail();
         $this->assertEquals(StageType::TOTALS, $newStage->stage_type_id);
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => $newStage->id])
             ->contain(CoursesTable::name())
-            ->orderAsc('Classes.oe_key')
+            ->orderByAsc('Classes.oe_key')
             ->all();
         $expectedClasses = ['F-E'];
         $this->assertEquals(count($expectedClasses), count($addedClasses));
@@ -1257,7 +1257,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $res = RunnersTable::load()
             ->findRunnersInStage(Event::FIRST_EVENT, $newStage->id)
-            ->orderAsc('last_name')
+            ->orderByAsc('last_name')
             ->all();
         $this->assertEquals(2, count($res), 'Runner count in db');
 
@@ -1292,11 +1292,11 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 1 courses (0', $human);
         /** @var Stage $stage */
         $stage = StagesTable::load()->find()
-            ->where(['stage_type_id' => StageType::TOTALS])->orderDesc('created')->first();
+            ->where(['stage_type_id' => StageType::TOTALS])->orderByDesc('created')->first();
         $this->assertEquals('', $stage->description);
         $runners = RunnersTable::load()
             ->findRunnersInStage(Event::FIRST_EVENT, $stage->id)
-            ->orderDesc('first_name')->toArray();
+            ->orderByDesc('first_name')->toArray();
         $results = json_decode(json_encode($runners), true);
         $this->assertEquals('Paco Fernandez', $results[0]['full_name']);
         $this->assertEquals(1000, $results[0]['overalls']['overall']['points_final']);
@@ -1337,11 +1337,11 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 1 courses (0', $human);
         /** @var Stage $stage */
         $stage = StagesTable::load()->find()
-            ->where(['stage_type_id' => StageType::TOTALS])->orderDesc('created')->first();
+            ->where(['stage_type_id' => StageType::TOTALS])->orderByDesc('created')->first();
         $this->assertEquals('', $stage->description);
         $runners = RunnersTable::load()
             ->findRunnersInStage(Event::FIRST_EVENT, $stage->id)
-            ->orderDesc('first_name')->toArray();
+            ->orderByDesc('first_name')->toArray();
         $results = json_decode(json_encode($runners), true);
         $this->assertEquals('Paco Fernandez', $results[0]['full_name']);
         $this->assertEquals(2000, $results[0]['overalls']['overall']['points_final']);
@@ -1449,7 +1449,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $results = RunnerResultsTable::load()->find()
             ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])
             ->contain(SplitsTable::name())
-            ->orderAsc('start_time')->all();
+            ->orderByAsc('start_time')->all();
         $this->assertEquals(2, count($results));
         $this->assertEquals(UploadTypes::SPLITS, $results->first()->upload_type);
         $this->assertEquals($position, $results->first()->position);
@@ -1486,11 +1486,11 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $results = RunnerResultsTable::load()->find()
             ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])
             ->contain(SplitsTable::name(), function (Query $q) {
-                return $q->orderAsc('reading_time')
-                    ->orderAsc('station')
-                    ->orderAsc('is_intermediate');
+                return $q->orderByAsc('reading_time')
+                    ->orderByAsc('station')
+                    ->orderByAsc('is_intermediate');
             })
-            ->orderAsc('start_time')->all();
+            ->orderByAsc('start_time')->all();
         $this->assertEquals(2, count($results));
         $this->assertEquals(UploadTypes::SPLITS, $results->first()->upload_type);
         $this->assertEquals($position, $results->first()->position);

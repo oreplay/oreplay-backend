@@ -58,7 +58,7 @@ class StagesTable extends AppTable
                 'stage_type_id' => StageType::TOTALS
             ])
             ->contain(StageTypesTable::name())
-            ->orderAsc(StageTypesTable::field('created'))
+            ->orderByAsc(StageTypesTable::field('created'))
             ->first();
         if ($stage) {
             return $stage;

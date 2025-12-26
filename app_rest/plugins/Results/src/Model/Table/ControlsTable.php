@@ -56,7 +56,7 @@ class ControlsTable extends AppTable
     public function getAllControls(UploadHelper $helper): ResultSetInterface
     {
         return $this->findWhereEventAndStage($helper)
-            ->orderAsc('station')
+            ->orderByAsc('station')
             ->all();
     }
 }

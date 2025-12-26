@@ -19,6 +19,6 @@ class OrganizersController extends ApiController
     public function getList()
     {
         $this->return = $this->Organizers->find()
-            ->orderAsc('name')->all();
+            ->orderByAsc('name')->all();
     }
 }
