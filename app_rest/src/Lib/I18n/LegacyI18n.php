@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Lib\I18n;
 
+use App\Lib\Consts\CacheGrp;
 use App\Lib\Consts\Languages;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
@@ -44,7 +45,7 @@ class LegacyI18n extends I18n
         );
 
         if (class_exists(Cache::class)) {
-            static::$_collection->setCacher(Cache::pool('_cake_core_'));
+            static::$_collection->setCacher(Cache::pool(CacheGrp::CORE));
         }
 
         return static::$_collection;
