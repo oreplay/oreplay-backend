@@ -43,7 +43,7 @@ class PingController extends ApiController
         }
         $toRet = [
             '0' => LegacyI18n::getLocale(),
-            '1' => env('HTTP_HOST', ''),
+            '1' => $_SERVER['HTTP_HOST'] ?? '',
             '2' => env('APPLICATION_ENV', ''),
             '3' => $cache,
             '4' => new FrozenTime(),

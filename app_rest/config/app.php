@@ -9,6 +9,13 @@ use Cake\Database\Driver\Mysql;
 use Cake\Log\Engine\FileLog;
 use Cake\Mailer\Transport\MailTransport;
 
+if (!function_exists('env')) {
+    function env(string $key, string|float|int|bool|null $default = null): string|float|int|bool|null
+    {
+        return getenv($key) ?: $default;
+    }
+}
+
 $isDebug = filter_var(env('DEBUG', false), FILTER_VALIDATE_BOOLEAN);
 return [
     /*

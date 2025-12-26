@@ -128,7 +128,6 @@
       <path value="$PROJECT_DIR$/app_rest/vendor/sebastian/code-unit" />
       <path value="$PROJECT_DIR$/app_rest/vendor/sebastian/exporter" />
       <path value="$PROJECT_DIR$/app_rest/vendor/justinrainbow/json-schema" />
-      <path value="$PROJECT_DIR$/app_rest/vendor/sebastian/resource-operations" />
       <path value="$PROJECT_DIR$/app_rest/vendor/sebastian/complexity" />
       <path value="$PROJECT_DIR$/app_rest/vendor/sebastian/type" />
       <path value="$PROJECT_DIR$/app_rest/vendor/sebastian/lines-of-code" />
@@ -144,8 +143,6 @@
       <path value="$PROJECT_DIR$/app_rest/vendor/sebastian/cli-parser" />
       <path value="$PROJECT_DIR$/app_rest/vendor/sebastian/diff" />
       <path value="$PROJECT_DIR$/app_rest/vendor/sebastian/version" />
-      <path value="$PROJECT_DIR$/app_rest/vendor/doctrine/instantiator" />
-      <path value="$PROJECT_DIR$/app_rest/vendor/doctrine/sql-formatter" />
       <path value="$PROJECT_DIR$/app_rest/vendor/symfony/service-contracts" />
       <path value="$PROJECT_DIR$/app_rest/vendor/symfony/config" />
       <path value="$PROJECT_DIR$/app_rest/vendor/symfony/polyfill-intl-normalizer" />
@@ -173,7 +170,6 @@
       <path value="$PROJECT_DIR$/app_rest/vendor/symfony/var-dumper" />
       <path value="$PROJECT_DIR$/app_rest/vendor/symfony/finder" />
       <path value="$PROJECT_DIR$/app_rest/vendor/cakephp/repl" />
-      <path value="$PROJECT_DIR$/app_rest/vendor/cakephp/debug_kit" />
       <path value="$PROJECT_DIR$/app_rest/vendor/cakephp/bake" />
       <path value="$PROJECT_DIR$/app_rest/vendor/cakephp/cakephp" />
       <path value="$PROJECT_DIR$/app_rest/vendor/cakephp/plugin-installer" />
@@ -226,6 +222,8 @@
       <path value="$PROJECT_DIR$/app_rest/vendor/marc-mabe/php-enum" />
       <path value="$PROJECT_DIR$/app_rest/vendor/fig/http-message-util" />
       <path value="$PROJECT_DIR$/app_rest/vendor/react/http" />
+      <path value="$PROJECT_DIR$/app_rest/vendor/symfony/polyfill-php84" />
+      <path value="$PROJECT_DIR$/app_rest/vendor/psr/clock" />
     </include_path>
   </component>
   <component name="PhpInterpreters">

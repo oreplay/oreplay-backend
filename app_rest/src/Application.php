@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace App;
 
 use Cake\Core\Configure;
-use Cake\Core\Exception\MissingPluginException;
+use Cake\Core\Exception\CakeException;
 use Cake\Error\Middleware\ErrorHandlerMiddleware;
 use Cake\Http\BaseApplication;
 use Cake\Http\Middleware\BodyParserMiddleware;
@@ -28,20 +28,30 @@ class Application extends BaseApplication
     {
         parent::bootstrap();
 
+        /* bootstrapCli not needed after upgrade
         if (PHP_SAPI === 'cli') {
             $this->bootstrapCli();
         }
+        //*/
 
-        $this->loadCommonPlugins();
-    }
-
-    private function loadCommonPlugins()
-    {
-        $this->addPlugin('Migrations');
-        $this->addPlugin(\RadioRelay\RadioRelayPlugin::class);
-        $this->addPlugin(\Rankings\RankingsPlugin::class);
-        $this->addPlugin(\RestOauth\RestOauthPlugin::class);
-        $this->addPlugin(\Results\ResultsPlugin::class);
+        $pluginsToLoad = [
+            'Migrations',
+            \RadioRelay\RadioRelayPlugin::class,
+            \Rankings\RankingsPlugin::class,
+            \RestOauth\RestOauthPlugin::class,
+            \Results\ResultsPlugin::class,
+        ];
+        foreach ($pluginsToLoad as $plugin) {
+            if (!$this->getPlugins()->has($plugin)) {
+                try {
+                    $this->addPlugin($plugin);
+                } catch (CakeException $e) {
+                    if (!str_contains($e->getMessage(), 'is already loaded')) {
+                        throw $e;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -73,18 +83,5 @@ class Application extends BaseApplication
             ->add(new RoutingMiddleware($this));
 
         return $middlewareQueue;
-    }
-
-    /**
-     * @return void
-     */
-    protected function bootstrapCli()
-    {
-        try {
-            $this->addPlugin('Bake');
-        } catch (MissingPluginException $e) {
-            // Do not halt if the plugin is missing
-        }
-        $this->loadCommonPlugins();
     }
 }

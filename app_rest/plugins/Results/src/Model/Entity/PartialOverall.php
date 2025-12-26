@@ -29,7 +29,7 @@ class PartialOverall extends RunnerResult
     {
         $toRet = new PartialOverall($result->toArray());
         $toRet->stage_order = $result->stage_order;
-        return $toRet->setOriginal($result);
+        return $toRet;
     }
 
     public static function fromValues(
@@ -55,12 +55,6 @@ class PartialOverall extends RunnerResult
             $overall->status_code = StatusCode::OK;
         }
         return $overall;
-    }
-
-    private function setOriginal(RunnerResult | TeamResult $result): static
-    {
-        $this->_original = $result;
-        return $this;
     }
 
     public function setTimeSeconds(?int $timeSeconds): static
