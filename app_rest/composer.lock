@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b474023419beea88317e8528a16b13af",
+    "content-hash": "c3e1a98a6e35c30e9ce3e13049496d81",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-php",
@@ -67,6 +67,74 @@
                 "source": "https://github.com/bshaffer/oauth2-server-php/tree/v1.14.2"
             },
             "time": "2025-03-28T21:13:45+00:00"
+        },
+        {
+            "name": "cakephp/authentication",
+            "version": "3.3.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cakephp/authentication.git",
+                "reference": "85752168191e3a0b6d9318288b67e320b0b4d6f0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cakephp/authentication/zipball/85752168191e3a0b6d9318288b67e320b0b4d6f0",
+                "reference": "85752168191e3a0b6d9318288b67e320b0b4d6f0",
+                "shasum": ""
+            },
+            "require": {
+                "cakephp/http": "^5.0",
+                "laminas/laminas-diactoros": "^3.0",
+                "php": ">=8.1",
+                "psr/http-client": "^1.0",
+                "psr/http-message": "^1.1 || ^2.0",
+                "psr/http-server-handler": "^1.0",
+                "psr/http-server-middleware": "^1.0"
+            },
+            "require-dev": {
+                "cakephp/cakephp": "^5.1.0",
+                "cakephp/cakephp-codesniffer": "^5.0",
+                "firebase/php-jwt": "^6.2",
+                "phpunit/phpunit": "^10.5.32 || ^11.3.3 || ^12.0.9"
+            },
+            "suggest": {
+                "cakephp/cakephp": "Install full core to use \"CookieAuthenticator\".",
+                "cakephp/orm": "To use \"OrmResolver\" (Not needed separately if using full CakePHP framework).",
+                "cakephp/utility": "Provides CakePHP security methods. Required for the JWT adapter and Legacy password hasher.",
+                "ext-ldap": "Make sure this php extension is installed and enabled on your system if you want to use the built-in LDAP adapter for \"LdapIdentifier\".",
+                "firebase/php-jwt": "If you want to use the JWT adapter add this dependency"
+            },
+            "type": "cakephp-plugin",
+            "autoload": {
+                "psr-4": {
+                    "Authentication\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "CakePHP Community",
+                    "homepage": "https://github.com/cakephp/authentication/graphs/contributors"
+                }
+            ],
+            "description": "Authentication plugin for CakePHP",
+            "homepage": "https://cakephp.org",
+            "keywords": [
+                "Authentication",
+                "auth",
+                "cakephp",
+                "middleware"
+            ],
+            "support": {
+                "docs": "https://book.cakephp.org/authentication/3/en/",
+                "forum": "https://discourse.cakephp.org/",
+                "issues": "https://github.com/cakephp/authentication/issues",
+                "source": "https://github.com/cakephp/authentication"
+            },
+            "time": "2025-11-29T15:47:28+00:00"
         },
         {
             "name": "cakephp/cakephp",
@@ -1188,16 +1256,16 @@
         },
         {
             "name": "freefri/cake-rest-api",
-            "version": "0.7.17",
+            "version": "0.7.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/freefri/cake-rest-api.git",
-                "reference": "253251826f2b83ff80a1de6f3e9b99b0d7195bae"
+                "reference": "d19dfa6923e96ce1c6cd7ce98df42861d7312863"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/freefri/cake-rest-api/zipball/253251826f2b83ff80a1de6f3e9b99b0d7195bae",
-                "reference": "253251826f2b83ff80a1de6f3e9b99b0d7195bae",
+                "url": "https://api.github.com/repos/freefri/cake-rest-api/zipball/d19dfa6923e96ce1c6cd7ce98df42861d7312863",
+                "reference": "d19dfa6923e96ce1c6cd7ce98df42861d7312863",
                 "shasum": ""
             },
             "require": {
@@ -1251,20 +1319,20 @@
                 "issues": "https://github.com/freefri/cake-rest-api/issues",
                 "source": "https://github.com/freefri/cake-rest-api"
             },
-            "time": "2025-11-13T15:56:31+00:00"
+            "time": "2025-12-26T09:51:22+00:00"
         },
         {
             "name": "freefri/cake-rest-api-oauth",
-            "version": "0.2.0",
+            "version": "0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/freefri/cake-rest-api-oauth.git",
-                "reference": "4957ed101b5ec2832143f3664e40dd61306aa0d7"
+                "reference": "240dccebd8ee47a617e4a522046612d29e0d4765"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/freefri/cake-rest-api-oauth/zipball/4957ed101b5ec2832143f3664e40dd61306aa0d7",
-                "reference": "4957ed101b5ec2832143f3664e40dd61306aa0d7",
+                "url": "https://api.github.com/repos/freefri/cake-rest-api-oauth/zipball/240dccebd8ee47a617e4a522046612d29e0d4765",
+                "reference": "240dccebd8ee47a617e4a522046612d29e0d4765",
                 "shasum": ""
             },
             "require": {
@@ -1320,7 +1388,7 @@
                 "issues": "https://github.com/freefri/cake-rest-api-oauth/issues",
                 "source": "https://github.com/freefri/cake-rest-api-oauth"
             },
-            "time": "2025-12-24T14:09:36+00:00"
+            "time": "2025-12-26T09:49:05+00:00"
         },
         {
             "name": "justinrainbow/json-schema",

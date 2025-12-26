@@ -224,6 +224,7 @@
       <path value="$PROJECT_DIR$/app_rest/vendor/react/http" />
       <path value="$PROJECT_DIR$/app_rest/vendor/symfony/polyfill-php84" />
       <path value="$PROJECT_DIR$/app_rest/vendor/psr/clock" />
+      <path value="$PROJECT_DIR$/app_rest/vendor/cakephp/authentication" />
     </include_path>
   </component>
   <component name="PhpInterpreters">
