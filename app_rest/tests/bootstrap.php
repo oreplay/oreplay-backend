@@ -74,7 +74,7 @@ session_id('cli');
 \RestApi\Lib\RestMigrator::runAll(migrationList());
 
 $_SERVER['HTTP_HOST'] = 'dev.example.com';
-\Cake\I18n\FrozenTime::setJsonEncodeFormat(
+\Cake\I18n\DateTime::setJsonEncodeFormat(
     function () {
         return \App\Lib\ApiFrozenTime::i18nFormatMillis(func_get_arg(0));
     });

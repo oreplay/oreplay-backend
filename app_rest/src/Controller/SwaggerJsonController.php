@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Controller;
 
-use RestApi\Lib\Swagger\SwaggerReader;
+use RestApi\Lib\Swagger\FileReader\SwaggerReader;
 
 class SwaggerJsonController extends \RestApi\Controller\SwaggerJsonController
 {
@@ -13,13 +13,13 @@ class SwaggerJsonController extends \RestApi\Controller\SwaggerJsonController
         return '0.4.3';
     }
 
-    protected function getContent(SwaggerReader $reader, array $paths): array
+    protected function getContent(SwaggerReader $reader, array $paths, array $schemas = []): array
     {
         $serverUrl = ($_SERVER['HTTP_HOST'] ?? '');
         if ($serverUrl) {
             $serverUrl = 'https://' . $serverUrl;
         }
-        return [
+        $res = [
             'openapi' => '3.0.0',
             'info' => [
                 'version' => SwaggerJsonController::version(),
@@ -44,5 +44,9 @@ class SwaggerJsonController extends \RestApi\Controller\SwaggerJsonController
                 ],
             ],
         ];
+        if ($schemas) {
+            $res['components']['schemas'] = $schemas;
+        }
+        return $res;
     }
 }

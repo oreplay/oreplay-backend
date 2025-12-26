@@ -5,9 +5,9 @@ declare(strict_types = 1);
 namespace App\Lib;
 
 use App\Lib\Consts\Languages;
-use Cake\I18n\FrozenTime;
+use Cake\I18n\DateTime;
 
-class ApiFrozenTime extends FrozenTime
+class ApiFrozenTime extends DateTime
 {
     public const ISO8601_WITH_MILLIS = "yyyy-MM-dd'T'HH':'mm':'ss.SSSxxx";
     public const ISO8601_NO_MILLIS = "yyyy-MM-dd'T'HH':'mm':'ssxxx";
@@ -20,6 +20,5 @@ class ApiFrozenTime extends FrozenTime
             null,
             Languages::ENG
         );
-
     }
 }

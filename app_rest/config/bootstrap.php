@@ -215,7 +215,7 @@ TypeFactory::map('time', StringType::class);
 //Inflector::rules('plural', ['/^(inflect)or$/i' => '\1ables']);
 //Inflector::rules('irregular', ['red' => 'redlings']);
 //Inflector::rules('uninflected', ['dontinflectme']);
-\Cake\I18n\FrozenTime::setJsonEncodeFormat(
+\Cake\I18n\DateTime::setJsonEncodeFormat(
     function () {
         return \App\Lib\ApiFrozenTime::i18nFormatMillis(func_get_arg(0));
     });
