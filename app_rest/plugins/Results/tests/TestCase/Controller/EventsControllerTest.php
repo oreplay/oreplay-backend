@@ -13,6 +13,7 @@ use Results\Model\Entity\Event;
 use Results\Model\Entity\Federation;
 use Results\Model\Entity\Organizer;
 use Results\Model\Entity\Stage;
+use Results\Model\Entity\StageType;
 use Results\Model\Entity\UploadLog;
 use Results\Model\Table\EventsTable;
 use Results\Test\Fixture\EventsFixture;
@@ -89,6 +90,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $expected = [
+            '_c' => Event::class,
             'id' => EventsFixture::EVENT_TODAY,
             'description' => 'Today event',
             'initial_date' => $today,
@@ -119,6 +121,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $expected = [
+            '_c' => Event::class,
             'id' => EventsFixture::EVENT_TOMORROW_RANKING,
             'description' => 'Tomorrow ranking event',
             'initial_date' => $tomorrow,
@@ -158,14 +161,17 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $expected = $this->_getFirstEvent();
         $expected['stages'] = [
             [
+                '_c' => Stage::class,
                 'id' => Stage::FIRST_STAGE,
                 'description' => 'First stage',
                 'stage_type' => [
+                    '_c' => StageType::class,
                     'id' => '29d5050b-4769-4be5-ace4-7e5973f68e3c',
                     'description' => 'Foot-O, MTBO, Ski-O',
                 ],
                 'last_logs' => [
                     [
+                        '_c' => UploadLog::class,
                         'state' => UploadLog::STATE_START,
                         'created' => '2024-01-02T10:00:05.000+00:00',
                     ]
@@ -177,9 +183,11 @@ class EventsControllerTest extends ApiCommonErrorsTest
                 ],
             ],
             [
+                '_c' => Stage::class,
                 'id' => StagesFixture::STAGE_FEDO_2,
                 'description' => 'Second stage',
                 'stage_type' => [
+                    '_c' => StageType::class,
                     'id' => '29d5050b-4769-4be5-ace4-7e5973f68e3c',
                     'description' => 'Foot-O, MTBO, Ski-O',
                 ],
@@ -192,6 +200,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             ],
         ];
         $expected['federation'] = [
+            '_c' => Federation::class,
             'id' => Federation::FEDO,
             'description' => 'FEDO SICO',
         ];
@@ -202,6 +211,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
     private function _organizer(): array
     {
         return [
+            '_c' => Organizer::class,
             'id' => Organizer::ID,
             'name' => Organizer::NAME,
             'country' => 'ES',
@@ -212,6 +222,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
     private function _getFirstEvent(): array
     {
         return [
+            '_c' => Event::class,
             'id' => Event::FIRST_EVENT,
             'description' => 'Test Foot-o',
             'initial_date' => '2024-01-25',
@@ -236,6 +247,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
     private function _getSecondEvent(): array
     {
         return [
+            '_c' => Event::class,
             'id' => EventsFixture::FIRST_RAID,
             'description' => 'Test Adventure Race',
             'initial_date' => '2024-01-26',
@@ -266,9 +278,11 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $expected = $this->_getSecondEvent();
         $expected['stages'] = [
             [
+                '_c' => Stage::class,
                 'id' => StagesFixture::STAGE_RAID,
                 'description' => 'Stage raid',
                 'stage_type' => [
+                    '_c' => StageType::class,
                     'id' => 'a30b2db1-5649-491a-b5a8-ca53e4e58461',
                     'description' => 'Raid',
                 ],
@@ -281,6 +295,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             ],
         ];
         $expected['federation'] = [
+            '_c' => Federation::class,
             'id' => Federation::IOF,
             'description' => 'IOF OEVENTOR',
         ];
@@ -290,6 +305,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
     public function testGetData_authenticatedAsDesktopClient()
     {
+        $this->skipNextRequestInSwagger();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
 
@@ -313,6 +329,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
     public function testGetData_authenticatedAsUser()
     {
+        $this->skipNextRequestInSwagger();
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
         $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
 
@@ -322,6 +339,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
     public function testGetData_notAuthenticatedAsDesktopClient()
     {
+        $this->skipNextRequestInSwagger();
         $this->loadAuthToken('bad_fake_token');
         $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
 

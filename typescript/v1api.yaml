@@ -1,0 +1,480 @@
+openapi: 3.0.0
+info:
+  version: 0.4.3
+  title: O-replay - OpenAPI 3.0
+  description: O-replay Rest API
+  termsOfService: https://github.com/oreplay
+  contact:
+    email: support@oreplay.es
+servers:
+  - url: https://host.docker.internal
+tags: []
+paths:
+  /api/v1/events/:
+    get:
+      operationId: getListEvents
+      summary: ''
+      description: Get list
+      parameters:
+        - description: ''
+          in: query
+          name: user_id
+          example: 8186ef35-e8c1-4e5c-bcc4-42bb362f050b
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: description
+          example: Foot-o
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: page
+          example: '3'
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: limit
+          example: '1'
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: when
+          example: today
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: show_hidden
+          example: '1'
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: initial_date:lte
+          example: '2025-12-26'
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: final_date:gte
+          example: '2025-12-26'
+          required: false
+          schema:
+            type: string
+      tags:
+        - Events
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEvent'
+    post:
+      operationId: postListEvents
+      summary: ''
+      description: Add new
+      parameters: []
+      tags:
+        - Events
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResEvent'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: 7f83e207-5a6e-456e-a08f-935eef54eca2
+                description:
+                  type: string
+                  example: Test New Race
+                initial_date:
+                  type: string
+                  example: '2024-03-26'
+                final_date:
+                  type: string
+                  example: '2024-03-26'
+                federation_id:
+                  type: string
+                  example: FEDO
+                organizer_id:
+                  type: string
+                  example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+              description: 'Generic object when: Add new'
+  /api/v1/events/{eventID}:
+    get:
+      operationId: getEvents
+      summary: ''
+      description: Get data
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+      tags:
+        - Events
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResEvent'
+    patch:
+      operationId: patchEvents
+      summary: ''
+      description: Edit
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+      tags:
+        - Events
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResEvent'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                is_hidden:
+                  type: number
+                  example: 1
+                description:
+                  type: string
+                  example: Some description
+                scope:
+                  type: string
+                  example: local
+                location:
+                  type: string
+                  example: somewhere
+                country_code:
+                  type: string
+                  example: ES
+                website:
+                  type: string
+                  example: https://www.oreplay.es
+                picture:
+                  type: string
+                  example: https://www.oreplay.es/logo.svg
+                initial_date:
+                  type: string
+                  example: '2024-06-10'
+                final_date:
+                  type: string
+                  example: '2024-06-10'
+              description: 'Generic object when: Edit'
+    delete:
+      operationId: deleteEvents
+      summary: ''
+      description: Delete
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+      tags:
+        - Events
+      responses:
+        '204':
+          description: No content. Successfully deleted.
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 85a7c518-54a8-4180-9708-9dcd4e9906c7
+        is_hidden:
+          type: boolean
+          example: false
+        description:
+          type: string
+          example: Tomorrow ranking event
+        picture:
+          type: string
+          example: https://www.oreplay.es/logo.svg
+          nullable: true
+        website:
+          type: string
+          example: https://www.oreplay.es
+          nullable: true
+        scope:
+          type: string
+          example: local
+          nullable: true
+        location:
+          type: string
+          example: somewhere
+          nullable: true
+        country_code:
+          type: string
+          example: ES
+          nullable: true
+        initial_date:
+          type: string
+          example: '2025-12-27'
+        final_date:
+          type: string
+          example: '2025-12-27'
+        federation_id:
+          type: string
+          example: IOF
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+        modified:
+          type: string
+          example: '2022-03-13T10:01:00.000+00:00'
+        organizer_id:
+          type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        organizer:
+          $ref: '#/components/schemas/Organizer'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: http://dev.example.com/api/v1/events/85a7c518-54a8-4180-9708-9dcd4e9906c7
+          description: Generic object.
+        users:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: 8186ef35-e8c1-4e5c-bcc4-42bb362f050b
+              email:
+                type: string
+                example: admin@example.com
+              first_name:
+                type: string
+                example: My Name
+              last_name:
+                type: string
+                example: My Surname
+              created:
+                type: string
+                example: '****-**-*****:**:**.***+**:**'
+              modified:
+                type: string
+                example: '2021-01-18T10:41:31.000+00:00'
+              _joinData:
+                type: object
+                properties:
+                  event_id:
+                    type: string
+                    example: 7f83e207-5a6e-456e-a08f-935eef54eca2
+                  user_id:
+                    type: string
+                    example: 8186ef35-e8c1-4e5c-bcc4-42bb362f050b
+                description: objectInArray
+            description: Generic object.
+        stages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stage'
+        federation:
+          $ref: '#/components/schemas/Federation'
+      description: Entity Event
+      required:
+        - id
+        - description
+        - initial_date
+        - final_date
+        - federation_id
+        - created
+        - modified
+        - organizer_id
+        - _links
+    Organizer:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        name:
+          type: string
+          example: ADCON
+        country:
+          type: string
+          example: ES
+        region:
+          type: string
+          example: ES-VC
+      description: Entity Organizer
+      required:
+        - id
+        - name
+        - country
+        - region
+    PaginatedEvent:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        total:
+          type: number
+          example: 4
+        limit:
+          type: number
+          example: 10
+        _links:
+          $ref: '#/components/schemas/PaginationLinks'
+      description: Paginated Event
+      required:
+        - data
+        - total
+        - limit
+        - _links
+    PaginationLinks:
+      type: object
+      properties:
+        self:
+          type: object
+          properties:
+            href:
+              type: string
+              example: http://dev.example.com/api/v1/events/?page=1
+          description: Generic object.
+        next:
+          type: object
+          properties:
+            href:
+              type: string
+              example: http://dev.example.com/api/v1/events/?limit=1&page=4
+          description: Generic object.
+        prev:
+          type: object
+          properties:
+            href:
+              type: string
+              example: http://dev.example.com/api/v1/events/?limit=1&page=2
+          description: Generic object.
+      description: Pagination links.
+    ResEvent:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Event'
+      description: Data wrapper for Event
+      required:
+        - data
+    Stage:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 51d63e99-5d7c-4382-a541-8567015d8eed
+        description:
+          type: string
+          example: First stage
+        stage_type:
+          $ref: '#/components/schemas/StageType'
+        last_logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/UploadLog'
+        _links:
+          type: object
+          properties:
+            self:
+              type: string
+              example: http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed
+            results:
+              type: string
+              example: http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/
+            classes:
+              type: string
+              example: http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/
+          description: Generic object.
+      description: Entity Stage
+      required:
+        - id
+        - description
+        - stage_type
+        - last_logs
+        - _links
+    StageType:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 29d5050b-4769-4be5-ace4-7e5973f68e3c
+        description:
+          type: string
+          example: Foot-O, MTBO, Ski-O
+      description: Entity StageType
+      required:
+        - id
+        - description
+    UploadLog:
+      type: object
+      properties:
+        state:
+          type: number
+          example: 1
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+      description: Entity UploadLog
+    Federation:
+      type: object
+      properties:
+        id:
+          type: string
+          example: FEDO
+        description:
+          type: string
+          example: FEDO SICO
+      description: Entity Federation
+      required:
+        - id
+        - description

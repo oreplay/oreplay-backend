@@ -15,6 +15,7 @@ use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
+use Results\Model\Entity\StageOrder;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\ControlsFixture;
@@ -68,6 +69,7 @@ class RankingComputeClassControllerTest extends ApiCommonErrorsTest
                     'id' => $overalls['parts'][0]['id'] ?? 'undefined_parts.0.id',
                     'stage_order' => 1,
                     'stage' => [
+                        '_c' => StageOrder::class,
                         'id' => $overalls['parts'][0]['stage']['id'] ?? 'undefined_parts.0.stage.id',
                         'description' => 'Test Foot-o',
                     ],

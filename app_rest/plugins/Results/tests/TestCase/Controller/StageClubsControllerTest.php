@@ -6,6 +6,7 @@ namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
+use Results\Model\Entity\Club;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
 use Results\Test\Fixture\ClubsFixture;
@@ -31,6 +32,7 @@ class StageClubsControllerTest extends ApiCommonErrorsTest
         $bodyDecoded = $this->assertJsonResponseOK();
         $expected = [
             [
+                '_c' => Club::class,
                 'id' => ClubsFixture::CLUB_1,
                 'short_name' => 'Club A'
             ]

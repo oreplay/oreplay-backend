@@ -8,13 +8,17 @@ use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Cake\Datasource\ResultSetInterface;
 use Results\Model\Entity\ClassEntity;
+use Results\Model\Entity\Club;
+use Results\Model\Entity\Control;
 use Results\Model\Entity\ControlType;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
+use Results\Model\Entity\Split;
 use Results\Model\Entity\Stage;
 use Results\Model\Entity\Team;
+use Results\Model\Entity\TeamResult;
 use Results\Model\Table\SplitsTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;
@@ -131,6 +135,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
     private function _getFirstTeam(): array
     {
         $stage = [
+            '_c' => TeamResult::class,
             'id' => TeamResultsFixture::TEAM_RESULT_1,
             'result_type_id' => ResultType::STAGE,
             'start_time' => '2024-01-03T10:10:00.000+00:00',
@@ -156,6 +161,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'created' => '2024-01-03T10:15:05.000+00:00',
             'splits' => [
                 [
+                    '_c' => Split::class,
                     'id' => SplitsFixture::SPLIT_2,
                     'points' => null,
                     'reading_time' => '2024-01-03T11:00:20.321+00:00',
@@ -165,9 +171,11 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                     //'time_behind' => 0,
                     'created' => '2024-01-03T10:00:10.000+00:00',
                     'control' => [
+                        '_c' => Control::class,
                         'id' => ControlsFixture::CONTROL_31,
                         'station' => '31',
                         'control_type' => [
+                            '_c' => ControlType::class,
                             'id' => ControlType::NORMAL,
                             'description' => 'Normal Control',
                         ]
@@ -176,6 +184,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             ],
         ];
         return [
+            '_c' => Team::class,
             'id' => Team::FIRST_TEAM,
             'full_name' => 'First Team',
             'legs' => null,
@@ -183,10 +192,12 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'is_nc' => false,
             'eligibility' => '',
             'club' => [
+                '_c' => Club::class,
                 'id' => ClubsFixture::CLUB_1,
                 'short_name' => 'Club A',
             ],
             'class' => [
+                '_c' => ClassEntity::class,
                 'id' => ClassEntity::ME,
                 'short_name' => 'ME',
                 'long_name' => 'M Elite',
@@ -201,6 +212,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
     private function _getSecondRunner(): array
     {
         $overall = [
+            '_c' => RunnerResult::class,
             'id' => RunnerResult::FIRST_RES,
             'result_type_id' => ResultType::STAGE,
             'start_time' => '2024-01-02T10:00:00.000+00:00',
@@ -226,6 +238,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'created' => '2024-01-02T10:05:05.000+00:00',
             'splits' => [
                 [
+                    '_c' => Split::class,
                     'id' => SplitsFixture::SPLIT_1,
                     'points' => null,
                     'reading_time' => '2024-01-02T10:00:10.321+00:00',
@@ -235,9 +248,11 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                     //'time_behind' => 0,
                     'created' => '2024-01-02T10:00:10.000+00:00',
                     'control' => [
+                        '_c' => Control::class,
                         'id' => ControlsFixture::CONTROL_31,
                         'station' => '31',
                         'control_type' => [
+                            '_c' => ControlType::class,
                             'id' => ControlType::NORMAL,
                             'description' => 'Normal Control',
                         ]
@@ -247,6 +262,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         ];
         $year = date('Y');
         return [
+            '_c' => Runner::class,
             'id' => Runner::FIRST_RUNNER,
             'full_name' => 'First Runner',
             'sicard' => '2009933',
@@ -256,10 +272,12 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'sex' => 'M',
             'leg_number' => null,
             'club' => [
+                '_c' => Club::class,
                 'id' => ClubsFixture::CLUB_1,
                 'short_name' => 'Club A',
             ],
             'class' => [
+                '_c' => ClassEntity::class,
                 'id' => ClassEntity::ME,
                 'short_name' => 'ME',
                 'long_name' => 'M Elite',

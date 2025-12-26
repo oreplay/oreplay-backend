@@ -42,8 +42,9 @@ class EventTokensControllerTest extends ApiCommonErrorsTest
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertArrayHasKey('token', $bodyDecoded['data']);
         $this->assertEquals($data['expires'], $bodyDecoded['data']['expires']);
+        $this->assertEquals(Token::class, $bodyDecoded['data']['_c']);
         $this->assertArrayHasKey('created', $bodyDecoded['data']);
-        $this->assertEquals(3, count($bodyDecoded['data']));
+        $this->assertEquals(4, count($bodyDecoded['data']));
     }
 
     public function testGetList()
@@ -54,6 +55,7 @@ class EventTokensControllerTest extends ApiCommonErrorsTest
         $expected = [
             'data' => [
                 [
+                    '_c' => Token::class,
                     'token' => TokensFixture::FIRST_TOKEN,
                     'expires' => '2036-05-05T10:00:08.000+00:00',
                     'created' => '2024-05-05T10:00:08.000+00:00',

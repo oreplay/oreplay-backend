@@ -1,7 +1,7 @@
 {
     "/api/v1/events/": {
         "get": {
-            "operationId": 1,
+            "operationId": "getListEvents",
             "summary": "",
             "description": "Get list",
             "parameters": [
@@ -10,6 +10,16 @@
                     "in": "query",
                     "name": "user_id",
                     "example": "8186ef35-e8c1-4e5c-bcc4-42bb362f050b",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "description",
+                    "example": "Foot-o",
                     "required": false,
                     "schema": {
                         "type": "string"
@@ -59,7 +69,7 @@
                     "description": "",
                     "in": "query",
                     "name": "initial_date:lte",
-                    "example": "2024-07-10",
+                    "example": "2025-12-26",
                     "required": false,
                     "schema": {
                         "type": "string"
@@ -69,7 +79,7 @@
                     "description": "",
                     "in": "query",
                     "name": "final_date:gte",
-                    "example": "2024-07-10",
+                    "example": "2025-12-26",
                     "required": false,
                     "schema": {
                         "type": "string"
@@ -85,126 +95,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "description": "Get list",
-                                "properties": {
-                                    "data": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "string",
-                                                    "example": "1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow"
-                                                },
-                                                "is_hidden": {
-                                                    "type": "boolean",
-                                                    "example": false
-                                                },
-                                                "description": {
-                                                    "type": "string",
-                                                    "example": "Tomorrow ranking event"
-                                                },
-                                                "picture": {
-                                                    "type": "string",
-                                                    "example": ""
-                                                },
-                                                "website": {
-                                                    "type": "string",
-                                                    "example": ""
-                                                },
-                                                "scope": {
-                                                    "type": "string",
-                                                    "example": ""
-                                                },
-                                                "location": {
-                                                    "type": "string",
-                                                    "example": ""
-                                                },
-                                                "country_code": {
-                                                    "type": "string",
-                                                    "example": ""
-                                                },
-                                                "initial_date": {
-                                                    "type": "string",
-                                                    "example": "2024-07-11"
-                                                },
-                                                "final_date": {
-                                                    "type": "string",
-                                                    "example": "2024-07-11"
-                                                },
-                                                "federation_id": {
-                                                    "type": "string",
-                                                    "example": "IOF"
-                                                },
-                                                "created": {
-                                                    "type": "string",
-                                                    "example": "2022-03-13T10:01:00.000+00:00"
-                                                },
-                                                "modified": {
-                                                    "type": "string",
-                                                    "example": "2022-03-13T10:01:00.000+00:00"
-                                                },
-                                                "organizer_id": {
-                                                    "type": "string",
-                                                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                                                },
-                                                "organizer": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "string",
-                                                            "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                                                        },
-                                                        "name": {
-                                                            "type": "string",
-                                                            "example": "ADCON"
-                                                        },
-                                                        "country": {
-                                                            "type": "string",
-                                                            "example": "ES"
-                                                        },
-                                                        "region": {
-                                                            "type": "string",
-                                                            "example": "ES-VC"
-                                                        }
-                                                    }
-                                                },
-                                                "_links": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "self": {
-                                                            "type": "string",
-                                                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8b2-tomorrow"
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    },
-                                    "total": {
-                                        "type": "number",
-                                        "example": 4
-                                    },
-                                    "limit": {
-                                        "type": "number",
-                                        "example": 10
-                                    },
-                                    "_links": {
-                                        "type": "object",
-                                        "properties": {
-                                            "self": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "href": {
-                                                        "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/?page=1"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                "$ref": "#/components/schemas/PaginatedEvent"
                             }
                         }
                     }
@@ -212,7 +103,7 @@
             }
         },
         "post": {
-            "operationId": 2,
+            "operationId": "postListEvents",
             "summary": "",
             "description": "Add new",
             "parameters": [],
@@ -225,136 +116,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "description": "Add new",
-                                "properties": {
-                                    "data": {
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "string",
-                                                "example": "12034c77-ca1a-4d85-ad14-b82424cd3aa8"
-                                            },
-                                            "description": {
-                                                "type": "string",
-                                                "example": "Test New Race"
-                                            },
-                                            "initial_date": {
-                                                "type": "string",
-                                                "example": "2024-03-26"
-                                            },
-                                            "final_date": {
-                                                "type": "string",
-                                                "example": "2024-03-26"
-                                            },
-                                            "organizer_id": {
-                                                "type": "string",
-                                                "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                                            },
-                                            "federation_id": {
-                                                "type": "string",
-                                                "example": "FEDO"
-                                            },
-                                            "users": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "string",
-                                                            "example": "8186ef35-e8c1-4e5c-bcc4-42bb362f050b"
-                                                        },
-                                                        "email": {
-                                                            "type": "string",
-                                                            "example": "admin@example.com"
-                                                        },
-                                                        "first_name": {
-                                                            "type": "string",
-                                                            "example": "My Name"
-                                                        },
-                                                        "last_name": {
-                                                            "type": "string",
-                                                            "example": "My Surname"
-                                                        },
-                                                        "created": {
-                                                            "type": "string",
-                                                            "example": "2021-01-18T10:39:23.000+00:00"
-                                                        },
-                                                        "modified": {
-                                                            "type": "string",
-                                                            "example": "2021-01-18T10:41:31.000+00:00"
-                                                        },
-                                                        "_joinData": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "event_id": {
-                                                                    "type": "string",
-                                                                    "example": "12034c77-ca1a-4d85-ad14-b82424cd3aa8"
-                                                                },
-                                                                "user_id": {
-                                                                    "type": "string",
-                                                                    "example": "8186ef35-e8c1-4e5c-bcc4-42bb362f050b"
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            },
-                                            "created": {
-                                                "type": "string",
-                                                "example": "2024-07-10T15:55:10.444+00:00"
-                                            },
-                                            "modified": {
-                                                "type": "string",
-                                                "example": "2024-07-10T15:55:10.444+00:00"
-                                            },
-                                            "_links": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "self": {
-                                                        "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/12034c77-ca1a-4d85-ad14-b82424cd3aa8"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "400": {
-                    "description": "Bad Request",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Add new should not add final date befaore initial date",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Validation error"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 400
-                                    },
-                                    "error_fields": {
-                                        "type": "object",
-                                        "properties": {
-                                            "final_date": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "checkDates": {
-                                                        "type": "string",
-                                                        "example": "The final date cannot be earlier than the initial date."
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                "$ref": "#/components/schemas/ResEvent"
                             }
                         }
                     }
@@ -366,7 +128,6 @@
                     "application/json": {
                         "schema": {
                             "type": "object",
-                            "description": "Add new",
                             "properties": {
                                 "id": {
                                     "type": "string",
@@ -392,23 +153,24 @@
                                     "type": "string",
                                     "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
                                 }
-                            }
+                            },
+                            "description": "Generic object when: Add new"
                         }
                     }
                 }
             }
         }
     },
-    "/api/v1/events/{entity_id}": {
+    "/api/v1/events/{eventID}": {
         "get": {
-            "operationId": 3,
+            "operationId": "getEvents",
             "summary": "",
-            "description": "Get data authenticated as user",
+            "description": "Get data",
             "parameters": [
                 {
                     "description": "ID in URL",
                     "in": "path",
-                    "name": "entity_id",
+                    "name": "eventID",
                     "required": true,
                     "schema": {
                         "type": "string"
@@ -425,181 +187,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "description": "Get data authenticated as user",
-                                "properties": {
-                                    "data": {
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "string",
-                                                "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                                            },
-                                            "is_hidden": {
-                                                "type": "boolean",
-                                                "example": false
-                                            },
-                                            "description": {
-                                                "type": "string",
-                                                "example": "Test Foot-o"
-                                            },
-                                            "picture": {
-                                                "type": "string",
-                                                "example": ""
-                                            },
-                                            "website": {
-                                                "type": "string",
-                                                "example": ""
-                                            },
-                                            "scope": {
-                                                "type": "string",
-                                                "example": ""
-                                            },
-                                            "location": {
-                                                "type": "string",
-                                                "example": ""
-                                            },
-                                            "country_code": {
-                                                "type": "string",
-                                                "example": ""
-                                            },
-                                            "initial_date": {
-                                                "type": "string",
-                                                "example": "2024-01-25"
-                                            },
-                                            "final_date": {
-                                                "type": "string",
-                                                "example": "2024-01-25"
-                                            },
-                                            "federation_id": {
-                                                "type": "string",
-                                                "example": "FEDO"
-                                            },
-                                            "created": {
-                                                "type": "string",
-                                                "example": "2022-03-01T10:01:00.000+00:00"
-                                            },
-                                            "modified": {
-                                                "type": "string",
-                                                "example": "2022-03-01T10:01:00.000+00:00"
-                                            },
-                                            "organizer_id": {
-                                                "type": "string",
-                                                "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                                            },
-                                            "stages": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "string",
-                                                            "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
-                                                        },
-                                                        "description": {
-                                                            "type": "string",
-                                                            "example": "First stage"
-                                                        },
-                                                        "stage_type": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "id": {
-                                                                    "type": "string",
-                                                                    "example": "29d5050b-4769-4be5-ace4-7e5973f68e3c"
-                                                                },
-                                                                "description": {
-                                                                    "type": "string",
-                                                                    "example": "Foot-O, MTBO, Ski-O"
-                                                                }
-                                                            }
-                                                        },
-                                                        "_links": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "self": {
-                                                                    "type": "string",
-                                                                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed"
-                                                                },
-                                                                "results": {
-                                                                    "type": "string",
-                                                                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/runners/"
-                                                                },
-                                                                "classes": {
-                                                                    "type": "string",
-                                                                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/"
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            },
-                                            "organizer": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "string",
-                                                        "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                                                    },
-                                                    "name": {
-                                                        "type": "string",
-                                                        "example": "ADCON"
-                                                    },
-                                                    "country": {
-                                                        "type": "string",
-                                                        "example": "ES"
-                                                    },
-                                                    "region": {
-                                                        "type": "string",
-                                                        "example": "ES-VC"
-                                                    }
-                                                }
-                                            },
-                                            "federation": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "string",
-                                                        "example": "FEDO"
-                                                    },
-                                                    "description": {
-                                                        "type": "string",
-                                                        "example": "FEDO SICO"
-                                                    }
-                                                }
-                                            },
-                                            "_links": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "self": {
-                                                        "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "401": {
-                    "description": "Unauthorized",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Get data not authenticated as desktop client",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Unauthorized"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 401
-                                    }
-                                }
+                                "$ref": "#/components/schemas/ResEvent"
                             }
                         }
                     }
@@ -607,14 +195,14 @@
             }
         },
         "patch": {
-            "operationId": 4,
+            "operationId": "patchEvents",
             "summary": "",
             "description": "Edit",
             "parameters": [
                 {
                     "description": "ID in URL",
                     "in": "path",
-                    "name": "entity_id",
+                    "name": "eventID",
                     "required": true,
                     "schema": {
                         "type": "string"
@@ -631,178 +219,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "description": "Edit",
-                                "properties": {
-                                    "data": {
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "string",
-                                                "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                                            },
-                                            "is_hidden": {
-                                                "type": "boolean",
-                                                "example": true
-                                            },
-                                            "description": {
-                                                "type": "string",
-                                                "example": "Some description"
-                                            },
-                                            "picture": {
-                                                "type": "string",
-                                                "example": "https://www.oreplay.es/logo.svg"
-                                            },
-                                            "website": {
-                                                "type": "string",
-                                                "example": "https://www.oreplay.es"
-                                            },
-                                            "scope": {
-                                                "type": "string",
-                                                "example": "local"
-                                            },
-                                            "location": {
-                                                "type": "string",
-                                                "example": "somewhere"
-                                            },
-                                            "country_code": {
-                                                "type": "string",
-                                                "example": "ES"
-                                            },
-                                            "initial_date": {
-                                                "type": "string",
-                                                "example": "2024-06-10"
-                                            },
-                                            "final_date": {
-                                                "type": "string",
-                                                "example": "2024-06-10"
-                                            },
-                                            "federation_id": {
-                                                "type": "string",
-                                                "example": "FEDO"
-                                            },
-                                            "created": {
-                                                "type": "string",
-                                                "example": "2022-03-01T10:01:00.000+00:00"
-                                            },
-                                            "modified": {
-                                                "type": "string",
-                                                "example": "2024-07-10T15:55:10.469+00:00"
-                                            },
-                                            "organizer_id": {
-                                                "type": "string",
-                                                "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                                            },
-                                            "_links": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "self": {
-                                                        "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "401": {
-                    "description": "Unauthorized",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Edit should not edit with invalid token",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Unauthorized"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 401
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "403": {
-                    "description": "Forbidden",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Edit should not edit from another user",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Forbidden"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 403
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "400": {
-                    "description": "Bad Request",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Edit should not edit final date befaore initial date",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Validation error"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 400
-                                    },
-                                    "error_fields": {
-                                        "type": "object",
-                                        "properties": {
-                                            "final_date": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "checkDates": {
-                                                        "type": "string",
-                                                        "example": "The final date cannot be earlier than the initial date."
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "405": {
-                    "description": "Method Not Allowed",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Patch should throw bad request exception when no id provided",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Method Not Allowed"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 405
-                                    }
-                                }
+                                "$ref": "#/components/schemas/ResEvent"
                             }
                         }
                     }
@@ -814,7 +231,6 @@
                     "application/json": {
                         "schema": {
                             "type": "object",
-                            "description": "Edit",
                             "properties": {
                                 "is_hidden": {
                                     "type": "number",
@@ -852,21 +268,22 @@
                                     "type": "string",
                                     "example": "2024-06-10"
                                 }
-                            }
+                            },
+                            "description": "Generic object when: Edit"
                         }
                     }
                 }
             }
         },
         "delete": {
-            "operationId": 5,
+            "operationId": "deleteEvents",
             "summary": "",
             "description": "Delete",
             "parameters": [
                 {
                     "description": "ID in URL",
                     "in": "path",
-                    "name": "entity_id",
+                    "name": "eventID",
                     "required": true,
                     "schema": {
                         "type": "string"
@@ -880,69 +297,6 @@
             "responses": {
                 "204": {
                     "description": "No content. Successfully deleted."
-                },
-                "401": {
-                    "description": "Unauthorized",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Delete should not delete with invalid token",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Unauthorized"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 401
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "403": {
-                    "description": "Forbidden",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Delete should not delete from another user",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Forbidden"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 403
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "405": {
-                    "description": "Method Not Allowed",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Delete should throw bad request exception when no id provided",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Method Not Allowed"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 405
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }

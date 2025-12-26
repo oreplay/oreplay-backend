@@ -8,6 +8,7 @@ use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
+use Results\Model\Entity\Split;
 use Results\Model\Entity\Stage;
 use Results\Model\Table\ClassesTable;
 use Results\Test\Fixture\ClassesFixture;
@@ -37,17 +38,20 @@ class StageClassesControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $fe = [
+            '_c' => ClassEntity::class,
             'id' => ClassEntity::FE,
             'short_name' => 'FE',
             'long_name' => 'F Elite',
             'splits' => [],
         ];
         $me = [
+            '_c' => ClassEntity::class,
             'id' => ClassEntity::ME,
             'short_name' => 'ME',
             'long_name' => 'M Elite',
             'splits' => [
                 [
+                    '_c' => Split::class,
                     'id' => SplitsFixture::SPLIT_1_RADIO,
                     'station' => 31,
                 ]

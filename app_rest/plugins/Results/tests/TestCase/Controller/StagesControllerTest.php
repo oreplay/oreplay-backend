@@ -53,6 +53,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
         $bodyDecoded = $this->assertJsonResponseOK();
         $expected = [
             [
+                '_c' => Stage::class,
                 'id' => Stage::FIRST_STAGE,
                 'description' => 'First stage',
                 'last_logs' => [],
@@ -63,6 +64,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
                 ],
             ],
             [
+                '_c' => Stage::class,
                 'id' => StagesFixture::STAGE_FEDO_2,
                 'description' => 'Second stage',
                 'last_logs' => [],
@@ -82,9 +84,11 @@ class StagesControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $expected = [
+            '_c' => Stage::class,
             'id' => StagesFixture::STAGE_FEDO_2,
             'description' => 'Second stage',
             'stage_type' => [
+                '_c' => StageType::class,
                 'id' => StageType::CLASSIC,
                 'description' => 'Foot-O, MTBO, Ski-O',
             ],

@@ -7,9 +7,9 @@ namespace Results\Model\Entity;
 use Cake\Database\Schema\TableSchema;
 use Cake\Database\Schema\TableSchemaInterface;
 use Cake\I18n\FrozenTime;
-use Cake\ORM\Entity;
+use RestApi\Model\Entity\RestApiEntity;
 
-class AppEntity extends Entity
+class AppEntity extends RestApiEntity
 {
     public function fastPatch(array $data, TableSchema $schema, string $timezone)
     {

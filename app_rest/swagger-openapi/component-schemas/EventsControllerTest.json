@@ -1,0 +1,1472 @@
+{
+    "Event": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00"
+                },
+                {
+                    "type": "string",
+                    "example": "1b10cfcc-b3f2-40bb-8dbe-8b24c0-today"
+                },
+                {
+                    "type": "string",
+                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                },
+                {
+                    "type": "string",
+                    "example": "1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00"
+                },
+                {
+                    "type": "string",
+                    "example": "7f83e207-5a6e-456e-a08f-935eef54eca2"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                }
+            ],
+            "is_hidden": [
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": true
+                }
+            ],
+            "description": [
+                {
+                    "type": "string",
+                    "example": "Tomorrow ranking event"
+                },
+                {
+                    "type": "string",
+                    "example": "Test Foot-o"
+                },
+                {
+                    "type": "string",
+                    "example": "Test Foot-o"
+                },
+                {
+                    "type": "string",
+                    "example": "Test Adventure Race"
+                },
+                {
+                    "type": "string",
+                    "example": "Today event"
+                },
+                {
+                    "type": "string",
+                    "example": "Tomorrow ranking event"
+                },
+                {
+                    "type": "string",
+                    "example": "Test Adventure Race"
+                },
+                {
+                    "type": "string",
+                    "example": "Test New Race"
+                },
+                {
+                    "type": "string",
+                    "example": "Test Foot-o"
+                },
+                {
+                    "type": "string",
+                    "example": "Test Adventure Race"
+                },
+                {
+                    "type": "string",
+                    "example": "Some description"
+                }
+            ],
+            "picture": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "example": "https://www.oreplay.es/logo.svg"
+                }
+            ],
+            "website": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "example": "https://www.oreplay.es"
+                }
+            ],
+            "scope": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "example": "local"
+                }
+            ],
+            "location": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "example": "somewhere"
+                }
+            ],
+            "country_code": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "example": "ES"
+                }
+            ],
+            "initial_date": [
+                {
+                    "type": "string",
+                    "example": "2025-12-27"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-25"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-25"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-26"
+                },
+                {
+                    "type": "string",
+                    "example": "2025-12-26"
+                },
+                {
+                    "type": "string",
+                    "example": "2025-12-27"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-26"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-03-26"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-25"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-26"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-06-10"
+                }
+            ],
+            "final_date": [
+                {
+                    "type": "string",
+                    "example": "2025-12-27"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-25"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-25"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-26"
+                },
+                {
+                    "type": "string",
+                    "example": "2025-12-26"
+                },
+                {
+                    "type": "string",
+                    "example": "2025-12-27"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-26"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-03-26"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-25"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-26"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-06-10"
+                }
+            ],
+            "federation_id": [
+                {
+                    "type": "string",
+                    "example": "IOF"
+                },
+                {
+                    "type": "string",
+                    "example": "FEDO"
+                },
+                {
+                    "type": "string",
+                    "example": "FEDO"
+                },
+                {
+                    "type": "string",
+                    "example": "IOF"
+                },
+                {
+                    "type": "string",
+                    "example": "IOF"
+                },
+                {
+                    "type": "string",
+                    "example": "IOF"
+                },
+                {
+                    "type": "string",
+                    "example": "IOF"
+                },
+                {
+                    "type": "string",
+                    "example": "FEDO"
+                },
+                {
+                    "type": "string",
+                    "example": "FEDO"
+                },
+                {
+                    "type": "string",
+                    "example": "IOF"
+                },
+                {
+                    "type": "string",
+                    "example": "FEDO"
+                }
+            ],
+            "created": [
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                }
+            ],
+            "modified": [
+                {
+                    "type": "string",
+                    "example": "2022-03-13T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2022-03-01T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2022-03-01T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2022-03-07T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2022-03-10T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2022-03-13T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2022-03-07T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2025-12-26T17:22:48.829+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2022-03-01T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2022-03-07T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2025-12-26T17:22:48.860+00:00"
+                }
+            ],
+            "organizer_id": [
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                }
+            ],
+            "organizer": [
+                {
+                    "$ref": "#/components/schemas/Organizer"
+                },
+                {
+                    "$ref": "#/components/schemas/Organizer"
+                },
+                {
+                    "$ref": "#/components/schemas/Organizer"
+                },
+                {
+                    "$ref": "#/components/schemas/Organizer"
+                },
+                {
+                    "$ref": "#/components/schemas/Organizer"
+                },
+                {
+                    "$ref": "#/components/schemas/Organizer"
+                },
+                {
+                    "$ref": "#/components/schemas/Organizer"
+                },
+                {
+                    "$ref": "#/components/schemas/Organizer"
+                },
+                {
+                    "$ref": "#/components/schemas/Organizer"
+                }
+            ],
+            "_links": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8b24c0-today"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/7f83e207-5a6e-456e-a08f-935eef54eca2"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                        }
+                    },
+                    "description": "Generic object."
+                }
+            ],
+            "users": [
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "example": "8186ef35-e8c1-4e5c-bcc4-42bb362f050b"
+                            },
+                            "email": {
+                                "type": "string",
+                                "example": "admin@example.com"
+                            },
+                            "first_name": {
+                                "type": "string",
+                                "example": "My Name"
+                            },
+                            "last_name": {
+                                "type": "string",
+                                "example": "My Surname"
+                            },
+                            "created": {
+                                "type": "string",
+                                "example": "****-**-*****:**:**.***+**:**"
+                            },
+                            "modified": {
+                                "type": "string",
+                                "example": "2021-01-18T10:41:31.000+00:00"
+                            },
+                            "_joinData": {
+                                "type": "object",
+                                "properties": {
+                                    "event_id": {
+                                        "type": "string",
+                                        "example": "7f83e207-5a6e-456e-a08f-935eef54eca2"
+                                    },
+                                    "user_id": {
+                                        "type": "string",
+                                        "example": "8186ef35-e8c1-4e5c-bcc4-42bb362f050b"
+                                    }
+                                },
+                                "description": "objectInArray"
+                            }
+                        },
+                        "description": "Generic object."
+                    }
+                }
+            ],
+            "stages": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Stage"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Stage"
+                    }
+                }
+            ],
+            "federation": [
+                {
+                    "$ref": "#/components/schemas/Federation"
+                },
+                {
+                    "$ref": "#/components/schemas/Federation"
+                }
+            ]
+        },
+        "description": "Entity Event"
+    },
+    "Organizer": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                }
+            ],
+            "name": [
+                {
+                    "type": "string",
+                    "example": "ADCON"
+                },
+                {
+                    "type": "string",
+                    "example": "ADCON"
+                },
+                {
+                    "type": "string",
+                    "example": "ADCON"
+                },
+                {
+                    "type": "string",
+                    "example": "ADCON"
+                },
+                {
+                    "type": "string",
+                    "example": "ADCON"
+                },
+                {
+                    "type": "string",
+                    "example": "ADCON"
+                },
+                {
+                    "type": "string",
+                    "example": "ADCON"
+                },
+                {
+                    "type": "string",
+                    "example": "ADCON"
+                },
+                {
+                    "type": "string",
+                    "example": "ADCON"
+                }
+            ],
+            "country": [
+                {
+                    "type": "string",
+                    "example": "ES"
+                },
+                {
+                    "type": "string",
+                    "example": "ES"
+                },
+                {
+                    "type": "string",
+                    "example": "ES"
+                },
+                {
+                    "type": "string",
+                    "example": "ES"
+                },
+                {
+                    "type": "string",
+                    "example": "ES"
+                },
+                {
+                    "type": "string",
+                    "example": "ES"
+                },
+                {
+                    "type": "string",
+                    "example": "ES"
+                },
+                {
+                    "type": "string",
+                    "example": "ES"
+                },
+                {
+                    "type": "string",
+                    "example": "ES"
+                }
+            ],
+            "region": [
+                {
+                    "type": "string",
+                    "example": "ES-VC"
+                },
+                {
+                    "type": "string",
+                    "example": "ES-VC"
+                },
+                {
+                    "type": "string",
+                    "example": "ES-VC"
+                },
+                {
+                    "type": "string",
+                    "example": "ES-VC"
+                },
+                {
+                    "type": "string",
+                    "example": "ES-VC"
+                },
+                {
+                    "type": "string",
+                    "example": "ES-VC"
+                },
+                {
+                    "type": "string",
+                    "example": "ES-VC"
+                },
+                {
+                    "type": "string",
+                    "example": "ES-VC"
+                },
+                {
+                    "type": "string",
+                    "example": "ES-VC"
+                }
+            ]
+        },
+        "description": "Entity Organizer"
+    },
+    "PaginatedEvent": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Event"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Event"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Event"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Event"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Event"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Event"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Event"
+                    }
+                }
+            ],
+            "total": [
+                {
+                    "type": "number",
+                    "example": 4
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 4
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 2
+                }
+            ],
+            "limit": [
+                {
+                    "type": "number",
+                    "example": 10
+                },
+                {
+                    "type": "number",
+                    "example": 10
+                },
+                {
+                    "type": "number",
+                    "example": 10
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 10
+                },
+                {
+                    "type": "number",
+                    "example": 10
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                }
+            ],
+            "_links": [
+                {
+                    "$ref": "#/components/schemas/PaginationLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/PaginationLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/PaginationLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/PaginationLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/PaginationLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/PaginationLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/PaginationLinks"
+                }
+            ]
+        },
+        "description": "Paginated Event",
+        "required": [
+            "data",
+            "total",
+            "limit",
+            "_links"
+        ]
+    },
+    "PaginationLinks": {
+        "type": "object",
+        "properties": {
+            "self": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/?page=1"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/?user_id=8186ef35-e8c1-4e5c-bcc4-42bb362f050b&page=1"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/?description=Foot-o&page=1"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/?limit=1&page=3"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2025-12-26&final_date:gte=2025-12-26&page=1"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/?when=future&page=1"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/?when=past&limit=1&page=1"
+                        }
+                    },
+                    "description": "Generic object."
+                }
+            ],
+            "next": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/?limit=1&page=4"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/?when=past&limit=1&page=2"
+                        }
+                    },
+                    "description": "Generic object."
+                }
+            ],
+            "prev": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/?limit=1&page=2"
+                        }
+                    },
+                    "description": "Generic object."
+                }
+            ]
+        },
+        "description": "Pagination links."
+    },
+    "ResEvent": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "$ref": "#/components/schemas/Event"
+                },
+                {
+                    "$ref": "#/components/schemas/Event"
+                },
+                {
+                    "$ref": "#/components/schemas/Event"
+                },
+                {
+                    "$ref": "#/components/schemas/Event"
+                }
+            ]
+        },
+        "description": "Data wrapper for Event",
+        "required": [
+            "data"
+        ]
+    },
+    "Stage": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "type": "string",
+                    "example": "91c54cd6-98de-441c-a71c-cda466c1abc3"
+                }
+            ],
+            "description": [
+                {
+                    "type": "string",
+                    "example": "First stage"
+                },
+                {
+                    "type": "string",
+                    "example": "Stage raid"
+                }
+            ],
+            "stage_type": [
+                {
+                    "$ref": "#/components/schemas/StageType"
+                },
+                {
+                    "$ref": "#/components/schemas/StageType"
+                }
+            ],
+            "last_logs": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/UploadLog"
+                    }
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                }
+            ],
+            "_links": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed"
+                        },
+                        "results": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/"
+                        },
+                        "classes": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "self": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3"
+                        },
+                        "results": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/results/"
+                        },
+                        "classes": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/classes/"
+                        }
+                    },
+                    "description": "Generic object."
+                }
+            ]
+        },
+        "description": "Entity Stage"
+    },
+    "StageType": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "29d5050b-4769-4be5-ace4-7e5973f68e3c"
+                },
+                {
+                    "type": "string",
+                    "example": "a30b2db1-5649-491a-b5a8-ca53e4e58461"
+                }
+            ],
+            "description": [
+                {
+                    "type": "string",
+                    "example": "Foot-O, MTBO, Ski-O"
+                },
+                {
+                    "type": "string",
+                    "example": "Raid"
+                }
+            ]
+        },
+        "description": "Entity StageType"
+    },
+    "UploadLog": {
+        "type": "object",
+        "properties": {
+            "state": [
+                {
+                    "type": "number",
+                    "example": 1
+                }
+            ],
+            "created": [
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                }
+            ]
+        },
+        "description": "Entity UploadLog"
+    },
+    "Federation": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "FEDO"
+                },
+                {
+                    "type": "string",
+                    "example": "IOF"
+                }
+            ],
+            "description": [
+                {
+                    "type": "string",
+                    "example": "FEDO SICO"
+                },
+                {
+                    "type": "string",
+                    "example": "IOF OEVENTOR"
+                }
+            ]
+        },
+        "description": "Entity Federation"
+    }
+}

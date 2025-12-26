@@ -1,0 +1,14 @@
+name: typescript-orval
+
+services:
+  nodejs:
+    image: node:22.16.0
+    working_dir: /mnt/typescript
+    command: sh -c "/bin/bash runOrval.sh"
+    #command: sh -c "tail -f /dev/null"
+    platform: linux/amd64
+    volumes:
+      - ./typescript:/mnt/typescript
+      - ./app_rest/swagger-openapi:/mnt/swagger-openapi
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

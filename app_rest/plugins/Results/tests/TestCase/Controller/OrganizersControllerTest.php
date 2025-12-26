@@ -28,6 +28,7 @@ class OrganizersControllerTest extends ApiCommonErrorsTest
         $this->assertNotEmpty($bodyDecoded);
         $expected = [
             [
+                '_c' => Organizer::class,
                 'id' => Organizer::ID,
                 'name' => Organizer::NAME,
                 'country' => 'ES',

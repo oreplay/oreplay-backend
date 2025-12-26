@@ -1,0 +1,19 @@
+{
+  "name": "v1api",
+  "version": "0.0.0",
+  "scripts": {
+    "openapi:download": "curl -s 'http://host.docker.internal/api/v1/openapi/json?no_description=1' > v1api.json && node json-to-yaml.js",
+    "openapi:convert": "node json-to-yaml.js",
+    "orval-build": "orval --config ./orval.config.ts"
+  },
+  "engines": {
+    "node": "^22.16.0"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "js-yaml": "^4.1.0",
+    "orval": "7.9.0",
+    "prettier": "^3.5.3"
+  }
+}

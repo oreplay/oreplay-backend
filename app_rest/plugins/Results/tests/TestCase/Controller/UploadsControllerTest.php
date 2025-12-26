@@ -21,6 +21,7 @@ use Results\Model\Entity\Split;
 use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageType;
 use Results\Model\Entity\Team;
+use Results\Model\Entity\TeamResult;
 use Results\Model\Table\AnswersTable;
 use Results\Model\Table\ClassesControlsTable;
 use Results\Model\Table\ClassesTable;
@@ -1052,9 +1053,10 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         /** @var Team $team */
         $team = TeamsTable::load()->findTeamsInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)->first();
         $expectedTeamResult1 = [
+            '_c' => TeamResult::class,
             'result_type_id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
             'start_time' => '2025-10-05T08:30:00.000+00:00',
-            'finish_time' => '',
+            'finish_time' => null,
             'upload_type' => 'res_finish',
             'time_seconds' => (int) 0,
             'position' => (int) 0,
@@ -1091,6 +1093,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         /** @var Team $team */
         $team = TeamsTable::load()->findTeamsInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)->first();
         $expectedTeamResult1 = [
+            '_c' => TeamResult::class,
             'result_type_id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
             'start_time' => '2025-10-05T08:30:00.000+00:00',
             'finish_time' => '2025-10-05T09:41:17.000+00:00',

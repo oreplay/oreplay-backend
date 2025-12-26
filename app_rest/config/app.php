@@ -93,7 +93,9 @@ return [
         ]
     ],
     'Swagger' => [
-        'jsonDir' => ROOT . DS . 'tmp' . DS . 'swagger-openapi' . DS,
+        'jsonDir' => getenv('SWAGGER_JSON_DIR_RELATIVE')
+            ? ROOT . getenv('SWAGGER_JSON_DIR_RELATIVE')
+            : ROOT . DS . 'tmp' . DS . 'swagger-openapi' . DS,
         'acceptLanguage' => false,
     ],
     'RestOauthPlugin' => [

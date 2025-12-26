@@ -61,6 +61,9 @@ class RankingComputeStageControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = json_decode($body, true);
         $string = 'Ranking compute errors: [{"error":"';
+        if (str_contains($bodyDecoded['message'], 'failed during DNS lookup')) {
+            $this->markTestSkipped($bodyDecoded['message']);
+        }
         $this->assertStringStartsWith($string, $bodyDecoded['message']);
     }
 }
