@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
+use Cake\I18n\FrozenTime;
 use Results\Lib\Consts\UploadTypes;
 
 /**
@@ -13,6 +14,7 @@ use Results\Lib\Consts\UploadTypes;
  * @property int $upload_status
  * @property string $info
  * @property int $state
+ * @property FrozenTime $created
  */
 class UploadLog extends AppEntity
 {
@@ -57,5 +59,15 @@ class UploadLog extends AppEntity
             $this->state = self::STATE_RESULT;
         }
         return $this->state;
+    }
+
+    public function toSimpleArray(string $url): array
+    {
+        $created = $this->created;
+        return $this->toChild('SimpleLog', [
+            'link_upload' => $url . urlencode($created->toIso8601String()),
+            'upload_type' => $this->upload_type,
+            'state' => $this->state,
+        ]);
     }
 }

@@ -418,6 +418,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArrayOrganizer'
+  /api/v1/events/{eventID}/rawUploads/:
+    get:
+      operationId: getListRawUploads
+      summary: ''
+      description: Get list
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9bBMEWb
+      tags:
+        - RawUploads
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArraySimpleLog'
+  /api/v1/events/{eventID}/rawUploads/{rawUploadID}:
+    get:
+      operationId: getRawUploads
+      summary: ''
+      description: Get data
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9bBMEWb
+        - description: ID in URL
+          in: path
+          name: rawUploadID
+          required: true
+          schema:
+            type: string
+          example: 2024-01-02T10%3A00%3A05%2B00%3A00
+      tags:
+        - RawUploads
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResRawUpload'
   /api/v1/events/{eventID}/stages/{stageID}/results/:
     get:
       operationId: getListResults
@@ -1066,6 +1117,78 @@ components:
           items:
             $ref: '#/components/schemas/Organizer'
       description: Data wrapper for Organizer
+      required:
+        - data
+    SimpleLog:
+      type: object
+      properties:
+        link_upload:
+          type: string
+          example: http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9bBMEWb/rawUploads/2024-01-02T10%3A00%3A05%2B00%3A00
+        upload_type:
+          type: string
+          example: start_list
+        state:
+          type: number
+          example: 1
+        link_stage:
+          type: string
+          example: http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9bBMEWb/rawUploads/?stage_id=51d63e99-5d7c-4382-a541-8567015d8eed
+      description: Entity SimpleLog
+    ArraySimpleLog:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/SimpleLog'
+      description: Data wrapper for SimpleLog
+      required:
+        - data
+    RawUpload:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 8b299215-d9ad-4854-9173-342063f9a410
+        event_id:
+          type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        stage_id:
+          type: string
+          example: 51d63e99-5d7c-4382-a541-8567015d8eed
+        upload_log_id:
+          type: string
+          example: f3414e0b-e605-494d-89f0-85d0bfbab2a0
+        file_data:
+          type: object
+          description: Any object
+          additionalProperties: true
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+        modified:
+          type: string
+          example: '2024-01-02T10:00:05.000+00:00'
+        deleted:
+          type: string
+          nullable: true
+          example: null
+      description: Entity RawUpload
+      required:
+        - id
+        - event_id
+        - stage_id
+        - upload_log_id
+        - file_data
+        - created
+        - modified
+    ResRawUpload:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/RawUpload'
+      description: Data wrapper for RawUpload
       required:
         - data
     Participant:

@@ -1,0 +1,80 @@
+{
+    "/api/v1/events/{eventID}/rawUploads/": {
+        "get": {
+            "operationId": "getListRawUploads",
+            "summary": "",
+            "description": "Get list",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9bBMEWb"
+                }
+            ],
+            "tags": [
+                "RawUploads"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArraySimpleLog"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/api/v1/events/{eventID}/rawUploads/{rawUploadID}": {
+        "get": {
+            "operationId": "getRawUploads",
+            "summary": "",
+            "description": "Get data",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9bBMEWb"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "rawUploadID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "2024-01-02T10%3A00%3A05%2B00%3A00"
+                }
+            ],
+            "tags": [
+                "RawUploads"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResRawUpload"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

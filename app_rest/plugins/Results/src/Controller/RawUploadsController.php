@@ -32,13 +32,7 @@ class RawUploadsController extends ApiController
         /** @var UploadLog $record */
         foreach ($res as $record) {
             $url = FullBaseUrl::host().'/api/v1/events/'.$secret.'/rawUploads/';
-            /** @var FrozenTime $created */
-            $created = $record->created;
-            $elem = [
-                'link_upload' => $url . urlencode($created->toIso8601String()),
-                'upload_type' => $record->upload_type,
-                'state' => $record->state,
-            ];
+            $elem = $record->toSimpleArray($url);
             if (!$stageId) {
                 $elem['link_stage'] = $url . '?stage_id='.$record->stage_id;
             }

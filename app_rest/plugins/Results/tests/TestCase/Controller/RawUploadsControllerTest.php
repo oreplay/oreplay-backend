@@ -35,8 +35,14 @@ class RawUploadsControllerTest extends ApiCommonErrorsTest
         return ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/rawUploads/';
     }
 
+    protected function _getEndpointWithToken($token): string
+    {
+        return ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . $token . '/rawUploads/';
+    }
+
     public function testAddNew()
     {
+        $this->skipNextRequestInSwagger();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
@@ -59,5 +65,49 @@ class RawUploadsControllerTest extends ApiCommonErrorsTest
             $data['oreplay_data_transfer']['event']['description'],
             $raw->getDataAsArray()['oreplay_data_transfer']['event']['description'],
         );
+    }
+
+    public function testGetList()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->get($this->_getEndpointWithToken(TokensFixture::FIRST_TOKEN));
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $expected = [
+            'data' => [
+                [
+                    '_c' => 'SimpleLog',
+                    'link_upload' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9bBMEWb/rawUploads/2024-01-02T10%3A00%3A05%2B00%3A00',
+                    'upload_type' => 'start_list',
+                    'state' => 1,
+                    'link_stage' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9bBMEWb/rawUploads/?stage_id=51d63e99-5d7c-4382-a541-8567015d8eed'
+                ]
+            ]
+        ];
+        $this->assertEquals($expected, $jsonDecoded);
+    }
+
+    public function testGetData()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        RawUploadsTable::load()->updateAll(['file_data' => '{}'], ['id' => RawUploadsFixture::FIRST]);
+        $this->get($this->_getEndpointWithToken(TokensFixture::FIRST_TOKEN) . '2024-01-02T10%3A00%3A05%2B00%3A00');
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $expected = [
+            'data' => [
+                '_c' => RawUpload::class,
+                'id' => '8b299215-d9ad-4854-9173-342063f9a410',
+                'event_id' => '8f3b542c-23b9-4790-a113-b83d476c0ad9',
+                'stage_id' => '51d63e99-5d7c-4382-a541-8567015d8eed',
+                'upload_log_id' => 'f3414e0b-e605-494d-89f0-85d0bfbab2a0',
+                'file_data' => [
+                ],
+                'created' => '2024-01-02T10:00:05.000+00:00',
+                'modified' => '2024-01-02T10:00:05.000+00:00',
+                'deleted' => null,
+            ]
+        ];
+        $this->assertEquals($expected, $jsonDecoded);
     }
 }
