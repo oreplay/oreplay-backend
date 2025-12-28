@@ -35,6 +35,7 @@ class MeControllerTest extends ApiCommonErrorsTest
 
         $expected = [
             'data' => [
+                '_c' => 'User',
                 'id' => '8186ef35-e8c1-4e5c-bcc4-42bb362f050b',
                 'email' => 'admin@example.com',
                 'first_name' => 'My Name',

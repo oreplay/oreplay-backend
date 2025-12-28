@@ -19,6 +19,7 @@
   <!-- Add any additional test suites you want to run here -->
   <testsuites>
       <testsuite name="Controllers">
+          <file>tests/TestCase/Controller/MeControllerTest.php</file>
           <file>plugins/Results/tests/TestCase/Controller/EventsControllerTest.php</file>
           <file>plugins/Results/tests/TestCase/Controller/EventTokensControllerTest.php</file>
           <file>plugins/Results/tests/TestCase/Controller/OrganizersControllerTest.php</file>

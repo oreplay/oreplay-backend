@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace App\Model\Entity;
 
 use Authentication\PasswordHasher\DefaultPasswordHasher;
-use Cake\ORM\Entity;
+use RestApi\Model\Entity\RestApiEntity;
 
 /**
  * @property string firstname
@@ -15,7 +15,7 @@ use Cake\ORM\Entity;
  * @property mixed $password
  * @property mixed $is_admin
  */
-class User extends Entity
+class User extends RestApiEntity
 {
     public function __construct(array $properties = [], array $options = [])
     {

@@ -1,14 +1,14 @@
 {
     "/api/v1/me/": {
         "get": {
-            "operationId": 1,
+            "operationId": "getListMe",
             "summary": "",
             "description": "Get list should get user authenticated with cookie",
             "parameters": [
                 {
                     "description": "Auth token",
                     "in": "header",
-                    "name": "Authentication",
+                    "name": "Authorization",
                     "example": "Bearer ****************",
                     "required": true,
                     "schema": {
@@ -25,39 +25,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "description": "Get list should get user authenticated with cookie",
-                                "properties": {
-                                    "data": {
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "string",
-                                                "example": "8186ef35-e8c1-4e5c-bcc4-42bb362f050b"
-                                            },
-                                            "email": {
-                                                "type": "string",
-                                                "example": "admin@example.com"
-                                            },
-                                            "first_name": {
-                                                "type": "string",
-                                                "example": "My Name"
-                                            },
-                                            "last_name": {
-                                                "type": "string",
-                                                "example": "My Surname"
-                                            },
-                                            "created": {
-                                                "type": "string",
-                                                "example": "2021-01-18T10:39:23.000+00:00"
-                                            },
-                                            "modified": {
-                                                "type": "string",
-                                                "example": "2021-01-18T10:41:31.000+00:00"
-                                            }
-                                        }
-                                    }
-                                }
+                                "$ref": "#/components/schemas/ResUser"
                             }
                         }
                     }

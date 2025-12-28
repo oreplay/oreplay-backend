@@ -1,0 +1,382 @@
+{
+    "Stage": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "type": "string",
+                    "example": "5b4f3dce-8633-46eb-b209-57d3c8e20521"
+                },
+                {
+                    "type": "string",
+                    "example": "c6fd682b-e24b-4334-84e2-5898ab11a282"
+                },
+                {
+                    "type": "string",
+                    "example": "8f45d409-72bc-4cdc-96e9-0a2c4504d964"
+                },
+                {
+                    "type": "string",
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "type": "string",
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                }
+            ],
+            "description": [
+                {
+                    "type": "string",
+                    "example": "First stage"
+                },
+                {
+                    "type": "string",
+                    "example": "My new test stage"
+                },
+                {
+                    "type": "string",
+                    "example": "My other test stage"
+                },
+                {
+                    "type": "string",
+                    "example": "Second stage"
+                },
+                {
+                    "type": "string",
+                    "example": "Some stage"
+                },
+                {
+                    "type": "string",
+                    "example": "First stage"
+                }
+            ],
+            "last_logs": [
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                }
+            ],
+            "_links": [
+                {
+                    "$ref": "#/components/schemas/StageLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/StageLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/StageLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/StageLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/StageLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/StageLinks"
+                }
+            ],
+            "stage_type": [
+                {
+                    "$ref": "#/components/schemas/StageType"
+                },
+                {
+                    "$ref": "#/components/schemas/StageType"
+                },
+                {
+                    "$ref": "#/components/schemas/StageType"
+                }
+            ]
+        },
+        "description": "Entity Stage"
+    },
+    "LinkHref": {
+        "type": "object",
+        "properties": {
+            "href": [
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/5b4f3dce-8633-46eb-b209-57d3c8e20521"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/5b4f3dce-8633-46eb-b209-57d3c8e20521/results/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/5b4f3dce-8633-46eb-b209-57d3c8e20521/classes/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/c6fd682b-e24b-4334-84e2-5898ab11a282"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/c6fd682b-e24b-4334-84e2-5898ab11a282/results/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/c6fd682b-e24b-4334-84e2-5898ab11a282/classes/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/results/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/classes/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/"
+                }
+            ]
+        },
+        "description": "Entity LinkHref"
+    },
+    "StageLinks": {
+        "type": "object",
+        "properties": {
+            "self": [
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                }
+            ],
+            "results": [
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                }
+            ],
+            "classes": [
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                }
+            ]
+        },
+        "description": "Entity StageLinks"
+    },
+    "ArrayStage": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Stage"
+                    }
+                }
+            ]
+        },
+        "description": "Data wrapper for Stage",
+        "required": [
+            "data"
+        ]
+    },
+    "PatchStagesBody": {
+        "type": "object",
+        "properties": {
+            "description": [
+                {
+                    "type": "string",
+                    "example": "My new test stage"
+                },
+                {
+                    "type": "string",
+                    "example": "My other test stage"
+                },
+                {
+                    "type": "string",
+                    "example": "Some stage"
+                }
+            ],
+            "stage_type_id": [
+                {
+                    "type": "string",
+                    "example": "ce5e95ea-9f2b-4a98-86e1-2b43651adfee"
+                },
+                {
+                    "type": "string",
+                    "example": "2b5de3d0-9bc9-435a-8bd9-2d4060b86e45"
+                }
+            ],
+            "state_end": [
+                {
+                    "type": "number",
+                    "example": 1
+                }
+            ]
+        },
+        "description": "Entity PatchStagesBody"
+    },
+    "StageType": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "29d5050b-4769-4be5-ace4-7e5973f68e3c"
+                },
+                {
+                    "type": "string",
+                    "example": "ce5e95ea-9f2b-4a98-86e1-2b43651adfee"
+                },
+                {
+                    "type": "string",
+                    "example": "29d5050b-4769-4be5-ace4-7e5973f68e3c"
+                }
+            ],
+            "description": [
+                {
+                    "type": "string",
+                    "example": "Foot-O, MTBO, Ski-O"
+                },
+                {
+                    "type": "string",
+                    "example": "Mass Start"
+                },
+                {
+                    "type": "string",
+                    "example": "Foot-O, MTBO, Ski-O"
+                }
+            ]
+        },
+        "description": "Entity StageType"
+    },
+    "ResStage": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "$ref": "#/components/schemas/Stage"
+                },
+                {
+                    "$ref": "#/components/schemas/Stage"
+                },
+                {
+                    "$ref": "#/components/schemas/Stage"
+                },
+                {
+                    "$ref": "#/components/schemas/Stage"
+                },
+                {
+                    "$ref": "#/components/schemas/Stage"
+                }
+            ]
+        },
+        "description": "Data wrapper for Stage",
+        "required": [
+            "data"
+        ]
+    }
+}

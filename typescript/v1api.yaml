@@ -322,6 +322,30 @@ paths:
       responses:
         '204':
           description: No content. Successfully deleted.
+  /api/v1/me/:
+    get:
+      operationId: getListMe
+      summary: ''
+      description: Get list should get user authenticated with cookie
+      parameters:
+        - description: Auth token
+          in: header
+          name: Authorization
+          example: Bearer ****************
+          required: true
+          schema:
+            type: string
+      tags:
+        - Me
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResUser'
+      security:
+        - bearerAuth: []
   /api/v1/organizers/:
     get:
       operationId: getListOrganizers
@@ -905,6 +929,43 @@ components:
       required:
         - id
         - description
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 8186ef35-e8c1-4e5c-bcc4-42bb362f050b
+        email:
+          type: string
+          example: admin@example.com
+        first_name:
+          type: string
+          example: My Name
+        last_name:
+          type: string
+          example: My Surname
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+        modified:
+          type: string
+          example: '2021-01-18T10:41:31.000+00:00'
+      description: Entity User
+      required:
+        - id
+        - email
+        - first_name
+        - last_name
+        - created
+        - modified
+    ResUser:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/User'
+      description: Data wrapper for User
+      required:
+        - data
     ArrayOrganizer:
       type: object
       properties:
