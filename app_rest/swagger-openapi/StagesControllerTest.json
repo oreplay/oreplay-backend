@@ -1,7 +1,7 @@
 {
     "/api/v1/events/{eventID}/stages/": {
         "get": {
-            "operationId": 1,
+            "operationId": "getListStages",
             "summary": "",
             "description": "Get list",
             "parameters": [
@@ -25,43 +25,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "description": "Get list",
-                                "properties": {
-                                    "data": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "string",
-                                                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
-                                                },
-                                                "description": {
-                                                    "type": "string",
-                                                    "example": "First stage"
-                                                },
-                                                "_links": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "self": {
-                                                            "type": "string",
-                                                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed"
-                                                        },
-                                                        "results": {
-                                                            "type": "string",
-                                                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/runners/"
-                                                        },
-                                                        "classes": {
-                                                            "type": "string",
-                                                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/"
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                "$ref": "#/components/schemas/ArrayStage"
                             }
                         }
                     }
@@ -69,7 +33,7 @@
             }
         },
         "post": {
-            "operationId": 2,
+            "operationId": "postListStages",
             "summary": "",
             "description": "Add new",
             "parameters": [
@@ -93,98 +57,27 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "description": "Add new",
-                                "properties": {
-                                    "data": {
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "string",
-                                                "example": "9f6edcad-1036-4d12-96b0-b3d77feaf31a"
-                                            },
-                                            "description": {
-                                                "type": "string",
-                                                "example": "My new test stage"
-                                            },
-                                            "stage_type": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "string",
-                                                        "example": "29d5050b-4769-4be5-ace4-7e5973f68e3c"
-                                                    },
-                                                    "description": {
-                                                        "type": "string",
-                                                        "example": "Foot-O, MTBO, Ski-O"
-                                                    }
-                                                }
-                                            },
-                                            "_links": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "self": {
-                                                        "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9f6edcad-1036-4d12-96b0-b3d77feaf31a"
-                                                    },
-                                                    "results": {
-                                                        "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9f6edcad-1036-4d12-96b0-b3d77feaf31a/runners/"
-                                                    },
-                                                    "classes": {
-                                                        "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9f6edcad-1036-4d12-96b0-b3d77feaf31a/classes/"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                "$ref": "#/components/schemas/ResStage"
                             }
                         }
                     }
                 }
             },
             "requestBody": {
-                "description": "Request body can match to any of the 2 provided schemas",
+                "description": "",
                 "content": {
                     "application/json": {
                         "schema": {
-                            "oneOf": [
-                                {
-                                    "type": "object",
-                                    "description": "Add new",
-                                    "properties": {
-                                        "description": {
-                                            "type": "string",
-                                            "example": "My new test stage"
-                                        }
-                                    }
-                                },
-                                {
-                                    "type": "object",
-                                    "description": "Add new including optional stage type",
-                                    "properties": {
-                                        "description": {
-                                            "type": "string",
-                                            "example": "My other test stage"
-                                        },
-                                        "stage_type_id": {
-                                            "type": "string",
-                                            "example": "ce5e95ea-9f2b-4a98-86e1-2b43651adfee"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/components/schemas/PatchStagesBody"
                         }
                     }
                 }
             }
         }
     },
-    "/api/v1/events/{eventID}/stages/{entity_id}": {
+    "/api/v1/events/{eventID}/stages/{stageID}": {
         "get": {
-            "operationId": 3,
+            "operationId": "getStages",
             "summary": "",
             "description": "Get data",
             "parameters": [
@@ -201,7 +94,7 @@
                 {
                     "description": "ID in URL",
                     "in": "path",
-                    "name": "entity_id",
+                    "name": "stageID",
                     "required": true,
                     "schema": {
                         "type": "string"
@@ -218,53 +111,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "description": "Get data",
-                                "properties": {
-                                    "data": {
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "string",
-                                                "example": "8f45d409-72bc-4cdc-96e9-0a2c4504d964"
-                                            },
-                                            "description": {
-                                                "type": "string",
-                                                "example": "Second stage"
-                                            },
-                                            "stage_type": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "id": {
-                                                        "type": "string",
-                                                        "example": "29d5050b-4769-4be5-ace4-7e5973f68e3c"
-                                                    },
-                                                    "description": {
-                                                        "type": "string",
-                                                        "example": "Foot-O, MTBO, Ski-O"
-                                                    }
-                                                }
-                                            },
-                                            "_links": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "self": {
-                                                        "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964"
-                                                    },
-                                                    "results": {
-                                                        "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/runners/"
-                                                    },
-                                                    "classes": {
-                                                        "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/classes/"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                "$ref": "#/components/schemas/ResStage"
                             }
                         }
                     }
@@ -272,7 +119,7 @@
             }
         },
         "patch": {
-            "operationId": 4,
+            "operationId": "patchStages",
             "summary": "",
             "description": "Edit",
             "parameters": [
@@ -289,7 +136,7 @@
                 {
                     "description": "ID in URL",
                     "in": "path",
-                    "name": "entity_id",
+                    "name": "stageID",
                     "required": true,
                     "schema": {
                         "type": "string"
@@ -306,82 +153,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "description": "Edit",
-                                "properties": {
-                                    "data": {
-                                        "type": "object",
-                                        "properties": {
-                                            "id": {
-                                                "type": "string",
-                                                "example": "9f6edcad-1036-4d12-96b0-b3d77feaf31a"
-                                            },
-                                            "description": {
-                                                "type": "string",
-                                                "example": "Some stage"
-                                            },
-                                            "_links": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "self": {
-                                                        "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9f6edcad-1036-4d12-96b0-b3d77feaf31a"
-                                                    },
-                                                    "results": {
-                                                        "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9f6edcad-1036-4d12-96b0-b3d77feaf31a/runners/"
-                                                    },
-                                                    "classes": {
-                                                        "type": "string",
-                                                        "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9f6edcad-1036-4d12-96b0-b3d77feaf31a/classes/"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "400": {
-                    "description": "Bad Request",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Patch should throw bad request exception when no body provided",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Bad Request"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 400
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "405": {
-                    "description": "Method Not Allowed",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Patch should throw bad request exception when no id provided",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Method Not Allowed"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 405
-                                    }
-                                }
+                                "$ref": "#/components/schemas/ResStage"
                             }
                         }
                     }
@@ -392,25 +164,14 @@
                 "content": {
                     "application/json": {
                         "schema": {
-                            "type": "object",
-                            "description": "Edit",
-                            "properties": {
-                                "description": {
-                                    "type": "string",
-                                    "example": "Some stage"
-                                },
-                                "stage_type_id": {
-                                    "type": "string",
-                                    "example": "2b5de3d0-9bc9-435a-8bd9-2d4060b86e45"
-                                }
-                            }
+                            "$ref": "#/components/schemas/PatchStagesBody"
                         }
                     }
                 }
             }
         },
         "delete": {
-            "operationId": 5,
+            "operationId": "deleteStages",
             "summary": "",
             "description": "Delete with clean param should not remove stage but empty contents",
             "parameters": [
@@ -427,7 +188,7 @@
                 {
                     "description": "ID in URL",
                     "in": "path",
-                    "name": "entity_id",
+                    "name": "stageID",
                     "required": true,
                     "schema": {
                         "type": "string"
@@ -451,27 +212,6 @@
             "responses": {
                 "204": {
                     "description": "No content. Successfully deleted."
-                },
-                "405": {
-                    "description": "Method Not Allowed",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Delete should throw bad request exception when no id provided",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Method Not Allowed"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 405
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }

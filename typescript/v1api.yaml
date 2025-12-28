@@ -459,6 +459,149 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArrayClub'
+  /api/v1/events/{eventID}/stages/:
+    get:
+      operationId: getListStages
+      summary: ''
+      description: Get list
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+      tags:
+        - Stages
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayStage'
+    post:
+      operationId: postListStages
+      summary: ''
+      description: Add new
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+      tags:
+        - Stages
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResStage'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchStagesBody'
+  /api/v1/events/{eventID}/stages/{stageID}:
+    get:
+      operationId: getStages
+      summary: ''
+      description: Get data
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        - description: ID in URL
+          in: path
+          name: stageID
+          required: true
+          schema:
+            type: string
+          example: 8f45d409-72bc-4cdc-96e9-0a2c4504d964
+      tags:
+        - Stages
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResStage'
+    patch:
+      operationId: patchStages
+      summary: ''
+      description: Edit
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        - description: ID in URL
+          in: path
+          name: stageID
+          required: true
+          schema:
+            type: string
+          example: 51d63e99-5d7c-4382-a541-8567015d8eed
+      tags:
+        - Stages
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResStage'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchStagesBody'
+    delete:
+      operationId: deleteStages
+      summary: ''
+      description: Delete with clean param should not remove stage but empty contents
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        - description: ID in URL
+          in: path
+          name: stageID
+          required: true
+          schema:
+            type: string
+          example: 51d63e99-5d7c-4382-a541-8567015d8eed
+        - description: ''
+          in: query
+          name: clean
+          example: '1'
+          required: false
+          schema:
+            type: string
+      tags:
+        - Stages
+      responses:
+        '204':
+          description: No content. Successfully deleted.
 components:
   securitySchemes:
     bearerAuth:
@@ -714,7 +857,6 @@ components:
       required:
         - id
         - description
-        - stage_type
         - last_logs
         - _links
     StageType:
@@ -1057,5 +1199,36 @@ components:
           items:
             $ref: '#/components/schemas/Club'
       description: Data wrapper for Club
+      required:
+        - data
+    ArrayStage:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Stage'
+      description: Data wrapper for Stage
+      required:
+        - data
+    PatchStagesBody:
+      type: object
+      properties:
+        description:
+          type: string
+          example: My new test stage
+        stage_type_id:
+          type: string
+          example: ce5e95ea-9f2b-4a98-86e1-2b43651adfee
+        state_end:
+          type: number
+          example: 1
+      description: Entity PatchStagesBody
+    ResStage:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Stage'
+      description: Data wrapper for Stage
       required:
         - data

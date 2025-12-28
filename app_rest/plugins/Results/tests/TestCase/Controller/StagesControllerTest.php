@@ -137,6 +137,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
     {
         $description = 'My new test stage';
         $data = [
+            '_c' => 'PatchStagesBody',
             'description' => $description,
         ];
         $this->post($this->_getEndpoint(), $data);
@@ -150,6 +151,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
     {
         $description = 'My other test stage';
         $data = [
+            '_c' => 'PatchStagesBody',
             'description' => $description,
             'stage_type_id' => StageType::MASS_START,
         ];
@@ -164,6 +166,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
     {
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
         $data = [
+            '_c' => 'PatchStagesBody',
             'description' => 'Some stage',
             'stage_type_id' => StageType::SCORE,
         ];
@@ -181,6 +184,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
     {
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
         $data = [
+            '_c' => 'PatchStagesBody',
             'state_end' => true,
         ];
         $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, $data);

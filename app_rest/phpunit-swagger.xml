@@ -25,6 +25,7 @@
           <file>plugins/Results/tests/TestCase/Controller/ResultsControllerTest.php</file>
           <file>plugins/Results/tests/TestCase/Controller/StageClassesControllerTest.php</file>
           <file>plugins/Results/tests/TestCase/Controller/StageClubsControllerTest.php</file>
+          <file>plugins/Results/tests/TestCase/Controller/StagesControllerTest.php</file>
       </testsuite>
   </testsuites>
   <extensions>
