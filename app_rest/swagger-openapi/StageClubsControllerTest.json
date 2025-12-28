@@ -1,7 +1,7 @@
 {
     "/api/v1/events/{eventID}/stages/{stageID}/clubs/": {
         "get": {
-            "operationId": 1,
+            "operationId": "getListStageClubs",
             "summary": "",
             "description": "Get list",
             "parameters": [
@@ -35,26 +35,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "description": "Get list",
-                                "properties": {
-                                    "data": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "string",
-                                                    "example": "83dc3504-9edd-4bbd-80b8-589aa0359c3e"
-                                                },
-                                                "short_name": {
-                                                    "type": "string",
-                                                    "example": "Club A"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                "$ref": "#/components/schemas/ArrayClub"
                             }
                         }
                     }

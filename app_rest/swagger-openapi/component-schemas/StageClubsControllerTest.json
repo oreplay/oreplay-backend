@@ -1,0 +1,37 @@
+{
+    "Club": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "83dc3504-9edd-4bbd-80b8-589aa0359c3e"
+                }
+            ],
+            "short_name": [
+                {
+                    "type": "string",
+                    "example": "Club A"
+                }
+            ]
+        },
+        "description": "Entity Club"
+    },
+    "ArrayClub": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Club"
+                    }
+                }
+            ]
+        },
+        "description": "Data wrapper for Club",
+        "required": [
+            "data"
+        ]
+    }
+}
