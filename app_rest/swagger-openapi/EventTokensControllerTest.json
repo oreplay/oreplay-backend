@@ -1,7 +1,7 @@
 {
     "/api/v1/events/{eventID}/tokens/": {
         "post": {
-            "operationId": 1,
+            "operationId": "postListEventTokens",
             "summary": "",
             "description": "Add new",
             "parameters": [
@@ -18,7 +18,7 @@
                 {
                     "description": "Auth token",
                     "in": "header",
-                    "name": "Authentication",
+                    "name": "Authorization",
                     "example": "Bearer ****************",
                     "required": true,
                     "schema": {
@@ -35,27 +35,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "description": "Add new",
-                                "properties": {
-                                    "data": {
-                                        "type": "object",
-                                        "properties": {
-                                            "expires": {
-                                                "type": "string",
-                                                "example": "2034-01-06T13:09:01.523+00:00"
-                                            },
-                                            "token": {
-                                                "type": "string",
-                                                "example": "1QzU3w"
-                                            },
-                                            "created": {
-                                                "type": "string",
-                                                "example": "2025-03-15T21:41:15.206+00:00"
-                                            }
-                                        }
-                                    }
-                                }
+                                "$ref": "#/components/schemas/ResToken"
                             }
                         }
                     }
@@ -72,20 +52,20 @@
                     "application/json": {
                         "schema": {
                             "type": "object",
-                            "description": "Add new",
                             "properties": {
                                 "expires": {
                                     "type": "string",
                                     "example": "2034-01-06T13:09:01.523+00:00"
                                 }
-                            }
+                            },
+                            "description": "Generic object when: Add new"
                         }
                     }
                 }
             }
         },
         "get": {
-            "operationId": 2,
+            "operationId": "getListEventTokens",
             "summary": "",
             "description": "Get list",
             "parameters": [
@@ -102,7 +82,7 @@
                 {
                     "description": "Auth token",
                     "in": "header",
-                    "name": "Authentication",
+                    "name": "Authorization",
                     "example": "Bearer ****************",
                     "required": true,
                     "schema": {
@@ -119,30 +99,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "description": "Get list",
-                                "properties": {
-                                    "data": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "token": {
-                                                    "type": "string",
-                                                    "example": "bBMEWb"
-                                                },
-                                                "expires": {
-                                                    "type": "string",
-                                                    "example": "2036-05-05T10:00:08.000+00:00"
-                                                },
-                                                "created": {
-                                                    "type": "string",
-                                                    "example": "2024-05-05T10:00:08.000+00:00"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                "$ref": "#/components/schemas/ArrayToken"
                             }
                         }
                     }
@@ -155,9 +112,9 @@
             ]
         }
     },
-    "/api/v1/events/{eventID}/tokens/{entity_id}": {
+    "/api/v1/events/{eventID}/tokens/{tokenID}": {
         "delete": {
-            "operationId": 3,
+            "operationId": "deleteEventTokens",
             "summary": "",
             "description": "Delete",
             "parameters": [
@@ -174,7 +131,7 @@
                 {
                     "description": "ID in URL",
                     "in": "path",
-                    "name": "entity_id",
+                    "name": "tokenID",
                     "required": true,
                     "schema": {
                         "type": "string"
@@ -184,7 +141,7 @@
                 {
                     "description": "Auth token",
                     "in": "header",
-                    "name": "Authentication",
+                    "name": "Authorization",
                     "example": "Bearer ****************",
                     "required": true,
                     "schema": {
@@ -198,27 +155,6 @@
             "responses": {
                 "204": {
                     "description": "No content. Successfully deleted."
-                },
-                "400": {
-                    "description": "Bad Request",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "description": "Delete should throw bad request exception when no id provided",
-                                "properties": {
-                                    "error": {
-                                        "type": "string",
-                                        "example": "Bad Request"
-                                    },
-                                    "code": {
-                                        "type": "number",
-                                        "example": 400
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             },
             "security": [

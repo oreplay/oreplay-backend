@@ -10,6 +10,112 @@ servers:
   - url: https://host.docker.internal
 tags: []
 paths:
+  /api/v1/events/{eventID}/tokens/:
+    post:
+      operationId: postListEventTokens
+      summary: ''
+      description: Add new
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        - description: Auth token
+          in: header
+          name: Authorization
+          example: Bearer ****************
+          required: true
+          schema:
+            type: string
+      tags:
+        - EventTokens
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResToken'
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                expires:
+                  type: string
+                  example: '2034-01-06T13:09:01.523+00:00'
+              description: 'Generic object when: Add new'
+    get:
+      operationId: getListEventTokens
+      summary: ''
+      description: Get list
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        - description: Auth token
+          in: header
+          name: Authorization
+          example: Bearer ****************
+          required: true
+          schema:
+            type: string
+      tags:
+        - EventTokens
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayToken'
+      security:
+        - bearerAuth: []
+  /api/v1/events/{eventID}/tokens/{tokenID}:
+    delete:
+      operationId: deleteEventTokens
+      summary: ''
+      description: Delete
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        - description: ID in URL
+          in: path
+          name: tokenID
+          required: true
+          schema:
+            type: string
+          example: bBMEWb
+        - description: Auth token
+          in: header
+          name: Authorization
+          example: Bearer ****************
+          required: true
+          schema:
+            type: string
+      tags:
+        - EventTokens
+      responses:
+        '204':
+          description: No content. Successfully deleted.
+      security:
+        - bearerAuth: []
   /api/v1/events/:
     get:
       operationId: getListEvents
@@ -222,6 +328,37 @@ components:
       type: http
       scheme: bearer
   schemas:
+    Token:
+      type: object
+      properties:
+        expires:
+          type: string
+          example: '2034-01-06T13:09:01.523+00:00'
+        token:
+          type: string
+          example: XRzJdc
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+      description: Entity Token
+    ResToken:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Token'
+      description: Data wrapper for Token
+      required:
+        - data
+    ArrayToken:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Token'
+      description: Data wrapper for Token
+      required:
+        - data
     Event:
       type: object
       properties:

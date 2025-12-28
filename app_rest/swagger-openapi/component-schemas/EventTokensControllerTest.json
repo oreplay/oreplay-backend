@@ -1,0 +1,69 @@
+{
+    "Token": {
+        "type": "object",
+        "properties": {
+            "expires": [
+                {
+                    "type": "string",
+                    "example": "2034-01-06T13:09:01.523+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2036-05-05T10:00:08.000+00:00"
+                }
+            ],
+            "token": [
+                {
+                    "type": "string",
+                    "example": "XRzJdc"
+                },
+                {
+                    "type": "string",
+                    "example": "bBMEWb"
+                }
+            ],
+            "created": [
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                }
+            ]
+        },
+        "description": "Entity Token"
+    },
+    "ResToken": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "$ref": "#/components/schemas/Token"
+                }
+            ]
+        },
+        "description": "Data wrapper for Token",
+        "required": [
+            "data"
+        ]
+    },
+    "ArrayToken": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Token"
+                    }
+                }
+            ]
+        },
+        "description": "Data wrapper for Token",
+        "required": [
+            "data"
+        ]
+    }
+}
