@@ -1,7 +1,7 @@
 {
     "/api/v1/events/{eventID}/stages/{stageID}/results/": {
         "get": {
-            "operationId": 1,
+            "operationId": "getListResults",
             "summary": "",
             "description": "Get list",
             "parameters": [
@@ -48,6 +48,26 @@
                 {
                     "description": "",
                     "in": "query",
+                    "name": "station",
+                    "example": "31",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "output",
+                    "example": "json",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
                     "name": "text",
                     "example": "Runner",
                     "required": false,
@@ -65,193 +85,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "description": "Get list",
-                                "properties": {
-                                    "data": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "string",
-                                                    "example": "8ea9f351-4141-4ff2-891d-9e2a904bc296"
-                                                },
-                                                "bib_number": {
-                                                    "type": "number",
-                                                    "example": 301
-                                                },
-                                                "legs": {
-                                                    "type": "string",
-                                                    "example": ""
-                                                },
-                                                "runners": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "object"
-                                                    }
-                                                },
-                                                "class": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "string",
-                                                            "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
-                                                        },
-                                                        "short_name": {
-                                                            "type": "string",
-                                                            "example": "ME"
-                                                        },
-                                                        "long_name": {
-                                                            "type": "string",
-                                                            "example": "M Elite"
-                                                        }
-                                                    }
-                                                },
-                                                "club": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "string",
-                                                            "example": "83dc3504-9edd-4bbd-80b8-589aa0359c3e"
-                                                        },
-                                                        "short_name": {
-                                                            "type": "string",
-                                                            "example": "Club A"
-                                                        }
-                                                    }
-                                                },
-                                                "full_name": {
-                                                    "type": "string",
-                                                    "example": "First Team"
-                                                },
-                                                "overall": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "id": {
-                                                            "type": "string",
-                                                            "example": "85c52ee5-99f5-4a49-9b5f-4648e48b4861"
-                                                        },
-                                                        "result_type_id": {
-                                                            "type": "string",
-                                                            "example": "5542d38b-8bd3-40f4-913d-2c38048a0b04"
-                                                        },
-                                                        "start_time": {
-                                                            "type": "string",
-                                                            "example": "2024-01-03T10:10:00.000+00:00"
-                                                        },
-                                                        "finish_time": {
-                                                            "type": "string",
-                                                            "example": "2024-01-03T10:15:10.000+00:00"
-                                                        },
-                                                        "time_seconds": {
-                                                            "type": "number",
-                                                            "example": 310
-                                                        },
-                                                        "position": {
-                                                            "type": "number",
-                                                            "example": 1
-                                                        },
-                                                        "status_code": {
-                                                            "type": "string",
-                                                            "example": ""
-                                                        },
-                                                        "time_behind": {
-                                                            "type": "number",
-                                                            "example": 0
-                                                        },
-                                                        "time_neutralization": {
-                                                            "type": "string",
-                                                            "example": ""
-                                                        },
-                                                        "time_adjusted": {
-                                                            "type": "string",
-                                                            "example": ""
-                                                        },
-                                                        "time_penalty": {
-                                                            "type": "string",
-                                                            "example": ""
-                                                        },
-                                                        "time_bonus": {
-                                                            "type": "string",
-                                                            "example": ""
-                                                        },
-                                                        "points_final": {
-                                                            "type": "string",
-                                                            "example": ""
-                                                        },
-                                                        "points_adjusted": {
-                                                            "type": "string",
-                                                            "example": ""
-                                                        },
-                                                        "points_penalty": {
-                                                            "type": "string",
-                                                            "example": ""
-                                                        },
-                                                        "points_bonus": {
-                                                            "type": "string",
-                                                            "example": ""
-                                                        },
-                                                        "splits": {
-                                                            "type": "array",
-                                                            "items": {
-                                                                "type": "object",
-                                                                "properties": {
-                                                                    "id": {
-                                                                        "type": "string",
-                                                                        "example": "b8e6927d-a17b-4d24-a10e-bb1f2ed9061c"
-                                                                    },
-                                                                    "is_intermediate": {
-                                                                        "type": "boolean",
-                                                                        "example": false
-                                                                    },
-                                                                    "reading_time": {
-                                                                        "type": "string",
-                                                                        "example": "2024-01-03T11:00:20.321+00:00"
-                                                                    },
-                                                                    "points": {
-                                                                        "type": "string",
-                                                                        "example": ""
-                                                                    },
-                                                                    "order_number": {
-                                                                        "type": "string",
-                                                                        "example": ""
-                                                                    },
-                                                                    "control": {
-                                                                        "type": "object",
-                                                                        "properties": {
-                                                                            "id": {
-                                                                                "type": "string",
-                                                                                "example": "34ed02e5-da3c-4457-b2cb-4492fea19805"
-                                                                            },
-                                                                            "station": {
-                                                                                "type": "number",
-                                                                                "example": 31
-                                                                            },
-                                                                            "control_type": {
-                                                                                "type": "object",
-                                                                                "properties": {
-                                                                                    "id": {
-                                                                                        "type": "string",
-                                                                                        "example": "f3cc5efa-065f-4ad6-844b-74e99612889b"
-                                                                                    },
-                                                                                    "description": {
-                                                                                        "type": "string",
-                                                                                        "example": "Normal Control"
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                "$ref": "#/components/schemas/ArrayParticipant"
                             }
                         }
                     }

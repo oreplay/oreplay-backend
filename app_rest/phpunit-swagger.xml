@@ -21,6 +21,7 @@
       <testsuite name="Controllers">
           <file>plugins/Results/tests/TestCase/Controller/EventsControllerTest.php</file>
           <file>plugins/Results/tests/TestCase/Controller/EventTokensControllerTest.php</file>
+          <file>plugins/Results/tests/TestCase/Controller/ResultsControllerTest.php</file>
       </testsuite>
   </testsuites>
   <extensions>

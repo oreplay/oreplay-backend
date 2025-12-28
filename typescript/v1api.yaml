@@ -322,6 +322,70 @@ paths:
       responses:
         '204':
           description: No content. Successfully deleted.
+  /api/v1/events/{eventID}/stages/{stageID}/results/:
+    get:
+      operationId: getListResults
+      summary: ''
+      description: Get list
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        - description: ID in URL
+          in: path
+          name: stageID
+          required: true
+          schema:
+            type: string
+          example: 51d63e99-5d7c-4382-a541-8567015d8eed
+        - description: ''
+          in: query
+          name: class_id
+          example: d8a87faf-68a4-487b-8f28-6e0ead6c1a57
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: club_id
+          example: 83dc3504-9edd-4bbd-80b8-589aa0359c3e
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: station
+          example: '31'
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: output
+          example: json
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: text
+          example: Runner
+          required: false
+          schema:
+            type: string
+      tags:
+        - Results
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayParticipant'
 components:
   securitySchemes:
     bearerAuth:
@@ -626,3 +690,266 @@ components:
       required:
         - id
         - description
+    Participant:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 8ea9f351-4141-4ff2-891d-9e2a904bc296
+        bib_number:
+          type: number
+          example: 301
+        is_nc:
+          type: boolean
+          example: false
+        eligibility:
+          type: string
+          example: ''
+        legs:
+          type: string
+          nullable: true
+          example: null
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+        sicard:
+          type: number
+          example: 2009944
+        sex:
+          type: string
+          example: M
+          nullable: true
+        leg_number:
+          type: string
+          nullable: true
+          example: null
+        class:
+          $ref: '#/components/schemas/ClassEntity'
+          nullable: true
+        club:
+          $ref: '#/components/schemas/Club'
+        full_name:
+          type: string
+          example: Second Raider
+        stage:
+          $ref: '#/components/schemas/Result'
+          nullable: true
+        overalls:
+          type: string
+          nullable: true
+          example: null
+        runners:
+          type: array
+          items:
+            $ref: '#/components/schemas/Participant'
+      description: Entity Participant
+      required:
+        - id
+        - bib_number
+        - is_nc
+        - eligibility
+        - created
+        - club
+        - full_name
+    Club:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 83dc3504-9edd-4bbd-80b8-589aa0359c3e
+        short_name:
+          type: string
+          example: Club A
+      description: Entity Club
+      required:
+        - id
+        - short_name
+    ClassEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          example: d8a87faf-68a4-487b-8f28-6e0ead6c1a57
+        short_name:
+          type: string
+          example: ME
+        long_name:
+          type: string
+          example: M Elite
+      description: Entity ClassEntity
+      required:
+        - id
+        - short_name
+        - long_name
+    Result:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 85c52ee5-99f5-4a49-9b5f-4648e48b4861
+        result_type_id:
+          type: string
+          example: e4ddfa9d-3347-47e4-9d32-c6c119aeac0e
+        start_time:
+          type: string
+          example: '2024-01-03T10:10:00.000+00:00'
+        finish_time:
+          type: string
+          example: '2024-01-03T10:15:10.000+00:00'
+        upload_type:
+          type: string
+          nullable: true
+          example: null
+        time_seconds:
+          type: number
+          example: 310
+        position:
+          type: number
+          example: 1
+        status_code:
+          type: string
+          nullable: true
+          example: null
+        is_nc:
+          type: boolean
+          example: false
+        contributory:
+          type: string
+          nullable: true
+          example: null
+        time_behind:
+          type: number
+          example: 0
+        time_neutralization:
+          type: string
+          nullable: true
+          example: null
+        time_adjusted:
+          type: string
+          nullable: true
+          example: null
+        time_penalty:
+          type: string
+          nullable: true
+          example: null
+        time_bonus:
+          type: string
+          nullable: true
+          example: null
+        points_final:
+          type: string
+          nullable: true
+          example: null
+        points_adjusted:
+          type: string
+          nullable: true
+          example: null
+        points_penalty:
+          type: string
+          nullable: true
+          example: null
+        points_bonus:
+          type: string
+          nullable: true
+          example: null
+        leg_number:
+          type: number
+          example: 0
+          nullable: true
+        note:
+          type: string
+          nullable: true
+          example: null
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+        splits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Split'
+        points_behind:
+          type: number
+          example: 0
+      description: Entity Result
+      required:
+        - id
+        - result_type_id
+        - start_time
+        - finish_time
+        - time_seconds
+        - position
+        - is_nc
+        - time_behind
+        - created
+        - splits
+    Split:
+      type: object
+      properties:
+        id:
+          type: string
+          example: b8e6927d-a17b-4d24-a10e-bb1f2ed9061c
+        is_intermediate:
+          type: boolean
+          example: false
+        reading_time:
+          type: string
+          example: '2024-01-03T11:00:20.321+00:00'
+        points:
+          type: string
+          nullable: true
+          example: null
+        order_number:
+          type: string
+          nullable: true
+          example: null
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+        control:
+          $ref: '#/components/schemas/Control'
+      description: Entity Split
+      required:
+        - id
+        - is_intermediate
+        - reading_time
+        - created
+        - control
+    Control:
+      type: object
+      properties:
+        id:
+          type: string
+          example: ed98f978-06cf-45ab-9144-26f3ed65a935
+        station:
+          type: number
+          example: 31
+        control_type:
+          $ref: '#/components/schemas/ControlType'
+      description: Entity Control
+      required:
+        - id
+        - station
+        - control_type
+    ControlType:
+      type: object
+      properties:
+        id:
+          type: string
+          example: f3cc5efa-065f-4ad6-844b-74e99612889b
+        description:
+          type: string
+          example: Normal Control
+      description: Entity ControlType
+      required:
+        - id
+        - description
+    ArrayParticipant:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Participant'
+      description: Data wrapper for Participant
+      required:
+        - data

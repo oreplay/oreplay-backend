@@ -135,7 +135,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
     private function _getFirstTeam(): array
     {
         $stage = [
-            '_c' => TeamResult::class,
+            '_c' => TeamResult::C_NAME,
             'id' => TeamResultsFixture::TEAM_RESULT_1,
             'result_type_id' => ResultType::STAGE,
             'start_time' => '2024-01-03T10:10:00.000+00:00',
@@ -184,7 +184,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             ],
         ];
         return [
-            '_c' => Team::class,
+            '_c' => Team::C_NAME,
             'id' => Team::FIRST_TEAM,
             'full_name' => 'First Team',
             'legs' => null,
@@ -202,7 +202,28 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                 'short_name' => 'ME',
                 'long_name' => 'M Elite',
             ],
-            'runners' => [],
+            'runners' => [
+                [
+                    '_c' => Runner::C_NAME,
+                    'id' => '3c3b3cb5-1b86-491f-a6ef-f7d12e3d41b7',
+                    'bib_number' => '4445',
+                    'is_nc' => false,
+                    'eligibility' => '',
+                    'sicard' => '2009944',
+                    'sex' => null,
+                    'leg_number' => null,
+                    'created' => '2025-01-03T10:00:05.000+00:00',
+                    'class' => null,
+                    'club' => [
+                        '_c' => Club::class,
+                        'id' => ClubsFixture::CLUB_1,
+                        'short_name' => 'Club A',
+                    ],
+                    'full_name' => 'Second Raider',
+                    'stage' => null,
+                    'overalls' => null,
+                ]
+            ],
             'overalls' => null,
             'stage' => $stage,
             'created' => '2024-01-03T10:00:06.000+00:00',
@@ -212,7 +233,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
     private function _getSecondRunner(): array
     {
         $overall = [
-            '_c' => RunnerResult::class,
+            '_c' => RunnerResult::C_NAME,
             'id' => RunnerResult::FIRST_RES,
             'result_type_id' => ResultType::STAGE,
             'start_time' => '2024-01-02T10:00:00.000+00:00',
@@ -262,7 +283,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         ];
         $year = date('Y');
         return [
-            '_c' => Runner::class,
+            '_c' => Runner::C_NAME,
             'id' => Runner::FIRST_RUNNER,
             'full_name' => 'First Runner',
             'sicard' => '2009933',

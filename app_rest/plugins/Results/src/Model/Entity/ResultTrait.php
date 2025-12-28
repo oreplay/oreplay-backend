@@ -9,6 +9,14 @@ use Results\Lib\Consts\StatusCode;
 
 trait ResultTrait
 {
+    public const string C_NAME = 'Result';
+
+    protected function _get_c(): string
+    {
+        // use same class for team and runner in orval and typescript
+        return self::C_NAME;
+    }
+
     private array $_splitsToRemove = [];
     private bool $_compareWithoutDay = false;
     public function setCompareWithoutDay(bool $compareWithoutDay): void

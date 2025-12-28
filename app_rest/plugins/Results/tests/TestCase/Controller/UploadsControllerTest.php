@@ -1053,7 +1053,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         /** @var Team $team */
         $team = TeamsTable::load()->findTeamsInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)->first();
         $expectedTeamResult1 = [
-            '_c' => TeamResult::class,
+            '_c' => TeamResult::C_NAME,
             'result_type_id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
             'start_time' => '2025-10-05T08:30:00.000+00:00',
             'finish_time' => null,
@@ -1093,7 +1093,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         /** @var Team $team */
         $team = TeamsTable::load()->findTeamsInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)->first();
         $expectedTeamResult1 = [
-            '_c' => TeamResult::class,
+            '_c' => TeamResult::C_NAME,
             'result_type_id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
             'start_time' => '2025-10-05T08:30:00.000+00:00',
             'finish_time' => '2025-10-05T09:41:17.000+00:00',

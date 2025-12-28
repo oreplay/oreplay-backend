@@ -10,6 +10,7 @@ use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Stage;
+use Results\Model\Entity\Team;
 
 class RunnersFixture extends RestApiFixture
 {
@@ -83,7 +84,7 @@ class RunnersFixture extends RestApiFixture
             'class_id' => null,
             'class_uuid' => null,
             'club_id' => ClubsFixture::CLUB_1,
-            'team_id' => null,
+            'team_id' => Team::FIRST_TEAM,
             'leg_number' => null,
             'created' => $year . '-01-03 10:00:05',
             'modified' => $year . '-01-03 10:00:05',

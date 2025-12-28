@@ -17,10 +17,17 @@ use Results\Model\Entity\Overalls;
 trait ParticipantTrait
 {
     use LogTrait;
+    public const string C_NAME = 'Participant';
 
     private ParticipantInterface $_leader;
     private Ranking $_settings;
     private ?Overalls $_cachedOveralls = null;
+
+    protected function _get_c(): string
+    {
+        // use same class for team and runner in orval and typescript
+        return self::C_NAME;
+    }
 
     public function setSettings(Ranking $settings): ParticipantInterface
     {
