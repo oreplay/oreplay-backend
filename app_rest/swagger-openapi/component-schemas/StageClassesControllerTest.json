@@ -1,0 +1,92 @@
+{
+    "ClassEntity": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a56"
+                },
+                {
+                    "type": "string",
+                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
+                }
+            ],
+            "short_name": [
+                {
+                    "type": "string",
+                    "example": "FE"
+                },
+                {
+                    "type": "string",
+                    "example": "ME"
+                }
+            ],
+            "long_name": [
+                {
+                    "type": "string",
+                    "example": "F Elite"
+                },
+                {
+                    "type": "string",
+                    "example": "M Elite"
+                }
+            ],
+            "splits": [
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Split"
+                    }
+                }
+            ]
+        },
+        "description": "Entity ClassEntity"
+    },
+    "ArrayClassEntity": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/ClassEntity"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/ClassEntity"
+                    }
+                }
+            ]
+        },
+        "description": "Data wrapper for ClassEntity",
+        "required": [
+            "data"
+        ]
+    },
+    "Split": {
+        "type": "object",
+        "properties": {
+            "station": [
+                {
+                    "type": "number",
+                    "example": 31
+                }
+            ],
+            "id": [
+                {
+                    "type": "string",
+                    "example": "d5b1e69b-c62d-40f2-95ef-ae2582e4593a"
+                }
+            ]
+        },
+        "description": "Entity Split"
+    }
+}

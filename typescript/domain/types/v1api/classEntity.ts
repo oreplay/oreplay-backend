@@ -5,6 +5,7 @@
  * O-replay Rest API
  * OpenAPI spec version: 0.4.3
  */
+import type { Split } from './split'
 
 /**
  * Entity ClassEntity
@@ -13,4 +14,5 @@ export interface ClassEntity {
   id: string
   short_name: string
   long_name: string
+  splits?: Split[]
 }

@@ -1,7 +1,7 @@
 {
     "/api/v1/events/{eventID}/stages/{stageID}/classes/": {
         "get": {
-            "operationId": 1,
+            "operationId": "getListStageClasses",
             "summary": "",
             "description": "Get list",
             "parameters": [
@@ -35,36 +35,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "type": "object",
-                                "description": "Get list",
-                                "properties": {
-                                    "data": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "string",
-                                                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a56"
-                                                },
-                                                "short_name": {
-                                                    "type": "string",
-                                                    "example": "FE"
-                                                },
-                                                "long_name": {
-                                                    "type": "string",
-                                                    "example": "F Elite"
-                                                },
-                                                "splits": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "object"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                "$ref": "#/components/schemas/ArrayClassEntity"
                             }
                         }
                     }

@@ -12,12 +12,13 @@ import type { Control } from './control'
  */
 export interface Split {
   id: string
-  is_intermediate: boolean
-  reading_time: string
+  is_intermediate?: boolean
+  reading_time?: string
   /** @nullable */
   points?: string | null
   /** @nullable */
   order_number?: string | null
-  created: string
-  control: Control
+  created?: string
+  control?: Control
+  station?: number
 }
