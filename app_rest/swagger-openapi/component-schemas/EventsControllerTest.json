@@ -606,7 +606,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2025-12-28T10:36:49.905+00:00"
+                    "example": "2025-12-28T17:38:36.649+00:00"
                 },
                 {
                     "type": "string",
@@ -618,7 +618,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2025-12-28T10:36:49.938+00:00"
+                    "example": "2025-12-28T17:38:36.686+00:00"
                 }
             ],
             "organizer_id": [
@@ -729,55 +729,6 @@
                 },
                 {
                     "$ref": "#/components/schemas/LinkUri"
-                }
-            ],
-            "users": [
-                {
-                    "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "id": {
-                                "type": "string",
-                                "example": "8186ef35-e8c1-4e5c-bcc4-42bb362f050b"
-                            },
-                            "email": {
-                                "type": "string",
-                                "example": "admin@example.com"
-                            },
-                            "first_name": {
-                                "type": "string",
-                                "example": "My Name"
-                            },
-                            "last_name": {
-                                "type": "string",
-                                "example": "My Surname"
-                            },
-                            "created": {
-                                "type": "string",
-                                "example": "****-**-*****:**:**.***+**:**"
-                            },
-                            "modified": {
-                                "type": "string",
-                                "example": "2021-01-18T10:41:31.000+00:00"
-                            },
-                            "_joinData": {
-                                "type": "object",
-                                "properties": {
-                                    "event_id": {
-                                        "type": "string",
-                                        "example": "7f83e207-5a6e-456e-a08f-935eef54eca2"
-                                    },
-                                    "user_id": {
-                                        "type": "string",
-                                        "example": "8186ef35-e8c1-4e5c-bcc4-42bb362f050b"
-                                    }
-                                },
-                                "description": "objectInArray"
-                            }
-                        },
-                        "description": "Generic object."
-                    }
                 }
             ],
             "stages": [

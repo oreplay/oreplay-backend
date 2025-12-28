@@ -7,7 +7,6 @@
  */
 import type { Organizer } from './organizer'
 import type { LinkUri } from './linkUri'
-import type { EventUsersItem } from './eventUsersItem'
 import type { Stage } from './stage'
 import type { Federation } from './federation'
 
@@ -36,7 +35,6 @@ export interface Event {
   organizer_id: string
   organizer?: Organizer
   _links: LinkUri
-  users?: EventUsersItem[]
   stages?: Stage[]
   federation?: Federation
 }

@@ -45,6 +45,7 @@ class Event extends AppEntity
     ];
 
     protected array $_hidden = [
+        'users',
         'deleted',
     ];
 

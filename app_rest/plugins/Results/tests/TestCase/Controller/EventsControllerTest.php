@@ -410,6 +410,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($data['description'], $bodyDecoded['data']['description']);
         $this->assertEquals($data['initial_date'], $bodyDecoded['data']['initial_date']);
         $this->assertEquals($data['final_date'], $bodyDecoded['data']['final_date']);
+        $this->assertArrayNotHasKey('users', $bodyDecoded['data']);
 
         /** @var Event $db */
         $db = EventsTable::load()->getEventFromUser($bodyDecoded['data']['id'], UsersFixture::USER_ADMIN_ID);
