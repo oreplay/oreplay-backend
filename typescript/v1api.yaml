@@ -322,6 +322,21 @@ paths:
       responses:
         '204':
           description: No content. Successfully deleted.
+  /api/v1/organizers/:
+    get:
+      operationId: getListOrganizers
+      summary: ''
+      description: Get list
+      parameters: []
+      tags:
+        - Organizers
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOrganizer'
   /api/v1/events/{eventID}/stages/{stageID}/results/:
     get:
       operationId: getListResults
@@ -748,6 +763,16 @@ components:
       required:
         - id
         - description
+    ArrayOrganizer:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Organizer'
+      description: Data wrapper for Organizer
+      required:
+        - data
     Participant:
       type: object
       properties:

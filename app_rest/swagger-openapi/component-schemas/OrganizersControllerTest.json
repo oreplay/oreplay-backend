@@ -1,0 +1,49 @@
+{
+    "Organizer": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                }
+            ],
+            "name": [
+                {
+                    "type": "string",
+                    "example": "ADCON"
+                }
+            ],
+            "country": [
+                {
+                    "type": "string",
+                    "example": "ES"
+                }
+            ],
+            "region": [
+                {
+                    "type": "string",
+                    "example": "ES-VC"
+                }
+            ]
+        },
+        "description": "Entity Organizer"
+    },
+    "ArrayOrganizer": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Organizer"
+                    }
+                }
+            ]
+        },
+        "description": "Data wrapper for Organizer",
+        "required": [
+            "data"
+        ]
+    }
+}
