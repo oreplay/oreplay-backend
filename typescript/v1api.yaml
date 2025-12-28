@@ -61,14 +61,14 @@ paths:
         - description: ''
           in: query
           name: initial_date:lte
-          example: '2025-12-26'
+          example: '2025-12-28'
           required: false
           schema:
             type: string
         - description: ''
           in: query
           name: final_date:gte
-          example: '2025-12-26'
+          example: '2025-12-28'
           required: false
           schema:
             type: string
@@ -256,10 +256,10 @@ components:
           nullable: true
         initial_date:
           type: string
-          example: '2025-12-27'
+          example: '2025-12-29'
         final_date:
           type: string
-          example: '2025-12-27'
+          example: '2025-12-29'
         federation_id:
           type: string
           example: IOF
@@ -275,12 +275,7 @@ components:
         organizer:
           $ref: '#/components/schemas/Organizer'
         _links:
-          type: object
-          properties:
-            self:
-              type: string
-              example: http://dev.example.com/api/v1/events/85a7c518-54a8-4180-9708-9dcd4e9906c7
-          description: Generic object.
+          $ref: '#/components/schemas/LinkUri'
         users:
           type: array
           items:
@@ -353,6 +348,23 @@ components:
         - name
         - country
         - region
+    LinkHref:
+      type: object
+      properties:
+        href:
+          type: string
+          example: http://dev.example.com/api/v1/events/85a7c518-54a8-4180-9708-9dcd4e9906c7
+      description: Entity LinkHref
+      required:
+        - href
+    LinkUri:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/LinkHref'
+      description: Entity LinkUri
+      required:
+        - self
     PaginatedEvent:
       type: object
       properties:
@@ -423,18 +435,7 @@ components:
           items:
             $ref: '#/components/schemas/UploadLog'
         _links:
-          type: object
-          properties:
-            self:
-              type: string
-              example: http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed
-            results:
-              type: string
-              example: http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/
-            classes:
-              type: string
-              example: http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/
-          description: Generic object.
+          $ref: '#/components/schemas/StageLinks'
       description: Entity Stage
       required:
         - id
@@ -465,6 +466,16 @@ components:
           type: string
           example: '****-**-*****:**:**.***+**:**'
       description: Entity UploadLog
+    StageLinks:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/LinkHref'
+        results:
+          $ref: '#/components/schemas/LinkHref'
+        classes:
+          $ref: '#/components/schemas/LinkHref'
+      description: Entity StageLinks
     Federation:
       type: object
       properties:

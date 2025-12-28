@@ -9,6 +9,8 @@ use App\Test\Fixture\OauthAccessTokensFixture;
 use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use DateTime;
+use RestApi\Model\Entity\LinkHref;
+use RestApi\Model\Entity\LinkUri;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Federation;
 use Results\Model\Entity\Organizer;
@@ -106,7 +108,11 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'created' => '2022-03-10T10:01:00.000+00:00',
             'modified' => '2022-03-10T10:01:00.000+00:00',
             '_links' => [
-                'self' => 'http://dev.example.com/api/v1/events/' . EventsFixture::EVENT_TODAY
+                '_c' => LinkUri::class,
+                'self' => [
+                    '_c' => LinkHref::class,
+                    'href' => 'http://dev.example.com/api/v1/events/' . EventsFixture::EVENT_TODAY,
+                ]
             ],
             'organizer' => $this->_organizer(),
         ];
@@ -137,7 +143,11 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'created' => '2022-03-13T10:01:00.000+00:00',
             'modified' => '2022-03-13T10:01:00.000+00:00',
             '_links' => [
-                'self' => 'http://dev.example.com/api/v1/events/' . EventsFixture::EVENT_TOMORROW_RANKING
+                '_c' => LinkUri::class,
+                'self' => [
+                    '_c' => LinkHref::class,
+                    'href' => 'http://dev.example.com/api/v1/events/' . EventsFixture::EVENT_TOMORROW_RANKING,
+                ]
             ],
             'organizer' => $this->_organizer(),
         ];
@@ -177,9 +187,19 @@ class EventsControllerTest extends ApiCommonErrorsTest
                     ]
                 ],
                 '_links' => [
-                    'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed',
-                    'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/',
-                    'classes' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/',
+                    '_c' => 'StageLinks',
+                    'self' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed',
+                    ],
+                    'results' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/',
+                    ],
+                    'classes' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/',
+                    ]
                 ],
             ],
             [
@@ -193,9 +213,19 @@ class EventsControllerTest extends ApiCommonErrorsTest
                 ],
                 'last_logs' => [],
                 '_links' => [
-                    'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964',
-                    'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/results/',
-                    'classes' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/classes/',
+                    '_c' => 'StageLinks',
+                    'self' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964',
+                    ],
+                    'results' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/results/',
+                    ],
+                    'classes' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/classes/',
+                    ]
                 ],
             ],
         ];
@@ -238,7 +268,11 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'created' => '2022-03-01T10:01:00.000+00:00',
             'modified' => '2022-03-01T10:01:00.000+00:00',
             '_links' => [
-                'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9'
+                '_c' => LinkUri::class,
+                'self' => [
+                    '_c' => LinkHref::class,
+                    'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9',
+                ]
             ],
             'organizer' => $this->_organizer(),
         ];
@@ -263,7 +297,11 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'created' => '2022-03-07T10:01:00.000+00:00',
             'modified' => '2022-03-07T10:01:00.000+00:00',
             '_links' => [
-                'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00'
+                '_c' => LinkUri::class,
+                'self' => [
+                    '_c' => LinkHref::class,
+                    'href' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00'
+                ]
             ],
             'organizer' => $this->_organizer(),
         ];
@@ -288,9 +326,19 @@ class EventsControllerTest extends ApiCommonErrorsTest
                 ],
                 'last_logs' => [],
                 '_links' => [
-                    'self' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3',
-                    'results' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/results/',
-                    'classes' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/classes/',
+                    '_c' => 'StageLinks',
+                    'self' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3',
+                    ],
+                    'results' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/results/',
+                    ],
+                    'classes' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/classes/',
+                    ]
                 ],
             ],
         ];

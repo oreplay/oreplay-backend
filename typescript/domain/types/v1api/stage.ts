@@ -7,7 +7,7 @@
  */
 import type { StageType } from './stageType'
 import type { UploadLog } from './uploadLog'
-import type { _StageLinks } from './_stageLinks'
+import type { StageLinks } from './stageLinks'
 
 /**
  * Entity Stage
@@ -17,6 +17,5 @@ export interface Stage {
   description: string
   stage_type: StageType
   last_logs: UploadLog[]
-  /** Generic object. */
-  _links: _StageLinks
+  _links: StageLinks
 }

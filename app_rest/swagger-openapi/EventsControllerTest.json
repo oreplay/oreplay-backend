@@ -69,7 +69,7 @@
                     "description": "",
                     "in": "query",
                     "name": "initial_date:lte",
-                    "example": "2025-12-26",
+                    "example": "2025-12-28",
                     "required": false,
                     "schema": {
                         "type": "string"
@@ -79,7 +79,7 @@
                     "description": "",
                     "in": "query",
                     "name": "final_date:gte",
-                    "example": "2025-12-26",
+                    "example": "2025-12-28",
                     "required": false,
                     "schema": {
                         "type": "string"

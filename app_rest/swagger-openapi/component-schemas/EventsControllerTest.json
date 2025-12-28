@@ -394,7 +394,7 @@
             "initial_date": [
                 {
                     "type": "string",
-                    "example": "2025-12-27"
+                    "example": "2025-12-29"
                 },
                 {
                     "type": "string",
@@ -410,11 +410,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2025-12-26"
+                    "example": "2025-12-28"
                 },
                 {
                     "type": "string",
-                    "example": "2025-12-27"
+                    "example": "2025-12-29"
                 },
                 {
                     "type": "string",
@@ -440,7 +440,7 @@
             "final_date": [
                 {
                     "type": "string",
-                    "example": "2025-12-27"
+                    "example": "2025-12-29"
                 },
                 {
                     "type": "string",
@@ -456,11 +456,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2025-12-26"
+                    "example": "2025-12-28"
                 },
                 {
                     "type": "string",
-                    "example": "2025-12-27"
+                    "example": "2025-12-29"
                 },
                 {
                     "type": "string",
@@ -606,7 +606,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2025-12-26T17:22:48.829+00:00"
+                    "example": "2025-12-28T09:55:45.105+00:00"
                 },
                 {
                     "type": "string",
@@ -618,7 +618,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2025-12-26T17:22:48.860+00:00"
+                    "example": "2025-12-28T09:55:45.134+00:00"
                 }
             ],
             "organizer_id": [
@@ -698,114 +698,37 @@
             ],
             "_links": [
                 {
-                    "type": "object",
-                    "properties": {
-                        "self": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/85a7c518-54a8-4180-9708-9dcd4e9906c7"
-                        }
-                    },
-                    "description": "Generic object."
+                    "$ref": "#/components/schemas/LinkUri"
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "self": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                        }
-                    },
-                    "description": "Generic object."
+                    "$ref": "#/components/schemas/LinkUri"
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "self": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                        }
-                    },
-                    "description": "Generic object."
+                    "$ref": "#/components/schemas/LinkUri"
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "self": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00"
-                        }
-                    },
-                    "description": "Generic object."
+                    "$ref": "#/components/schemas/LinkUri"
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "self": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8b24c0-today"
-                        }
-                    },
-                    "description": "Generic object."
+                    "$ref": "#/components/schemas/LinkUri"
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "self": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/85a7c518-54a8-4180-9708-9dcd4e9906c7"
-                        }
-                    },
-                    "description": "Generic object."
+                    "$ref": "#/components/schemas/LinkUri"
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "self": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00"
-                        }
-                    },
-                    "description": "Generic object."
+                    "$ref": "#/components/schemas/LinkUri"
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "self": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/7f83e207-5a6e-456e-a08f-935eef54eca2"
-                        }
-                    },
-                    "description": "Generic object."
+                    "$ref": "#/components/schemas/LinkUri"
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "self": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                        }
-                    },
-                    "description": "Generic object."
+                    "$ref": "#/components/schemas/LinkUri"
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "self": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00"
-                        }
-                    },
-                    "description": "Generic object."
+                    "$ref": "#/components/schemas/LinkUri"
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "self": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
-                        }
-                    },
-                    "description": "Generic object."
+                    "$ref": "#/components/schemas/LinkUri"
                 }
             ],
             "users": [
@@ -1040,6 +963,123 @@
         },
         "description": "Entity Organizer"
     },
+    "LinkHref": {
+        "type": "object",
+        "properties": {
+            "href": [
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8b24c0-today"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/7f83e207-5a6e-456e-a08f-935eef54eca2"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/results/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/classes/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                }
+            ]
+        },
+        "description": "Entity LinkHref"
+    },
+    "LinkUri": {
+        "type": "object",
+        "properties": {
+            "self": [
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                }
+            ]
+        },
+        "description": "Entity LinkUri"
+    },
     "PaginatedEvent": {
         "type": "object",
         "properties": {
@@ -1228,7 +1268,7 @@
                     "properties": {
                         "href": {
                             "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2025-12-26&final_date:gte=2025-12-26&page=1"
+                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2025-12-28&final_date:gte=2025-12-28&page=1"
                         }
                     },
                     "description": "Generic object."
@@ -1360,40 +1400,10 @@
             ],
             "_links": [
                 {
-                    "type": "object",
-                    "properties": {
-                        "self": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed"
-                        },
-                        "results": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/"
-                        },
-                        "classes": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/"
-                        }
-                    },
-                    "description": "Generic object."
+                    "$ref": "#/components/schemas/StageLinks"
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "self": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3"
-                        },
-                        "results": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/results/"
-                        },
-                        "classes": {
-                            "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00/stages/91c54cd6-98de-441c-a71c-cda466c1abc3/classes/"
-                        }
-                    },
-                    "description": "Generic object."
+                    "$ref": "#/components/schemas/StageLinks"
                 }
             ]
         },
@@ -1442,6 +1452,36 @@
             ]
         },
         "description": "Entity UploadLog"
+    },
+    "StageLinks": {
+        "type": "object",
+        "properties": {
+            "self": [
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                }
+            ],
+            "results": [
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                }
+            ],
+            "classes": [
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                }
+            ]
+        },
+        "description": "Entity StageLinks"
     },
     "Federation": {
         "type": "object",

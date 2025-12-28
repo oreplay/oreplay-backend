@@ -7,6 +7,7 @@ namespace Results\Model\Entity;
 use App\Controller\ApiController;
 use App\Lib\FullBaseUrl;
 use Cake\I18n\FrozenTime;
+use RestApi\Model\Entity\LinkHref;
 
 /**
  * @property string $event_id
@@ -63,11 +64,11 @@ class Stage extends AppEntity
 
     public function _get_links(): array
     {
-        return [
-            'self' => $this->_path() . $this->id,
-            'results' => $this->_path() . $this->id . '/results/',
-            'classes' => $this->_path() . $this->id . '/classes/'
-        ];
+        return $this->toChild('StageLinks', [
+            'self' => new LinkHref(['href' => $this->_path() . $this->id]),
+            'results' => new LinkHref(['href' => $this->_path() . $this->id . '/results/']),
+            'classes' => new LinkHref(['href' => $this->_path() . $this->id . '/classes/'])
+        ]);
     }
 
     private function _path()

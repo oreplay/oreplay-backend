@@ -8,6 +8,7 @@ use App\Controller\ApiController;
 use App\Test\Fixture\OauthAccessTokensFixture;
 use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
+use RestApi\Model\Entity\LinkHref;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageType;
@@ -58,9 +59,19 @@ class StagesControllerTest extends ApiCommonErrorsTest
                 'description' => 'First stage',
                 'last_logs' => [],
                 '_links' => [
-                    'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed',
-                    'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/',
-                    'classes' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/',
+                    '_c' => 'StageLinks',
+                    'self' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed',
+                    ],
+                    'results' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/',
+                    ],
+                    'classes' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/',
+                    ]
                 ],
             ],
             [
@@ -69,9 +80,19 @@ class StagesControllerTest extends ApiCommonErrorsTest
                 'description' => 'Second stage',
                 'last_logs' => [],
                 '_links' => [
-                    'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964',
-                    'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/results/',
-                    'classes' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/classes/',
+                    '_c' => 'StageLinks',
+                    'self' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964',
+                    ],
+                    'results' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/results/',
+                    ],
+                    'classes' => [
+                        '_c' => LinkHref::class,
+                        'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/classes/',
+                    ]
                 ],
             ],
         ];
@@ -94,9 +115,19 @@ class StagesControllerTest extends ApiCommonErrorsTest
             ],
             'last_logs' => [],
             '_links' => [
-                'self' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964',
-                'results' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/results/',
-                'classes' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/classes/',
+                '_c' => 'StageLinks',
+                'self' => [
+                    '_c' => LinkHref::class,
+                    'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964',
+                ],
+                'results' => [
+                    '_c' => LinkHref::class,
+                    'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/results/',
+                ],
+                'classes' => [
+                    '_c' => LinkHref::class,
+                    'href' => 'http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/classes/',
+                ]
             ],
         ];
         $this->assertEquals($expected, $bodyDecoded['data']);

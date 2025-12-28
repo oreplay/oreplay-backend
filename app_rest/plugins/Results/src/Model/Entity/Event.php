@@ -7,6 +7,7 @@ namespace Results\Model\Entity;
 use App\Controller\ApiController;
 use App\Lib\FullBaseUrl;
 use App\Model\Entity\User;
+use RestApi\Model\Entity\LinkUri;
 
 /**
  * @property User[] $users
@@ -49,9 +50,7 @@ class Event extends AppEntity
 
     public function _get_links(): array
     {
-        return [
-            'self' => FullBaseUrl::host() . ApiController::ROUTE_PREFIX . '/events/' . $this->id
-        ];
+        return LinkUri::onlySelf(FullBaseUrl::host() . ApiController::ROUTE_PREFIX . '/events/' . $this->id);
     }
 
     public function getFirstUser()
