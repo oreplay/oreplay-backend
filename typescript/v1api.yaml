@@ -322,6 +322,63 @@ paths:
       responses:
         '204':
           description: No content. Successfully deleted.
+  /api/v1/events/{eventID}/stages/{stageID}/stats-fedo/:
+    get:
+      operationId: getListFedoStats
+      summary: ''
+      description: Get list
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        - description: ID in URL
+          in: path
+          name: stageID
+          required: true
+          schema:
+            type: string
+          example: 51d63e99-5d7c-4382-a541-8567015d8eed
+        - description: ''
+          in: query
+          name: officialSeniorM
+          example: ME
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: officialSeniorF
+          example: FE
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: officialSub20M
+          example: M18
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: officialSub20F
+          example: F18
+          required: false
+          schema:
+            type: string
+      tags:
+        - FedoStats
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResFedoStats'
   /api/v1/me/:
     get:
       operationId: getListMe
@@ -895,6 +952,75 @@ components:
       required:
         - id
         - description
+    Stats:
+      type: object
+      properties:
+        classes:
+          type: array
+          items:
+            type: string
+            example: ME
+        total:
+          type: number
+          example: 0
+        dns:
+          type: number
+          example: 0
+        mp:
+          type: number
+          example: 0
+        dnf:
+          type: number
+          example: 0
+        ot:
+          type: number
+          example: 0
+        dqf:
+          type: number
+          example: 0
+        notYetFinished:
+          type: number
+          example: 0
+        finished:
+          type: number
+          example: 0
+        others:
+          type: number
+          example: 0
+        otherValues:
+          type: array
+          items:
+            type: string
+            example: ''
+      description: Entity Stats
+    GenderGrouped:
+      type: object
+      properties:
+        M:
+          $ref: '#/components/schemas/Stats'
+        F:
+          $ref: '#/components/schemas/Stats'
+        any:
+          $ref: '#/components/schemas/Stats'
+      description: Entity GenderGrouped
+    FedoStats:
+      type: object
+      properties:
+        officialSub20:
+          $ref: '#/components/schemas/GenderGrouped'
+        officialSenior:
+          $ref: '#/components/schemas/GenderGrouped'
+        others:
+          $ref: '#/components/schemas/GenderGrouped'
+      description: Entity FedoStats
+    ResFedoStats:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/FedoStats'
+      description: Data wrapper for FedoStats
+      required:
+        - data
     User:
       type: object
       properties:

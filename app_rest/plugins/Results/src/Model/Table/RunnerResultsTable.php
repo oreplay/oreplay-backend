@@ -8,6 +8,7 @@ use App\Model\Table\AppTable;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
+use RestApi\Model\Entity\RestApiEntity;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\ResultType;
@@ -159,6 +160,7 @@ class RunnerResultsTable extends AppTable
             }
         }
         return [
+            RestApiEntity::CLASS_NAME => 'Stats',
             'classes' => array_keys($classes),
             'total' => $total,
             'dns' => $dns,

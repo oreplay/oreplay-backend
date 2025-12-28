@@ -48,8 +48,11 @@ class FedoStatsControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $expected = [
+            '_c' => 'FedoStats',
             'officialSub20' => [
+                '_c' => 'GenderGrouped',
                 'M' => [
+                    '_c' => 'Stats',
                     'classes' => [],
                     'total' => 0,
                     'dns' => 0,
@@ -63,6 +66,7 @@ class FedoStatsControllerTest extends ApiCommonErrorsTest
                     'otherValues' => [],
                 ],
                 'F' => [
+                    '_c' => 'Stats',
                     'classes' => [],
                     'total' => 0,
                     'dns' => 0,
@@ -76,6 +80,7 @@ class FedoStatsControllerTest extends ApiCommonErrorsTest
                     'otherValues' => [],
                 ],
                 'any' => [
+                    '_c' => 'Stats',
                     'classes' => [],
                     'total' => 0,
                     'dns' => 0,
@@ -90,7 +95,9 @@ class FedoStatsControllerTest extends ApiCommonErrorsTest
                 ],
             ],
             'officialSenior' => [
+                '_c' => 'GenderGrouped',
                 'M' => [
+                    '_c' => 'Stats',
                     'classes' => ['ME'],
                     'total' => 1,
                     'dns' => 0,
@@ -104,6 +111,7 @@ class FedoStatsControllerTest extends ApiCommonErrorsTest
                     'otherValues' => [''],
                 ],
                 'F' => [
+                    '_c' => 'Stats',
                     'classes' => [],
                     'total' => 0,
                     'dns' => 0,
@@ -117,6 +125,7 @@ class FedoStatsControllerTest extends ApiCommonErrorsTest
                     'otherValues' => [],
                 ],
                 'any' => [
+                    '_c' => 'Stats',
                     'classes' => ['ME'],
                     'total' => 1,
                     'dns' => 0,
@@ -131,7 +140,9 @@ class FedoStatsControllerTest extends ApiCommonErrorsTest
                 ],
             ],
             'others' => [
+                '_c' => 'GenderGrouped',
                 'M' => [
+                    '_c' => 'Stats',
                     'classes' => [],
                     'total' => 0,
                     'dns' => 0,
@@ -145,6 +156,7 @@ class FedoStatsControllerTest extends ApiCommonErrorsTest
                     'otherValues' => [],
                 ],
                 'F' => [
+                    '_c' => 'Stats',
                     'classes' => [],
                     'total' => 0,
                     'dns' => 0,
@@ -158,6 +170,7 @@ class FedoStatsControllerTest extends ApiCommonErrorsTest
                     'otherValues' => [],
                 ],
                 'any' => [
+                    '_c' => 'Stats',
                     'classes' => [],
                     'total' => 0,
                     'dns' => 0,

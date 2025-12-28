@@ -1,0 +1,526 @@
+{
+    "Stats": {
+        "type": "object",
+        "properties": {
+            "classes": [
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": "ME"
+                    }
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": "ME"
+                    }
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                }
+            ],
+            "total": [
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "dns": [
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "mp": [
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "dnf": [
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "ot": [
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "dqf": [
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "notYetFinished": [
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "finished": [
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "others": [
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "otherValues": [
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": ""
+                    }
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": ""
+                    }
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                }
+            ]
+        },
+        "description": "Entity Stats"
+    },
+    "GenderGrouped": {
+        "type": "object",
+        "properties": {
+            "M": [
+                {
+                    "$ref": "#/components/schemas/Stats"
+                },
+                {
+                    "$ref": "#/components/schemas/Stats"
+                },
+                {
+                    "$ref": "#/components/schemas/Stats"
+                }
+            ],
+            "F": [
+                {
+                    "$ref": "#/components/schemas/Stats"
+                },
+                {
+                    "$ref": "#/components/schemas/Stats"
+                },
+                {
+                    "$ref": "#/components/schemas/Stats"
+                }
+            ],
+            "any": [
+                {
+                    "$ref": "#/components/schemas/Stats"
+                },
+                {
+                    "$ref": "#/components/schemas/Stats"
+                },
+                {
+                    "$ref": "#/components/schemas/Stats"
+                }
+            ]
+        },
+        "description": "Entity GenderGrouped"
+    },
+    "FedoStats": {
+        "type": "object",
+        "properties": {
+            "officialSub20": [
+                {
+                    "$ref": "#/components/schemas/GenderGrouped"
+                }
+            ],
+            "officialSenior": [
+                {
+                    "$ref": "#/components/schemas/GenderGrouped"
+                }
+            ],
+            "others": [
+                {
+                    "$ref": "#/components/schemas/GenderGrouped"
+                }
+            ]
+        },
+        "description": "Entity FedoStats"
+    },
+    "ResFedoStats": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "$ref": "#/components/schemas/FedoStats"
+                }
+            ]
+        },
+        "description": "Data wrapper for FedoStats",
+        "required": [
+            "data"
+        ]
+    }
+}

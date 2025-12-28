@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Controller;
 
+use RestApi\Model\Entity\RestApiEntity;
 use Results\Model\Table\RunnerResultsTable;
 
 class FedoStatsController extends ApiController
@@ -46,17 +47,21 @@ class FedoStatsController extends ApiController
 
         $table = $this->RunnerResults;
         $this->return = [
+            RestApiEntity::CLASS_NAME => 'FedoStats',
             'officialSub20' => [
+                RestApiEntity::CLASS_NAME => 'GenderGrouped',
                 'M' => $table->getFedoClassesStats($eventId, $stageId, $officialSub20M, 'M'),
                 'F' => $table->getFedoClassesStats($eventId, $stageId, $officialSub20F, 'F'),
                 'any' => $table->getFedoClassesStats($eventId, $stageId, $officialSub20, ''),
             ],
             'officialSenior' => [
+                RestApiEntity::CLASS_NAME => 'GenderGrouped',
                 'M' => $table->getFedoClassesStats($eventId, $stageId, $officialSeniorM, 'M'),
                 'F' => $table->getFedoClassesStats($eventId, $stageId, $officialSeniorF, 'F'),
                 'any' => $table->getFedoClassesStats($eventId, $stageId, $officialSenior, ''),
             ],
             'others' => [
+                RestApiEntity::CLASS_NAME => 'GenderGrouped',
                 'M' => $table->getNotClassesStats($eventId, $stageId, $all, 'M'),
                 'F' => $table->getNotClassesStats($eventId, $stageId, $all, 'F'),
                 'any' => $table->getNotClassesStats($eventId, $stageId, $all, ''),
