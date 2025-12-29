@@ -20,18 +20,7 @@
   <testsuites>
       <testsuite name="Controllers">
           <file>tests/TestCase/Controller/MeControllerTest.php</file>
-          <file>plugins/Results/tests/TestCase/Controller/EventsControllerTest.php</file>
-          <file>plugins/Results/tests/TestCase/Controller/EventTokensControllerTest.php</file>
-          <file>plugins/Results/tests/TestCase/Controller/FedoStatsControllerTest.php</file>
-          <file>plugins/Results/tests/TestCase/Controller/OrganizersControllerTest.php</file>
-          <file>plugins/Results/tests/TestCase/Controller/RawUploadsControllerTest.php</file>
-          <file>plugins/Results/tests/TestCase/Controller/ResultsControllerTest.php</file>
-          <file>plugins/Results/tests/TestCase/Controller/ResultsByClassControllerTest.php</file>
-          <file>plugins/Results/tests/TestCase/Controller/StageClassesControllerTest.php</file>
-          <file>plugins/Results/tests/TestCase/Controller/StageClubsControllerTest.php</file>
-          <file>plugins/Results/tests/TestCase/Controller/StagesControllerTest.php</file>
-          <file>plugins/Results/tests/TestCase/Controller/StatsControllerTest.php</file>
-          <file>plugins/Results/tests/TestCase/Controller/UploadsControllerTest.php</file>
+          <directory>plugins/Results/tests/TestCase/Controller/</directory>
       </testsuite>
   </testsuites>
   <extensions>
