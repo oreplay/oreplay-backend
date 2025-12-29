@@ -65,7 +65,7 @@ class ReadablePointsCsv implements RestRenderer
         foreach ($runnersList as $runner) {
             $stageCounter = 1;
 
-            foreach ($runner['overalls']['parts'] as $part) {
+            foreach ($runner['overalls']['parts'] ?? [] as $part) {
                 $x = $part['stage_order'] - $stageCounter;
 
                 if ($toRet === '') {
@@ -107,12 +107,13 @@ class ReadablePointsCsv implements RestRenderer
                 $position = 'NC';
             } else {
                 $fullName = $runner['full_name'];
-                $position = $runner['overalls']['overall']['position'];
+                $position = $runner['overalls']['overall']['position'] ?? '';
             }
+            $pointsFinal = $runner['overalls']['overall']['points_final'] ?? '';
             $toRet .= "{$position};"
                 . "{$fullName};"
                 . "{$runner['club']['short_name']};"
-                . "{$runner['overalls']['overall']['points_final']};"
+                . "{$pointsFinal};"
                 . "{$parts}\n";
 
             $parts = '';

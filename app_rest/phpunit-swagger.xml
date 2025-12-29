@@ -26,6 +26,7 @@
           <file>plugins/Results/tests/TestCase/Controller/OrganizersControllerTest.php</file>
           <file>plugins/Results/tests/TestCase/Controller/RawUploadsControllerTest.php</file>
           <file>plugins/Results/tests/TestCase/Controller/ResultsControllerTest.php</file>
+          <file>plugins/Results/tests/TestCase/Controller/ResultsByClassControllerTest.php</file>
           <file>plugins/Results/tests/TestCase/Controller/StageClassesControllerTest.php</file>
           <file>plugins/Results/tests/TestCase/Controller/StageClubsControllerTest.php</file>
           <file>plugins/Results/tests/TestCase/Controller/StagesControllerTest.php</file>
