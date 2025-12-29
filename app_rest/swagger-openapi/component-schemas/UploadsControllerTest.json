@@ -1,0 +1,133 @@
+{
+    "UploadDataTransfer": {
+        "type": "object",
+        "properties": {
+            "configuration": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "source_vendor": {
+                            "type": "string",
+                            "example": "sportSoftware"
+                        },
+                        "source": {
+                            "type": "string",
+                            "example": "OE2010"
+                        },
+                        "source_version": {
+                            "type": "number",
+                            "example": 12.2
+                        },
+                        "contents": {
+                            "type": "string",
+                            "example": "StartList | ResultList"
+                        },
+                        "results_type": {
+                            "type": "string",
+                            "example": "Mixed"
+                        },
+                        "utf": {
+                            "type": "number",
+                            "example": 1
+                        }
+                    },
+                    "description": "Generic object."
+                }
+            ],
+            "event": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                        },
+                        "description": {
+                            "type": "string",
+                            "example": "Demo - 5 days of Italy 2014"
+                        },
+                        "stages": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "description": "Empty array",
+                                "additionalProperties": true
+                            }
+                        }
+                    },
+                    "description": "Generic object."
+                }
+            ]
+        },
+        "description": "Entity UploadDataTransfer"
+    },
+    "UploadPostData": {
+        "type": "object",
+        "properties": {
+            "oreplay_data_transfer": [
+                {
+                    "$ref": "#/components/schemas/UploadDataTransfer"
+                }
+            ]
+        },
+        "description": "Entity UploadPostData"
+    },
+    "UploadedMeta": {
+        "type": "object",
+        "properties": {
+            "updated": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "classes": {
+                            "type": "number",
+                            "example": 0
+                        },
+                        "runners": {
+                            "type": "number",
+                            "example": 0
+                        }
+                    },
+                    "description": "Generic object."
+                }
+            ],
+            "humanColor": [
+                {
+                    "type": "string",
+                    "example": "#FF0000"
+                }
+            ],
+            "human": [
+                {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": "\n    [ERROR - 400] (12/29/25, 2:17\u202fPM) Invalid payload structure configuration.contents StartList | ResultList and configuration.results_type Mixed \n"
+                    }
+                }
+            ]
+        },
+        "description": "Entity UploadedMeta"
+    },
+    "ResUploaded": {
+        "type": "object",
+        "properties": {
+            "meta": [
+                {
+                    "$ref": "#/components/schemas/UploadedMeta"
+                }
+            ],
+            "data": [
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                }
+            ]
+        },
+        "description": "Data wrapper for ResUploaded",
+        "required": [
+            "data"
+        ]
+    }
+}

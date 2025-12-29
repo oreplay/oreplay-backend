@@ -2,13 +2,13 @@
 
 ## Authentication process
 
-After the user adds the "**Token**", a new `GET` request must be made to `/api/v1/events/<Event ID>` to retrieve the list of available Stages. The variable Token will contain the **Event ID** in the first **36** characters. The remaining **6** characters of **Token** is the **secret** to be sent as Authorization header (e.g `'Authorization: Bearer bGb6Jt'` – see curl example below).
+The user must be adding the "**Token**" in the UI of the client. Then, a new `GET` request must be made by the client to `/api/v1/events/<Event ID>` to retrieve the list of available Stages. The variable Token will contain the **Event ID** in the first **36** characters. The remaining **6** characters of **Token** is the **secret** to be sent as Authorization header (e.g `'Authorization: Bearer bGb6Jt'` – see curl example below).
 
 Example user interface. Fields **URL** and **Token** to be filled by the user:
 
 ![Example user interface](https://github.com/oreplay/oreplay-backend/blob/main/docs/assets/token-input.png?raw=true)
 
-The field **URL** should be editable, but prefilled by default to the URL https://www.oreplay.es This will allow the end user to change to a custom installation of the o-replay open source system
+The field **URL** should be editable, but prefilled by default to the URL https://www.oreplay.es This will allow the end user to change to a custom installation of the o-replay open source system (for example, if he is running o-replay on a local network without internet access, to server results in a big event)
 
 Example of **GET Events request** with CURL:
 
@@ -45,7 +45,7 @@ The field **description** could be displayed as soon as the response is complete
 
 If the **Token** is invalid (wrong Event_id or wrong secret), the HTTP status code will be **401** (Unauthorized)
 
-Other error codes like `400`, `403`, `404`, `500`, `502`, `503` should not be used if there is no mayor error.
+Other error codes like `400`, `403`, `404`, `500`, `502`, `503` do not need to be handled individually.
 They COULD be handled with a generic message like "There is a problem with the request to the server (error code 400)"
 
 The list of stages could be displayed in a dialog like this, to be selected by the user.

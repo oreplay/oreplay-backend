@@ -31,6 +31,7 @@
           <file>plugins/Results/tests/TestCase/Controller/StageClubsControllerTest.php</file>
           <file>plugins/Results/tests/TestCase/Controller/StagesControllerTest.php</file>
           <file>plugins/Results/tests/TestCase/Controller/StatsControllerTest.php</file>
+          <file>plugins/Results/tests/TestCase/Controller/UploadsControllerTest.php</file>
       </testsuite>
   </testsuites>
   <extensions>

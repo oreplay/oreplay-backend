@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Lib;
 
 use Cake\I18n\FrozenTime;
+use RestApi\Model\Entity\RestApiEntity;
 use Results\Lib\Consts\Color;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ClassEntity;
@@ -183,7 +184,9 @@ class UploadMetrics
     public function toArrayError(array $human): array
     {
         return [
+            RestApiEntity::CLASS_NAME => 'Uploaded',
             'meta' => [
+                RestApiEntity::CLASS_NAME => 'UploadedMeta',
                 'updated' => [
                     'classes' => 0,
                     'runners' => 0,

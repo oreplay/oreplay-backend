@@ -12,6 +12,7 @@ use Cake\ORM\Query;
 use Results\Controller\UploadsController;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
+use Results\Lib\UploadConfigChecker;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
@@ -78,9 +79,63 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     const PREFIX = ' *** PLEASE UPDATE THE DESKTOP CLIENT TO THE LAST VERSION!!!!!!!!!!!!!!!!!!!!!';
 
-    protected function _getEndpoint(): string
+    protected function _getEndpointAddingToSwagger(): string
     {
         return ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/uploads/';
+    }
+
+    protected function _getEndpoint(): string
+    {
+        $this->skipNextRequestInSwagger();
+        return $this->_getEndpointAddingToSwagger();
+    }
+
+    public function testAddNew_onError()
+    {
+        Cache::clear();
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = [
+            '_c' => 'UploadPostData',
+            'oreplay_data_transfer' => [
+                '_c' => 'UploadDataTransfer',
+                'configuration' => [
+                    'source_vendor' => 'sportSoftware',
+                    'source' => 'OE2010',
+                    'source_version' => '12.2',
+                    'contents' => 'StartList | ResultList',
+                    'results_type' => UploadConfigChecker::TYPE_MIXED,
+                    'utf' => true,
+                ],
+                'event' => [
+                    'id' => Event::FIRST_EVENT,
+                    'description' => 'Demo - 5 days of Italy 2014',
+                    'stages' => []
+                ]
+            ]
+        ];
+        $this->post($this->_getEndpointAddingToSwagger() . '?version=501', $data);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $expected = [
+            '_c' => 'Uploaded',
+            'meta' => [
+                '_c' => 'UploadedMeta',
+                'updated' => [
+                    'classes' => 0,
+                    'runners' => 0,
+                ],
+                'humanColor' => '#FF0000',
+                'human' => []
+            ],
+            'data' => []
+        ];
+        $jsonDecoded['meta']['human'] = [];
+        $this->assertEquals($expected, $jsonDecoded);
     }
 
     public function testAddNew_shouldAddMixedContent()
@@ -93,7 +148,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['id' => ClassEntity::ME]);
 
         $data = ['oreplay_data_transfer' => MixedExamples::importMixed()];
-        $this->post($this->_getEndpoint() . '?version=501', $data);
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
         $human = $jsonDecoded['meta']['human'][0];
@@ -493,6 +548,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $jsonDecoded = $this->assertJsonResponseOK();
         $now = new FrozenTime();
         $expectedMeta = [
+            '_c' => 'UploadedMeta',
             'updated' => [
                 'classes' => 0,
                 'runners' => 0,
@@ -709,6 +765,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $jsonDecoded = $this->assertJsonResponseOK();
         $now = new FrozenTime();
         $expectedMeta = [
+            '_c' => 'UploadedMeta',
             'updated' => [
                 'classes' => 0,
                 'runners' => 0,
