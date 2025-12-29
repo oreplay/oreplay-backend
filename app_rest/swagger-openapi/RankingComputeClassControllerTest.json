@@ -1,0 +1,83 @@
+{
+    "/api/v1/rankings/{rankingID}/events/{eventID}/stages/{stageID}/classes/{classID}/compute/": {
+        "post": {
+            "operationId": "postListRankingComputeClass",
+            "summary": "",
+            "description": "Add new",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "rankingID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "regional100pts"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "stageID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "classID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
+                }
+            ],
+            "tags": [
+                "RankingComputeClass"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResClassEntity"
+                            }
+                        }
+                    }
+                }
+            },
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "secret": {
+                                    "type": "string",
+                                    "example": "XkVe9RTsUY2bgFZb9htr4w=="
+                                }
+                            },
+                            "description": "Generic object when: Add new"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

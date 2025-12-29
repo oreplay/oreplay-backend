@@ -21,6 +21,7 @@
       <testsuite name="Controllers">
           <file>tests/TestCase/Controller/MeControllerTest.php</file>
           <directory>plugins/Results/tests/TestCase/Controller/</directory>
+          <file>plugins/Rankings/tests/TestCase/Controller/RankingComputeClassControllerTest.php</file>
       </testsuite>
   </testsuites>
   <extensions>

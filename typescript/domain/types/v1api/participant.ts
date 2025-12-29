@@ -5,33 +5,34 @@
  * O-replay Rest API
  * OpenAPI spec version: 0.4.3
  */
-import type { ClassEntity } from './classEntity'
 import type { Club } from './club'
 import type { Result } from './result'
+import type { Overalls } from './overalls'
+import type { ClassEntity } from './classEntity'
 
 /**
  * Entity Participant
  */
 export interface Participant {
   id: string
-  bib_number: number
-  is_nc: boolean
-  eligibility: string
-  /** @nullable */
-  legs?: string | null
-  created: string
   sicard?: number
+  bib_number: number
   /** @nullable */
   sex?: string | null
-  /** @nullable */
-  leg_number?: string | null
-  /** @nullable */
-  class?: ClassEntity
+  is_nc: boolean
+  eligibility: string
   club: Club
+  created: string
   full_name: string
   /** @nullable */
   stage?: Result
   /** @nullable */
-  overalls?: string | null
+  overalls?: Overalls
+  /** @nullable */
+  legs?: string | null
+  /** @nullable */
+  leg_number?: string | null
+  /** @nullable */
+  class?: ClassEntity
   runners?: Participant[]
 }

@@ -81,10 +81,10 @@ class Overalls extends AppEntity
 
     public function toArray(): array
     {
-        return [
+        return $this->toChild('Overalls', [
             'parts' => $this->_parts,
             'overall' => $this->_overall,
-        ];
+        ]);
     }
 
 

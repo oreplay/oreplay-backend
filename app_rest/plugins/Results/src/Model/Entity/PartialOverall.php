@@ -111,7 +111,7 @@ class PartialOverall extends RunnerResult
 
     public function toArray(): array
     {
-        return [
+        return $this->toChild('PartialOverall', [
             'id' => $this->id,
             'stage_order' => $this->stage_order,
             'upload_type' => $this->upload_type,
@@ -125,7 +125,7 @@ class PartialOverall extends RunnerResult
             'points_final' => $this->points_final,
             'points_behind' => null,
             'note' => $this->note,
-        ];
+        ]);
     }
 
     public function setPosition(?int $position): static

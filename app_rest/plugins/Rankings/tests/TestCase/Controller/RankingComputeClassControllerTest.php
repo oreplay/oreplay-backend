@@ -64,8 +64,10 @@ class RankingComputeClassControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(1, count($bodyDecoded['data']['runners']));
         $overalls = $bodyDecoded['data']['runners'][0]['overalls'];
         $expectedOveralls = [
+            '_c' => 'Overalls',
             'parts' =>[
                 [
+                    '_c' => 'PartialOverall',
                     'id' => $overalls['parts'][0]['id'] ?? 'undefined_parts.0.id',
                     'stage_order' => 1,
                     'stage' => [
@@ -86,6 +88,7 @@ class RankingComputeClassControllerTest extends ApiCommonErrorsTest
                 ],
             ],
             'overall' => [
+                '_c' => 'PartialOverall',
                 'id' => $overalls['overall']['id'] ?? 'undefined_overall.id',
                 'stage_order' => 1,
                 'stage' => null,

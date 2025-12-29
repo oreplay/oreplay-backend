@@ -418,6 +418,60 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArrayOrganizer'
+  /api/v1/rankings/{rankingID}/events/{eventID}/stages/{stageID}/classes/{classID}/compute/:
+    post:
+      operationId: postListRankingComputeClass
+      summary: ''
+      description: Add new
+      parameters:
+        - description: ID in URL
+          in: path
+          name: rankingID
+          required: true
+          schema:
+            type: string
+          example: regional100pts
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        - description: ID in URL
+          in: path
+          name: stageID
+          required: true
+          schema:
+            type: string
+          example: 51d63e99-5d7c-4382-a541-8567015d8eed
+        - description: ID in URL
+          in: path
+          name: classID
+          required: true
+          schema:
+            type: string
+          example: d8a87faf-68a4-487b-8f28-6e0ead6c1a57
+      tags:
+        - RankingComputeClass
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResClassEntity'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                secret:
+                  type: string
+                  example: XkVe9RTsUY2bgFZb9htr4w==
+              description: 'Generic object when: Add new'
   /api/v1/events/{eventID}/rawUploads/:
     get:
       operationId: getListRawUploads
@@ -1220,6 +1274,191 @@ components:
       description: Data wrapper for Organizer
       required:
         - data
+    ClassEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 86d30696-2a5e-40b9-b47a-878f44642022
+        short_name:
+          type: string
+          example: ME
+        long_name:
+          type: string
+          example: M Elite
+        runners:
+          type: array
+          items:
+            $ref: '#/components/schemas/Participant'
+        splits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Split'
+      description: Entity ClassEntity
+      required:
+        - id
+        - short_name
+        - long_name
+    Participant:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 25be2a44-7e72-458d-8911-f118795741a4
+        sicard:
+          type: number
+          example: 2009933
+        bib_number:
+          type: number
+          example: 4444
+        sex:
+          type: string
+          example: M
+          nullable: true
+        is_nc:
+          type: boolean
+          example: false
+        eligibility:
+          type: string
+          example: ''
+        club:
+          $ref: '#/components/schemas/Club'
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+        full_name:
+          type: string
+          example: First Runner
+        stage:
+          $ref: '#/components/schemas/Result'
+          nullable: true
+        overalls:
+          $ref: '#/components/schemas/Overalls'
+          nullable: true
+        legs:
+          type: string
+          nullable: true
+          example: null
+        leg_number:
+          type: string
+          nullable: true
+          example: null
+        class:
+          $ref: '#/components/schemas/ClassEntity'
+          nullable: true
+        runners:
+          type: array
+          items:
+            $ref: '#/components/schemas/Participant'
+      description: Entity Participant
+      required:
+        - id
+        - bib_number
+        - is_nc
+        - eligibility
+        - club
+        - created
+        - full_name
+    Club:
+      type: object
+      properties:
+        id:
+          type: string
+          example: d5212ca8-c5b6-48ab-aa9a-8e25d8596218
+        short_name:
+          type: string
+          example: Club A
+      description: Entity Club
+      required:
+        - id
+        - short_name
+    PartialOverall:
+      type: object
+      properties:
+        id:
+          type: string
+          example: f16aa733-82cc-4078-b132-b3cac17f32bb
+        stage_order:
+          type: number
+          example: 1
+        upload_type:
+          type: string
+          example: total_points
+        stage:
+          $ref: '#/components/schemas/StageOrder'
+          nullable: true
+        position:
+          type: number
+          example: 1
+        status_code:
+          type: number
+          example: 0
+        is_nc:
+          type: string
+          nullable: true
+          example: null
+        contributory:
+          type: boolean
+          example: true
+          nullable: true
+        time_seconds:
+          type: string
+          nullable: true
+          example: null
+        time_behind:
+          type: string
+          nullable: true
+          example: null
+        points_final:
+          type: number
+          example: 100
+        points_behind:
+          type: string
+          nullable: true
+          example: null
+        note:
+          type: string
+          nullable: true
+          example: null
+      description: Entity PartialOverall
+      required:
+        - id
+        - stage_order
+        - upload_type
+        - position
+        - status_code
+        - points_final
+    StageOrder:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 009e2c47-5604-4a43-a043-40c3d6949aef
+        description:
+          type: string
+          example: Test Foot-o
+      description: Entity StageOrder
+      required:
+        - id
+        - description
+    Overalls:
+      type: object
+      properties:
+        parts:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartialOverall'
+        overall:
+          $ref: '#/components/schemas/PartialOverall'
+      description: Entity Overalls
+    ResClassEntity:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/ClassEntity'
+      description: Data wrapper for ClassEntity
+      required:
+        - data
     SimpleLog:
       type: object
       properties:
@@ -1292,101 +1531,6 @@ components:
       description: Data wrapper for RawUpload
       required:
         - data
-    Participant:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 8ea9f351-4141-4ff2-891d-9e2a904bc296
-        bib_number:
-          type: number
-          example: 301
-        is_nc:
-          type: boolean
-          example: false
-        eligibility:
-          type: string
-          example: ''
-        legs:
-          type: string
-          nullable: true
-          example: null
-        created:
-          type: string
-          example: '****-**-*****:**:**.***+**:**'
-        sicard:
-          type: number
-          example: 2009944
-        sex:
-          type: string
-          example: M
-          nullable: true
-        leg_number:
-          type: string
-          nullable: true
-          example: null
-        class:
-          $ref: '#/components/schemas/ClassEntity'
-          nullable: true
-        club:
-          $ref: '#/components/schemas/Club'
-        full_name:
-          type: string
-          example: Second Raider
-        stage:
-          $ref: '#/components/schemas/Result'
-          nullable: true
-        overalls:
-          type: string
-          nullable: true
-          example: null
-        runners:
-          type: array
-          items:
-            $ref: '#/components/schemas/Participant'
-      description: Entity Participant
-      required:
-        - id
-        - bib_number
-        - is_nc
-        - eligibility
-        - created
-        - club
-        - full_name
-    Club:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 83dc3504-9edd-4bbd-80b8-589aa0359c3e
-        short_name:
-          type: string
-          example: Club A
-      description: Entity Club
-      required:
-        - id
-        - short_name
-    ClassEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          example: d8a87faf-68a4-487b-8f28-6e0ead6c1a57
-        short_name:
-          type: string
-          example: ME
-        long_name:
-          type: string
-          example: M Elite
-        splits:
-          type: array
-          items:
-            $ref: '#/components/schemas/Split'
-      description: Entity ClassEntity
-      required:
-        - id
-        - short_name
-        - long_name
     Result:
       type: object
       properties:

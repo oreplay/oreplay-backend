@@ -1,0 +1,321 @@
+{
+    "ClassEntity": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "86d30696-2a5e-40b9-b47a-878f44642022"
+                }
+            ],
+            "short_name": [
+                {
+                    "type": "string",
+                    "example": "ME"
+                }
+            ],
+            "long_name": [
+                {
+                    "type": "string",
+                    "example": "M Elite"
+                }
+            ],
+            "runners": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Participant"
+                    }
+                }
+            ]
+        },
+        "description": "Entity ClassEntity"
+    },
+    "Participant": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "25be2a44-7e72-458d-8911-f118795741a4"
+                }
+            ],
+            "sicard": [
+                {
+                    "type": "number",
+                    "example": 2009933
+                }
+            ],
+            "bib_number": [
+                {
+                    "type": "number",
+                    "example": 4444
+                }
+            ],
+            "sex": [
+                {
+                    "type": "string",
+                    "example": "M"
+                }
+            ],
+            "is_nc": [
+                {
+                    "type": "boolean",
+                    "example": false
+                }
+            ],
+            "eligibility": [
+                {
+                    "type": "string",
+                    "example": ""
+                }
+            ],
+            "club": [
+                {
+                    "$ref": "#/components/schemas/Club"
+                }
+            ],
+            "created": [
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                }
+            ],
+            "full_name": [
+                {
+                    "type": "string",
+                    "example": "First Runner"
+                }
+            ],
+            "stage": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "overalls": [
+                {
+                    "$ref": "#/components/schemas/Overalls"
+                }
+            ]
+        },
+        "description": "Entity Participant"
+    },
+    "Club": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "d5212ca8-c5b6-48ab-aa9a-8e25d8596218"
+                }
+            ],
+            "short_name": [
+                {
+                    "type": "string",
+                    "example": "Club A"
+                }
+            ]
+        },
+        "description": "Entity Club"
+    },
+    "PartialOverall": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "f16aa733-82cc-4078-b132-b3cac17f32bb"
+                },
+                {
+                    "type": "string",
+                    "example": ""
+                }
+            ],
+            "stage_order": [
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                }
+            ],
+            "upload_type": [
+                {
+                    "type": "string",
+                    "example": "total_points"
+                },
+                {
+                    "type": "string",
+                    "example": "ranking_computed"
+                }
+            ],
+            "stage": [
+                {
+                    "$ref": "#/components/schemas/StageOrder"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "position": [
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": -1
+                }
+            ],
+            "status_code": [
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "is_nc": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "contributory": [
+                {
+                    "type": "boolean",
+                    "example": true
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "time_seconds": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "time_behind": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "points_final": [
+                {
+                    "type": "number",
+                    "example": 100
+                },
+                {
+                    "type": "number",
+                    "example": 100
+                }
+            ],
+            "points_behind": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "note": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ]
+        },
+        "description": "Entity PartialOverall"
+    },
+    "StageOrder": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "009e2c47-5604-4a43-a043-40c3d6949aef"
+                }
+            ],
+            "description": [
+                {
+                    "type": "string",
+                    "example": "Test Foot-o"
+                }
+            ]
+        },
+        "description": "Entity StageOrder"
+    },
+    "Overalls": {
+        "type": "object",
+        "properties": {
+            "parts": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/PartialOverall"
+                    }
+                }
+            ],
+            "overall": [
+                {
+                    "$ref": "#/components/schemas/PartialOverall"
+                }
+            ]
+        },
+        "description": "Entity Overalls"
+    },
+    "ResClassEntity": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "$ref": "#/components/schemas/ClassEntity"
+                }
+            ]
+        },
+        "description": "Data wrapper for ClassEntity",
+        "required": [
+            "data"
+        ]
+    }
+}
