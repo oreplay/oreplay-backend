@@ -85,7 +85,7 @@ class StageTypesSeed extends AbstractSeed
 
         $table = $this->table('stage_types');
         $rows = $table->getAdapter()->fetchAll('SELECT count(*) from ' . $table->getName() . ' LIMIT 1');
-        $count = $rows[0][0] ?? '';
+        $count = $rows[0]['count(*)'] ?? '';
         if ($count !== count($data)) {
             foreach ($data as $datum) {
                 try {
