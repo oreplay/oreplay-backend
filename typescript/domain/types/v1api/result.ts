@@ -12,19 +12,22 @@ import type { Split } from './split'
  */
 export interface Result {
   id: string
-  result_type_id: string
-  start_time: string
-  finish_time: string
+  /** @nullable */
+  status_code?: number | null
+  /** @nullable */
+  note?: string | null
   /** @nullable */
   upload_type?: string | null
-  time_seconds: number
-  position: number
-  /** @nullable */
-  status_code?: string | null
-  is_nc: boolean
+  result_type_id: string
+  created: string
+  start_time?: string
+  finish_time?: string
+  time_seconds?: number
+  position?: number
+  is_nc?: boolean
   /** @nullable */
   contributory?: string | null
-  time_behind: number
+  time_behind?: number
   /** @nullable */
   time_neutralization?: string | null
   /** @nullable */
@@ -43,9 +46,6 @@ export interface Result {
   points_bonus?: string | null
   /** @nullable */
   leg_number?: number | null
-  /** @nullable */
-  note?: string | null
-  created: string
-  splits: Split[]
+  splits?: Split[]
   points_behind?: number
 }

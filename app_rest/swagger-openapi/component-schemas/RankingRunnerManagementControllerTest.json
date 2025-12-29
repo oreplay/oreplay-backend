@@ -1,0 +1,58 @@
+{
+    "Result": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "aabb5c91-a62c-4ba7-aebc-06b3fdb8885a"
+                }
+            ],
+            "status_code": [
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "note": [
+                {
+                    "type": "string",
+                    "example": "ORG"
+                }
+            ],
+            "upload_type": [
+                {
+                    "type": "string",
+                    "example": "computable_org"
+                }
+            ],
+            "result_type_id": [
+                {
+                    "type": "string",
+                    "example": "292d7076-912b-4713-8cd3-039ee5a394a7"
+                }
+            ],
+            "created": [
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                }
+            ]
+        },
+        "description": "Entity Result"
+    },
+    "ResResult": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "$ref": "#/components/schemas/Result"
+                }
+            ]
+        },
+        "description": "Data wrapper for Result",
+        "required": [
+            "data"
+        ]
+    }
+}

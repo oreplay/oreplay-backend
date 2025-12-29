@@ -1,0 +1,96 @@
+{
+    "/api/v1/rankings/{rankingID}/events/{eventID}/stages/{stageID}/runnerResults/": {
+        "post": {
+            "operationId": "postListRankingRunnerManagement",
+            "summary": "",
+            "description": "Add new",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "rankingID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "regional100pts"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "stageID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "e662499c-4d66-4675-8501-905bcfe28a41"
+                },
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "RankingRunnerManagement"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResResult"
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "upload_type": {
+                                    "type": "string",
+                                    "example": "computable_org"
+                                },
+                                "runner_id": {
+                                    "type": "string",
+                                    "example": "b990b0b6-a9f5-4be2-a3e3-15985bc45eaa"
+                                },
+                                "stage_order": {
+                                    "type": "number",
+                                    "example": 1
+                                }
+                            },
+                            "description": "Generic object when: Add new"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -542,6 +542,68 @@ paths:
                   type: string
                   example: all
               description: 'Generic object when: Add new only class list'
+  /api/v1/rankings/{rankingID}/events/{eventID}/stages/{stageID}/runnerResults/:
+    post:
+      operationId: postListRankingRunnerManagement
+      summary: ''
+      description: Add new
+      parameters:
+        - description: ID in URL
+          in: path
+          name: rankingID
+          required: true
+          schema:
+            type: string
+          example: regional100pts
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 85a7c518-54a8-4180-9708-9dcd4e9906c7
+        - description: ID in URL
+          in: path
+          name: stageID
+          required: true
+          schema:
+            type: string
+          example: e662499c-4d66-4675-8501-905bcfe28a41
+        - description: Auth token
+          in: header
+          name: Authorization
+          example: Bearer ****************
+          required: true
+          schema:
+            type: string
+      tags:
+        - RankingRunnerManagement
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResResult'
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                upload_type:
+                  type: string
+                  example: computable_org
+                runner_id:
+                  type: string
+                  example: b990b0b6-a9f5-4be2-a3e3-15985bc45eaa
+                stage_order:
+                  type: number
+                  example: 1
+              description: 'Generic object when: Add new'
   /api/v1/events/{eventID}/rawUploads/:
     get:
       operationId: getListRawUploads
@@ -1529,6 +1591,108 @@ components:
       description: Data wrapper for ClassEntity
       required:
         - data
+    Result:
+      type: object
+      properties:
+        id:
+          type: string
+          example: aabb5c91-a62c-4ba7-aebc-06b3fdb8885a
+        status_code:
+          type: number
+          example: 0
+          nullable: true
+        note:
+          type: string
+          example: ORG
+          nullable: true
+        upload_type:
+          type: string
+          example: computable_org
+          nullable: true
+        result_type_id:
+          type: string
+          example: 292d7076-912b-4713-8cd3-039ee5a394a7
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+        start_time:
+          type: string
+          example: '2024-01-03T10:10:00.000+00:00'
+        finish_time:
+          type: string
+          example: '2024-01-03T10:15:10.000+00:00'
+        time_seconds:
+          type: number
+          example: 310
+        position:
+          type: number
+          example: 1
+        is_nc:
+          type: boolean
+          example: false
+        contributory:
+          type: string
+          nullable: true
+          example: null
+        time_behind:
+          type: number
+          example: 0
+        time_neutralization:
+          type: string
+          nullable: true
+          example: null
+        time_adjusted:
+          type: string
+          nullable: true
+          example: null
+        time_penalty:
+          type: string
+          nullable: true
+          example: null
+        time_bonus:
+          type: string
+          nullable: true
+          example: null
+        points_final:
+          type: string
+          nullable: true
+          example: null
+        points_adjusted:
+          type: string
+          nullable: true
+          example: null
+        points_penalty:
+          type: string
+          nullable: true
+          example: null
+        points_bonus:
+          type: string
+          nullable: true
+          example: null
+        leg_number:
+          type: number
+          example: 0
+          nullable: true
+        splits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Split'
+        points_behind:
+          type: number
+          example: 0
+      description: Entity Result
+      required:
+        - id
+        - result_type_id
+        - created
+    ResResult:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Result'
+      description: Data wrapper for Result
+      required:
+        - data
     SimpleLog:
       type: object
       properties:
@@ -1601,107 +1765,6 @@ components:
       description: Data wrapper for RawUpload
       required:
         - data
-    Result:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 85c52ee5-99f5-4a49-9b5f-4648e48b4861
-        result_type_id:
-          type: string
-          example: e4ddfa9d-3347-47e4-9d32-c6c119aeac0e
-        start_time:
-          type: string
-          example: '2024-01-03T10:10:00.000+00:00'
-        finish_time:
-          type: string
-          example: '2024-01-03T10:15:10.000+00:00'
-        upload_type:
-          type: string
-          nullable: true
-          example: null
-        time_seconds:
-          type: number
-          example: 310
-        position:
-          type: number
-          example: 1
-        status_code:
-          type: string
-          nullable: true
-          example: null
-        is_nc:
-          type: boolean
-          example: false
-        contributory:
-          type: string
-          nullable: true
-          example: null
-        time_behind:
-          type: number
-          example: 0
-        time_neutralization:
-          type: string
-          nullable: true
-          example: null
-        time_adjusted:
-          type: string
-          nullable: true
-          example: null
-        time_penalty:
-          type: string
-          nullable: true
-          example: null
-        time_bonus:
-          type: string
-          nullable: true
-          example: null
-        points_final:
-          type: string
-          nullable: true
-          example: null
-        points_adjusted:
-          type: string
-          nullable: true
-          example: null
-        points_penalty:
-          type: string
-          nullable: true
-          example: null
-        points_bonus:
-          type: string
-          nullable: true
-          example: null
-        leg_number:
-          type: number
-          example: 0
-          nullable: true
-        note:
-          type: string
-          nullable: true
-          example: null
-        created:
-          type: string
-          example: '****-**-*****:**:**.***+**:**'
-        splits:
-          type: array
-          items:
-            $ref: '#/components/schemas/Split'
-        points_behind:
-          type: number
-          example: 0
-      description: Entity Result
-      required:
-        - id
-        - result_type_id
-        - start_time
-        - finish_time
-        - time_seconds
-        - position
-        - is_nc
-        - time_behind
-        - created
-        - splits
     Split:
       type: object
       properties:
