@@ -48,8 +48,9 @@ class RankingComputeStageControllerTest extends ApiCommonErrorsTest
             . '/stages/' . Stage::FIRST_STAGE . '/compute/';
     }
 
-    public function testAddNew()
+    public function testAddNew_toProduction()
     {
+        $this->skipNextRequestInSwagger();
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
         $params = [
             'classes' => 'all'
@@ -65,5 +66,23 @@ class RankingComputeStageControllerTest extends ApiCommonErrorsTest
             $this->markTestSkipped($bodyDecoded['message']);
         }
         $this->assertStringStartsWith($string, $bodyDecoded['message']);
+    }
+
+    public function testAddNew_onlyClassList()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $params = [
+            'classes' => 'all'
+        ];
+        $this->post($this->_getEndpoint() . '?only_class_list=1', $params);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $expected = [
+            'data' => [
+                '/rankings/regional100pts/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/d8a87faf-68a4-487b-8f28-6e0ead6c1a56/compute/',
+                '/rankings/regional100pts/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/d8a87faf-68a4-487b-8f28-6e0ead6c1a57/compute/'
+            ]
+        ];
+        $this->assertEquals($expected, $bodyDecoded);
     }
 }

@@ -22,6 +22,7 @@
           <file>tests/TestCase/Controller/MeControllerTest.php</file>
           <directory>plugins/Results/tests/TestCase/Controller/</directory>
           <file>plugins/Rankings/tests/TestCase/Controller/RankingComputeClassControllerTest.php</file>
+          <file>plugins/Rankings/tests/TestCase/Controller/RankingComputeStageControllerTest.php</file>
       </testsuite>
   </testsuites>
   <extensions>
