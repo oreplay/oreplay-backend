@@ -94,7 +94,12 @@ class RunnerResultsTable extends AppTable
             ->orderBy(['CAST(Classes.oe_key AS UNSIGNED)' => 'ASC','Classes.short_name' => 'ASC'])
             ->enableHydration(false);
 
-        return $query->toArray();
+        $toRet = [];
+        foreach ($query->all() as $class) {
+            $class[RestApiEntity::CLASS_NAME] = 'StatsInClass';
+            $toRet[] = $class;
+        }
+        return $toRet;
     }
 
     public function getFedoClassesStats(string $eventId, string $stageId, array $classNames, string $sex): array

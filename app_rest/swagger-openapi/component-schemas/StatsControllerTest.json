@@ -1,0 +1,79 @@
+{
+    "StatsInClass": {
+        "type": "object",
+        "properties": {
+            "class": [
+                {
+                    "type": "string",
+                    "example": "ME"
+                }
+            ],
+            "total": [
+                {
+                    "type": "number",
+                    "example": 1
+                }
+            ],
+            "ok": [
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "mp": [
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "dnf": [
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "ot": [
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "dsq": [
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "dns": [
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "bestTime": [
+                {
+                    "type": "number",
+                    "example": 310
+                }
+            ]
+        },
+        "description": "Entity StatsInClass"
+    },
+    "ArrayStatsInClass": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/StatsInClass"
+                    }
+                }
+            ]
+        },
+        "description": "Data wrapper for StatsInClass",
+        "required": [
+            "data"
+        ]
+    }
+}
