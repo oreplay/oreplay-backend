@@ -6,6 +6,7 @@ namespace Results\Model\Entity;
 
 class ResultType extends AppEntity
 {
+    public const EMPTY = '';
     public const OVERALL = '5542d38b-8bd3-40f4-913d-2c38048a0b04';
     public const STAGE = 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e';
     public const PARTIAL_OVERALL = '292d7076-912b-4713-8cd3-039ee5a394a7';

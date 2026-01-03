@@ -184,6 +184,151 @@ class StartExamples
         ];
     }
 
+    public static function entriesImportWithoutStartTimes(): array
+    {
+        return [
+            'configuration' => [
+                'source' => 'OE2010',
+                'iof_version' => '3.0',
+                'contents' => 'EntryList',
+                'results_type' => 'Other',
+                'trailo_type' => 'Other',
+                'trailo_at' => 'Other',
+                'trailo_normal' => '0',
+                'trailo_group' => '0',
+                'totalization' => 'Other',
+            ],
+            'event' => [
+                'id' => Event::FIRST_EVENT,
+                'description' => 'Demo - 5 days of Italy 2014',
+                'stages' => [
+                    (int) 0 => [
+                        'id' => StagesFixture::STAGE_FEDO_2,
+                        'order_number' => (int) 1,
+                        'classes' => [
+                            (int) 0 => [
+                                'id' => '',
+                                'uuid' => '',
+                                'oe_key' => '10',
+                                'short_name' => 'ME',
+                                'long_name' => 'M Elite',
+                                'course' => [
+                                    'id' => '',
+                                    'uuid' => '',
+                                    'distance' => '5660.0',
+                                    'climb' => '280.0',
+                                    'controls' => (int) 22,
+                                    'oe_key' => '26',
+                                    'short_name' => 'ME'
+                                ],
+                                'runners' => [
+                                    (int) 0 => [
+                                        'id' => '',
+                                        'uuid' => '',
+                                        'sicard' => '889818',
+                                        'first_name' => 'Carlos',
+                                        'last_name' => 'Alonso',
+                                        'bib_number' => '359',
+                                        'sex' => 'F',
+                                        'runner_results' => [
+                                        ],
+                                        'club' => [
+                                            'id' => '',
+                                            'uuid' => '',
+                                            'oe_key' => '24738',
+                                            'short_name' => 'BRIGHTNET',
+                                            'long_name' => 'BRIGHTNET'
+                                        ]
+                                    ],
+                                    (int) 1 => [
+                                        'id' => '',
+                                        'uuid' => '',
+                                        'sicard' => '',
+                                        'first_name' => 'Francisco',
+                                        'last_name' => 'Alvarez',
+                                        'bib_number' => '255',
+                                        'runner_results' => [
+                                        ],
+                                        'club' => [
+                                            'id' => '',
+                                            'uuid' => '',
+                                            'oe_key' => '24738',
+                                            'short_name' => 'BRIGHTNET',
+                                            'long_name' => 'BRIGHTNET'
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            (int) 1 => [
+                                'id' => '',
+                                'uuid' => '',
+                                'oe_key' => '20',
+                                'short_name' => 'WE',
+                                'long_name' => 'W Elite',
+                                'course' => [
+                                    'id' => '',
+                                    'uuid' => '',
+                                    'distance' => '4710.0',
+                                    'climb' => '230.0',
+                                    'controls' => (int) 19,
+                                    'oe_key' => '30',
+                                    'short_name' => 'WE/M20'
+                                ],
+                                'runners' => [
+                                    (int) 0 => [
+                                        'id' => '',
+                                        'uuid' => '',
+                                        'sicard' => '7504274',
+                                        'first_name' => 'Ana',
+                                        'last_name' => 'Gomez',
+                                        'bib_number' => '1348',
+                                        'runner_results' => [
+                                        ],
+                                        'club' => [
+                                            'id' => '',
+                                            'uuid' => '',
+                                            'oe_key' => '',
+                                            'short_name' => 'Tullinge SK',
+                                            'long_name' => 'Tullinge SK'
+                                        ]
+                                    ],
+                                    (int) 1 => [
+                                        'id' => '',
+                                        'uuid' => '',
+                                        'sicard' => '889312',
+                                        'first_name' => 'Maria',
+                                        'last_name' => 'Rodriguez',
+                                        'bib_number' => '1512',
+                                        'runner_results' => [
+                                            [
+                                                'id' => '',
+                                                'stage_order' => (int) 1,
+                                                'start_time' => '2014-07-06T13:26:00',
+                                                'status_code' => StatusCode::OK,
+                                                'leg_number' => (int) 1,
+                                                'result_type' => [
+                                                    'id' => 'e4ddfa9d-3347-47e4-9d32-c6c119aeac0e',
+                                                    'description' => 'Stage'
+                                                ]
+                                            ],
+                                        ],
+                                        'club' => [
+                                            'id' => '',
+                                            'uuid' => '',
+                                            'oe_key' => '',
+                                            'short_name' => 'Tullinge SK',
+                                            'long_name' => 'Tullinge SK'
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        ];
+    }
+
     public static function startTimesWithOneRunnerAndOneTeam()
     {
         $classRunner = [

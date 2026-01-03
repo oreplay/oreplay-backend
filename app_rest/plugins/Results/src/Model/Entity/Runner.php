@@ -9,6 +9,8 @@ use Cake\I18n\FrozenTime;
 use Rankings\Model\Table\ParticipantInterface;
 use Rankings\Model\Traits\ParticipantTrait;
 use RestApi\Lib\Exception\DetailedException;
+use Results\Lib\Consts\StatusCode;
+use Results\Lib\Consts\UploadTypes;
 use Results\Lib\Output\DuplicatedRunners;
 use Results\Lib\ResultsFilter;
 
@@ -122,6 +124,21 @@ class Runner extends AppEntity implements ParticipantInterface
             $res = ResultsFilter::getFirstStage($this->getResultList());
             if ($res) {
                 $res->cleanSplitsWithoutRadios();
+            } else if (!$this->_getOveralls()) {
+                $res = new RunnerResult();
+                //$res->id = '';
+                $res->result_type_id = ResultType::EMPTY;
+                //$res->start_time = '';
+                //$res->finish_time = '';
+                $res->upload_type = UploadTypes::ENTRY_LIST; // could use also UploadTypes::START_LIST
+                $res->status_code = StatusCode::DNS; // could also use StatusCode::OK
+                $res->time_seconds = 0;
+                $res->position = 0;
+                $res->is_nc = false;
+                $res->time_behind = 0;
+                //$res->created = '';
+                $res->splits = [];
+                return $res;
             }
             return $res;
         } catch (\Exception $e) {

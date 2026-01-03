@@ -245,6 +245,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                 ]
             ],
         ];
+        $year = date('Y');
         return [
             'id' => Runner::FIRST_RUNNER,
             'full_name' => 'First Runner',
@@ -265,7 +266,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             ],
             'overalls' => null,
             'stage' => $overall,
-            'created' => '2025-01-02T10:00:05.000+00:00',
+            'created' => $year . '-01-02T10:00:05.000+00:00',
         ];
     }
 }

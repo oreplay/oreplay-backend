@@ -170,7 +170,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals($runnersJson[$key]['bib_number'], $value->bib_number);
             $this->assertEquals($runnersJson[$key]['sex'] ?? null, $value->sex);
             $this->assertEquals($runnersJson[$key]['id'], $value->id);
-            $this->assertEquals($runnersJson[$key]['club']['short_name'], $value->club->short_name);
+            $this->assertEquals($runnersJson[$key]['club']['short_name'] ?? '', $value->club?->short_name);
             $stage = $runnersJson[$key]['stage'];
             $this->assertEquals(UploadTypes::START_LIST, $stage['upload_type']);
             $this->assertEquals($stage['status_code'],
@@ -188,6 +188,93 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('F', $runnersJson[0]['sex']);
         $this->_assertNewOptionalTables(0, 0, 0, 0);
         $this->_assertNewBasicTables(2, 2, 1, 4, 4);
+        $this->_assertNewResultsTables(0, 0);
+    }
+
+    public function testAddNew_shouldAddEntryListsWihtouStartTimes()
+    {
+        Cache::clear();
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = ['oreplay_data_transfer' => StartExamples::entriesImportWithoutStartTimes()];
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $decodedData = $jsonDecoded['data'];
+        $human = $jsonDecoded['meta']['human'][0];
+        $jsonDecoded['meta']['human'][0] = '';
+        $jsonDecoded['meta']['human'][1] = '';
+        $jsonDecoded['meta']['timings'] = [];
+        $expectedMeta = [
+            'updated' => [
+                'classes' => 2,
+                'runners' => 4,
+                'courses' => 2,
+                'splits' => 0,
+                'runnerResults' => 1,
+            ],
+            'humanColor' => '#FF0000',
+            'human' => ['', ''],
+            'timings' => []
+        ];
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+        $this->assertStringStartsWith('Updated (<b>Runner without runner_results</b>) 2 classes, 2 courses', $human);
+
+        $addedClasses = $ClassesTable->find()
+            ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->contain(CoursesTable::name())
+            ->orderAsc('Classes.oe_key')
+            ->all();
+        $this->assertEquals(2, count($addedClasses));
+        $expectedClasses = ['ME', 'WE'];
+        foreach ($addedClasses as $k => $class) {
+            $this->assertEquals($expectedClasses[$k], $class->short_name);
+            $this->assertEquals($expectedClasses[$k], $class->course->short_name);
+        }
+
+        $res = RunnersTable::load()
+            ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
+            ->orderAsc('last_name')
+            ->all();
+
+        $this->assertEquals(4, count($res), 'Runner count in db');
+        $this->assertEquals(2, count($decodedData[0]['runners']));
+        $this->assertEquals(2, count($decodedData[1]['runners']));
+        $runnersJson = array_merge($decodedData[0]['runners'], $decodedData[1]['runners']);
+        /** @var Runner $value */
+        foreach ($res as $key => $value) {
+            $this->assertEquals($runnersJson[$key]['full_name'], $value->first_name . ' ' . $value->last_name);
+            $this->assertEquals($runnersJson[$key]['sicard'], $value->sicard);
+            $this->assertEquals($runnersJson[$key]['bib_number'], $value->bib_number);
+            $this->assertEquals($runnersJson[$key]['sex'] ?? null, $value->sex);
+            $this->assertEquals($runnersJson[$key]['id'], $value->id);
+            $this->assertEquals($runnersJson[$key]['club']['short_name'], $value->club->short_name);
+            $stage = $runnersJson[$key]['stage'];
+            //$this->assertEquals(UploadTypes::START_LIST, $stage['upload_type']);
+            //$this->assertEquals($stage['status_code'],
+            //    $value->getResultList()[0]->status_code);
+            //$this->assertEquals($stage['start_time'],
+            //    $value->getResultList()[0]->start_time->jsonSerialize());
+            //if ($key === 0) {
+            //    $this->assertEquals('2014-07-06T10:09:14.523+00:00', $stage['start_time']);
+            //}
+            //$this->assertEquals($stage['id'],
+            //    $value->getResultList()[0]->id);
+
+            if (isset($value->getResultList()[0])) {
+                $this->assertEquals(ResultType::STAGE,
+                    $value->getResultList()[0]->result_type_id);
+            } else {
+                $this->assertEquals(ResultType::EMPTY, $stage['result_type_id']);
+            }
+        }
+        $this->assertEquals('F', $runnersJson[0]['sex']);
+        $this->_assertNewOptionalTables(0, 0, 0, 0);
+        $this->_assertNewBasicTables(2, 2, 1, 4, 1);
         $this->_assertNewResultsTables(0, 0);
     }
 

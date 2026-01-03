@@ -68,7 +68,16 @@ class TeamsTableTest extends TestCase
         $runnerB = $team['runners'][1];
         $this->assertEquals('Second Raider', $runnerB->_getFullName());
         $this->assertEquals('2', $runnerB->leg_number);
-        $this->assertEquals(null, $runnerB->_getStage());
+        $this->assertEquals([
+            'result_type_id' => '',
+            'time_seconds' => 0,
+            'position' => 0,
+            'is_nc' => false,
+            'time_behind' => 0,
+            'upload_type' => 'entry_list',
+            'status_code' => '1',
+            'splits' => [],
+        ], json_decode(json_encode($runnerB->_getStage()), true));
     }
 
     public function testGetMissingLegs()
