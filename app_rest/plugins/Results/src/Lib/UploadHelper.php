@@ -59,6 +59,12 @@ class UploadHelper implements UploadInterface
         return $this->_data;
     }
 
+    public function isArrayWithoutValues(array $data): bool
+    {
+        $values = implode('', $data);
+        return !!($values === '');
+    }
+
     public function getMetrics(): UploadMetrics
     {
         return $this->_metrics;

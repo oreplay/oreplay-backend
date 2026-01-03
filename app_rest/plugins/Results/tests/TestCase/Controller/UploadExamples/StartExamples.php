@@ -68,9 +68,9 @@ class StartExamples
                                         'club' => [
                                             'id' => '',
                                             'uuid' => '',
-                                            'oe_key' => '24738',
-                                            'short_name' => 'BRIGHTNET',
-                                            'long_name' => 'BRIGHTNET'
+                                            'oe_key' => '',
+                                            'short_name' => '',
+                                            'long_name' => ''
                                         ]
                                     ],
                                     (int) 1 => [

@@ -212,7 +212,7 @@ class RunnersTable extends AppTable
 
         $helper->getMetrics()->startClubsTime();
         $club = $runnerData['club'] ?? null;
-        if ($club) {
+        if ($club && !$helper->isArrayWithoutValues($club)) {
             $runner->addClub($this->Clubs->createIfNotExists($helper->getEventId(), $helper->getStageId(), $club));
         }
         $helper->getMetrics()->endClubsTime();
