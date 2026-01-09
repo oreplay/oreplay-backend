@@ -7,6 +7,7 @@ namespace Results\Test\TestCase\Controller;
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Cake\Datasource\ResultSetInterface;
+use Cake\I18n\FrozenTime;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Club;
 use Results\Model\Entity\Control;
@@ -134,6 +135,8 @@ class ResultsControllerTest extends ApiCommonErrorsTest
 
     private function _getFirstTeam(): array
     {
+        $now = new FrozenTime();
+        $year = $now->format('Y');
         $stage = [
             '_c' => TeamResult::C_NAME,
             'id' => TeamResultsFixture::TEAM_RESULT_1,
@@ -212,7 +215,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                     'sicard' => '2009944',
                     'sex' => null,
                     'leg_number' => null,
-                    'created' => '2025-01-03T10:00:05.000+00:00',
+                    'created' => $year . '-01-03T10:00:05.000+00:00',
                     'class' => null,
                     'club' => [
                         '_c' => Club::class,
@@ -220,7 +223,17 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                         'short_name' => 'Club A',
                     ],
                     'full_name' => 'Second Raider',
-                    'stage' => null,
+                    'stage' => [
+                        '_c' => 'Result',
+                        'result_type_id' => '',
+                        'upload_type' => 'entry_list',
+                        'status_code' => '1',
+                        'time_seconds' => 0,
+                        'position' => 0,
+                        'is_nc' => false,
+                        'time_behind' => 0,
+                        'splits' => [],
+                    ],
                     'overalls' => null,
                 ]
             ],

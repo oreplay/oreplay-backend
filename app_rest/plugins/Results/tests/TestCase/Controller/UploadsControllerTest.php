@@ -341,7 +341,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
             ->contain(CoursesTable::name())
-            ->orderAsc('Classes.oe_key')
+            ->orderByAsc('Classes.oe_key')
             ->all();
         $this->assertEquals(2, count($addedClasses));
         $expectedClasses = ['ME', 'WE'];
@@ -352,7 +352,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $res = RunnersTable::load()
             ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
-            ->orderAsc('last_name')
+            ->orderByAsc('last_name')
             ->all();
 
         $this->assertEquals(4, count($res), 'Runner count in db');
