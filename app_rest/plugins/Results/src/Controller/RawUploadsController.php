@@ -99,4 +99,13 @@ class RawUploadsController extends ApiController
         }
         return substr($auth, strlen('Bearer '));
     }
+
+    protected function delete($id)
+    {
+        if ($id !== 'old') {
+            throw new BadRequestException('Only "old" deletion is allowed');
+        }
+        RawUploadsTable::load()->hardDeleteOld();
+        $this->return = false;
+    }
 }

@@ -110,4 +110,22 @@ class RawUploadsControllerTest extends ApiCommonErrorsTest
         ];
         $this->assertEquals($expected, $jsonDecoded);
     }
+
+    public function testDelete()
+    {
+        $amount = RawUploadsTable::load()->find()
+            ->where(['id' => RawUploadsFixture::FIRST])
+            ->withDeleted(true)
+            ->count();
+        $this->assertEquals(1, $amount);
+
+        $this->delete($this->_getEndpointWithToken('') . 'old');
+        $this->assertResponseOK();
+
+        $amount = RawUploadsTable::load()->find()
+            ->where(['id' => RawUploadsFixture::FIRST])
+            ->withDeleted(true)
+            ->count();
+        $this->assertEquals(0, $amount);
+    }
 }

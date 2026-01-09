@@ -60,7 +60,7 @@ class StagesController extends ApiController
         } else {
             $stageType = StageType::CLASSIC;
         }
-        RawUploadsTable::load()->hardDeleteOld();
+        RawUploadsTable::load()->hardDeleteOld(); // this should be removed when implemented in front
         $stage->stage_type = $this->Stages->StageTypes->get($stageType);
         $this->return = $this->Stages->saveOrFail($stage);
     }
