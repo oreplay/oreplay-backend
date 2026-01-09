@@ -27,6 +27,7 @@
           <exclude>vendor/freefri/cake-rest-api-oauth/tests/TestCase/Lib/AuthorizationCodeGrantPkceFlowExternalTest.php</exclude>
       </testsuite>
       <testsuite name="App">
+          <exclude>tests/TestCase/Controller/ApiCommonErrorsTest.php</exclude>
           <directory>tests/TestCase/</directory>
       </testsuite>
   </testsuites>

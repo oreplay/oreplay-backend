@@ -16,6 +16,7 @@ use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageOrder;
+use Results\Model\Table\StageOrdersTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\ControlsFixture;
@@ -54,6 +55,7 @@ class RankingComputeClassControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew()
     {
+        StageOrdersTable::load()->deleteCache(StagesFixture::STAGE_RANKING);
         $params = [
             'secret' => RankingComputeClassController::getSecret(),
         ];
