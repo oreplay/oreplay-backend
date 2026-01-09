@@ -59,7 +59,7 @@
         "cs-check": "phpcs --colors -p --standard=phpcs.xml src/ tests/ plugins/",
         "cs-fix": "phpcbf --colors -p --standard=phpcs.xml src/ tests/ plugins/",
         "stan": "phpstan analyse",
-        "test-coverage": "phpunit --coverage-clover coverage.xml --colors=always",
+        "test-coverage": "XDEBUG_MODE=coverage phpunit --coverage-clover coverage.xml --colors=always",
         "test": "phpunit --colors=always"
     },
     "prefer-stable": true,
