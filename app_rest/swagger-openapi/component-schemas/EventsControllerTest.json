@@ -394,7 +394,7 @@
             "initial_date": [
                 {
                     "type": "string",
-                    "example": "2025-12-29"
+                    "example": "2026-01-10"
                 },
                 {
                     "type": "string",
@@ -410,11 +410,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2025-12-28"
+                    "example": "2026-01-09"
                 },
                 {
                     "type": "string",
-                    "example": "2025-12-29"
+                    "example": "2026-01-10"
                 },
                 {
                     "type": "string",
@@ -440,7 +440,7 @@
             "final_date": [
                 {
                     "type": "string",
-                    "example": "2025-12-29"
+                    "example": "2026-01-10"
                 },
                 {
                     "type": "string",
@@ -456,11 +456,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2025-12-28"
+                    "example": "2026-01-09"
                 },
                 {
                     "type": "string",
-                    "example": "2025-12-29"
+                    "example": "2026-01-10"
                 },
                 {
                     "type": "string",
@@ -606,7 +606,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2025-12-28T17:38:36.649+00:00"
+                    "example": "2026-01-09T09:46:26.306+00:00"
                 },
                 {
                     "type": "string",
@@ -618,7 +618,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2025-12-28T17:38:36.686+00:00"
+                    "example": "2026-01-09T09:46:26.356+00:00"
                 }
             ],
             "organizer_id": [
@@ -1219,7 +1219,7 @@
                     "properties": {
                         "href": {
                             "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2025-12-28&final_date:gte=2025-12-28&page=1"
+                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2026-01-09&final_date:gte=2026-01-09&page=1"
                         }
                     },
                     "description": "Generic object."

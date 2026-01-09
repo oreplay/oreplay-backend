@@ -3,13 +3,16 @@
  * Do not edit manually.
  * O-replay - OpenAPI 3.0
  * O-replay Rest API
- * OpenAPI spec version: 0.4.3
+ * OpenAPI spec version: 0.4.4
  */
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import type {
+  MutationFunction,
   QueryClient,
   QueryFunction,
   QueryKey,
+  UseMutationOptions,
+  UseMutationResult,
   UseQueryOptions,
   UseQueryResult
 } from '@tanstack/react-query'
@@ -195,4 +198,76 @@ export const prefetchGetRawUploadsQuery = async <
   await queryClient.prefetchQuery(queryOptions)
 
   return queryClient
+}
+
+/**
+ * Delete
+ */
+export const deleteRawUploads = (
+  eventID: string,
+  rawUploadID: string,
+  options?: SecondParameter<typeof orvalAxiosInstance>
+) => {
+  return orvalAxiosInstance<void>(
+    { url: `/api/v1/events/${eventID}/rawUploads/${rawUploadID}`, method: 'DELETE' },
+    options
+  )
+}
+
+export const getDeleteRawUploadsMutationOptions = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteRawUploads>>,
+    TError,
+    { eventID: string; rawUploadID: string },
+    TContext
+  >
+  request?: SecondParameter<typeof orvalAxiosInstance>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteRawUploads>>,
+  TError,
+  { eventID: string; rawUploadID: string },
+  TContext
+> => {
+  const mutationKey = ['deleteRawUploads']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteRawUploads>>,
+    { eventID: string; rawUploadID: string }
+  > = (props) => {
+    const { eventID, rawUploadID } = props ?? {}
+
+    return deleteRawUploads(eventID, rawUploadID, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type DeleteRawUploadsMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteRawUploads>>
+>
+
+export type DeleteRawUploadsMutationError = unknown
+
+export const useDeleteRawUploads = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteRawUploads>>,
+    TError,
+    { eventID: string; rawUploadID: string },
+    TContext
+  >
+  request?: SecondParameter<typeof orvalAxiosInstance>
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteRawUploads>>,
+  TError,
+  { eventID: string; rawUploadID: string },
+  TContext
+> => {
+  const mutationOptions = getDeleteRawUploadsMutationOptions(options)
+
+  return useMutation(mutationOptions)
 }

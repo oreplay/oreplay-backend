@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.4.3
+  version: 0.4.4
   title: O-replay - OpenAPI 3.0
   description: O-replay Rest API
   termsOfService: https://github.com/oreplay
@@ -167,14 +167,14 @@ paths:
         - description: ''
           in: query
           name: initial_date:lte
-          example: '2025-12-28'
+          example: '2026-01-09'
           required: false
           schema:
             type: string
         - description: ''
           in: query
           name: final_date:gte
-          example: '2025-12-28'
+          example: '2026-01-09'
           required: false
           schema:
             type: string
@@ -599,7 +599,7 @@ paths:
                   example: computable_org
                 runner_id:
                   type: string
-                  example: b990b0b6-a9f5-4be2-a3e3-15985bc45eaa
+                  example: 9a21b4a8-21c6-4ef3-aa72-9ea03f8d8aed
                 stage_order:
                   type: number
                   example: 1
@@ -655,6 +655,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ResRawUpload'
+    delete:
+      operationId: deleteRawUploads
+      summary: ''
+      description: Delete
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        - description: ID in URL
+          in: path
+          name: rawUploadID
+          required: true
+          schema:
+            type: string
+          example: old
+      tags:
+        - RawUploads
+      responses:
+        '204':
+          description: No content. Successfully deleted.
   /api/v1/events/{eventID}/stages/{stageID}/resultsByClass/:
     get:
       operationId: getListResultsByClass
@@ -1035,7 +1059,7 @@ components:
           example: '2034-01-06T13:09:01.523+00:00'
         token:
           type: string
-          example: XRzJdc
+          example: LnGCFw
         created:
           type: string
           example: '****-**-*****:**:**.***+**:**'
@@ -1092,10 +1116,10 @@ components:
           nullable: true
         initial_date:
           type: string
-          example: '2025-12-29'
+          example: '2026-01-10'
         final_date:
           type: string
-          example: '2025-12-29'
+          example: '2026-01-10'
         federation_id:
           type: string
           example: IOF
@@ -1411,7 +1435,7 @@ components:
       properties:
         id:
           type: string
-          example: 86d30696-2a5e-40b9-b47a-878f44642022
+          example: 8f8af44a-74e4-4e05-ad9a-b18d15027721
         short_name:
           type: string
           example: ME
@@ -1436,7 +1460,7 @@ components:
       properties:
         id:
           type: string
-          example: 25be2a44-7e72-458d-8911-f118795741a4
+          example: 47bbfb61-56e7-4a85-b6fc-a8c3d8a8050d
         sicard:
           type: number
           example: 2009933
@@ -1496,7 +1520,7 @@ components:
       properties:
         id:
           type: string
-          example: d5212ca8-c5b6-48ab-aa9a-8e25d8596218
+          example: ec182348-ed59-40d9-a9cc-971d171b27b9
         short_name:
           type: string
           example: Club A
@@ -1509,7 +1533,7 @@ components:
       properties:
         id:
           type: string
-          example: f16aa733-82cc-4078-b132-b3cac17f32bb
+          example: 9df585bd-a177-4aa0-9a6f-cb2bd451ee5a
         stage_order:
           type: number
           example: 1
@@ -1565,7 +1589,7 @@ components:
       properties:
         id:
           type: string
-          example: 009e2c47-5604-4a43-a043-40c3d6949aef
+          example: 69cd6995-db31-4d73-bf0e-7dff8d514d6c
         description:
           type: string
           example: Test Foot-o
@@ -1596,7 +1620,7 @@ components:
       properties:
         id:
           type: string
-          example: aabb5c91-a62c-4ba7-aebc-06b3fdb8885a
+          example: fcc12578-0f5b-4a4a-b15b-194a5159cbf0
         status_code:
           type: number
           example: 0
@@ -1607,7 +1631,7 @@ components:
           nullable: true
         upload_type:
           type: string
-          example: computable_org
+          example: entry_list
           nullable: true
         result_type_id:
           type: string
@@ -1615,28 +1639,32 @@ components:
         created:
           type: string
           example: '****-**-*****:**:**.***+**:**'
+        time_seconds:
+          type: number
+          example: 0
+        position:
+          type: number
+          example: 0
+        is_nc:
+          type: boolean
+          example: false
+        time_behind:
+          type: number
+          example: 0
+        splits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Split'
         start_time:
           type: string
           example: '2024-01-03T10:10:00.000+00:00'
         finish_time:
           type: string
           example: '2024-01-03T10:15:10.000+00:00'
-        time_seconds:
-          type: number
-          example: 310
-        position:
-          type: number
-          example: 1
-        is_nc:
-          type: boolean
-          example: false
         contributory:
           type: string
           nullable: true
           example: null
-        time_behind:
-          type: number
-          example: 0
         time_neutralization:
           type: string
           nullable: true
@@ -1673,17 +1701,12 @@ components:
           type: number
           example: 0
           nullable: true
-        splits:
-          type: array
-          items:
-            $ref: '#/components/schemas/Split'
         points_behind:
           type: number
           example: 0
       description: Entity Result
       required:
         - id
-        - result_type_id
         - created
     ResResult:
       type: object
@@ -1999,7 +2022,7 @@ components:
             type: string
             example: |2
 
-                  [ERROR - 400] (12/29/25, 2:17 PM) Invalid payload structure configuration.contents StartList | ResultList and configuration.results_type Mixed 
+                  [ERROR - 400] (1/9/26, 9:46 AM) Invalid payload structure configuration.contents StartList | ResultList and configuration.results_type Mixed 
       description: Entity UploadedMeta
     ResUploaded:
       type: object

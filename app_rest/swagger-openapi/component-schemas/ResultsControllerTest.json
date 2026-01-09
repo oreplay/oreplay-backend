@@ -314,25 +314,19 @@
             ],
             "stage": [
                 {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
+                    "$ref": "#/components/schemas/Result"
                 },
                 {
                     "$ref": "#/components/schemas/Result"
                 },
                 {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
+                    "$ref": "#/components/schemas/Result"
                 },
                 {
                     "$ref": "#/components/schemas/Result"
                 },
                 {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
+                    "$ref": "#/components/schemas/Result"
                 },
                 {
                     "$ref": "#/components/schemas/Result"
@@ -467,69 +461,268 @@
         },
         "description": "Entity Club"
     },
-    "ClassEntity": {
-        "type": "object",
-        "properties": {
-            "id": [
-                {
-                    "type": "string",
-                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
-                },
-                {
-                    "type": "string",
-                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
-                },
-                {
-                    "type": "string",
-                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
-                },
-                {
-                    "type": "string",
-                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
-                }
-            ],
-            "short_name": [
-                {
-                    "type": "string",
-                    "example": "ME"
-                },
-                {
-                    "type": "string",
-                    "example": "ME"
-                },
-                {
-                    "type": "string",
-                    "example": "ME"
-                },
-                {
-                    "type": "string",
-                    "example": "ME"
-                }
-            ],
-            "long_name": [
-                {
-                    "type": "string",
-                    "example": "M Elite"
-                },
-                {
-                    "type": "string",
-                    "example": "M Elite"
-                },
-                {
-                    "type": "string",
-                    "example": "M Elite"
-                },
-                {
-                    "type": "string",
-                    "example": "M Elite"
-                }
-            ]
-        },
-        "description": "Entity ClassEntity"
-    },
     "Result": {
         "type": "object",
         "properties": {
+            "result_type_id": [
+                {
+                    "type": "string",
+                    "example": ""
+                },
+                {
+                    "type": "string",
+                    "example": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e"
+                },
+                {
+                    "type": "string",
+                    "example": ""
+                },
+                {
+                    "type": "string",
+                    "example": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e"
+                },
+                {
+                    "type": "string",
+                    "example": ""
+                },
+                {
+                    "type": "string",
+                    "example": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e"
+                },
+                {
+                    "type": "string",
+                    "example": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e"
+                }
+            ],
+            "upload_type": [
+                {
+                    "type": "string",
+                    "example": "entry_list"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "example": "entry_list"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "example": "entry_list"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "status_code": [
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "time_seconds": [
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 310
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 310
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 310
+                },
+                {
+                    "type": "number",
+                    "example": 310
+                }
+            ],
+            "position": [
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                }
+            ],
+            "is_nc": [
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                }
+            ],
+            "time_behind": [
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "splits": [
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Split"
+                    }
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Split"
+                    }
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Split"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Split"
+                    }
+                }
+            ],
             "id": [
                 {
                     "type": "string",
@@ -546,24 +739,6 @@
                 {
                     "type": "string",
                     "example": "635af121-db7b-4c5e-82ab-79208e45568f"
-                }
-            ],
-            "result_type_id": [
-                {
-                    "type": "string",
-                    "example": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e"
-                },
-                {
-                    "type": "string",
-                    "example": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e"
-                },
-                {
-                    "type": "string",
-                    "example": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e"
-                },
-                {
-                    "type": "string",
-                    "example": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e"
                 }
             ],
             "start_time": [
@@ -602,104 +777,6 @@
                     "example": "2024-01-02T10:05:10.123+00:00"
                 }
             ],
-            "upload_type": [
-                {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
-                },
-                {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
-                },
-                {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
-                },
-                {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
-                }
-            ],
-            "time_seconds": [
-                {
-                    "type": "number",
-                    "example": 310
-                },
-                {
-                    "type": "number",
-                    "example": 310
-                },
-                {
-                    "type": "number",
-                    "example": 310
-                },
-                {
-                    "type": "number",
-                    "example": 310
-                }
-            ],
-            "position": [
-                {
-                    "type": "number",
-                    "example": 1
-                },
-                {
-                    "type": "number",
-                    "example": 1
-                },
-                {
-                    "type": "number",
-                    "example": 1
-                },
-                {
-                    "type": "number",
-                    "example": 1
-                }
-            ],
-            "status_code": [
-                {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
-                },
-                {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
-                },
-                {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
-                },
-                {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
-                }
-            ],
-            "is_nc": [
-                {
-                    "type": "boolean",
-                    "example": false
-                },
-                {
-                    "type": "boolean",
-                    "example": false
-                },
-                {
-                    "type": "boolean",
-                    "example": false
-                },
-                {
-                    "type": "boolean",
-                    "example": false
-                }
-            ],
             "contributory": [
                 {
                     "type": "string",
@@ -720,24 +797,6 @@
                     "type": "string",
                     "nullable": true,
                     "example": null
-                }
-            ],
-            "time_behind": [
-                {
-                    "type": "number",
-                    "example": 0
-                },
-                {
-                    "type": "number",
-                    "example": 0
-                },
-                {
-                    "type": "number",
-                    "example": 0
-                },
-                {
-                    "type": "number",
-                    "example": 0
                 }
             ],
             "time_neutralization": [
@@ -975,32 +1034,6 @@
                     "example": "****-**-*****:**:**.***+**:**"
                 }
             ],
-            "splits": [
-                {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/components/schemas/Split"
-                    }
-                },
-                {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/components/schemas/Split"
-                    }
-                },
-                {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/components/schemas/Split"
-                    }
-                },
-                {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/components/schemas/Split"
-                    }
-                }
-            ],
             "points_behind": [
                 {
                     "type": "number",
@@ -1009,6 +1042,66 @@
             ]
         },
         "description": "Entity Result"
+    },
+    "ClassEntity": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
+                },
+                {
+                    "type": "string",
+                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
+                },
+                {
+                    "type": "string",
+                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
+                },
+                {
+                    "type": "string",
+                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
+                }
+            ],
+            "short_name": [
+                {
+                    "type": "string",
+                    "example": "ME"
+                },
+                {
+                    "type": "string",
+                    "example": "ME"
+                },
+                {
+                    "type": "string",
+                    "example": "ME"
+                },
+                {
+                    "type": "string",
+                    "example": "ME"
+                }
+            ],
+            "long_name": [
+                {
+                    "type": "string",
+                    "example": "M Elite"
+                },
+                {
+                    "type": "string",
+                    "example": "M Elite"
+                },
+                {
+                    "type": "string",
+                    "example": "M Elite"
+                },
+                {
+                    "type": "string",
+                    "example": "M Elite"
+                }
+            ]
+        },
+        "description": "Entity ClassEntity"
     },
     "Split": {
         "type": "object",

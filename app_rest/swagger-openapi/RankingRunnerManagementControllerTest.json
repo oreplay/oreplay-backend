@@ -79,7 +79,7 @@
                                 },
                                 "runner_id": {
                                     "type": "string",
-                                    "example": "b990b0b6-a9f5-4be2-a3e3-15985bc45eaa"
+                                    "example": "9a21b4a8-21c6-4ef3-aa72-9ea03f8d8aed"
                                 },
                                 "stage_order": {
                                     "type": "number",

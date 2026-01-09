@@ -3,7 +3,7 @@
  * Do not edit manually.
  * O-replay - OpenAPI 3.0
  * O-replay Rest API
- * OpenAPI spec version: 0.4.3
+ * OpenAPI spec version: 0.4.4
  */
 import type { Stage } from './stage'
 

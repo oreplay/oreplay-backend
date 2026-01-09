@@ -3,7 +3,7 @@
  * Do not edit manually.
  * O-replay - OpenAPI 3.0
  * O-replay Rest API
- * OpenAPI spec version: 0.4.3
+ * OpenAPI spec version: 0.4.4
  */
 import type { Split } from './split'
 
@@ -18,16 +18,17 @@ export interface Result {
   note?: string | null
   /** @nullable */
   upload_type?: string | null
-  result_type_id: string
+  result_type_id?: string
   created: string
-  start_time?: string
-  finish_time?: string
   time_seconds?: number
   position?: number
   is_nc?: boolean
+  time_behind?: number
+  splits?: Split[]
+  start_time?: string
+  finish_time?: string
   /** @nullable */
   contributory?: string | null
-  time_behind?: number
   /** @nullable */
   time_neutralization?: string | null
   /** @nullable */
@@ -46,6 +47,5 @@ export interface Result {
   points_bonus?: string | null
   /** @nullable */
   leg_number?: number | null
-  splits?: Split[]
   points_behind?: number
 }

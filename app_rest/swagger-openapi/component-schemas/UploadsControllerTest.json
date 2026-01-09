@@ -102,7 +102,7 @@
                     "type": "array",
                     "items": {
                         "type": "string",
-                        "example": "\n    [ERROR - 400] (12/29/25, 2:17\u202fPM) Invalid payload structure configuration.contents StartList | ResultList and configuration.results_type Mixed \n"
+                        "example": "\n    [ERROR - 400] (1/9/26, 9:46\u202fAM) Invalid payload structure configuration.contents StartList | ResultList and configuration.results_type Mixed \n"
                     }
                 }
             ]

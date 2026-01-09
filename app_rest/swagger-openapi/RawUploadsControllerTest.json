@@ -75,6 +75,41 @@
                     }
                 }
             }
+        },
+        "delete": {
+            "operationId": "deleteRawUploads",
+            "summary": "",
+            "description": "Delete",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "rawUploadID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "old"
+                }
+            ],
+            "tags": [
+                "RawUploads"
+            ],
+            "responses": {
+                "204": {
+                    "description": "No content. Successfully deleted."
+                }
+            }
         }
     }
 }
