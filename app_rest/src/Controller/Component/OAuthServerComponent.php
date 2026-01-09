@@ -32,7 +32,8 @@ class OAuthServerComponent extends Component
         /** @var ApiController $controller */
         $controller = $event->getSubject();
         if ($controller->getRequest()->is('options')) {
-            return $controller->getResponse();
+            $event->setResult($controller->getResponse());
+            return;
         }
         $this->server->setupOauth($controller);
         if (!$this->_skipAuth) {

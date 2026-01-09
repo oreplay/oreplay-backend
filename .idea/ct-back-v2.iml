@@ -3,21 +3,16 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Results/src" isTestSource="false" packagePrefix="Results\" />
-      <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Results/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Results/tests" isTestSource="true" packagePrefix="Results\Test\" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/src" isTestSource="false" packagePrefix="App\" />
-      <sourceFolder url="file://$MODULE_DIR$/app_rest/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/tests" isTestSource="true" packagePrefix="App\Test\" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/vendor/cakephp/cakephp/tests" isTestSource="true" packagePrefix="Cake\Test\" />
       <sourceFolder url="file://$MODULE_DIR$/app/spec" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/spec" isTestSource="true" />
-      <sourceFolder url="file://$MODULE_DIR$/app_rest/vendor/freefri/cake-rest-api-oauth/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/vendor/freefri/cake-rest-api-oauth/tests" isTestSource="true" packagePrefix="RestOauth\Test\" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/RadioRelay/src" isTestSource="false" packagePrefix="RadioRelay\" />
-      <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/RadioRelay/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/RadioRelay/tests" isTestSource="true" packagePrefix="RadioRelay\Test\" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Rankings/src" isTestSource="false" packagePrefix="Rankings\" />
-      <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Rankings/tests" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Rankings/tests" isTestSource="true" packagePrefix="Rankings\Test\" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/logs" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/tmp" />
