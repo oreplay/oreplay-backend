@@ -12,6 +12,7 @@ use Cake\Http\Middleware\BodyParserMiddleware;
 use Cake\Http\MiddlewareQueue;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
+use RestApi\Lib\GzipRequestMiddleware;
 
 /**
  * Application setup class.
@@ -69,6 +70,7 @@ class Application extends BaseApplication
             ->add(new AssetMiddleware([
                 'cacheTime' => Configure::read('Asset.cacheTime')
             ]))
+            ->add(GzipRequestMiddleware::class)
             ->add(new BodyParserMiddleware([
                 'xml' => false,
                 'json' => true,

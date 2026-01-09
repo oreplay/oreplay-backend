@@ -138,6 +138,64 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($expected, $jsonDecoded);
     }
 
+    public function testAddNew_shouldDecodeGzip()
+    {
+        Cache::clear();
+        //$this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = [
+            '_c' => 'UploadPostData',
+            'oreplay_data_transfer' => [
+                '_c' => 'UploadDataTransfer',
+                'configuration' => [
+                    'source_vendor' => 'sportSoftware',
+                    'source' => 'OE2010',
+                    'source_version' => '12.2',
+                    'contents' => 'StartList | ResultList',
+                    'results_type' => UploadConfigChecker::TYPE_MIXED,
+                    'utf' => true,
+                ],
+                'event' => [
+                    'id' => Event::FIRST_EVENT,
+                    'description' => 'Demo - 5 days of Italy 2014',
+                    'stages' => []
+                ]
+            ]
+        ];
+
+        $json = json_encode($data);
+        $this->configRequest([
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Content-Encoding' => 'gzip',
+                'Authorization' => 'Bearer ' . TokensFixture::FIRST_TOKEN
+            ],
+            'input' => gzencode($json),
+        ]);
+        $this->post($this->_getEndpoint() . '?version=501');
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $expected = [
+            '_c' => 'Uploaded',
+            'meta' => [
+                '_c' => 'UploadedMeta',
+                'updated' => [
+                    'classes' => 0,
+                    'runners' => 0,
+                ],
+                'humanColor' => '#FF0000',
+                'human' => []
+            ],
+            'data' => []
+        ];
+        $jsonDecoded['meta']['human'] = [];
+        $this->assertEquals($expected, $jsonDecoded);
+    }
+
     public function testAddNew_shouldAddMixedContent()
     {
         Cache::clear();
