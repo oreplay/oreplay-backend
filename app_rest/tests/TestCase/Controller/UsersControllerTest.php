@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace App\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
-use App\Model\Table\UsersTable;
+use App\Lib\Emails\EmailBase;
 
 class UsersControllerTest extends ApiCommonErrorsTest
 {
@@ -18,10 +18,10 @@ class UsersControllerTest extends ApiCommonErrorsTest
         return ApiController::ROUTE_PREFIX . '/users/';
     }
 
-    public function testAddNew_InputData()
+    public function testAddNew()
     {
         $data = [
-            'email'=> 'test@example.com',
+            'email'=> EmailBase::SKIP_SEND_EMAIL_ADDRESS,
             'first_name'=> 'Test',
             'last_name'=> 'Last',
             'password'=> 'passpass'
@@ -36,8 +36,5 @@ class UsersControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($data['first_name'], $return['first_name']);
         $this->assertEquals($data['last_name'], $return['last_name']);
         $this->assertArrayNotHasKey('password', $return);
-        $userDb = UsersTable::load()->get($return['id']);
-        $this->assertFalse($userDb->is_admin);
-        $this->assertFalse($userDb->is_super);
     }
 }

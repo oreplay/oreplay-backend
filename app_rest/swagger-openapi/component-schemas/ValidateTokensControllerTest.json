@@ -1,0 +1,58 @@
+{
+    "User": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "aaa3a8e2-167b-4482-baa2-0cb0e69b957d"
+                }
+            ],
+            "email": [
+                {
+                    "type": "string",
+                    "example": "skip-send@example.com"
+                }
+            ],
+            "first_name": [
+                {
+                    "type": "string",
+                    "example": "Test"
+                }
+            ],
+            "last_name": [
+                {
+                    "type": "string",
+                    "example": "Last"
+                }
+            ],
+            "created": [
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                }
+            ],
+            "modified": [
+                {
+                    "type": "string",
+                    "example": "2026-01-12T07:54:24.000+00:00"
+                }
+            ]
+        },
+        "description": "Entity User"
+    },
+    "ResUser": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "$ref": "#/components/schemas/User"
+                }
+            ]
+        },
+        "description": "Data wrapper for User",
+        "required": [
+            "data"
+        ]
+    }
+}

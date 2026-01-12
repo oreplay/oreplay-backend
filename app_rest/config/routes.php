@@ -14,7 +14,7 @@ return static function (RouteBuilder $routes) {
         //]));
         $builder->connect('/ping/*', \App\Controller\PingController::route());
         $builder->connect('/users/*', \App\Controller\UsersController::route());
-        // TODO remove duplicated /authentication/*
+        $builder->connect('/validateTokens/*', \App\Controller\ValidateTokensController::route());
         $builder->connect('/authentication/*', \RestOauth\Controller\OauthTokenController::route());
         $builder->connect('/me/*', \App\Controller\MeController::route());
         $builder->connect('/openapi/*', \App\Controller\SwaggerJsonController::route());

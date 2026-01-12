@@ -1045,6 +1045,67 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UploadPostData'
+  /api/v1/users/:
+    post:
+      operationId: postListUsers
+      summary: ''
+      description: Add new
+      parameters: []
+      tags:
+        - Users
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResUser'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: skip-send@example.com
+                first_name:
+                  type: string
+                  example: Test
+                last_name:
+                  type: string
+                  example: Last
+                password:
+                  type: string
+                  example: '********'
+              description: 'Generic object when: Add new'
+  /api/v1/validateTokens/:
+    post:
+      operationId: postListValidateTokens
+      summary: ''
+      description: Add new
+      parameters: []
+      tags:
+        - ValidateTokens
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResUser'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjJlNWRiZTE5LWY1MzctNDExOC05ZDcxLTYzNTk4MjllMDQ3NyIsImVtYWlsIjoic2tpcC1zZW5kQGV4YW1wbGUuY29tIiwibGFzdF9uYW1lIjoiTGFzdCIsImZpcnN0X25hbWUiOiJUZXN0IiwiX2MiOiJVc2VyIiwidG9rZW5fdHlwZSI6InZlcmlmeV9hZGRyZXNzIiwiaWF0IjoxNzY4MjAzMzYwfQ.KO6U1sBsJIzEcYYHgqj5UR3ugPK_19D-H0pS-qYrAEc
+              description: 'Generic object when: Add new'
 components:
   securitySchemes:
     bearerAuth:
@@ -1410,8 +1471,6 @@ components:
         - email
         - first_name
         - last_name
-        - created
-        - modified
     ResUser:
       type: object
       properties:

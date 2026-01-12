@@ -1,0 +1,46 @@
+{
+    "User": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "5d07209b-ef4e-4821-8e4e-74c08b7d6c84"
+                }
+            ],
+            "email": [
+                {
+                    "type": "string",
+                    "example": "skip-send@example.com"
+                }
+            ],
+            "first_name": [
+                {
+                    "type": "string",
+                    "example": "Test"
+                }
+            ],
+            "last_name": [
+                {
+                    "type": "string",
+                    "example": "Last"
+                }
+            ]
+        },
+        "description": "Entity User"
+    },
+    "ResUser": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "$ref": "#/components/schemas/User"
+                }
+            ]
+        },
+        "description": "Data wrapper for User",
+        "required": [
+            "data"
+        ]
+    }
+}

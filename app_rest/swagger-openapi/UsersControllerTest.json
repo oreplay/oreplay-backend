@@ -1,0 +1,54 @@
+{
+    "/api/v1/users/": {
+        "post": {
+            "operationId": "postListUsers",
+            "summary": "",
+            "description": "Add new",
+            "parameters": [],
+            "tags": [
+                "Users"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResUser"
+                            }
+                        }
+                    }
+                }
+            },
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "example": "skip-send@example.com"
+                                },
+                                "first_name": {
+                                    "type": "string",
+                                    "example": "Test"
+                                },
+                                "last_name": {
+                                    "type": "string",
+                                    "example": "Last"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "example": "********"
+                                }
+                            },
+                            "description": "Generic object when: Add new"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
