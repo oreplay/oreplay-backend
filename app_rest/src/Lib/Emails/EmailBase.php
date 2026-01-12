@@ -315,38 +315,7 @@ abstract class EmailBase implements \JsonSerializable
 
     private static function _getTranslatedWithGender(TranslatedString $translatedString, $gender): string
     {
-        $singular = $translatedString->getKey();
-        $translated = $translatedString->getTranslation();
-        return $translated;
-
-        $defaultDear = EmailDearOther::translatedDearConstantInAllEmails();
-        $defaultDearLength = mb_strlen($defaultDear);
-        $emailDear = mb_substr($translated, 0, $defaultDearLength);
-        if ($emailDear != $defaultDear) {
-            throw new InternalErrorException(
-                '"Dear {0} {1}," must be the same for all emails "'
-                . LegacyI18n::getLocale() . '": ' . $emailDear . ' ' . $singular
-            );
-        }
-        $translatedWithoutDear = mb_substr($translated, $defaultDearLength);
-        switch ($gender) {
-            case Gender::MALE:
-                return EmailDearMale::translatedDearMale() . $translatedWithoutDear;
-            case Gender::FEMALE:
-                return EmailDearFemale::translatedDearFemale() . $translatedWithoutDear;
-            default:
-                return $translated;
-        }
-    }
-
-    public static function validateOrFail(string $translation): string
-    {
-        $translatedString = new TranslatedString($translation);
-        try {
-            return self::_getTranslatedWithGender($translatedString, Gender::DIVERSE);
-        } catch (InternalErrorException $e) {
-            throw new EmailGenderException(__d('admin', 'Error with gender'), 400, $e);
-        }
+        return $translatedString->getTranslation();
     }
 
     private function _translateFromDb(): null
@@ -394,31 +363,13 @@ abstract class EmailBase implements \JsonSerializable
             'email_body' => $this->_getTranslatedBody()->getTranslation(),
             'email_body_args' => $this->_allI18nArgs(),
             'email_body_args_titles' => $this->_allI18nArgsTitles(),
-            'errors' => $this->_validateErrors(),
             'bcc' => $this->_bccEmailAddress(),
         ];
-        if ($this->_locale === LegacyI18n::getLocale()) {
-            $res['id'] = $this->_getDbEntity()->id;
-        }
         return $res;
     }
 
     public function jsonSerialize(): mixed
     {
         return $this->toArray();
-    }
-
-    private function _validateErrors(): array
-    {
-        $genders = [Gender::MALE, Gender::FEMALE, Gender::DIVERSE];
-        $errors = [];
-        foreach ($genders as $gender) {
-            try {
-                $this->_getTranslatedWithGender($this->_getTranslatedBody(), $gender);
-            } catch (InternalErrorException $err) {
-                $errors[] = __('Error with gender') . ' ' . $gender . ' ' . $err->getMessage();
-            }
-        }
-        return $errors;
     }
 }
