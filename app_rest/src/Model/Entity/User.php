@@ -8,8 +8,8 @@ use Authentication\PasswordHasher\DefaultPasswordHasher;
 use RestApi\Model\Entity\RestApiEntity;
 
 /**
- * @property string firstname
- * @property string lastname
+ * @property string first_name
+ * @property string last_name
  * @property string email
  * @property mixed group_id
  * @property mixed $password

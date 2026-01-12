@@ -103,4 +103,18 @@ class UsersTable extends AppTable
         }
         return $user;
     }
+
+    public function createSimpleUser(array $usr): User
+    {
+        unset($usr['id']);
+        /** @var User $user */
+        $user = $this->newEmptyEntity();
+        $user = $this->patchEntity($user, $usr);
+        $user->is_admin = false;
+        $user->is_super = false;
+        $saved = $this->saveOrFail($user);
+        /** @var User $ret */
+        $ret = $this->get($saved->id);
+        return $ret;
+    }
 }

@@ -7,13 +7,11 @@
  */
 
 /**
- * Entity User
+ * Generic object when: Add new
  */
-export interface User {
-  id: string
-  email: string
-  first_name: string
-  last_name: string
-  created?: string
-  modified?: string
+export type PostListUsersBody = {
+  email?: string
+  first_name?: string
+  last_name?: string
+  password?: string
 }

@@ -1,0 +1,42 @@
+{
+    "/api/v1/validateTokens/": {
+        "post": {
+            "operationId": "postListValidateTokens",
+            "summary": "",
+            "description": "Add new",
+            "parameters": [],
+            "tags": [
+                "ValidateTokens"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResUser"
+                            }
+                        }
+                    }
+                }
+            },
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "token": {
+                                    "type": "string",
+                                    "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjJlNWRiZTE5LWY1MzctNDExOC05ZDcxLTYzNTk4MjllMDQ3NyIsImVtYWlsIjoic2tpcC1zZW5kQGV4YW1wbGUuY29tIiwibGFzdF9uYW1lIjoiTGFzdCIsImZpcnN0X25hbWUiOiJUZXN0IiwiX2MiOiJVc2VyIiwidG9rZW5fdHlwZSI6InZlcmlmeV9hZGRyZXNzIiwiaWF0IjoxNzY4MjAzMzYwfQ.KO6U1sBsJIzEcYYHgqj5UR3ugPK_19D-H0pS-qYrAEc"
+                                }
+                            },
+                            "description": "Generic object when: Add new"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
