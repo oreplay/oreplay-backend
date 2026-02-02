@@ -131,7 +131,7 @@ class Runner extends AppEntity implements ParticipantInterface
                 //$res->start_time = '';
                 //$res->finish_time = '';
                 $res->upload_type = UploadTypes::ENTRY_LIST; // could use also UploadTypes::START_LIST
-                $res->status_code = StatusCode::DNS; // could also use StatusCode::OK
+                $res->status_code = StatusCode::OK;
                 $res->time_seconds = 0;
                 $res->position = 0;
                 $res->is_nc = false;

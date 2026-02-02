@@ -8,6 +8,8 @@ use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Cake\Datasource\ResultSetInterface;
 use Cake\I18n\FrozenTime;
+use Results\Lib\Consts\StatusCode;
+use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Club;
 use Results\Model\Entity\Control;
@@ -226,8 +228,8 @@ class ResultsControllerTest extends ApiCommonErrorsTest
                     'stage' => [
                         '_c' => 'Result',
                         'result_type_id' => '',
-                        'upload_type' => 'entry_list',
-                        'status_code' => '1',
+                        'upload_type' => UploadTypes::ENTRY_LIST,
+                        'status_code' => StatusCode::OK,
                         'time_seconds' => 0,
                         'position' => 0,
                         'is_nc' => false,

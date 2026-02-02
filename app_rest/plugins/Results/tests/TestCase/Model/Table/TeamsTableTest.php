@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Model\Table;
 
 use Cake\TestSuite\TestCase;
+use Results\Lib\Consts\StatusCode;
+use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Stage;
@@ -74,8 +76,8 @@ class TeamsTableTest extends TestCase
             'position' => 0,
             'is_nc' => false,
             'time_behind' => 0,
-            'upload_type' => 'entry_list',
-            'status_code' => '1',
+            'upload_type' => UploadTypes::ENTRY_LIST,
+            'status_code' => StatusCode::OK,
             'splits' => [],
         ], json_decode(json_encode($runnerB->_getStage()), true));
     }
