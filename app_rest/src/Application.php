@@ -34,25 +34,6 @@ class Application extends BaseApplication
             $this->bootstrapCli();
         }
         //*/
-
-        $pluginsToLoad = [
-            'Migrations',
-            \RadioRelay\RadioRelayPlugin::class,
-            \Rankings\RankingsPlugin::class,
-            \RestOauth\RestOauthPlugin::class,
-            \Results\ResultsPlugin::class,
-        ];
-        foreach ($pluginsToLoad as $plugin) {
-            if (!$this->getPlugins()->has($plugin)) {
-                try {
-                    $this->addPlugin($plugin);
-                } catch (CakeException $e) {
-                    if (!str_contains($e->getMessage(), 'is already loaded')) {
-                        throw $e;
-                    }
-                }
-            }
-        }
     }
 
     /**

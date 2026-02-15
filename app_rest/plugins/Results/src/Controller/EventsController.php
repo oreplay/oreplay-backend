@@ -6,7 +6,6 @@ namespace Results\Controller;
 
 use App\Lib\FullBaseUrl;
 use App\Lib\Validator\ValidationException;
-use Cake\Http\Exception\ForbiddenException;
 use RestApi\Lib\Helpers\PaginationHelper;
 use Results\Model\Entity\Event;
 use Results\Model\Table\EventsTable;
