@@ -14,6 +14,7 @@ use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\ResultType;
+use Results\Model\Entity\Runner;
 use Results\Model\Table\RunnersTable;
 use Results\Model\Table\StageOrdersTable;
 use Results\Test\Fixture\ClassesFixture;
@@ -57,12 +58,15 @@ class RankingRunnerManagementControllerTest extends ApiCommonErrorsTest
             StagesFixture::STAGE_RANKING
         );
         $RunnersTable = RunnersTable::load();
+        /** @var Runner $runner */
         $runner = $RunnersTable->fillNewWithStage(
             [],
             EventsFixture::EVENT_TOMORROW_RANKING,
             StagesFixture::STAGE_RANKING,
         );
         $runner->class_id = ClassEntity::ME;
+        $runner->first_name = 'Ana';
+        $runner->last_name = 'Roug';
         $RunnersTable->saveOrFail($runner);
 
         $params = [
