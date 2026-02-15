@@ -6,6 +6,7 @@ namespace App\Model\Entity;
 
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 use RestApi\Model\Entity\RestApiEntity;
+use function Cake\I18n\__;
 
 /**
  * @property string first_name
@@ -49,5 +50,10 @@ class User extends RestApiEntity
     public function isManager(): bool
     {
         return (bool)$this->is_admin;
+    }
+
+    public function setErrorDuplicatedEmail(): void
+    {
+        $this->setError('email', ['duplicate' => __('email already registered')]);
     }
 }

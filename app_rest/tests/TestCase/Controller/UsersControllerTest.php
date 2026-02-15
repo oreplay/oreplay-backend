@@ -6,6 +6,7 @@ namespace App\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
 use App\Lib\Emails\EmailBase;
+use App\Test\Fixture\UsersFixture;
 
 class UsersControllerTest extends ApiCommonErrorsTest
 {
@@ -36,5 +37,28 @@ class UsersControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($data['first_name'], $return['first_name']);
         $this->assertEquals($data['last_name'], $return['last_name']);
         $this->assertArrayNotHasKey('password', $return);
+    }
+
+    public function testAddNew_throwsValidationException()
+    {
+        $data = [
+            'email'=> UsersFixture::USER_ADMIN_EMAIL,
+            'first_name'=> 'Test',
+            'last_name'=> 'Last',
+            'password'=> 'passpass'
+        ];
+
+        $this->post($this->_getEndpoint(), $data);
+
+        $body = $this->_getBodyAsString();
+        $this->assertResponseError($body);
+        $decoded = json_decode($body, true);
+
+        $expected = [
+            'email' => [
+                'duplicate' => 'email already registered'
+            ]
+        ];
+        $this->assertEquals($expected, $decoded['error_fields']);
     }
 }

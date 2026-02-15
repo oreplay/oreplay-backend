@@ -46,9 +46,14 @@ class UsersTable extends AppTable
         return []; // maybe revert to $this->AdminUsers->getDependentUserIDs($uID);
     }
 
+    public function getUserByEmail(string $email)
+    {
+        return $this->find()->where(['email' => $email])->first();
+    }
+
     public function getUserByEmailOrNew(array $data)
     {
-        $usr = $this->find()->where(['email' => $data['email']])->first();
+        $usr = $this->getUserByEmail($data['email']);
         if (!$usr) {
             $usr = $this->newEmptyEntity();
             $usr = $this->patchEntity($usr, $data);

@@ -218,6 +218,10 @@ abstract class EmailBase implements \JsonSerializable
             if ($recipient === self::SKIP_SEND_EMAIL_ADDRESS) {
                 return true;
             } else {
+                $config = getenv('EMAIL_TRANSPORT_DEFAULT_URL');
+                if (!$config) {
+                    throw new InternalErrorException('env EMAIL_TRANSPORT_DEFAULT_URL not defined');
+                }
                 $sent = $mailer->send();
             }
             return (bool)$sent;
