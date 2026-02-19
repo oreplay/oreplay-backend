@@ -153,7 +153,7 @@ Generate test coverage with: `vendor/bin/phpunit --coverage-html ./webroot/cover
 # Working with plugins
 Plugins allow to code functionalities with a logical separation between them.
 
-Docs about plugins: https://github.com/oreplay/oreplay-backend/blob/main/docs/plugins.md
+Docs about plugins: [plugins.md](./docs/plugins.md)
 
 # Migrations
 
@@ -163,7 +163,7 @@ We are working on two different databases:
 
 Migrations should be the only way to perform changes in the database schema.
 
-Docs about migrations: https://github.com/oreplay/oreplay-backend/blob/main/docs/migrations.md
+Docs about migrations: [migrations.md](./docs/migrations.md)
 
 # Devops
 
