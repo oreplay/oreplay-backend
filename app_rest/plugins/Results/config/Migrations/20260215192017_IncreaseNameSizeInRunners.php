@@ -10,8 +10,16 @@ class IncreaseNameSizeInRunners extends BaseMigration
     {
         $table = $this->table('runners');
 
-        $table->changeColumn('first_name', 'string', ['limit' => 100])
-            ->changeColumn('last_name', 'string', ['limit' => 200])
+        $table->changeColumn('first_name', 'string', [
+            'limit' => 100,
+            'null' => true,
+            'default' => null,
+        ])
+            ->changeColumn('last_name', 'string', [
+                'limit' => 200,
+                'null' => true,
+                'default' => null,
+            ])
             ->update();
     }
 }
