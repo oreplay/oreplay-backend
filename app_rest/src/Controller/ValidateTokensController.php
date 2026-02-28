@@ -45,7 +45,7 @@ class ValidateTokensController extends ApiController
         $jwt = VerifyEmail::decryptToken($token);
         switch ($jwt['token_type'] ?? '') {
             case NotificationTypes::VERIFY_ADDRESS:
-                $this->return = $this->Users->createSimpleUser($jwt);
+                $this->return = $this->Users->createSimpleUser($jwt, $jwt['hashed_password'] ?? null);
                 break;
             default:
                 throw new BadRequestException('Invalid token action');

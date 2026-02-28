@@ -43,6 +43,10 @@ class User extends RestApiEntity
     protected function _setPassword($password)
     {
         if (strlen($password) > 0) {
+            $isAlreadyHashed = str_starts_with($password, '$2y$10$');
+            if ($isAlreadyHashed) {
+                return $password;
+            }
             return (new DefaultPasswordHasher)->hash($password);
         }
     }

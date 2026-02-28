@@ -109,12 +109,15 @@ class UsersTable extends AppTable
         return $user;
     }
 
-    public function createSimpleUser(array $usr): User
+    public function createSimpleUser(array $usr, string $pass = null): User
     {
         unset($usr['id']);
         /** @var User $user */
         $user = $this->newEmptyEntity();
         $user = $this->patchEntity($user, $usr);
+        if ($pass) {
+            $user->password = $pass;
+        }
         $user->is_admin = false;
         $user->is_super = false;
         $saved = $this->saveOrFail($user);

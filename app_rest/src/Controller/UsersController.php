@@ -37,5 +37,6 @@ class UsersController extends ApiController
         $email = new VerifyEmail($user);
         $email->sendOrFail();
         $this->return = $user->toJsonArray();
+        //$this->return['activation_url'] = $email->getCallToActionHref();
     }
 }

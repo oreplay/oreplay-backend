@@ -8,6 +8,7 @@ use App\Controller\ApiController;
 use App\Lib\Consts\Languages;
 use App\Lib\Consts\NotificationTypes;
 use App\Lib\FullBaseUrl;
+use App\Model\Entity\User;
 use Cake\Http\Exception\InternalErrorException;
 use Firebase\JWT\JWT;
 use RestApi\Lib\Exception\DetailedException;
@@ -16,6 +17,12 @@ use function Cake\I18n\__d as __d;
 
 class VerifyEmail extends EmailBase
 {
+    public function __construct(User $user)
+    {
+        parent::__construct($user);
+        $this->dearUser->password = $user->password;
+    }
+
     protected function getName(): string
     {
         return __d('admin', 'Verify email address');
@@ -59,7 +66,7 @@ class VerifyEmail extends EmailBase
         return [];
     }
 
-    protected function getCallToActionHref(): string
+    public function getCallToActionHref(): string
     {
         return FullBaseUrl::host()  . ApiController::ROUTE_PREFIX . '/validateTokens?token=' . $this->getToken();
     }
@@ -86,6 +93,7 @@ class VerifyEmail extends EmailBase
     public function getToken(): string
     {
         $payload = $this->dearUser->toJsonArray();
+        $payload['hashed_password'] = $this->dearUser->password;
         $payload['token_type'] = $this->_getType();
         $payload['iat'] = time();
         return JWT::encode($payload, $this->getSecretKey());

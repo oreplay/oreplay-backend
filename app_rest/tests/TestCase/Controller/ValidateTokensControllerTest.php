@@ -20,7 +20,7 @@ class ValidateTokensControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew()
     {
-        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6Ijg5ZGM4NjM4LWQwODYtNDZlNi04NGM2LTY4MzE2ZTliZGZlNSIsImVtYWlsIjoic2tpcC1zZW5kQGV4YW1wbGUuY29tIiwibGFzdF9uYW1lIjoiTGFzdCIsImZpcnN0X25hbWUiOiJUZXN0IiwiX2MiOiJVc2VyIiwidG9rZW5fdHlwZSI6InZlcmlmeV9hZGRyZXNzIiwiaWF0IjoxNzY4MjA1NTA3fQ.vpZA1evaqBIbDsEuskXC4mJDEXHH-nyYSuGEa2c7x44';
+        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjFlZTM5MzY2LTMyYzctNDI2My04ZGVlLTAzZDk0MTk2ZTYyYyIsImVtYWlsIjoic2tpcC1zZW5kQGV4YW1wbGUuY29tIiwibGFzdF9uYW1lIjoiTGFzdCIsImZpcnN0X25hbWUiOiJUZXN0IiwiX2MiOiJVc2VyIiwiaGFzaGVkX3Bhc3N3b3JkIjoiJDJ5JDEwJEY1OEYwZXJkSzBCeUI2NWt6ZXd3WmVKbkNRWUY2VHBsQnBSTmlQS1VYOUdoNTY0ZkdXSUZXIiwidG9rZW5fdHlwZSI6InZlcmlmeV9hZGRyZXNzIiwiaWF0IjoxNzcyMjczNTkzfQ.YLAcuMAkuORdje_OmuAkOhP2WBFAH8cKc4rKfVQqDT8';
         $this->post($this->_getEndpoint(), ['token' => $token]);
 
         $this->assertResponseOk($this->_getBodyAsString());
@@ -37,5 +37,6 @@ class ValidateTokensControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(EmailBase::SKIP_SEND_EMAIL_ADDRESS, $userDb['email']);
         $this->assertFalse($userDb->is_admin);
         $this->assertFalse($userDb->is_super);
+        $this->assertStringStartsWith('$2y$10$F58F', $userDb->password);
     }
 }
