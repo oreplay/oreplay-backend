@@ -4,11 +4,8 @@ declare(strict_types = 1);
 
 namespace App\Controller;
 
-use App\Lib\Consts\CacheGrp;
-use Cake\Cache\Cache;
-use Cake\Http\Client;
+use App\Lib\ProxyFront\FrontUtil;
 use Cake\Http\Exception\NotFoundException;
-use RestApi\Lib\Exception\DetailedException;
 
 class ProxyFrontendController extends ApiController
 {
@@ -52,7 +49,7 @@ class ProxyFrontendController extends ApiController
     {
         $version = SwaggerJsonController::version();
         $url = $this->_getFrontDomain();
-        $index = $this->_getIndexJson($url);
+        $index = FrontUtil::getIndexJson($url);
         return '<!doctype html>
             <html lang="en" translate="no">
               <head>
@@ -100,39 +97,6 @@ class ProxyFrontendController extends ApiController
             </html>';
     }
 
-    private function _getIndexJson(string $url): string
-    {
-        $string = $this->_makeHttpRequest($url);
-        preg_match('/index-[A-Za-z0-9]+\.js/', $string, $matches);
-        if (!isset($matches[0])) {
-            throw new DetailedException('Index response: ' . $string);
-        }
-        return $matches[0];
-    }
-
-    private function _makeHttpRequest(string $url): string
-    {
-        $cacheKey = '_cachedPage' . md5($url); // NOSONAR
-        $cacheGroup = CacheGrp::DEFAULT;
-        $res = Cache::read($cacheKey, $cacheGroup);
-        if ($res) {
-            return $res;
-        }
-        $http = new Client(['curl' => [CURLOPT_TIMEOUT_MS => 1200], 'redirect' => false]);
-
-        $response = $http->get($url);
-        $statusCode = $response->getStatusCode();
-        if ($statusCode < 500) {
-            $stringBody = $response->getBody()->getContents();
-        } else {
-            throw new DetailedException('ex' . ($statusCode - 300));
-        }
-        if ($statusCode === 200) {
-            Cache::write($cacheKey, $stringBody, $cacheGroup);
-        }
-        return $stringBody;
-    }
-
     private function _getDescription(string $lang)
     {
         return match ($lang) {
@@ -146,18 +110,6 @@ class ProxyFrontendController extends ApiController
         $lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
         $exploded = explode(',', $lang)[0];
         return explode('-', $exploded)[0];
-    }
-
-    private function _getQueryString(string $path): string
-    {
-        $query = $this->getRequest()->getQuery();
-        unset($query['/' . $path]);
-        if ($query) {
-            $queryString = '?' . http_build_query($query);
-        } else {
-            $queryString = '';
-        }
-        return $queryString;
     }
 }
 
