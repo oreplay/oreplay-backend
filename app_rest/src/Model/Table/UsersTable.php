@@ -13,6 +13,7 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\UnauthorizedException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\Utility\Text;
+use RestApi\Lib\Exception\DetailedException;
 
 class UsersTable extends AppTable
 {
@@ -115,6 +116,10 @@ class UsersTable extends AppTable
         /** @var User $user */
         $user = $this->newEmptyEntity();
         $user = $this->patchEntity($user, $usr);
+        $existingUser = $this->getUserByEmail($user->email);
+        if ($existingUser) {
+            throw new DetailedException('Email already registered');
+        }
         if ($pass) {
             $user->password = $pass;
         }
