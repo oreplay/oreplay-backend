@@ -11,6 +11,22 @@ use RestApi\Lib\Exception\DetailedException;
 
 class FrontUtil
 {
+    public static function getOgImage(string $text): string
+    {
+        $base = 'https://textoverimg.com/wp-json/shakels/v1/image';
+        $params = [
+            'image' => 'http://d1ljmtj9ckzv64.cloudfront.net/oreplay-og.png',
+            'text' => $text,
+            'fontSize' => '42px',
+            'fontColor' => '#5e5c64',
+            'x_align' => '105',
+            'y_align' => '260',
+            'textAlign' => 'left',
+            'margin' => '5',
+        ];
+        return $base . '?' . http_build_query($params);
+    }
+
     public static function getIndexJson(string $url): string
     {
         $string = self::_makeHttpRequest($url);

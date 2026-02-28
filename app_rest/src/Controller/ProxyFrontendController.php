@@ -22,7 +22,7 @@ class ProxyFrontendController extends ApiController
     protected function getData($id)
     {
         $path = '/' . $id;
-        if (str_starts_with($path, '/locales/')) {
+        if (str_starts_with($path, '/locales/') || str_starts_with($path, '/assets/')) {
             $this->redirect($this->_getFrontDomain() . $path);
         }
         $lang = $this->_getSimpleLang();
@@ -50,6 +50,7 @@ class ProxyFrontendController extends ApiController
         $version = SwaggerJsonController::version();
         $url = $this->_getFrontDomain();
         $index = FrontUtil::getIndexJson($url);
+        $og = FrontUtil::getOgImage("Home for orienteering\nevents");
         return '<!doctype html>
             <html lang="en" translate="no">
               <head>
@@ -58,7 +59,7 @@ class ProxyFrontendController extends ApiController
                 <link rel="icon" type="image/jpg" href="' . $url . '/logo.svg" />
                 <link rel="icon" type="image/x-icon" href="' . $url . '/logo.png" />
                 <meta data-hid="image" itemprop="image" content="' . $url . '/logo.png" />
-                <meta data-hid="og:image" property="og:image" content="' . $url . '/logo.png" />
+                <meta data-hid="og:image" property="og:image" content="' . $og . '" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <meta data-hid="title" itemprop="title" content="O-Replay" />
                 <meta data-hid="og:title" property="og:title" content="O-Replay" />

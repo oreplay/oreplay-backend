@@ -10,6 +10,14 @@ use RestApi\Lib\Exception\DetailedException;
 
 class FrontUtilTest extends TestCase
 {
+    public function testGetOgImage(): void
+    {
+        $og = FrontUtil::getOgImage("Home for orienteering\nevents");
+        // phpcs:disable Generic.Files.LineLength.TooLong
+        $expected = 'https://textoverimg.com/wp-json/shakels/v1/image?image=http%3A%2F%2Fd1ljmtj9ckzv64.cloudfront.net%2Foreplay-og.png&text=Home+for+orienteering%0Aevents&fontSize=42px&fontColor=%235e5c64&x_align=105&y_align=260&textAlign=left&margin=5';
+        $this->assertEquals($expected, $og);
+    }
+
     public function testMatchIndexJs(): void
     {
         $string = '<script type="module" crossorigin="" src="/assets/index-D_Zu-5II.js"></script>';
