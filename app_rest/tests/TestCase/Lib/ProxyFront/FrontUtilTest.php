@@ -12,9 +12,9 @@ class FrontUtilTest extends TestCase
 {
     public function testMatchIndexJs(): void
     {
-        $string = '<script type="module" crossorigin="" src="/assets/index-DZuC5II.js"></script>';
+        $string = '<script type="module" crossorigin="" src="/assets/index-D_ZuC5II.js"></script>';
         $index = FrontUtil::matchIndexJs($string);
-        $this->assertEquals('index-DZuC5II.js', $index);
+        $this->assertEquals('index-D_ZuC5II.js', $index);
     }
 
     public function testMatchIndexJs_shouldThrowException(): void
