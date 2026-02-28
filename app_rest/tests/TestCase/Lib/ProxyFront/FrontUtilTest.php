@@ -14,8 +14,14 @@ class FrontUtilTest extends TestCase
     {
         $og = FrontUtil::getOgImage("Home for orienteering\nevents");
         // phpcs:disable Generic.Files.LineLength.TooLong
-        $expected = 'https://textoverimg.com/wp-json/shakels/v1/image?image=http%3A%2F%2Fd1ljmtj9ckzv64.cloudfront.net%2Foreplay-og.png&text=Home+for+orienteering%0Aevents&fontSize=42px&fontColor=%235e5c64&x_align=105&y_align=260&textAlign=left&margin=5';
+        $expected = 'https://or-img.gumlet.io/oreplay-og.png?sharp=false&text=Home+for+orienteering%0Aevents&txt-size=42&text_color=%235e5c64&text_bg_color=%23ffffff&text_left=110&text_top=260&text_align=left&text_line_height=15';
         $this->assertEquals($expected, $og);
+    }
+
+    public function testAddBreakLine(): void
+    {
+        $this->assertEquals("Home for orienteering", FrontUtil::addBreakLine("Home for orienteering"));
+        $this->assertEquals("Home for orienteering\nevents", FrontUtil::addBreakLine("Home for orienteering events"));
     }
 
     public function testMatchIndexJs(): void

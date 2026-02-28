@@ -50,7 +50,7 @@ class ProxyFrontendController extends ApiController
         $version = SwaggerJsonController::version();
         $url = $this->_getFrontDomain();
         $index = FrontUtil::getIndexJson($url);
-        $og = FrontUtil::getOgImage("Home for orienteering\nevents");
+        $og = FrontUtil::getOgImage(FrontUtil::addBreakLine('Home for orienteering events'));
         return '<!doctype html>
             <html lang="en" translate="no">
               <head>

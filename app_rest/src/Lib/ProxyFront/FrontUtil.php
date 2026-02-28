@@ -13,18 +13,45 @@ class FrontUtil
 {
     public static function getOgImage(string $text): string
     {
-        $base = 'https://textoverimg.com/wp-json/shakels/v1/image';
+        $base = 'https://or-img.gumlet.io/oreplay-og.png';
         $params = [
-            'image' => 'http://d1ljmtj9ckzv64.cloudfront.net/oreplay-og.png',
+            'sharp' => 'false',
             'text' => $text,
-            'fontSize' => '42px',
-            'fontColor' => '#5e5c64',
-            'x_align' => '105',
-            'y_align' => '260',
-            'textAlign' => 'left',
-            'margin' => '5',
+            'txt-size' => '42',
+            'text_color' => '#5e5c64',
+            'text_bg_color' => '#ffffff',
+            'text_left' => '110',
+            'text_top' => '260',
+            'text_align' => 'left',
+            'text_line_height' => '15',
         ];
         return $base . '?' . http_build_query($params);
+    }
+
+    public static function addBreakLine(string $text, int $amount = 22): string
+    {
+        $words = explode(' ', $text);
+        $lines = [];
+        $currentLine = '';
+
+        foreach ($words as $word) {
+            $candidate = $currentLine === ''
+                ? $word
+                : $currentLine . ' ' . $word;
+
+            if (strlen($candidate) > $amount) {
+                $lines[] = $currentLine;
+                $currentLine = $word;
+            } else {
+                $currentLine = $candidate;
+            }
+        }
+
+        if ($currentLine !== '') {
+            $lines[] = $currentLine;
+        }
+
+        return implode("\n", $lines);
     }
 
     public static function getIndexJson(string $url): string
