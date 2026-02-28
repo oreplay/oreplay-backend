@@ -19,7 +19,7 @@ class FrontUtil
 
     public static function matchIndexJs(string $string): mixed
     {
-        preg_match('/index-[A-Za-z0-9_]+\.js/', $string, $matches);
+        preg_match('/index-[A-Za-z0-9_-]+\.js/', $string, $matches);
         if (!isset($matches[0])) {
             throw new DetailedException('Index response: ' . $string);
         }
