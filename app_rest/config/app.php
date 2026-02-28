@@ -84,6 +84,8 @@ return [
             ],
             'AllowOrigin' => [
                 '*',
+                'https://www.oreplay.es',
+                'https://api.oreplay.es',
                 'http://localhost:3000',
                 'http://localhost:8080',
                 'http://localhost:8081',
