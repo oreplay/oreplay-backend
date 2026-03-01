@@ -25,6 +25,7 @@ class Stage extends AppEntity
         'id' => false,
         'description' => true,
         'stage_type_id' => true,
+        'start' => true,
     ];
 
     protected array $_virtual = [

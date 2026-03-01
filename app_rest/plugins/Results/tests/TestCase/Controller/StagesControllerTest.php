@@ -57,6 +57,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
                 '_c' => Stage::class,
                 'id' => Stage::FIRST_STAGE,
                 'description' => 'First stage',
+                'start' => '2023-11-01T10:01:00.000+00:00',
                 'last_logs' => [],
                 '_links' => [
                     '_c' => 'StageLinks',
@@ -78,6 +79,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
                 '_c' => Stage::class,
                 'id' => StagesFixture::STAGE_FEDO_2,
                 'description' => 'Second stage',
+                'start' => '2023-11-01T10:02:00.000+00:00',
                 'last_logs' => [],
                 '_links' => [
                     '_c' => 'StageLinks',
@@ -108,6 +110,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
             '_c' => Stage::class,
             'id' => StagesFixture::STAGE_FEDO_2,
             'description' => 'Second stage',
+            'start' => '2023-11-01T10:02:00.000+00:00',
             'stage_type' => [
                 '_c' => StageType::class,
                 'id' => StageType::CLASSIC,
