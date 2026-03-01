@@ -21,6 +21,7 @@
       <testsuite name="Controllers">
           <file>tests/TestCase/Controller/MeControllerTest.php</file>
           <file>tests/TestCase/Controller/UsersControllerTest.php</file>
+          <file>tests/TestCase/Controller/ResetPasswordControllerTest.php</file>
           <file>tests/TestCase/Controller/ValidateTokensControllerTest.php</file>
           <directory>plugins/Results/tests/TestCase/Controller/</directory>
           <file>plugins/Rankings/tests/TestCase/Controller/RankingComputeClassControllerTest.php</file>

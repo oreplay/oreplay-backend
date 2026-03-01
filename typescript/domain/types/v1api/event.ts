@@ -29,6 +29,7 @@ export interface Event {
   country_code?: string | null
   initial_date: string
   final_date: string
+  timezone?: string
   federation_id: string
   created: string
   modified: string

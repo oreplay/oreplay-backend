@@ -15,6 +15,8 @@ import type { StageLinks } from './stageLinks'
 export interface Stage {
   id: string
   description: string
+  /** @nullable */
+  start?: string | null
   stage_type?: StageType
   last_logs: UploadLog[]
   _links: StageLinks

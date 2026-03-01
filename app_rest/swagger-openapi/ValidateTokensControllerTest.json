@@ -29,7 +29,7 @@
                             "properties": {
                                 "token": {
                                     "type": "string",
-                                    "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjJlNWRiZTE5LWY1MzctNDExOC05ZDcxLTYzNTk4MjllMDQ3NyIsImVtYWlsIjoic2tpcC1zZW5kQGV4YW1wbGUuY29tIiwibGFzdF9uYW1lIjoiTGFzdCIsImZpcnN0X25hbWUiOiJUZXN0IiwiX2MiOiJVc2VyIiwidG9rZW5fdHlwZSI6InZlcmlmeV9hZGRyZXNzIiwiaWF0IjoxNzY4MjAzMzYwfQ.KO6U1sBsJIzEcYYHgqj5UR3ugPK_19D-H0pS-qYrAEc"
+                                    "example": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoiWVRrMlptRTFNVFU0TWprelltUXlPR1F5WldGbFlqRTBaak5rWldRek5ETTRaR1l6WVdOak5ERmlZek0yTkRRNU1UQTNOVEF3TXpaak5tWXhNVE5rT0UyZGVPRGRxWjg0cG1nYmpFT09OVEU4a0xqQzY3NEJnNmsrUldwUnFTaUtVVVErb0lzWms4bFFRTFc3REJrZ1lOS1hibnVwdXdGZkpIbEJYdFo3bWlUU1lqaWx1RlVGajc3WjZvWWkzY1A1TG5YdFwvZmFwNGw1UUVaXC9rdjA2bmJtcDdnMkl4SUE3Tzlud1YrcEIrSWdnckFEbkRLOEc3UnNEUGZzRTZ1NFVxZUdwczBOWkF3MzQxU2pnc0R3Q1p0Q3hET2RzREErTzd5eXNCXC92R3l1SlNId1lhM3grcThjbTFVd3NwblN1UmpXWmN3eHJWdnBLNWhsa2orNjRkMTliSDVmZ1grdzhXTlA1aDkyQ3lBMFBBSUdUQ2U0S1FEVHJcL05MQ29ReXpuNlNpb0ZjeFdLUmdZR2l5d3ZxazFMMDVtRUljTng2dkFTV1NHU0FoeTl4eGJuZzU0THMrWE9XNWIzWGVMZWFpSlwvIiwiaWF0IjoxNzcyMzU5MjI0fQ.4WwXp6ypkjOqOEQkouWCGAeeIIVKkqZys6eMsv9XuVM"
                                 }
                             },
                             "description": "Generic object when: Add new"

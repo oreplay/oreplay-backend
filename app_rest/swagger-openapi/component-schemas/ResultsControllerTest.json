@@ -531,7 +531,7 @@
             "status_code": [
                 {
                     "type": "number",
-                    "example": 1
+                    "example": 0
                 },
                 {
                     "type": "string",
@@ -540,7 +540,7 @@
                 },
                 {
                     "type": "number",
-                    "example": 1
+                    "example": 0
                 },
                 {
                     "type": "string",
@@ -549,7 +549,7 @@
                 },
                 {
                     "type": "number",
-                    "example": 1
+                    "example": 0
                 },
                 {
                     "type": "string",

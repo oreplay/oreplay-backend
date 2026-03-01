@@ -394,7 +394,7 @@
             "initial_date": [
                 {
                     "type": "string",
-                    "example": "2026-01-10"
+                    "example": "2026-03-02"
                 },
                 {
                     "type": "string",
@@ -410,11 +410,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-01-09"
+                    "example": "2026-03-01"
                 },
                 {
                     "type": "string",
-                    "example": "2026-01-10"
+                    "example": "2026-03-02"
                 },
                 {
                     "type": "string",
@@ -440,7 +440,7 @@
             "final_date": [
                 {
                     "type": "string",
-                    "example": "2026-01-10"
+                    "example": "2026-03-02"
                 },
                 {
                     "type": "string",
@@ -456,11 +456,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-01-09"
+                    "example": "2026-03-01"
                 },
                 {
                     "type": "string",
-                    "example": "2026-01-10"
+                    "example": "2026-03-02"
                 },
                 {
                     "type": "string",
@@ -481,6 +481,48 @@
                 {
                     "type": "string",
                     "example": "2024-06-10"
+                }
+            ],
+            "timezone": [
+                {
+                    "type": "string",
+                    "example": "Europe/Madrid"
+                },
+                {
+                    "type": "string",
+                    "example": "Europe/Madrid"
+                },
+                {
+                    "type": "string",
+                    "example": "Europe/Madrid"
+                },
+                {
+                    "type": "string",
+                    "example": "Europe/Madrid"
+                },
+                {
+                    "type": "string",
+                    "example": "Europe/Madrid"
+                },
+                {
+                    "type": "string",
+                    "example": "Europe/Madrid"
+                },
+                {
+                    "type": "string",
+                    "example": "Europe/Madrid"
+                },
+                {
+                    "type": "string",
+                    "example": "Europe/Madrid"
+                },
+                {
+                    "type": "string",
+                    "example": "Europe/Madrid"
+                },
+                {
+                    "type": "string",
+                    "example": "Europe/Madrid"
                 }
             ],
             "federation_id": [
@@ -606,7 +648,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-01-09T09:46:26.306+00:00"
+                    "example": "2026-03-01T14:58:55.784+00:00"
                 },
                 {
                     "type": "string",
@@ -618,7 +660,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-01-09T09:46:26.356+00:00"
+                    "example": "2026-03-01T14:58:55.829+00:00"
                 }
             ],
             "organizer_id": [
@@ -1219,7 +1261,7 @@
                     "properties": {
                         "href": {
                             "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2026-01-09&final_date:gte=2026-01-09&page=1"
+                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2026-03-01&final_date:gte=2026-03-01&page=1"
                         }
                     },
                     "description": "Generic object."
@@ -1326,6 +1368,17 @@
                 {
                     "type": "string",
                     "example": "Stage raid"
+                }
+            ],
+            "start": [
+                {
+                    "type": "string",
+                    "example": "2023-11-01T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
                 }
             ],
             "stage_type": [

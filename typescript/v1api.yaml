@@ -167,14 +167,14 @@ paths:
         - description: ''
           in: query
           name: initial_date:lte
-          example: '2026-01-09'
+          example: '2026-03-01'
           required: false
           schema:
             type: string
         - description: ''
           in: query
           name: final_date:gte
-          example: '2026-01-09'
+          example: '2026-03-01'
           required: false
           schema:
             type: string
@@ -599,7 +599,7 @@ paths:
                   example: computable_org
                 runner_id:
                   type: string
-                  example: 9a21b4a8-21c6-4ef3-aa72-9ea03f8d8aed
+                  example: b3ba1b17-c26e-4bfd-ae80-237e207791b7
                 stage_order:
                   type: number
                   example: 1
@@ -679,6 +679,64 @@ paths:
       responses:
         '204':
           description: No content. Successfully deleted.
+  /api/v1/resetPassword/:
+    post:
+      operationId: postListResetPassword
+      summary: ''
+      description: Add new
+      parameters: []
+      tags:
+        - ResetPassword
+      responses:
+        '204':
+          description: No content
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: skip-send@example.com
+              description: 'Generic object when: Add new'
+  /api/v1/resetPassword/{resetPasswordID}:
+    patch:
+      operationId: patchResetPassword
+      summary: ''
+      description: Edit
+      parameters:
+        - description: ID in URL
+          in: path
+          name: resetPasswordID
+          required: true
+          schema:
+            type: integer
+          example: 222333
+      tags:
+        - ResetPassword
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResUser'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: skip-send@example.com
+                password:
+                  type: string
+                  example: '************'
+              description: 'Generic object when: Edit'
   /api/v1/events/{eventID}/stages/{stageID}/resultsByClass/:
     get:
       operationId: getListResultsByClass
@@ -1104,7 +1162,7 @@ paths:
               properties:
                 token:
                   type: string
-                  example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjJlNWRiZTE5LWY1MzctNDExOC05ZDcxLTYzNTk4MjllMDQ3NyIsImVtYWlsIjoic2tpcC1zZW5kQGV4YW1wbGUuY29tIiwibGFzdF9uYW1lIjoiTGFzdCIsImZpcnN0X25hbWUiOiJUZXN0IiwiX2MiOiJVc2VyIiwidG9rZW5fdHlwZSI6InZlcmlmeV9hZGRyZXNzIiwiaWF0IjoxNzY4MjAzMzYwfQ.KO6U1sBsJIzEcYYHgqj5UR3ugPK_19D-H0pS-qYrAEc
+                  example: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoiWVRrMlptRTFNVFU0TWprelltUXlPR1F5WldGbFlqRTBaak5rWldRek5ETTRaR1l6WVdOak5ERmlZek0yTkRRNU1UQTNOVEF3TXpaak5tWXhNVE5rT0UyZGVPRGRxWjg0cG1nYmpFT09OVEU4a0xqQzY3NEJnNmsrUldwUnFTaUtVVVErb0lzWms4bFFRTFc3REJrZ1lOS1hibnVwdXdGZkpIbEJYdFo3bWlUU1lqaWx1RlVGajc3WjZvWWkzY1A1TG5YdFwvZmFwNGw1UUVaXC9rdjA2bmJtcDdnMkl4SUE3Tzlud1YrcEIrSWdnckFEbkRLOEc3UnNEUGZzRTZ1NFVxZUdwczBOWkF3MzQxU2pnc0R3Q1p0Q3hET2RzREErTzd5eXNCXC92R3l1SlNId1lhM3grcThjbTFVd3NwblN1UmpXWmN3eHJWdnBLNWhsa2orNjRkMTliSDVmZ1grdzhXTlA1aDkyQ3lBMFBBSUdUQ2U0S1FEVHJcL05MQ29ReXpuNlNpb0ZjeFdLUmdZR2l5d3ZxazFMMDVtRUljTng2dkFTV1NHU0FoeTl4eGJuZzU0THMrWE9XNWIzWGVMZWFpSlwvIiwiaWF0IjoxNzcyMzU5MjI0fQ.4WwXp6ypkjOqOEQkouWCGAeeIIVKkqZys6eMsv9XuVM
               description: 'Generic object when: Add new'
 components:
   securitySchemes:
@@ -1120,7 +1178,7 @@ components:
           example: '2034-01-06T13:09:01.523+00:00'
         token:
           type: string
-          example: LnGCFw
+          example: TqwK8x
         created:
           type: string
           example: '****-**-*****:**:**.***+**:**'
@@ -1177,10 +1235,13 @@ components:
           nullable: true
         initial_date:
           type: string
-          example: '2026-01-10'
+          example: '2026-03-02'
         final_date:
           type: string
-          example: '2026-01-10'
+          example: '2026-03-02'
+        timezone:
+          type: string
+          example: Europe/Madrid
         federation_id:
           type: string
           example: IOF
@@ -1315,6 +1376,10 @@ components:
         description:
           type: string
           example: First stage
+        start:
+          type: string
+          example: '2023-11-01T10:01:00.000+00:00'
+          nullable: true
         stage_type:
           $ref: '#/components/schemas/StageType'
         last_logs:
@@ -1494,7 +1559,7 @@ components:
       properties:
         id:
           type: string
-          example: 8f8af44a-74e4-4e05-ad9a-b18d15027721
+          example: 0a4c6954-c717-4e99-aab0-41e29aac6411
         short_name:
           type: string
           example: ME
@@ -1519,7 +1584,7 @@ components:
       properties:
         id:
           type: string
-          example: 47bbfb61-56e7-4a85-b6fc-a8c3d8a8050d
+          example: d878d2be-1a4f-4fc7-8087-bf33a64ad28c
         sicard:
           type: number
           example: 2009933
@@ -1579,7 +1644,7 @@ components:
       properties:
         id:
           type: string
-          example: ec182348-ed59-40d9-a9cc-971d171b27b9
+          example: f30e24cc-e5f4-46fc-917d-21e32cb2651f
         short_name:
           type: string
           example: Club A
@@ -1592,7 +1657,7 @@ components:
       properties:
         id:
           type: string
-          example: 9df585bd-a177-4aa0-9a6f-cb2bd451ee5a
+          example: 3959b8be-2bfb-432f-ac02-e880e8108584
         stage_order:
           type: number
           example: 1
@@ -1648,7 +1713,7 @@ components:
       properties:
         id:
           type: string
-          example: 69cd6995-db31-4d73-bf0e-7dff8d514d6c
+          example: f03ce741-30e1-4c9e-bf9d-86668f9671dd
         description:
           type: string
           example: Test Foot-o
@@ -1679,7 +1744,7 @@ components:
       properties:
         id:
           type: string
-          example: fcc12578-0f5b-4a4a-b15b-194a5159cbf0
+          example: c7262a67-1732-45a5-949a-86f873f93704
         status_code:
           type: number
           example: 0
@@ -2081,7 +2146,7 @@ components:
             type: string
             example: |2
 
-                  [ERROR - 400] (1/9/26, 9:46 AM) Invalid payload structure configuration.contents StartList | ResultList and configuration.results_type Mixed 
+                  [ERROR - 400] (3/1/26, 2:58 PM) Invalid payload structure configuration.contents StartList | ResultList and configuration.results_type Mixed 
       description: Entity UploadedMeta
     ResUploaded:
       type: object
