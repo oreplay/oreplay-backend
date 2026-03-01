@@ -16,6 +16,10 @@ class ProxyFrontendController extends ApiController
 
     protected function getList()
     {
+        $param = $this->getRequest()->getQuery('updateFront');
+        if ($param) {
+            FrontUtil::uncacheIndexJson();
+        }
         $this->getData('');
     }
 
@@ -50,7 +54,7 @@ class ProxyFrontendController extends ApiController
         $version = SwaggerJsonController::version();
         $url = $this->_getFrontDomain();
         $index = FrontUtil::getIndexJson($url);
-        $og = FrontUtil::getOgImage(FrontUtil::addBreakLine('Home for orienteering events'));
+        $og = FrontUtil::getOgImage(FrontUtil::addBreakLine($description));
         return '<!doctype html>
             <html lang="en" translate="no">
               <head>

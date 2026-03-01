@@ -56,10 +56,25 @@ class FrontUtil
         return implode("\n", $lines);
     }
 
+    public static function uncacheIndexJson(): void
+    {
+        $cacheKey = '_entrypointIndexJs';
+        $cacheGroup = CacheGrp::DEFAULT;
+        Cache::write($cacheKey, '', $cacheGroup);
+    }
+
     public static function getIndexJson(string $url): string
     {
+        $cacheKey = '_entrypointIndexJs';
+        $cacheGroup = CacheGrp::DEFAULT;
+        $res = Cache::read($cacheKey, $cacheGroup);
+        if ($res) {
+            return $res;
+        }
         $string = self::_makeHttpRequest($url);
-        return self::matchIndexJs($string);
+        $index = self::matchIndexJs($string);
+        Cache::write($cacheKey, $index, $cacheGroup);
+        return $index;
     }
 
     public static function matchIndexJs(string $string): mixed
@@ -73,12 +88,6 @@ class FrontUtil
 
     private static function _makeHttpRequest(string $url): string
     {
-        $cacheKey = '_cachedPage' . md5($url); // NOSONAR
-        $cacheGroup = CacheGrp::DEFAULT;
-        $res = Cache::read($cacheKey, $cacheGroup);
-        if ($res) {
-            return $res;
-        }
         $http = new Client(['curl' => [CURLOPT_TIMEOUT_MS => 1200], 'redirect' => false]);
 
         $response = $http->get($url);
@@ -87,9 +96,6 @@ class FrontUtil
             $stringBody = $response->getBody()->getContents();
         } else {
             throw new DetailedException('ex' . ($statusCode - 300));
-        }
-        if ($statusCode === 200) {
-            Cache::write($cacheKey, $stringBody, $cacheGroup);
         }
         return $stringBody;
     }
