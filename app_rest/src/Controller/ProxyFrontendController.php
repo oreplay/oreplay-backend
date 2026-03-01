@@ -55,8 +55,12 @@ class ProxyFrontendController extends ApiController
         $url = $this->_getFrontDomain();
         $index = FrontUtil::getIndexJson($url);
         $og = FrontUtil::getOgImage(FrontUtil::addBreakLine($description));
+        $lang = $this->_getSimpleLang();
+        if (strlen($lang) != 2) {
+            $lang = 'en';
+        }
         return '<!doctype html>
-            <html lang="en" translate="no">
+            <html lang="' . $lang . '" translate="no">
               <head>
                 <meta charset="UTF-8" />
                 <meta name="google" content="notranslate" />
