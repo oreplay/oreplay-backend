@@ -24,6 +24,8 @@ class FrontUtil
             'text_top' => '260',
             'text_align' => 'left',
             'text_line_height' => '15',
+            //'w' => '1200',
+            //'h' => '630'
         ];
         return $base . '?' . http_build_query($params);
     }

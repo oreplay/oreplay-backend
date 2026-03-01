@@ -20,7 +20,7 @@ class ValidateTokensControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew()
     {
-        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjFlZTM5MzY2LTMyYzctNDI2My04ZGVlLTAzZDk0MTk2ZTYyYyIsImVtYWlsIjoic2tpcC1zZW5kQGV4YW1wbGUuY29tIiwibGFzdF9uYW1lIjoiTGFzdCIsImZpcnN0X25hbWUiOiJUZXN0IiwiX2MiOiJVc2VyIiwiaGFzaGVkX3Bhc3N3b3JkIjoiJDJ5JDEwJEY1OEYwZXJkSzBCeUI2NWt6ZXd3WmVKbkNRWUY2VHBsQnBSTmlQS1VYOUdoNTY0ZkdXSUZXIiwidG9rZW5fdHlwZSI6InZlcmlmeV9hZGRyZXNzIiwiaWF0IjoxNzcyMjczNTkzfQ.YLAcuMAkuORdje_OmuAkOhP2WBFAH8cKc4rKfVQqDT8';
+        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoiWVRrMlptRTFNVFU0TWprelltUXlPR1F5WldGbFlqRTBaak5rWldRek5ETTRaR1l6WVdOak5ERmlZek0yTkRRNU1UQTNOVEF3TXpaak5tWXhNVE5rT0UyZGVPRGRxWjg0cG1nYmpFT09OVEU4a0xqQzY3NEJnNmsrUldwUnFTaUtVVVErb0lzWms4bFFRTFc3REJrZ1lOS1hibnVwdXdGZkpIbEJYdFo3bWlUU1lqaWx1RlVGajc3WjZvWWkzY1A1TG5YdFwvZmFwNGw1UUVaXC9rdjA2bmJtcDdnMkl4SUE3Tzlud1YrcEIrSWdnckFEbkRLOEc3UnNEUGZzRTZ1NFVxZUdwczBOWkF3MzQxU2pnc0R3Q1p0Q3hET2RzREErTzd5eXNCXC92R3l1SlNId1lhM3grcThjbTFVd3NwblN1UmpXWmN3eHJWdnBLNWhsa2orNjRkMTliSDVmZ1grdzhXTlA1aDkyQ3lBMFBBSUdUQ2U0S1FEVHJcL05MQ29ReXpuNlNpb0ZjeFdLUmdZR2l5d3ZxazFMMDVtRUljTng2dkFTV1NHU0FoeTl4eGJuZzU0THMrWE9XNWIzWGVMZWFpSlwvIiwiaWF0IjoxNzcyMzU5MjI0fQ.4WwXp6ypkjOqOEQkouWCGAeeIIVKkqZys6eMsv9XuVM';
         $this->post($this->_getEndpoint(), ['token' => $token]);
 
         $this->assertResponseOk($this->_getBodyAsString());
@@ -37,6 +37,6 @@ class ValidateTokensControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(EmailBase::SKIP_SEND_EMAIL_ADDRESS, $userDb['email']);
         $this->assertFalse($userDb->is_admin);
         $this->assertFalse($userDb->is_super);
-        $this->assertStringStartsWith('$2y$10$F58F', $userDb->password);
+        $this->assertStringStartsWith('$2y$10$QPW5', $userDb->password);
     }
 }

@@ -10,6 +10,7 @@ use App\Lib\Consts\NotificationTypes;
 use App\Lib\FullBaseUrl;
 use App\Model\Entity\User;
 use Cake\Http\Exception\InternalErrorException;
+use Cake\Utility\Security;
 use Firebase\JWT\JWT;
 use RestApi\Lib\Exception\DetailedException;
 use function Cake\I18n\__ as __;
@@ -95,19 +96,34 @@ class VerifyEmail extends EmailBase
         $payload = $this->dearUser->toJsonArray();
         $payload['hashed_password'] = $this->dearUser->password;
         $payload['token_type'] = $this->_getType();
-        $payload['iat'] = time();
-        return JWT::encode($payload, $this->getSecretKey());
+        return $this->encryptToken($payload);
+    }
+
+    public static function encryptToken(array $payload): string
+    {
+        $secret = self::getSecretKey();
+        $json = json_encode($payload, JSON_THROW_ON_ERROR);
+        $encrypted = Security::encrypt($json, $secret);
+
+        $encrypt = [
+            'data' => base64_encode($encrypted),
+            'iat'  => time(),
+        ];
+
+        return JWT::encode($encrypt, $secret);
     }
 
     public static function decryptToken(string $token): array
     {
-        $jwt = (array)JWT::decode($token, self::getSecretKey(), ['HS256']);
+        $secret = self::getSecretKey();
+        $jwt = (array)JWT::decode($token, $secret, ['HS256']);
         $iat = $jwt['iat'] ?? null;
+        $toRet = json_decode(Security::decrypt(base64_decode($jwt['data']), $secret), true);
         if (!$iat || ($iat + 30 * 60) < time()) {
-            if (($jwt['email'] ?? null) !== self::SKIP_SEND_EMAIL_ADDRESS) {
+            if (($toRet['email'] ?? null) !== self::SKIP_SEND_EMAIL_ADDRESS) {
                 throw new DetailedException('Token has expired');
             }
         }
-        return $jwt;
+        return $toRet;
     }
 }
