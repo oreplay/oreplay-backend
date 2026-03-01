@@ -4,9 +4,9 @@ declare(strict_types = 1);
 
 use App\Model\Table\AppTable;
 use App\Test\Fixture\UsersFixture;
-use Migrations\AbstractSeed;
+use Migrations\BaseSeed;
 
-class UsersSeed extends AbstractSeed
+class UsersSeed extends BaseSeed
 {
     public function run(): void
     {

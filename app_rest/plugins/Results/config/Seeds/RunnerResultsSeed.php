@@ -2,14 +2,14 @@
 
 declare(strict_types = 1);
 
-use Migrations\AbstractSeed;
+use Migrations\BaseSeed;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Stage;
 
-class RunnerResultsSeed extends AbstractSeed
+class RunnerResultsSeed extends BaseSeed
 {
     protected $seedClasses = [
         EventsSeed::class,
@@ -20,7 +20,7 @@ class RunnerResultsSeed extends AbstractSeed
     public function run(): void
     {
         foreach ($this->seedClasses as $seedClass) {
-            /** @var AbstractSeed $seeder */
+            /** @var BaseSeed $seeder */
             $seeder = new $seedClass;
             $seeder->setAdapter($this->getAdapter());
             $seeder->run();

@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-use Migrations\AbstractSeed;
+use Migrations\BaseSeed;
 use Results\Model\Entity\ControlType;
 
-class ControlTypesSeed extends AbstractSeed
+class ControlTypesSeed extends BaseSeed
 {
     public function run(): void
     {

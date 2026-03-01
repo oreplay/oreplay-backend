@@ -2,11 +2,11 @@
 
 declare(strict_types = 1);
 
-use Migrations\AbstractSeed;
+use Migrations\BaseSeed;
 use Cake\Utility\Text;
 use Results\Model\Entity\Organizer;
 
-class OrganizersSeed extends AbstractSeed
+class OrganizersSeed extends BaseSeed
 {
     public function run(): void
     {

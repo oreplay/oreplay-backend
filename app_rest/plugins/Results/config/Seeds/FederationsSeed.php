@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-use Migrations\AbstractSeed;
+use Migrations\BaseSeed;
 use Results\Model\Entity\Federation;
 
-class FederationsSeed extends AbstractSeed
+class FederationsSeed extends BaseSeed
 {
     public function run(): void
     {

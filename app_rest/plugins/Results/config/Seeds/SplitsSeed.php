@@ -3,13 +3,13 @@
 declare(strict_types = 1);
 
 use Cake\Utility\Text;
-use Migrations\AbstractSeed;
+use Migrations\BaseSeed;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Stage;
 
-class SplitsSeed extends AbstractSeed
+class SplitsSeed extends BaseSeed
 {
     protected $seedClasses = [
         RunnerResultsSeed::class,
@@ -17,7 +17,7 @@ class SplitsSeed extends AbstractSeed
     public function run(): void
     {
         foreach ($this->seedClasses as $seedClass) {
-            /** @var AbstractSeed $seeder */
+            /** @var BaseSeed $seeder */
             $seeder = new $seedClass;
             $seeder->setAdapter($this->getAdapter());
             $seeder->run();

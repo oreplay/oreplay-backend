@@ -1,10 +1,11 @@
 <?php
-declare(strict_types=1);
+
+declare(strict_types = 1);
 
 use App\Test\Fixture\OauthClientsFixture;
-use Migrations\AbstractSeed;
+use Migrations\BaseSeed;
 
-class OauthClientsSeed extends AbstractSeed
+class OauthClientsSeed extends BaseSeed
 {
     public function run(): void
     {

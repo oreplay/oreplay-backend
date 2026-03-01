@@ -5,9 +5,9 @@ declare(strict_types = 1);
 use App\Test\Fixture\OauthAccessTokensFixture;
 use App\Test\Fixture\OauthClientsFixture;
 use App\Test\Fixture\UsersFixture;
-use Migrations\AbstractSeed;
+use Migrations\BaseSeed;
 
-class OauthAccessTokensSeed extends AbstractSeed
+class OauthAccessTokensSeed extends BaseSeed
 {
     public function run(): void
     {
