@@ -37,6 +37,7 @@ class Event extends AppEntity
         'picture' => true,
         'initial_date' => true,
         'final_date' => true,
+        'timezone' => true,
         'organizer_id' => true,
     ];
 
