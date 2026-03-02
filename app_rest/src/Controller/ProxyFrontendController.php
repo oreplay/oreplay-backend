@@ -26,7 +26,10 @@ class ProxyFrontendController extends ApiController
     protected function getData($id)
     {
         $path = '/' . $id;
-        if (str_starts_with($path, '/locales/') || str_starts_with($path, '/assets/')) {
+        $hasLocales = str_starts_with($path, '/locales/');
+        $hasAssets = str_starts_with($path, '/assets/');
+        $hasOrganizers = str_starts_with($path, '/organizers/');
+        if ($hasLocales || $hasAssets || $hasOrganizers) {
             $this->redirect($this->_getFrontDomain() . $path);
         }
         $lang = $this->_getSimpleLang();
