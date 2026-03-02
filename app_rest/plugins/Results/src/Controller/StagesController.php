@@ -106,8 +106,9 @@ class StagesController extends ApiController
         $stage =$this->Stages->get($id);
         $stage = $this->Stages->patchEntity($stage, $data);
         $saved = $this->Stages->saveOrFail($stage);
-        if (isset($data['state_end'])) {
-            if ($data['state_end']) {
+        if (array_key_exists('state_end', $data)) {
+            $stateEnd = filter_var($data['state_end'], FILTER_VALIDATE_BOOLEAN);
+            if ($stateEnd) {
                 $this->Stages->UploadLogs->saveStateEnded($eventId, $id);
             } else {
                 $this->Stages->UploadLogs->deleteStateEnded($eventId, $id);
