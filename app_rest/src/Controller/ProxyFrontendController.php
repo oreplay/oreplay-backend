@@ -29,7 +29,11 @@ class ProxyFrontendController extends ApiController
         $hasLocales = str_starts_with($path, '/locales/');
         $hasAssets = str_starts_with($path, '/assets/');
         $hasOrganizers = str_starts_with($path, '/organizers/');
-        if ($hasLocales || $hasAssets || $hasOrganizers) {
+        $hasImg = str_starts_with($path, '/img/');
+        $hasLogoSvg = str_starts_with($path, '/logo.svg');
+        $hasLogoPng = str_starts_with($path, '/logo.png');
+        $hasStatic = str_starts_with($path, '/staticwebapp.config.json');
+        if ($hasLocales || $hasAssets || $hasOrganizers || $hasImg || $hasLogoSvg || $hasLogoPng || $hasStatic) {
             $this->redirect($this->_getFrontDomain() . $path);
         }
         $lang = $this->_getSimpleLang();
