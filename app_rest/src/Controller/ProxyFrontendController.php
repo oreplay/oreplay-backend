@@ -30,10 +30,8 @@ class ProxyFrontendController extends ApiController
         $hasAssets = str_starts_with($path, '/assets/');
         $hasOrganizers = str_starts_with($path, '/organizers/');
         $hasImg = str_starts_with($path, '/img/');
-        $hasLogoSvg = str_starts_with($path, '/logo.svg');
-        $hasLogoPng = str_starts_with($path, '/logo.png');
         $hasStatic = str_starts_with($path, '/staticwebapp.config.json');
-        if ($hasLocales || $hasAssets || $hasOrganizers || $hasImg || $hasLogoSvg || $hasLogoPng || $hasStatic) {
+        if ($hasLocales || $hasAssets || $hasOrganizers || $hasImg || $hasStatic) {
             $this->redirect($this->_getFrontDomain() . $path);
         }
         $lang = $this->_getSimpleLang();
@@ -71,9 +69,9 @@ class ProxyFrontendController extends ApiController
               <head>
                 <meta charset="UTF-8" />
                 <meta name="google" content="notranslate" />
-                <link rel="icon" type="image/jpg" href="' . $url . '/logo.svg" />
-                <link rel="icon" type="image/x-icon" href="' . $url . '/logo.png" />
-                <meta data-hid="image" itemprop="image" content="' . $url . '/logo.png" />
+                <link rel="icon" type="image/jpg" href="' . $url . '/img/logo.svg" />
+                <link rel="icon" type="image/x-icon" href="' . $url . '/img/logo.png" />
+                <meta data-hid="image" itemprop="image" content="' . $url . '/img/logo.png" />
                 <meta data-hid="og:image" property="og:image" content="' . $og . '" />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                 <meta data-hid="title" itemprop="title" content="O-Replay" />
