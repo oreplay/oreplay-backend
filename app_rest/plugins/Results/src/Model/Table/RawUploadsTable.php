@@ -43,7 +43,25 @@ class RawUploadsTable extends AppTable
 
     public function hardDeleteOld(): int
     {
-        return $this->deleteAll(['created <' => new FrozenTime('-12days')]);
+        $cutoff = new FrozenTime('-12 days');
+
+        $query = $this->find()
+            ->select(['id'])
+            ->where(['created <' => $cutoff])
+            ->orderBy(['created' => 'ASC'])
+            ->limit(5000)
+            ->enableHydration(false);
+
+        $ids = [];
+        foreach ($query as $row) {
+            $ids[] = $row['id'];
+        }
+
+        if (empty($ids)) {
+            return 0;
+        }
+
+        return $this->deleteAll(['id IN' => $ids]);
     }
 
     public function getFirstCreated(FrozenTime $created, string $eventId): RawUpload
