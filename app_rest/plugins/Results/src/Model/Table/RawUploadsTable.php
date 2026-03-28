@@ -41,7 +41,7 @@ class RawUploadsTable extends AppTable
         return $saved;
     }
 
-    public function hardDeleteOld(): int
+    public function hardDeleteOld(int $limit = 900): int
     {
         $cutoff = new FrozenTime('-12 days');
 
@@ -49,7 +49,7 @@ class RawUploadsTable extends AppTable
             ->select(['id'])
             ->where(['created <' => $cutoff])
             ->orderBy(['created' => 'ASC'])
-            ->limit(5000)
+            ->limit($limit)
             ->enableHydration(false);
 
         $ids = [];
