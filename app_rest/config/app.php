@@ -332,7 +332,7 @@ return [
     'Email' => [
         'default' => [
             'transport' => 'default',
-            'from' => ['support@oreplay.es' => 'OReplay Support'],
+            'from' => ['robot@oreplay.es' => 'OReplay Support'],
             'charset' => 'utf-8',
             'headerCharset' => 'utf-8',
         ],
