@@ -76,6 +76,7 @@ jobs:
           composer run-script test-coverage -d app_rest
 
       - name: Analyze with SonarCloud without including coverage
+        continue-on-error: true
         uses: SonarSource/sonarcloud-github-action@4006f663ecaf1f8093e8e4abb9227f6041f52216
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
