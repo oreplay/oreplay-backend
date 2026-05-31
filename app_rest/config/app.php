@@ -16,7 +16,7 @@ if (!function_exists('env')) {
     }
 }
 
-$isDebug = filter_var(env('DEBUG', false), FILTER_VALIDATE_BOOLEAN);
+$isDebug = filter_var(getenv('DEBUG'), FILTER_VALIDATE_BOOLEAN);
 return [
     /*
      * Debug Level:
