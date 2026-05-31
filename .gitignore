@@ -43,4 +43,7 @@ nbproject/*
 #sonarqube
 sonar-project.properties
 build/
+#agents
+/.claude
+#more
 .env.production

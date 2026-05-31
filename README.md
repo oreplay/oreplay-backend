@@ -57,6 +57,37 @@ Also add `/var/www/cplatform/public/app_rest/vendor/autoload.php` as a default a
 * Navigate to the main path with `cd /var/www/cplatform/public/app_rest`
 * Avoid running commands as root (since it can cause permission problems), change the user with: `su composeruser`
 
+## Running tests from the command line
+
+The `nginx` service in `docker-compose-dev.yml` already has PHP installed, so tests are run inside it
+(there is no need to have PHP installed locally). This is especially useful when working with an IDE that has no test integration, or with an AI CLI tool that cannot run tests through Docker on its own.
+
+Always use the `-T` flag (it disables TTY allocation). Without it the command appears to **hang**
+when launched from a non-interactive shell (scripts, CI, AI CLI tools). The container's
+`working_dir` is already `/var/www/cplatform/public/app_rest`, so test paths are relative to it.
+
+Run the whole suite:
+
+```bash
+docker compose -f docker-compose-dev.yml exec -T nginx vendor/bin/phpunit
+```
+
+Run a single test file:
+
+```bash
+docker compose -f docker-compose-dev.yml exec -T nginx vendor/bin/phpunit tests/TestCase/Controller/UsersControllerTest.php
+```
+
+Run a single test method with `--filter`:
+
+```bash
+docker compose -f docker-compose-dev.yml exec -T nginx vendor/bin/phpunit --filter testAddNew tests/TestCase/Controller/UsersControllerTest.php
+```
+
+Notes:
+- The service name is `nginx` (it runs both nginx and php-fpm); there is no separate `php` service.
+- If the container is not running, start it first with `docker compose -f docker-compose-dev.yml up -d`.
+
 # REST API
 
 Our REST API will follow these principles:

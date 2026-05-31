@@ -25,7 +25,10 @@ class UsersControllerTest extends ApiCommonErrorsTest
             'email'=> EmailBase::SKIP_SEND_EMAIL_ADDRESS,
             'first_name'=> 'Test',
             'last_name'=> 'Last',
-            'password'=> 'passpass'
+            'password'=> 'passpass',
+            //'email_me'=> true,
+            //'preferred_language'=> 'es',
+            //'terms_conditions'=> true,
         ];
 
         $this->post($this->_getEndpoint(), $data);
