@@ -1,0 +1,737 @@
+{
+    "Ranking": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "regional100pts"
+                },
+                {
+                    "type": "string",
+                    "example": "newest2030"
+                },
+                {
+                    "type": "string",
+                    "example": "newRanking2026"
+                },
+                {
+                    "type": "string",
+                    "example": "regional100pts"
+                },
+                {
+                    "type": "string",
+                    "example": "regional100pts"
+                },
+                {
+                    "type": "string",
+                    "example": "regional100pts"
+                },
+                {
+                    "type": "string",
+                    "example": "regional100pts"
+                }
+            ],
+            "scoring_algorithm": [
+                {
+                    "type": "string",
+                    "example": "Rankings\\Lib\\ScoringAlgorithms\\SimpleScoreCalculator"
+                },
+                {
+                    "type": "string",
+                    "example": "Rankings\\Lib\\ScoringAlgorithms\\SimpleScoreCalculator"
+                },
+                {
+                    "type": "string",
+                    "example": "Rankings\\Lib\\ScoringAlgorithms\\SimpleScoreCalculator"
+                },
+                {
+                    "type": "string",
+                    "example": "Rankings\\Lib\\ScoringAlgorithms\\SimpleScoreCalculator"
+                },
+                {
+                    "type": "string",
+                    "example": "Rankings\\Lib\\ScoringAlgorithms\\SimpleScoreCalculator"
+                },
+                {
+                    "type": "string",
+                    "example": "Rankings\\Lib\\ScoringAlgorithms\\SimpleScoreCalculator"
+                },
+                {
+                    "type": "string",
+                    "example": "Rankings\\Lib\\ScoringAlgorithms\\SimpleScoreCalculator"
+                }
+            ],
+            "event_id": [
+                {
+                    "type": "string",
+                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                },
+                {
+                    "type": "string",
+                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                },
+                {
+                    "type": "string",
+                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                },
+                {
+                    "type": "string",
+                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                },
+                {
+                    "type": "string",
+                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                },
+                {
+                    "type": "string",
+                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                },
+                {
+                    "type": "string",
+                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                }
+            ],
+            "stage_id": [
+                {
+                    "type": "string",
+                    "example": "e662499c-4d66-4675-8501-905bcfe28a41"
+                },
+                {
+                    "type": "string",
+                    "example": "e662499c-4d66-4675-8501-905bcfe28a41"
+                },
+                {
+                    "type": "string",
+                    "example": "e662499c-4d66-4675-8501-905bcfe28a41"
+                },
+                {
+                    "type": "string",
+                    "example": "e662499c-4d66-4675-8501-905bcfe28a41"
+                },
+                {
+                    "type": "string",
+                    "example": "e662499c-4d66-4675-8501-905bcfe28a41"
+                },
+                {
+                    "type": "string",
+                    "example": "e662499c-4d66-4675-8501-905bcfe28a41"
+                },
+                {
+                    "type": "string",
+                    "example": "e662499c-4d66-4675-8501-905bcfe28a41"
+                }
+            ],
+            "max_points": [
+                {
+                    "type": "number",
+                    "example": 100
+                },
+                {
+                    "type": "number",
+                    "example": 100
+                },
+                {
+                    "type": "number",
+                    "example": 100
+                },
+                {
+                    "type": "number",
+                    "example": 100
+                },
+                {
+                    "type": "number",
+                    "example": 250
+                },
+                {
+                    "type": "number",
+                    "example": 5
+                },
+                {
+                    "type": "number",
+                    "example": 300
+                }
+            ],
+            "round_precision": [
+                {
+                    "type": "number",
+                    "example": -1
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": -1
+                },
+                {
+                    "type": "number",
+                    "example": -1
+                },
+                {
+                    "type": "number",
+                    "example": -1
+                },
+                {
+                    "type": "number",
+                    "example": -1
+                }
+            ],
+            "nc_true": [
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "nc_false": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "status_scores": [
+                {
+                    "type": "string",
+                    "example": "[null,0,10,10,0,10]"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "example": "[null,0,10,10,0,10]"
+                },
+                {
+                    "type": "string",
+                    "example": "[null,0,10,10,0,10]"
+                },
+                {
+                    "type": "string",
+                    "example": "[null,0,10,10,0,10]"
+                },
+                {
+                    "type": "string",
+                    "example": "[null,0,10,10,0,10]"
+                }
+            ],
+            "overall_settings": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "totalCircuitRaces": {
+                            "type": "number",
+                            "example": 9
+                        },
+                        "maxRacesCounted": {
+                            "type": "number",
+                            "example": 5
+                        },
+                        "organizerScoringFraction": {
+                            "type": "number",
+                            "example": 0.3
+                        },
+                        "minPointsAsOrg": {
+                            "type": "number",
+                            "example": 50
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "totalCircuitRaces": {
+                            "type": "number",
+                            "example": 9
+                        },
+                        "maxRacesCounted": {
+                            "type": "number",
+                            "example": 5
+                        },
+                        "organizerScoringFraction": {
+                            "type": "number",
+                            "example": 0.3
+                        },
+                        "minPointsAsOrg": {
+                            "type": "number",
+                            "example": 50
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "totalCircuitRaces": {
+                            "type": "number",
+                            "example": 9
+                        },
+                        "maxRacesCounted": {
+                            "type": "number",
+                            "example": 5
+                        },
+                        "organizerScoringFraction": {
+                            "type": "number",
+                            "example": 0.3
+                        },
+                        "minPointsAsOrg": {
+                            "type": "number",
+                            "example": 50
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "totalCircuitRaces": {
+                            "type": "number",
+                            "example": 9
+                        },
+                        "maxRacesCounted": {
+                            "type": "number",
+                            "example": 5
+                        },
+                        "organizerScoringFraction": {
+                            "type": "number",
+                            "example": 0.3
+                        },
+                        "minPointsAsOrg": {
+                            "type": "number",
+                            "example": 50
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "totalCircuitRaces": {
+                            "type": "number",
+                            "example": 9
+                        },
+                        "maxRacesCounted": {
+                            "type": "number",
+                            "example": 5
+                        },
+                        "organizerScoringFraction": {
+                            "type": "number",
+                            "example": 0.3
+                        },
+                        "minPointsAsOrg": {
+                            "type": "number",
+                            "example": 50
+                        }
+                    },
+                    "description": "Generic object."
+                }
+            ],
+            "excluded_class_names": [
+                {
+                    "type": "string",
+                    "example": "[\"O NEGRO F\",\"PROM\"]"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "example": "[\"O NEGRO F\",\"PROM\"]"
+                },
+                {
+                    "type": "string",
+                    "example": "[\"O NEGRO F\",\"PROM\"]"
+                },
+                {
+                    "type": "string",
+                    "example": "[\"O NEGRO F\",\"PROM\"]"
+                },
+                {
+                    "type": "string",
+                    "example": "[\"O NEGRO F\",\"PROM\"]"
+                }
+            ],
+            "created": [
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                }
+            ],
+            "modified": [
+                {
+                    "type": "string",
+                    "example": "2024-01-02T10:00:18.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2026-06-12T14:48:28.647+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2026-06-12T14:48:28.680+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-02T10:00:18.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2026-06-12T14:48:28.724+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2026-06-12T14:48:28.736+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2026-06-12T14:48:28.749+00:00"
+                }
+            ],
+            "_links": [
+                {
+                    "$ref": "#/components/schemas/RankingLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/RankingLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/RankingLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/RankingLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/RankingLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/RankingLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/RankingLinks"
+                }
+            ]
+        },
+        "description": "Entity Ranking"
+    },
+    "LinkHref": {
+        "type": "object",
+        "properties": {
+            "href": [
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/rankings/regional100pts"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/competitions/85a7c518-54a8-4180-9708-9dcd4e9906c7/e662499c-4d66-4675-8501-905bcfe28a41"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/rankings/newest2030"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/competitions/85a7c518-54a8-4180-9708-9dcd4e9906c7/e662499c-4d66-4675-8501-905bcfe28a41"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/rankings/newRanking2026"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/competitions/85a7c518-54a8-4180-9708-9dcd4e9906c7/e662499c-4d66-4675-8501-905bcfe28a41"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/rankings/regional100pts"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/competitions/85a7c518-54a8-4180-9708-9dcd4e9906c7/e662499c-4d66-4675-8501-905bcfe28a41"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/rankings/regional100pts"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/competitions/85a7c518-54a8-4180-9708-9dcd4e9906c7/e662499c-4d66-4675-8501-905bcfe28a41"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/rankings/regional100pts"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/competitions/85a7c518-54a8-4180-9708-9dcd4e9906c7/e662499c-4d66-4675-8501-905bcfe28a41"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/rankings/regional100pts"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/competitions/85a7c518-54a8-4180-9708-9dcd4e9906c7/e662499c-4d66-4675-8501-905bcfe28a41"
+                }
+            ]
+        },
+        "description": "Entity LinkHref"
+    },
+    "RankingLinks": {
+        "type": "object",
+        "properties": {
+            "self": [
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                }
+            ],
+            "results": [
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                }
+            ]
+        },
+        "description": "Entity RankingLinks"
+    },
+    "PaginatedRanking": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Ranking"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Ranking"
+                    }
+                }
+            ],
+            "total": [
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 3
+                }
+            ],
+            "limit": [
+                {
+                    "type": "number",
+                    "example": 10
+                },
+                {
+                    "type": "number",
+                    "example": 2
+                }
+            ],
+            "_links": [
+                {
+                    "$ref": "#/components/schemas/PaginationLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/PaginationLinks"
+                }
+            ]
+        },
+        "description": "Paginated Ranking",
+        "required": [
+            "data",
+            "total",
+            "limit",
+            "_links"
+        ]
+    },
+    "PaginationLinks": {
+        "type": "object",
+        "properties": {
+            "self": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/rankings/?page=1"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/rankings/?limit=2&page=1"
+                        }
+                    },
+                    "description": "Generic object."
+                }
+            ],
+            "next": [
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/rankings/?limit=2&page=2"
+                        }
+                    },
+                    "description": "Generic object."
+                }
+            ]
+        },
+        "description": "Pagination links."
+    },
+    "ResRanking": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "$ref": "#/components/schemas/Ranking"
+                },
+                {
+                    "$ref": "#/components/schemas/Ranking"
+                },
+                {
+                    "$ref": "#/components/schemas/Ranking"
+                },
+                {
+                    "$ref": "#/components/schemas/Ranking"
+                },
+                {
+                    "$ref": "#/components/schemas/Ranking"
+                }
+            ]
+        },
+        "description": "Data wrapper for Ranking",
+        "required": [
+            "data"
+        ]
+    }
+}

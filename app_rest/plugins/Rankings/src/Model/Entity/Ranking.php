@@ -4,6 +4,9 @@ declare(strict_types = 1);
 
 namespace Rankings\Model\Entity;
 
+use App\Controller\ApiController;
+use App\Lib\FullBaseUrl;
+use RestApi\Model\Entity\LinkHref;
 use Results\Model\Entity\AppEntity;
 
 /**
@@ -23,11 +26,36 @@ class Ranking extends AppEntity
     protected array $_accessible = [
         '*' => false,
         'id' => false,
+        'scoring_algorithm' => true,
+        'event_id' => true,
+        'stage_id' => true,
+        'max_points' => true,
+        'round_precision' => true,
+        'nc_true' => true,
+        'nc_false' => true,
+        'status_scores' => true,
+        'excluded_class_names' => true,
+        'overall_settings' => true,
+    ];
+
+    protected array $_virtual = [
+        '_links',
     ];
 
     protected array $_hidden = [
         'deleted',
     ];
+
+    public function _get_links(): array
+    {
+        $host = FullBaseUrl::host();
+        $self = $host . ApiController::ROUTE_PREFIX . '/rankings/' . $this->id;
+        $results = $host . '/competitions/' . $this->event_id . '/' . $this->stage_id;
+        return $this->toChild('RankingLinks', [
+            'self' => new LinkHref(['href' => $self]),
+            'results' => new LinkHref(['href' => $results]),
+        ]);
+    }
 
     public function _getMaxPoints(): float
     {

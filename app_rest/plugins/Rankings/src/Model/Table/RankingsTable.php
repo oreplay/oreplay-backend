@@ -8,6 +8,7 @@ use App\Model\Table\AppTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Cake\Validation\Validator;
 use Rankings\Lib\RankingUploadConfigChecker;
 use Rankings\Lib\ScoringAlgorithms\SimpleScoreCalculator;
 use Rankings\Lib\ScoringAlgorithms\ScoringAlgorithm;
@@ -39,6 +40,32 @@ class RankingsTable extends AppTable
         StagesTable::addBelongsToMany($this);
     }
 
+    public function validationDefault(Validator $validator): Validator
+    {
+        $validator
+            ->requirePresence('scoring_algorithm', 'create')
+            ->notEmptyString('scoring_algorithm')
+            ->maxLength('scoring_algorithm', 150)
+            ->requirePresence('event_id', 'create')
+            ->notEmptyString('event_id')
+            ->maxLength('event_id', 36)
+            ->requirePresence('stage_id', 'create')
+            ->notEmptyString('stage_id')
+            ->maxLength('stage_id', 36)
+            ->requirePresence('max_points', 'create')
+            ->numeric('max_points')
+            ->requirePresence('round_precision', 'create')
+            ->integer('round_precision')
+            ->allowEmptyString('nc_true')
+            ->numeric('nc_true')
+            ->allowEmptyString('nc_false')
+            ->numeric('nc_false')
+            ->allowEmptyString('status_scores')
+            ->allowEmptyString('excluded_class_names')
+            ->allowEmptyString('overall_settings');
+        return $validator;
+    }
+
     public static function load(): self
     {
         /** @var RankingsTable $table */
@@ -49,6 +76,11 @@ class RankingsTable extends AppTable
     public function deleteCache(string $rankingId): void
     {
         Cache::delete($this->_getCacheKey($rankingId));
+    }
+
+    public function deleteCacheByStage(string $stageId): void
+    {
+        Cache::delete($this->_getCacheKeyByStage($stageId));
     }
 
     private function _getCacheKeyByStage(string $rankingId): string

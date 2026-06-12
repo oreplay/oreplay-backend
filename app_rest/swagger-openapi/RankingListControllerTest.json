@@ -1,0 +1,370 @@
+{
+    "/api/v1/rankings/": {
+        "get": {
+            "operationId": "getListRankingList",
+            "summary": "",
+            "description": "Get list returns rankings",
+            "parameters": [
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "limit",
+                    "example": "2",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "page",
+                    "example": "1",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "RankingList"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PaginatedRanking"
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ]
+        },
+        "post": {
+            "operationId": "postListRankingList",
+            "summary": "",
+            "description": "Add new creates ranking",
+            "parameters": [
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "RankingList"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResRanking"
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "example": "newRanking2026"
+                                },
+                                "scoring_algorithm": {
+                                    "type": "string",
+                                    "example": "Rankings\\Lib\\ScoringAlgorithms\\SimpleScoreCalculator"
+                                },
+                                "event_id": {
+                                    "type": "string",
+                                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                                },
+                                "stage_id": {
+                                    "type": "string",
+                                    "example": "e662499c-4d66-4675-8501-905bcfe28a41"
+                                },
+                                "max_points": {
+                                    "type": "number",
+                                    "example": 100
+                                },
+                                "round_precision": {
+                                    "type": "number",
+                                    "example": 0
+                                }
+                            },
+                            "description": "Generic object when: Add new creates ranking"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/api/v1/rankings/{rankingID}": {
+        "get": {
+            "operationId": "getRankingList",
+            "summary": "",
+            "description": "Get data returns one ranking",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "rankingID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "regional100pts"
+                },
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "RankingList"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResRanking"
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ]
+        },
+        "patch": {
+            "operationId": "patchRankingList",
+            "summary": "",
+            "description": "Edit updates ranking and invalidates cache",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "rankingID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "regional100pts"
+                },
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "RankingList"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResRanking"
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "requestBody": {
+                "description": "Request body can match to any of the 2 provided schemas",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "oneOf": [
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "max_points": {
+                                            "type": "number",
+                                            "example": 250
+                                        }
+                                    },
+                                    "description": "Generic object when: Edit updates ranking and invalidates cache"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "id": {
+                                            "type": "string",
+                                            "example": "hackedId"
+                                        },
+                                        "max_points": {
+                                            "type": "number",
+                                            "example": 5
+                                        }
+                                    },
+                                    "description": "Generic object when: Edit ignores id change"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "put": {
+            "operationId": "putRankingList",
+            "summary": "",
+            "description": "Put updates ranking",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "rankingID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "regional100pts"
+                },
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "RankingList"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResRanking"
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "max_points": {
+                                    "type": "number",
+                                    "example": 300
+                                }
+                            },
+                            "description": "Generic object when: Put updates ranking"
+                        }
+                    }
+                }
+            }
+        },
+        "delete": {
+            "operationId": "deleteRankingList",
+            "summary": "",
+            "description": "Delete soft deletes ranking",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "rankingID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "regional100pts"
+                },
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "RankingList"
+            ],
+            "responses": {
+                "204": {
+                    "description": "No content. Successfully deleted."
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ]
+        }
+    }
+}

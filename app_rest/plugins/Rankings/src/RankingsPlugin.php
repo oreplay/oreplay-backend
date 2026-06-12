@@ -29,5 +29,9 @@ class RankingsPlugin extends RestPlugin
             '/rankings/{rankingID}/classMerger/*',
             \Rankings\Controller\RankingClassMergerController::route()
         );
+        $builder->connect(
+            '/rankings/*',
+            \Rankings\Controller\RankingListController::route()
+        );
     }
 }

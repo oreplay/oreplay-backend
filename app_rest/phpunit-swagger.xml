@@ -15,6 +15,7 @@
     <env name="SWAGGER_JSON_DIR_RELATIVE" value="/swagger-openapi/"/>
     <env name="SWAGGER_NAMESPACE_TO_REMOVE" value="Results"/>
     <env name="SWAGGER_NAMESPACE_TO_REMOVE_2" value="RestApi"/>
+    <env name="SWAGGER_NAMESPACE_TO_REMOVE_3" value="Rankings"/>
   </php>
   <!-- Add any additional test suites you want to run here -->
   <testsuites>
@@ -24,6 +25,7 @@
           <file>tests/TestCase/Controller/ResetPasswordControllerTest.php</file>
           <file>tests/TestCase/Controller/ValidateTokensControllerTest.php</file>
           <directory>plugins/Results/tests/TestCase/Controller/</directory>
+          <file>plugins/Rankings/tests/TestCase/Controller/RankingListControllerTest.php</file>
           <file>plugins/Rankings/tests/TestCase/Controller/RankingComputeClassControllerTest.php</file>
           <file>plugins/Rankings/tests/TestCase/Controller/RankingComputeStageControllerTest.php</file>
           <file>plugins/Rankings/tests/TestCase/Controller/RankingRunnerManagementControllerTest.php</file>
