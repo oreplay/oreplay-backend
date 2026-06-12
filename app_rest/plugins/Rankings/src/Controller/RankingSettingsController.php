@@ -13,7 +13,7 @@ use Rankings\Model\Table\RankingsTable;
 use RestApi\Lib\Helpers\PaginationHelper;
 use Results\Controller\ApiController;
 
-class RankingListController extends ApiController
+class RankingSettingsController extends ApiController
 {
     private RankingsTable $Rankings;
 

@@ -31,7 +31,7 @@ class RankingsPlugin extends RestPlugin
         );
         $builder->connect(
             '/rankings/*',
-            \Rankings\Controller\RankingListController::route()
+            \Rankings\Controller\RankingSettingsController::route()
         );
     }
 }

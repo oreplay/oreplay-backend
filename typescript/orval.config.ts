@@ -6,6 +6,7 @@ export default defineConfig({
   v1api: {
     output: {
       namingConvention: 'camelCase',
+      propertySortOrder: 'Alphabetical',
       target: 'infrastructure/repositories/' + name + '.ts',
       schemas: 'domain/types/' + name,
       mode: 'tags-split',

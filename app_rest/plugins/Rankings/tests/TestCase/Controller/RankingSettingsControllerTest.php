@@ -15,7 +15,7 @@ use Rankings\Test\Fixture\RankingsFixture;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\StagesFixture;
 
-class RankingListControllerTest extends ApiCommonErrorsTest
+class RankingSettingsControllerTest extends ApiCommonErrorsTest
 {
     protected array $fixtures = [
         EventsFixture::LOAD,
@@ -157,7 +157,22 @@ class RankingListControllerTest extends ApiCommonErrorsTest
         $this->assertNotEmpty(Cache::read($byId));
         $this->assertNotEmpty(Cache::read($byStage));
 
-        $this->patch($this->_getEndpoint() . RankingsTable::FIRST_RANKING, ['max_points' => 250]);
+        // a full example of every editable property, so the generated
+        // PatchRankingSettingsBody openapi/orval type is complete
+        $data = [
+            '_c' => 'PatchRankingSettingsBody',
+            'scoring_algorithm' => SimpleScoreCalculator::class,
+            'event_id' => EventsFixture::EVENT_TOMORROW_RANKING,
+            'stage_id' => StagesFixture::STAGE_RANKING,
+            'max_points' => 250,
+            'round_precision' => 0,
+            'nc_true' => 0,
+            'nc_false' => 10,
+            'status_scores' => '[null,0,10,10,0,10]',
+            'excluded_class_names' => '["O NEGRO F","PROM"]',
+            'overall_settings' => '{"totalCircuitRaces":9,"maxRacesCounted":5,"organizerScoringFraction":0.3,"minPointsAsOrg":50}',
+        ];
+        $this->patch($this->_getEndpoint() . RankingsTable::FIRST_RANKING, $data);
 
         $json = $this->assertJsonResponseOK();
         $this->assertEquals(250, $json['data']['max_points']);
@@ -167,10 +182,12 @@ class RankingListControllerTest extends ApiCommonErrorsTest
 
     public function testEditIgnoresIdChange()
     {
-        $this->patch($this->_getEndpoint() . RankingsTable::FIRST_RANKING, [
+        $data = [
+            '_c' => 'PatchRankingSettingsBody',
             'id' => 'hackedId',
             'max_points' => 5,
-        ]);
+        ];
+        $this->patch($this->_getEndpoint() . RankingsTable::FIRST_RANKING, $data);
 
         $json = $this->assertJsonResponseOK();
         // the id is untouched while the other field is updated
@@ -178,14 +195,6 @@ class RankingListControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(5, $json['data']['max_points']);
         // the attempted new id was never created
         $this->assertNull(RankingsTable::load()->find()->where(['id' => 'hackedId'])->first());
-    }
-
-    public function testPutUpdatesRanking()
-    {
-        $this->put($this->_getEndpoint() . RankingsTable::FIRST_RANKING, ['max_points' => 300]);
-
-        $json = $this->assertJsonResponseOK();
-        $this->assertEquals(300, $json['data']['max_points']);
     }
 
     public function testDeleteSoftDeletesRanking()
