@@ -7,8 +7,8 @@
  * Entity Organizer
  */
 export interface Organizer {
+  country: string
   id: string
   name: string
-  country: string
   region: string
 }

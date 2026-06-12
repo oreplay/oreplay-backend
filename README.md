@@ -99,6 +99,37 @@ Our REST API will follow these principles:
   - HTTP response status codes. 20X codes will always be successful responses while 40X or 50X codes will be used for different errors (see list below).
 - Self-explanatory: The API will use a common naming convention for URIs and include [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS) to improve self discovery
 
+## Entity type markers (`_c`) for OpenAPI / orval generation
+
+Running the test suite also generates an OpenAPI specification (written under `app_rest/swagger-openapi/`)
+out of the requests and responses exercised by the controller tests. From that spec the frontend
+TypeScript types are generated with [orval](https://orval.dev/).
+
+For the generator to know which JSON objects are the **same type** (and therefore map to a single
+reusable schema / TS type instead of being duplicated), every object carries a `_c` marker holding its
+schema name (the constant is `RestApiEntity::CLASS_NAME = '_c'`).
+
+- In **responses** the marker is added automatically by entities (via `RestApiEntity::toChild()` and the
+  swagger `StandardEntity`) when `Swagger.identifyEntities` is enabled — it is turned on during tests.
+- In **request bodies** sent from tests you must add `_c` yourself, e.g. a PATCH body:
+
+  ```php
+  $data = [
+      '_c' => 'PatchRankingSettingsBody',
+      'max_points' => 250,
+      // ...
+  ];
+  ```
+
+Rules of thumb:
+- The `_c` value becomes the schema name in the spec (`#/components/schemas/PatchRankingSettingsBody`)
+  and the generated TS type name.
+- Two payloads that share the same `_c` map to the **same** schema, so reuse the same `_c` string
+  whenever the payload shape is meant to be the same type (and use a different one when it is not).
+- The schema is assembled from the example payloads in the tests, so a request-body test should send the
+  **full set of editable properties** (not only the field under assertion) so the generated type is
+  complete. See `RankingSettingsControllerTest::testEditUpdatesRankingAndInvalidatesCache` as an example.
+
 ## List of used [HTTP status codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
 
 Errors and success responses will be handled with standard HTTP status codes.

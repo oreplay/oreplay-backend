@@ -25,7 +25,7 @@
           <file>tests/TestCase/Controller/ResetPasswordControllerTest.php</file>
           <file>tests/TestCase/Controller/ValidateTokensControllerTest.php</file>
           <directory>plugins/Results/tests/TestCase/Controller/</directory>
-          <file>plugins/Rankings/tests/TestCase/Controller/RankingListControllerTest.php</file>
+          <file>plugins/Rankings/tests/TestCase/Controller/RankingSettingsControllerTest.php</file>
           <file>plugins/Rankings/tests/TestCase/Controller/RankingComputeClassControllerTest.php</file>
           <file>plugins/Rankings/tests/TestCase/Controller/RankingComputeStageControllerTest.php</file>
           <file>plugins/Rankings/tests/TestCase/Controller/RankingRunnerManagementControllerTest.php</file>

@@ -10,8 +10,8 @@ import type { Split } from './split'
  */
 export interface ClassEntity {
   id: string
-  short_name: string
   long_name: string
   runners?: Participant[]
+  short_name: string
   splits?: Split[]
 }

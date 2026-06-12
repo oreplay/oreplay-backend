@@ -8,14 +8,14 @@ import type { Control } from './control'
  * Entity Split
  */
 export interface Split {
+  control?: Control
+  created?: string
   id: string
   is_intermediate?: boolean
-  reading_time?: string
-  /** @nullable */
-  points?: string | null
   /** @nullable */
   order_number?: string | null
-  created?: string
-  control?: Control
+  /** @nullable */
+  points?: string | null
+  reading_time?: string
   station?: number
 }

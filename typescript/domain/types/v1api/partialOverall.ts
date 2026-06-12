@@ -8,24 +8,24 @@ import type { StageOrder } from './stageOrder'
  * Entity PartialOverall
  */
 export interface PartialOverall {
-  id: string
-  stage_order: number
-  upload_type: string
   /** @nullable */
-  stage?: StageOrder
-  position: number
-  status_code: number
+  contributory?: boolean | null
+  id: string
   /** @nullable */
   is_nc?: string | null
   /** @nullable */
-  contributory?: boolean | null
-  /** @nullable */
-  time_seconds?: string | null
-  /** @nullable */
-  time_behind?: string | null
-  points_final: number
+  note?: string | null
   /** @nullable */
   points_behind?: string | null
+  points_final: number
+  position: number
   /** @nullable */
-  note?: string | null
+  stage?: StageOrder
+  stage_order: number
+  status_code: number
+  /** @nullable */
+  time_behind?: string | null
+  /** @nullable */
+  time_seconds?: string | null
+  upload_type: string
 }

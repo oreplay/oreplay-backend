@@ -8,7 +8,7 @@ import type { UploadDataTransferEventStagesItem } from './uploadDataTransferEven
  * Generic object.
  */
 export type UploadDataTransferEvent = {
-  id?: string
   description?: string
+  id?: string
   stages?: UploadDataTransferEventStagesItem[]
 }

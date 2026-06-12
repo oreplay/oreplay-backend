@@ -8,41 +8,41 @@ import type { Split } from './split'
  * Entity Result
  */
 export interface Result {
-  id: string
   /** @nullable */
-  status_code?: number | null
+  contributory?: string | null
+  created: string
+  finish_time?: string
+  id: string
+  is_nc?: boolean
+  /** @nullable */
+  leg_number?: number | null
   /** @nullable */
   note?: string | null
   /** @nullable */
-  upload_type?: string | null
-  result_type_id?: string
-  created: string
-  time_seconds?: number
-  position?: number
-  is_nc?: boolean
-  time_behind?: number
-  splits?: Split[]
-  start_time?: string
-  finish_time?: string
-  /** @nullable */
-  contributory?: string | null
-  /** @nullable */
-  time_neutralization?: string | null
-  /** @nullable */
-  time_adjusted?: string | null
-  /** @nullable */
-  time_penalty?: string | null
-  /** @nullable */
-  time_bonus?: string | null
-  /** @nullable */
-  points_final?: string | null
-  /** @nullable */
   points_adjusted?: string | null
-  /** @nullable */
-  points_penalty?: string | null
+  points_behind?: number
   /** @nullable */
   points_bonus?: string | null
   /** @nullable */
-  leg_number?: number | null
-  points_behind?: number
+  points_final?: string | null
+  /** @nullable */
+  points_penalty?: string | null
+  position?: number
+  result_type_id?: string
+  splits?: Split[]
+  start_time?: string
+  /** @nullable */
+  status_code?: number | null
+  /** @nullable */
+  time_adjusted?: string | null
+  time_behind?: number
+  /** @nullable */
+  time_bonus?: string | null
+  /** @nullable */
+  time_neutralization?: string | null
+  /** @nullable */
+  time_penalty?: string | null
+  time_seconds?: number
+  /** @nullable */
+  upload_type?: string | null
 }

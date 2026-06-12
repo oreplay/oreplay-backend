@@ -8,7 +8,7 @@ import type { Stats } from './stats'
  * Entity GenderGrouped
  */
 export interface GenderGrouped {
-  M?: Stats
-  F?: Stats
   any?: Stats
+  F?: Stats
+  M?: Stats
 }

@@ -8,6 +8,6 @@ import type { PartialOverall } from './partialOverall'
  * Entity Overalls
  */
 export interface Overalls {
-  parts?: PartialOverall[]
   overall?: PartialOverall
+  parts?: PartialOverall[]
 }

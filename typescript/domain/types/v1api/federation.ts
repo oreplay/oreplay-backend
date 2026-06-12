@@ -7,6 +7,6 @@
  * Entity Federation
  */
 export interface Federation {
-  id: string
   description: string
+  id: string
 }

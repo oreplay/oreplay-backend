@@ -7,10 +7,10 @@
  * Entity User
  */
 export interface User {
-  id: string
+  created?: string
   email: string
   first_name: string
+  id: string
   last_name: string
-  created?: string
   modified?: string
 }

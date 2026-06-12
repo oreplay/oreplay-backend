@@ -26,17 +26,9 @@
                 {
                     "type": "string",
                     "example": "regional100pts"
-                },
-                {
-                    "type": "string",
-                    "example": "regional100pts"
                 }
             ],
             "scoring_algorithm": [
-                {
-                    "type": "string",
-                    "example": "Rankings\\Lib\\ScoringAlgorithms\\SimpleScoreCalculator"
-                },
                 {
                     "type": "string",
                     "example": "Rankings\\Lib\\ScoringAlgorithms\\SimpleScoreCalculator"
@@ -86,17 +78,9 @@
                 {
                     "type": "string",
                     "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
-                },
-                {
-                    "type": "string",
-                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
                 }
             ],
             "stage_id": [
-                {
-                    "type": "string",
-                    "example": "e662499c-4d66-4675-8501-905bcfe28a41"
-                },
                 {
                     "type": "string",
                     "example": "e662499c-4d66-4675-8501-905bcfe28a41"
@@ -146,10 +130,6 @@
                 {
                     "type": "number",
                     "example": 5
-                },
-                {
-                    "type": "number",
-                    "example": 300
                 }
             ],
             "round_precision": [
@@ -171,11 +151,7 @@
                 },
                 {
                     "type": "number",
-                    "example": -1
-                },
-                {
-                    "type": "number",
-                    "example": -1
+                    "example": 0
                 },
                 {
                     "type": "number",
@@ -191,10 +167,6 @@
                     "type": "string",
                     "nullable": true,
                     "example": null
-                },
-                {
-                    "type": "number",
-                    "example": 0
                 },
                 {
                     "type": "number",
@@ -226,14 +198,8 @@
                     "example": null
                 },
                 {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
-                },
-                {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
+                    "type": "number",
+                    "example": 10
                 },
                 {
                     "type": "string",
@@ -250,10 +216,6 @@
                     "type": "string",
                     "nullable": true,
                     "example": null
-                },
-                {
-                    "type": "string",
-                    "example": "[null,0,10,10,0,10]"
                 },
                 {
                     "type": "string",
@@ -361,28 +323,6 @@
                         }
                     },
                     "description": "Generic object."
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "totalCircuitRaces": {
-                            "type": "number",
-                            "example": 9
-                        },
-                        "maxRacesCounted": {
-                            "type": "number",
-                            "example": 5
-                        },
-                        "organizerScoringFraction": {
-                            "type": "number",
-                            "example": 0.3
-                        },
-                        "minPointsAsOrg": {
-                            "type": "number",
-                            "example": 50
-                        }
-                    },
-                    "description": "Generic object."
                 }
             ],
             "excluded_class_names": [
@@ -394,10 +334,6 @@
                     "type": "string",
                     "nullable": true,
                     "example": null
-                },
-                {
-                    "type": "string",
-                    "example": "[\"O NEGRO F\",\"PROM\"]"
                 },
                 {
                     "type": "string",
@@ -436,10 +372,6 @@
                 {
                     "type": "string",
                     "example": "****-**-*****:**:**.***+**:**"
-                },
-                {
-                    "type": "string",
-                    "example": "****-**-*****:**:**.***+**:**"
                 }
             ],
             "modified": [
@@ -449,11 +381,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-12T14:48:28.647+00:00"
+                    "example": "2026-06-12T15:52:41.896+00:00"
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-12T14:48:28.680+00:00"
+                    "example": "2026-06-12T15:52:41.930+00:00"
                 },
                 {
                     "type": "string",
@@ -461,21 +393,14 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-12T14:48:28.724+00:00"
+                    "example": "2026-06-12T15:52:41.975+00:00"
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-12T14:48:28.736+00:00"
-                },
-                {
-                    "type": "string",
-                    "example": "2026-06-12T14:48:28.749+00:00"
+                    "example": "2026-06-12T15:52:41.987+00:00"
                 }
             ],
             "_links": [
-                {
-                    "$ref": "#/components/schemas/RankingLinks"
-                },
                 {
                     "$ref": "#/components/schemas/RankingLinks"
                 },
@@ -549,14 +474,6 @@
                 {
                     "type": "string",
                     "example": "http://dev.example.com/competitions/85a7c518-54a8-4180-9708-9dcd4e9906c7/e662499c-4d66-4675-8501-905bcfe28a41"
-                },
-                {
-                    "type": "string",
-                    "example": "http://dev.example.com/api/v1/rankings/regional100pts"
-                },
-                {
-                    "type": "string",
-                    "example": "http://dev.example.com/competitions/85a7c518-54a8-4180-9708-9dcd4e9906c7/e662499c-4d66-4675-8501-905bcfe28a41"
                 }
             ]
         },
@@ -583,15 +500,9 @@
                 },
                 {
                     "$ref": "#/components/schemas/LinkHref"
-                },
-                {
-                    "$ref": "#/components/schemas/LinkHref"
                 }
             ],
             "results": [
-                {
-                    "$ref": "#/components/schemas/LinkHref"
-                },
                 {
                     "$ref": "#/components/schemas/LinkHref"
                 },
@@ -723,9 +634,6 @@
                 },
                 {
                     "$ref": "#/components/schemas/Ranking"
-                },
-                {
-                    "$ref": "#/components/schemas/Ranking"
                 }
             ]
         },
@@ -733,5 +641,81 @@
         "required": [
             "data"
         ]
+    },
+    "PatchRankingSettingsBody": {
+        "type": "object",
+        "properties": {
+            "scoring_algorithm": [
+                {
+                    "type": "string",
+                    "example": "Rankings\\Lib\\ScoringAlgorithms\\SimpleScoreCalculator"
+                }
+            ],
+            "event_id": [
+                {
+                    "type": "string",
+                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                }
+            ],
+            "stage_id": [
+                {
+                    "type": "string",
+                    "example": "e662499c-4d66-4675-8501-905bcfe28a41"
+                }
+            ],
+            "max_points": [
+                {
+                    "type": "number",
+                    "example": 250
+                },
+                {
+                    "type": "number",
+                    "example": 5
+                }
+            ],
+            "round_precision": [
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "nc_true": [
+                {
+                    "type": "number",
+                    "example": 0
+                }
+            ],
+            "nc_false": [
+                {
+                    "type": "number",
+                    "example": 10
+                }
+            ],
+            "status_scores": [
+                {
+                    "type": "string",
+                    "example": "[null,0,10,10,0,10]"
+                }
+            ],
+            "excluded_class_names": [
+                {
+                    "type": "string",
+                    "example": "[\"O NEGRO F\",\"PROM\"]"
+                }
+            ],
+            "overall_settings": [
+                {
+                    "type": "string",
+                    "example": "{\"totalCircuitRaces\":9,\"maxRacesCounted\":5,\"organizerScoringFraction\":0.3,\"minPointsAsOrg\":50}"
+                }
+            ],
+            "id": [
+                {
+                    "type": "string",
+                    "example": "hackedId"
+                }
+            ]
+        },
+        "description": "Entity PatchRankingSettingsBody"
     }
 }

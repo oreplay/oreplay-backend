@@ -3,14 +3,14 @@
  * O-replay - OpenAPI 3.0
  */
 import type { PaginationLinks } from './paginationLinks'
-import type { Event } from './event'
+import type { Ranking } from './ranking'
 
 /**
- * Paginated Event
+ * Paginated Ranking
  */
-export interface PaginatedEvent {
+export interface PaginatedRanking {
   _links: PaginationLinks
-  data: Event[]
+  data: Ranking[]
   limit: number
   total: number
 }

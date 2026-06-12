@@ -8,14 +8,14 @@
  */
 export interface Stats {
   classes?: string[]
-  total?: number
-  dns?: number
-  mp?: number
   dnf?: number
-  ot?: number
+  dns?: number
   dqf?: number
-  notYetFinished?: number
   finished?: number
+  mp?: number
+  notYetFinished?: number
+  ot?: number
   others?: number
   otherValues?: string[]
+  total?: number
 }

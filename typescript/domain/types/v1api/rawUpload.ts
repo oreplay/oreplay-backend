@@ -8,14 +8,14 @@ import type { RawUploadFileData } from './rawUploadFileData'
  * Entity RawUpload
  */
 export interface RawUpload {
-  id: string
-  event_id: string
-  stage_id: string
-  upload_log_id: string
-  /** Any object */
-  file_data: RawUploadFileData
   created: string
-  modified: string
   /** @nullable */
   deleted?: string | null
+  event_id: string
+  /** Any object */
+  file_data: RawUploadFileData
+  id: string
+  modified: string
+  stage_id: string
+  upload_log_id: string
 }

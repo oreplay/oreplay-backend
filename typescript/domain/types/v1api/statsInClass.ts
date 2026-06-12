@@ -7,13 +7,13 @@
  * Entity StatsInClass
  */
 export interface StatsInClass {
-  class?: string
-  total?: number
-  ok?: number
-  mp?: number
-  dnf?: number
-  ot?: number
-  dsq?: number
-  dns?: number
   bestTime?: number
+  class?: string
+  dnf?: number
+  dns?: number
+  dsq?: number
+  mp?: number
+  ok?: number
+  ot?: number
+  total?: number
 }

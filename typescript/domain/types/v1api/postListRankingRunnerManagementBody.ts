@@ -7,7 +7,7 @@
  * Generic object when: Add new
  */
 export type PostListRankingRunnerManagementBody = {
-  upload_type?: string
   runner_id?: string
   stage_order?: number
+  upload_type?: string
 }

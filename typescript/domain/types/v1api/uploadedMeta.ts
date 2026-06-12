@@ -8,8 +8,8 @@ import type { UploadedMetaUpdated } from './uploadedMetaUpdated'
  * Entity UploadedMeta
  */
 export interface UploadedMeta {
+  human?: string[]
+  humanColor?: string
   /** Generic object. */
   updated?: UploadedMetaUpdated
-  humanColor?: string
-  human?: string[]
 }

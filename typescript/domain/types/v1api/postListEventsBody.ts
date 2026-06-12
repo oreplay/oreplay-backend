@@ -7,10 +7,10 @@
  * Generic object when: Add new
  */
 export type PostListEventsBody = {
-  id?: string
   description?: string
-  initial_date?: string
-  final_date?: string
   federation_id?: string
+  final_date?: string
+  id?: string
+  initial_date?: string
   organizer_id?: string
 }

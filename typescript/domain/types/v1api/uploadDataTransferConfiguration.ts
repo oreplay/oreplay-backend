@@ -7,10 +7,10 @@
  * Generic object.
  */
 export type UploadDataTransferConfiguration = {
-  source_vendor?: string
-  source?: string
-  source_version?: number
   contents?: string
   results_type?: string
+  source?: string
+  source_vendor?: string
+  source_version?: number
   utf?: number
 }

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.4.7
+  version: 0.4.13
   title: O-replay - OpenAPI 3.0
   description: O-replay Rest API
   termsOfService: https://github.com/oreplay
@@ -604,6 +604,186 @@ paths:
                   type: number
                   example: 1
               description: 'Generic object when: Add new'
+  /api/v1/rankings/:
+    get:
+      operationId: getListRankingSettings
+      summary: ''
+      description: Get list returns rankings
+      parameters:
+        - description: Auth token
+          in: header
+          name: Authorization
+          example: Bearer ****************
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: limit
+          example: '2'
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: page
+          example: '1'
+          required: false
+          schema:
+            type: string
+      tags:
+        - RankingSettings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRanking'
+      security:
+        - bearerAuth: []
+    post:
+      operationId: postListRankingSettings
+      summary: ''
+      description: Add new creates ranking
+      parameters:
+        - description: Auth token
+          in: header
+          name: Authorization
+          example: Bearer ****************
+          required: true
+          schema:
+            type: string
+      tags:
+        - RankingSettings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResRanking'
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: newRanking2026
+                scoring_algorithm:
+                  type: string
+                  example: Rankings\Lib\ScoringAlgorithms\SimpleScoreCalculator
+                event_id:
+                  type: string
+                  example: 85a7c518-54a8-4180-9708-9dcd4e9906c7
+                stage_id:
+                  type: string
+                  example: e662499c-4d66-4675-8501-905bcfe28a41
+                max_points:
+                  type: number
+                  example: 100
+                round_precision:
+                  type: number
+                  example: 0
+              description: 'Generic object when: Add new creates ranking'
+  /api/v1/rankings/{rankingID}:
+    get:
+      operationId: getRankingSettings
+      summary: ''
+      description: Get data returns one ranking
+      parameters:
+        - description: ID in URL
+          in: path
+          name: rankingID
+          required: true
+          schema:
+            type: string
+          example: regional100pts
+        - description: Auth token
+          in: header
+          name: Authorization
+          example: Bearer ****************
+          required: true
+          schema:
+            type: string
+      tags:
+        - RankingSettings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResRanking'
+      security:
+        - bearerAuth: []
+    patch:
+      operationId: patchRankingSettings
+      summary: ''
+      description: Edit updates ranking and invalidates cache
+      parameters:
+        - description: ID in URL
+          in: path
+          name: rankingID
+          required: true
+          schema:
+            type: string
+          example: regional100pts
+        - description: Auth token
+          in: header
+          name: Authorization
+          example: Bearer ****************
+          required: true
+          schema:
+            type: string
+      tags:
+        - RankingSettings
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResRanking'
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchRankingSettingsBody'
+    delete:
+      operationId: deleteRankingSettings
+      summary: ''
+      description: Delete soft deletes ranking
+      parameters:
+        - description: ID in URL
+          in: path
+          name: rankingID
+          required: true
+          schema:
+            type: string
+          example: regional100pts
+        - description: Auth token
+          in: header
+          name: Authorization
+          example: Bearer ****************
+          required: true
+          schema:
+            type: string
+      tags:
+        - RankingSettings
+      responses:
+        '204':
+          description: No content. Successfully deleted.
+      security:
+        - bearerAuth: []
   /api/v1/events/{eventID}/rawUploads/:
     get:
       operationId: getListRawUploads
@@ -679,64 +859,6 @@ paths:
       responses:
         '204':
           description: No content. Successfully deleted.
-  /api/v1/resetPassword/:
-    post:
-      operationId: postListResetPassword
-      summary: ''
-      description: Add new
-      parameters: []
-      tags:
-        - ResetPassword
-      responses:
-        '204':
-          description: No content
-      requestBody:
-        description: ''
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  example: skip-send@example.com
-              description: 'Generic object when: Add new'
-  /api/v1/resetPassword/{resetPasswordID}:
-    patch:
-      operationId: patchResetPassword
-      summary: ''
-      description: Edit
-      parameters:
-        - description: ID in URL
-          in: path
-          name: resetPasswordID
-          required: true
-          schema:
-            type: integer
-          example: 222333
-      tags:
-        - ResetPassword
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ResUser'
-      requestBody:
-        description: ''
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  example: skip-send@example.com
-                password:
-                  type: string
-                  example: '************'
-              description: 'Generic object when: Edit'
   /api/v1/events/{eventID}/stages/{stageID}/resultsByClass/:
     get:
       operationId: getListResultsByClass
@@ -1840,6 +1962,164 @@ components:
       description: Data wrapper for Result
       required:
         - data
+    Ranking:
+      type: object
+      properties:
+        id:
+          type: string
+          example: regional100pts
+        scoring_algorithm:
+          type: string
+          example: Rankings\Lib\ScoringAlgorithms\SimpleScoreCalculator
+        event_id:
+          type: string
+          example: 85a7c518-54a8-4180-9708-9dcd4e9906c7
+        stage_id:
+          type: string
+          example: e662499c-4d66-4675-8501-905bcfe28a41
+        max_points:
+          type: number
+          example: 100
+        round_precision:
+          type: number
+          example: -1
+        nc_true:
+          type: number
+          example: 0
+          nullable: true
+        nc_false:
+          type: number
+          example: 10
+          nullable: true
+        status_scores:
+          type: string
+          example: '[null,0,10,10,0,10]'
+          nullable: true
+        overall_settings:
+          type: object
+          properties:
+            totalCircuitRaces:
+              type: number
+              example: 9
+            maxRacesCounted:
+              type: number
+              example: 5
+            organizerScoringFraction:
+              type: number
+              example: 0.3
+            minPointsAsOrg:
+              type: number
+              example: 50
+          description: Generic object.
+          nullable: true
+        excluded_class_names:
+          type: string
+          example: '["O NEGRO F","PROM"]'
+          nullable: true
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+        modified:
+          type: string
+          example: '2024-01-02T10:00:18.000+00:00'
+        _links:
+          $ref: '#/components/schemas/RankingLinks'
+      description: Entity Ranking
+      required:
+        - id
+        - scoring_algorithm
+        - event_id
+        - stage_id
+        - max_points
+        - round_precision
+        - created
+        - modified
+        - _links
+    RankingLinks:
+      type: object
+      properties:
+        self:
+          $ref: '#/components/schemas/LinkHref'
+        results:
+          $ref: '#/components/schemas/LinkHref'
+      description: Entity RankingLinks
+    PaginatedRanking:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ranking'
+        total:
+          type: number
+          example: 1
+        limit:
+          type: number
+          example: 10
+        _links:
+          $ref: '#/components/schemas/PaginationLinks'
+      description: Paginated Ranking
+      required:
+        - data
+        - total
+        - limit
+        - _links
+    ResRanking:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/Ranking'
+      description: Data wrapper for Ranking
+      required:
+        - data
+    PatchRankingSettingsBody:
+      type: object
+      properties:
+        scoring_algorithm:
+          type: string
+          example: Rankings\Lib\ScoringAlgorithms\SimpleScoreCalculator
+        event_id:
+          type: string
+          example: 85a7c518-54a8-4180-9708-9dcd4e9906c7
+        stage_id:
+          type: string
+          example: e662499c-4d66-4675-8501-905bcfe28a41
+        max_points:
+          type: number
+          example: 250
+        round_precision:
+          type: number
+          example: 0
+        nc_true:
+          type: number
+          example: 0
+        nc_false:
+          type: number
+          example: 10
+        status_scores:
+          type: string
+          example: '[null,0,10,10,0,10]'
+        excluded_class_names:
+          type: string
+          example: '["O NEGRO F","PROM"]'
+        overall_settings:
+          type: string
+          example: '{"totalCircuitRaces":9,"maxRacesCounted":5,"organizerScoringFraction":0.3,"minPointsAsOrg":50}'
+        id:
+          type: string
+          example: hackedId
+      description: Entity PatchRankingSettingsBody
+      required:
+        - scoring_algorithm
+        - event_id
+        - stage_id
+        - round_precision
+        - nc_true
+        - nc_false
+        - status_scores
+        - excluded_class_names
+        - overall_settings
+        - id
     SimpleLog:
       type: object
       properties:

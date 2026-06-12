@@ -7,8 +7,8 @@
  * Entity SimpleLog
  */
 export interface SimpleLog {
-  link_upload?: string
-  upload_type?: string
-  state?: number
   link_stage?: string
+  link_upload?: string
+  state?: number
+  upload_type?: string
 }

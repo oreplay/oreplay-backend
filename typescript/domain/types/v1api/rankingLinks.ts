@@ -5,10 +5,9 @@
 import type { LinkHref } from './linkHref'
 
 /**
- * Entity StageLinks
+ * Entity RankingLinks
  */
-export interface StageLinks {
-  classes?: LinkHref
+export interface RankingLinks {
   results?: LinkHref
   self?: LinkHref
 }

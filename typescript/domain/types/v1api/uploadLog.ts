@@ -7,6 +7,6 @@
  * Entity UploadLog
  */
 export interface UploadLog {
-  state?: number
   created?: string
+  state?: number
 }

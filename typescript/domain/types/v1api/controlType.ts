@@ -7,6 +7,6 @@
  * Entity ControlType
  */
 export interface ControlType {
-  id: string
   description: string
+  id: string
 }

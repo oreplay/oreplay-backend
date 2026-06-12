@@ -8,7 +8,7 @@ import type { ControlType } from './controlType'
  * Entity Control
  */
 export interface Control {
+  control_type: ControlType
   id: string
   station: number
-  control_type: ControlType
 }

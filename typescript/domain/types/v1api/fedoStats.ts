@@ -8,7 +8,7 @@ import type { GenderGrouped } from './genderGrouped'
  * Entity FedoStats
  */
 export interface FedoStats {
-  officialSub20?: GenderGrouped
   officialSenior?: GenderGrouped
+  officialSub20?: GenderGrouped
   others?: GenderGrouped
 }

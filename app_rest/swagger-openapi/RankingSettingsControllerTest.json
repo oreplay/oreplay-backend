@@ -1,7 +1,7 @@
 {
     "/api/v1/rankings/": {
         "get": {
-            "operationId": "getListRankingList",
+            "operationId": "getListRankingSettings",
             "summary": "",
             "description": "Get list returns rankings",
             "parameters": [
@@ -37,7 +37,7 @@
                 }
             ],
             "tags": [
-                "RankingList"
+                "RankingSettings"
             ],
             "responses": {
                 "200": {
@@ -58,7 +58,7 @@
             ]
         },
         "post": {
-            "operationId": "postListRankingList",
+            "operationId": "postListRankingSettings",
             "summary": "",
             "description": "Add new creates ranking",
             "parameters": [
@@ -74,7 +74,7 @@
                 }
             ],
             "tags": [
-                "RankingList"
+                "RankingSettings"
             ],
             "responses": {
                 "200": {
@@ -134,7 +134,7 @@
     },
     "/api/v1/rankings/{rankingID}": {
         "get": {
-            "operationId": "getRankingList",
+            "operationId": "getRankingSettings",
             "summary": "",
             "description": "Get data returns one ranking",
             "parameters": [
@@ -160,7 +160,7 @@
                 }
             ],
             "tags": [
-                "RankingList"
+                "RankingSettings"
             ],
             "responses": {
                 "200": {
@@ -181,7 +181,7 @@
             ]
         },
         "patch": {
-            "operationId": "patchRankingList",
+            "operationId": "patchRankingSettings",
             "summary": "",
             "description": "Edit updates ranking and invalidates cache",
             "parameters": [
@@ -207,89 +207,7 @@
                 }
             ],
             "tags": [
-                "RankingList"
-            ],
-            "responses": {
-                "200": {
-                    "description": "OK",
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ResRanking"
-                            }
-                        }
-                    }
-                }
-            },
-            "security": [
-                {
-                    "bearerAuth": []
-                }
-            ],
-            "requestBody": {
-                "description": "Request body can match to any of the 2 provided schemas",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "oneOf": [
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "max_points": {
-                                            "type": "number",
-                                            "example": 250
-                                        }
-                                    },
-                                    "description": "Generic object when: Edit updates ranking and invalidates cache"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "id": {
-                                            "type": "string",
-                                            "example": "hackedId"
-                                        },
-                                        "max_points": {
-                                            "type": "number",
-                                            "example": 5
-                                        }
-                                    },
-                                    "description": "Generic object when: Edit ignores id change"
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        "put": {
-            "operationId": "putRankingList",
-            "summary": "",
-            "description": "Put updates ranking",
-            "parameters": [
-                {
-                    "description": "ID in URL",
-                    "in": "path",
-                    "name": "rankingID",
-                    "required": true,
-                    "schema": {
-                        "type": "string"
-                    },
-                    "example": "regional100pts"
-                },
-                {
-                    "description": "Auth token",
-                    "in": "header",
-                    "name": "Authorization",
-                    "example": "Bearer ****************",
-                    "required": true,
-                    "schema": {
-                        "type": "string"
-                    }
-                }
-            ],
-            "tags": [
-                "RankingList"
+                "RankingSettings"
             ],
             "responses": {
                 "200": {
@@ -313,21 +231,14 @@
                 "content": {
                     "application/json": {
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "max_points": {
-                                    "type": "number",
-                                    "example": 300
-                                }
-                            },
-                            "description": "Generic object when: Put updates ranking"
+                            "$ref": "#/components/schemas/PatchRankingSettingsBody"
                         }
                     }
                 }
             }
         },
         "delete": {
-            "operationId": "deleteRankingList",
+            "operationId": "deleteRankingSettings",
             "summary": "",
             "description": "Delete soft deletes ranking",
             "parameters": [
@@ -353,7 +264,7 @@
                 }
             ],
             "tags": [
-                "RankingList"
+                "RankingSettings"
             ],
             "responses": {
                 "204": {
