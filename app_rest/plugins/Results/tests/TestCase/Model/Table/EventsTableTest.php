@@ -96,9 +96,13 @@ class EventsTableTest extends TestCase
         $events = $this->Events->findPaginatedEvents($filters)->all();
         $this->assertEquals(0, $events->count());
 
-        // include hidden
+        // show_hidden is ignored for anonymous callers
         $filters['show_hidden'] = '1';
         $events = $this->Events->findPaginatedEvents($filters)->all();
+        $this->assertEquals(0, $events->count());
+
+        // admins see hidden events with show_hidden
+        $events = $this->Events->findPaginatedEvents($filters, null, true)->all();
         $this->assertEquals(1, $events->count());
         $this->assertEquals(EventsFixture::EVENT_TODAY, $events->first()->id);
 

@@ -66,6 +66,42 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($this->_getFirstEvent(), $bodyDecoded['data'][0]);
     }
 
+    public function testGetList_showHidden_adminSeesHiddenEvents()
+    {
+        EventsTable::load()->updateAll(['is_hidden' => true], ['id' => EventsFixture::EVENT_TODAY]);
+
+        $this->get($this->_getEndpoint() . '?show_hidden=1');
+
+        $ids = array_column($this->assertJsonResponseOK()['data'], 'id');
+        $this->assertContains(EventsFixture::EVENT_TODAY, $ids);
+    }
+
+    public function testGetList_showHidden_ignoredForNonAdminNonOwner()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+        EventsTable::load()->updateAll(['is_hidden' => true], ['id' => EventsFixture::EVENT_TODAY]);
+
+        $this->get($this->_getEndpoint() . '?show_hidden=1');
+
+        $ids = array_column($this->assertJsonResponseOK()['data'], 'id');
+        $this->assertNotContains(EventsFixture::EVENT_TODAY, $ids);
+    }
+
+    public function testGetList_showHidden_ownerSeesOwnHiddenButNotOthers()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+        $events = EventsTable::load();
+        $owner = $events->Users->get(UsersFixture::USER_NON_ADMIN_ID);
+        $events->Users->link($events->get(Event::FIRST_EVENT), [$owner]);
+        $events->updateAll(['is_hidden' => true], ['id IN' => [Event::FIRST_EVENT, EventsFixture::EVENT_TODAY]]);
+
+        $this->get($this->_getEndpoint() . '?show_hidden=1');
+
+        $ids = array_column($this->assertJsonResponseOK()['data'], 'id');
+        $this->assertContains(Event::FIRST_EVENT, $ids);
+        $this->assertNotContains(EventsFixture::EVENT_TODAY, $ids);
+    }
+
     public function testGetList_shouldFilterByDescription()
     {
         $this->get($this->_getEndpoint() . '?description=Foot-o');

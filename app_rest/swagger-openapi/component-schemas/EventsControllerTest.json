@@ -13,6 +13,14 @@
                 },
                 {
                     "type": "string",
+                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                },
+                {
+                    "type": "string",
+                    "example": "85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                },
+                {
+                    "type": "string",
                     "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
                 },
                 {
@@ -87,6 +95,14 @@
                 },
                 {
                     "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
                     "example": true
                 }
             ],
@@ -98,6 +114,14 @@
                 {
                     "type": "string",
                     "example": "Test Foot-o"
+                },
+                {
+                    "type": "string",
+                    "example": "Tomorrow ranking event"
+                },
+                {
+                    "type": "string",
+                    "example": "Tomorrow ranking event"
                 },
                 {
                     "type": "string",
@@ -137,6 +161,16 @@
                 }
             ],
             "picture": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
                 {
                     "type": "string",
                     "nullable": true,
@@ -235,10 +269,30 @@
                 },
                 {
                     "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
                     "example": "https://www.oreplay.es"
                 }
             ],
             "scope": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
                 {
                     "type": "string",
                     "nullable": true,
@@ -337,10 +391,30 @@
                 },
                 {
                     "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
                     "example": "somewhere"
                 }
             ],
             "country_code": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
                 {
                     "type": "string",
                     "nullable": true,
@@ -394,11 +468,19 @@
             "initial_date": [
                 {
                     "type": "string",
-                    "example": "2026-03-02"
+                    "example": "2026-06-28"
                 },
                 {
                     "type": "string",
                     "example": "2024-01-25"
+                },
+                {
+                    "type": "string",
+                    "example": "2026-06-28"
+                },
+                {
+                    "type": "string",
+                    "example": "2026-06-28"
                 },
                 {
                     "type": "string",
@@ -410,11 +492,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-03-01"
+                    "example": "2026-06-27"
                 },
                 {
                     "type": "string",
-                    "example": "2026-03-02"
+                    "example": "2026-06-28"
                 },
                 {
                     "type": "string",
@@ -440,11 +522,19 @@
             "final_date": [
                 {
                     "type": "string",
-                    "example": "2026-03-02"
+                    "example": "2026-06-28"
                 },
                 {
                     "type": "string",
                     "example": "2024-01-25"
+                },
+                {
+                    "type": "string",
+                    "example": "2026-06-28"
+                },
+                {
+                    "type": "string",
+                    "example": "2026-06-28"
                 },
                 {
                     "type": "string",
@@ -456,11 +546,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-03-01"
+                    "example": "2026-06-27"
                 },
                 {
                     "type": "string",
-                    "example": "2026-03-02"
+                    "example": "2026-06-28"
                 },
                 {
                     "type": "string",
@@ -523,6 +613,14 @@
                 {
                     "type": "string",
                     "example": "Europe/Madrid"
+                },
+                {
+                    "type": "string",
+                    "example": "Europe/Madrid"
+                },
+                {
+                    "type": "string",
+                    "example": "Europe/Madrid"
                 }
             ],
             "federation_id": [
@@ -533,6 +631,14 @@
                 {
                     "type": "string",
                     "example": "FEDO"
+                },
+                {
+                    "type": "string",
+                    "example": "IOF"
+                },
+                {
+                    "type": "string",
+                    "example": "IOF"
                 },
                 {
                     "type": "string",
@@ -615,6 +721,14 @@
                 {
                     "type": "string",
                     "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
                 }
             ],
             "modified": [
@@ -625,6 +739,14 @@
                 {
                     "type": "string",
                     "example": "2022-03-01T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2022-03-13T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2022-03-13T10:01:00.000+00:00"
                 },
                 {
                     "type": "string",
@@ -648,7 +770,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-03-01T14:58:55.784+00:00"
+                    "example": "2026-06-27T16:38:33.542+00:00"
                 },
                 {
                     "type": "string",
@@ -660,10 +782,18 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-03-01T14:58:55.829+00:00"
+                    "example": "2026-06-27T16:38:33.589+00:00"
                 }
             ],
             "organizer_id": [
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
                 {
                     "type": "string",
                     "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
@@ -736,9 +866,21 @@
                 },
                 {
                     "$ref": "#/components/schemas/Organizer"
+                },
+                {
+                    "$ref": "#/components/schemas/Organizer"
+                },
+                {
+                    "$ref": "#/components/schemas/Organizer"
                 }
             ],
             "_links": [
+                {
+                    "$ref": "#/components/schemas/LinkUri"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkUri"
+                },
                 {
                     "$ref": "#/components/schemas/LinkUri"
                 },
@@ -837,9 +979,25 @@
                 {
                     "type": "string",
                     "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
                 }
             ],
             "name": [
+                {
+                    "type": "string",
+                    "example": "ADCON"
+                },
+                {
+                    "type": "string",
+                    "example": "ADCON"
+                },
                 {
                     "type": "string",
                     "example": "ADCON"
@@ -913,9 +1071,25 @@
                 {
                     "type": "string",
                     "example": "ES"
+                },
+                {
+                    "type": "string",
+                    "example": "ES"
+                },
+                {
+                    "type": "string",
+                    "example": "ES"
                 }
             ],
             "region": [
+                {
+                    "type": "string",
+                    "example": "ES-VC"
+                },
+                {
+                    "type": "string",
+                    "example": "ES-VC"
+                },
                 {
                     "type": "string",
                     "example": "ES-VC"
@@ -967,6 +1141,14 @@
                 {
                     "type": "string",
                     "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/85a7c518-54a8-4180-9708-9dcd4e9906c7"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/85a7c518-54a8-4180-9708-9dcd4e9906c7"
                 },
                 {
                     "type": "string",
@@ -1068,6 +1250,12 @@
                 },
                 {
                     "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
                 }
             ]
         },
@@ -1077,6 +1265,18 @@
         "type": "object",
         "properties": {
             "data": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Event"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Event"
+                    }
+                },
                 {
                     "type": "array",
                     "items": {
@@ -1131,6 +1331,14 @@
                 },
                 {
                     "type": "number",
+                    "example": 4
+                },
+                {
+                    "type": "number",
+                    "example": 3
+                },
+                {
+                    "type": "number",
                     "example": 1
                 },
                 {
@@ -1165,6 +1373,14 @@
                 },
                 {
                     "type": "number",
+                    "example": 10
+                },
+                {
+                    "type": "number",
+                    "example": 10
+                },
+                {
+                    "type": "number",
                     "example": 1
                 },
                 {
@@ -1181,6 +1397,12 @@
                 }
             ],
             "_links": [
+                {
+                    "$ref": "#/components/schemas/PaginationLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/PaginationLinks"
+                },
                 {
                     "$ref": "#/components/schemas/PaginationLinks"
                 },
@@ -1241,6 +1463,26 @@
                     "properties": {
                         "href": {
                             "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/?show_hidden=1&page=1"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
+                            "example": "http://dev.example.com/api/v1/events/?show_hidden=1&page=1"
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "href": {
+                            "type": "string",
                             "example": "http://dev.example.com/api/v1/events/?description=Foot-o&page=1"
                         }
                     },
@@ -1261,7 +1503,7 @@
                     "properties": {
                         "href": {
                             "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2026-03-01&final_date:gte=2026-03-01&page=1"
+                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2026-06-27&final_date:gte=2026-06-27&page=1"
                         }
                     },
                     "description": "Generic object."

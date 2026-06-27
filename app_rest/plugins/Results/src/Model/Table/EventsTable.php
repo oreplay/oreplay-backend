@@ -62,17 +62,15 @@ class EventsTable extends AppTable
      * @return Query With the selected events
      * @throws BadRequestException If a filter value is not within allowed range
      */
-    public function findPaginatedEvents(array $filters): Query
+    public function findPaginatedEvents(array $filters, ?string $userId = null, bool $isAdmin = false): Query
     {
         $today = new DateTime('now');
         $today = $today->format('Y-m-d');
 
         $query = $this->find();
 
-        $isShowHiddenOff = ($filters['show_hidden'] ?? null) !== '1';
-        if ($isShowHiddenOff) {
-            $query->where(['is_hidden' => false]);
-        }
+        $isShowHiddenOn = ($filters['show_hidden'] ?? null) === '1';
+        $this->_applyHiddenVisibility($query, $isShowHiddenOn, $userId, $isAdmin);
 
         $description = $filters['description'] ?? null;
         if ($description) {
@@ -117,6 +115,32 @@ class EventsTable extends AppTable
         }
         // Return query
         return $query->contain(OrganizersTable::name());
+    }
+
+    private function _applyHiddenVisibility(Query $query, bool $showHidden, ?string $userId, bool $isAdmin): void
+    {
+        if ($showHidden && $isAdmin) {
+            return;
+        }
+        if ($showHidden && $userId) {
+            $query->where(['OR' => [
+                $this->aliasField('is_hidden') => false,
+                $this->aliasField('id') . ' IN' => $this->_ownEventIdsQuery($userId),
+            ]]);
+            return;
+        }
+        $query->where(['is_hidden' => false]);
+    }
+
+    private function _ownEventIdsQuery(string $userId): Query
+    {
+        $junction = $this->getAssociation(UsersTable::name())->junction();
+        return $junction->find()
+            ->select([$junction->aliasField('event_id')])
+            ->where([
+                $junction->aliasField('user_id') => $userId,
+                $junction->aliasField('deleted') . ' IS' => null,
+            ]);
     }
 
     public function getEventWithRelations(string $id): Event

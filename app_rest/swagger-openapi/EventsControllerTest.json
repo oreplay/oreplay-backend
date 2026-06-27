@@ -18,6 +18,16 @@
                 {
                     "description": "",
                     "in": "query",
+                    "name": "show_hidden",
+                    "example": "1",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
                     "name": "description",
                     "example": "Foot-o",
                     "required": false,
@@ -58,18 +68,8 @@
                 {
                     "description": "",
                     "in": "query",
-                    "name": "show_hidden",
-                    "example": "1",
-                    "required": false,
-                    "schema": {
-                        "type": "string"
-                    }
-                },
-                {
-                    "description": "",
-                    "in": "query",
                     "name": "initial_date:lte",
-                    "example": "2026-03-01",
+                    "example": "2026-06-27",
                     "required": false,
                     "schema": {
                         "type": "string"
@@ -79,7 +79,7 @@
                     "description": "",
                     "in": "query",
                     "name": "final_date:gte",
-                    "example": "2026-03-01",
+                    "example": "2026-06-27",
                     "required": false,
                     "schema": {
                         "type": "string"

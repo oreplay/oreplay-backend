@@ -26,7 +26,14 @@ class EventsController extends ApiController
         $paginator = new PaginationHelper($this->request);
         $filters = $paginator->processQueryFilters();
 
-        $query = $this->Events->findPaginatedEvents($filters);
+        $userId = null;
+        $isAdmin = false;
+        if ($this->_getBearer()) {
+            $userId = $this->getLocalOauth()->verifyAuthorizationAndGetToken()->getUserId();
+            $isAdmin = $this->Events->Users->get($userId)->isManager();
+        }
+
+        $query = $this->Events->findPaginatedEvents($filters, $userId, $isAdmin);
 
         $this->flatResponse = true;
         $this->return = $paginator->getReturnArray($query, FullBaseUrl::host());

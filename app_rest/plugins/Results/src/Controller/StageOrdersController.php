@@ -23,7 +23,6 @@ class StageOrdersController extends ApiController
         $stageOrder = $this->StageOrders->find()
             ->where(['id' => $id, 'stage_id' => $stageId])
             ->firstOrFail();
-        // only `description` is accessible in the entity, any other field is ignored
         $stageOrder = $this->StageOrders->patchEntity($stageOrder, $data);
         $saved = $this->StageOrders->saveOrFail($stageOrder);
         $this->StageOrders->deleteCache($stageId);
