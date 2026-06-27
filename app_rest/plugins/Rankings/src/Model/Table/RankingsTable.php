@@ -52,6 +52,8 @@ class RankingsTable extends AppTable
             ->requirePresence('stage_id', 'create')
             ->notEmptyString('stage_id')
             ->maxLength('stage_id', 36)
+            ->allowEmptyString('title')
+            ->maxLength('title', 255)
             ->requirePresence('max_points', 'create')
             ->numeric('max_points')
             ->requirePresence('round_precision', 'create')

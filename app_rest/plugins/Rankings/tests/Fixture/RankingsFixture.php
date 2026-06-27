@@ -21,6 +21,7 @@ class RankingsFixture extends RestApiFixture
             'scoring_algorithm' => SimpleScoreCalculator::class,
             'event_id' => EventsFixture::EVENT_TOMORROW_RANKING,
             'stage_id' => StagesFixture::STAGE_RANKING,
+            'title' => 'Regional ranking 100pts',
             'max_points' => 100,
             'round_precision' => Ranking::USE_FLOOR_INSTEAD_OF_ROUND,
             'nc_true' => 0,

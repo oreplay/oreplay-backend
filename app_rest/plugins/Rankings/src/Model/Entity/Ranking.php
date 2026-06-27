@@ -12,6 +12,7 @@ use Results\Model\Entity\AppEntity;
 /**
  * @property string $event_id
  * @property string $stage_id
+ * @property string|null $title
  * @property mixed $max_points
  * @property int $round_precision
  * @property mixed $nc_true
@@ -29,6 +30,7 @@ class Ranking extends AppEntity
         'scoring_algorithm' => true,
         'event_id' => true,
         'stage_id' => true,
+        'title' => true,
         'max_points' => true,
         'round_precision' => true,
         'nc_true' => true,

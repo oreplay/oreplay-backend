@@ -31,4 +31,6 @@ export interface Ranking {
   stage_id: string
   /** @nullable */
   status_scores?: string | null
+  /** @nullable */
+  title?: string | null
 }

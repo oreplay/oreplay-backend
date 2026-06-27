@@ -18,4 +18,5 @@ export interface PatchRankingSettingsBody {
   scoring_algorithm: string
   stage_id: string
   status_scores: string
+  title: string
 }

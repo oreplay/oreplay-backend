@@ -93,6 +93,7 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         $json = $this->assertJsonResponseOK();
         $this->assertEquals(RankingsTable::FIRST_RANKING, $json['data']['id']);
         $this->assertEquals(100, $json['data']['max_points']);
+        $this->assertEquals('Regional ranking 100pts', $json['data']['title']);
 
         $links = $json['data']['_links'];
         $this->assertStringEndsWith('/api/v1/rankings/' . RankingsTable::FIRST_RANKING, $links['self']['href']);
@@ -164,6 +165,7 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
             'scoring_algorithm' => SimpleScoreCalculator::class,
             'event_id' => EventsFixture::EVENT_TOMORROW_RANKING,
             'stage_id' => StagesFixture::STAGE_RANKING,
+            'title' => 'My circuit title',
             'max_points' => 250,
             'round_precision' => 0,
             'nc_true' => 0,
@@ -176,6 +178,7 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
 
         $json = $this->assertJsonResponseOK();
         $this->assertEquals(250, $json['data']['max_points']);
+        $this->assertEquals('My circuit title', $json['data']['title']);
         $this->assertEmpty(Cache::read($byId));
         $this->assertEmpty(Cache::read($byStage));
     }

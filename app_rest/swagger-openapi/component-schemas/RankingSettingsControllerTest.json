@@ -106,6 +106,29 @@
                     "example": "e662499c-4d66-4675-8501-905bcfe28a41"
                 }
             ],
+            "title": [
+                {
+                    "type": "string",
+                    "example": "Regional ranking 100pts"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "example": "Regional ranking 100pts"
+                },
+                {
+                    "type": "string",
+                    "example": "My circuit title"
+                },
+                {
+                    "type": "string",
+                    "example": "Regional ranking 100pts"
+                }
+            ],
             "max_points": [
                 {
                     "type": "number",
@@ -381,11 +404,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-12T15:52:41.896+00:00"
+                    "example": "2026-06-27T06:02:15.894+00:00"
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-12T15:52:41.930+00:00"
+                    "example": "2026-06-27T06:02:15.933+00:00"
                 },
                 {
                     "type": "string",
@@ -393,11 +416,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-12T15:52:41.975+00:00"
+                    "example": "2026-06-27T06:02:15.980+00:00"
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-12T15:52:41.987+00:00"
+                    "example": "2026-06-27T06:02:15.997+00:00"
                 }
             ],
             "_links": [
@@ -661,6 +684,12 @@
                 {
                     "type": "string",
                     "example": "e662499c-4d66-4675-8501-905bcfe28a41"
+                }
+            ],
+            "title": [
+                {
+                    "type": "string",
+                    "example": "My circuit title"
                 }
             ],
             "max_points": [
