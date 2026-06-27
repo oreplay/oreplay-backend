@@ -131,6 +131,13 @@ paths:
             type: string
         - description: ''
           in: query
+          name: show_hidden
+          example: '1'
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
           name: description
           example: Foot-o
           required: false
@@ -159,22 +166,15 @@ paths:
             type: string
         - description: ''
           in: query
-          name: show_hidden
-          example: '1'
-          required: false
-          schema:
-            type: string
-        - description: ''
-          in: query
           name: initial_date:lte
-          example: '2026-03-01'
+          example: '2026-06-27'
           required: false
           schema:
             type: string
         - description: ''
           in: query
           name: final_date:gte
-          example: '2026-03-01'
+          example: '2026-06-27'
           required: false
           schema:
             type: string
@@ -645,7 +645,7 @@ paths:
     post:
       operationId: postListRankingSettings
       summary: ''
-      description: Add new creates ranking
+      description: Add new generates uuid server side
       parameters:
         - description: Auth token
           in: header
@@ -672,9 +672,6 @@ paths:
             schema:
               type: object
               properties:
-                id:
-                  type: string
-                  example: newRanking2026
                 scoring_algorithm:
                   type: string
                   example: Rankings\Lib\ScoringAlgorithms\SimpleScoreCalculator
@@ -708,7 +705,7 @@ paths:
                 overall_settings:
                   type: string
                   example: '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}'
-              description: 'Generic object when: Add new creates ranking'
+              description: 'Generic object when: Add new generates uuid server side'
   /api/v1/rankings/{rankingID}:
     get:
       operationId: getRankingSettings
@@ -1484,10 +1481,10 @@ components:
           nullable: true
         initial_date:
           type: string
-          example: '2026-03-02'
+          example: '2026-06-28'
         final_date:
           type: string
-          example: '2026-03-02'
+          example: '2026-06-28'
         timezone:
           type: string
           example: Europe/Madrid

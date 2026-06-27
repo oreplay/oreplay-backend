@@ -6,8 +6,6 @@ namespace Rankings\Controller;
 
 use App\Lib\FullBaseUrl;
 use App\Model\Table\UsersTable;
-use Cake\Http\Exception\BadRequestException;
-use Cake\Http\Exception\ConflictException;
 use Rankings\Model\Entity\Ranking;
 use Rankings\Model\Table\RankingsTable;
 use RestApi\Lib\Helpers\PaginationHelper;
@@ -50,17 +48,7 @@ class RankingSettingsController extends ApiController
 
     protected function addNew($data)
     {
-        $id = $data['id'] ?? null;
-        if (!$id) {
-            throw new BadRequestException('Ranking id is mandatory');
-        }
-        if ($this->Rankings->find()->where(['id' => $id])->first()) {
-            throw new ConflictException('Ranking id already exists: ' . $id);
-        }
-        /** @var Ranking $ranking */
-        $ranking = $this->Rankings->newEmptyEntity();
-        $ranking->id = $id;
-        $ranking = $this->Rankings->patchEntity($ranking, $data);
+        $ranking = $this->Rankings->patchFromNewWithUuid($data);
         $this->return = $this->Rankings->saveOrFail($ranking);
     }
 

@@ -60,7 +60,7 @@
         "post": {
             "operationId": "postListRankingSettings",
             "summary": "",
-            "description": "Add new creates ranking",
+            "description": "Add new generates uuid server side",
             "parameters": [
                 {
                     "description": "Auth token",
@@ -100,10 +100,6 @@
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "id": {
-                                    "type": "string",
-                                    "example": "newRanking2026"
-                                },
                                 "scoring_algorithm": {
                                     "type": "string",
                                     "example": "Rankings\\Lib\\ScoringAlgorithms\\SimpleScoreCalculator"
@@ -149,7 +145,7 @@
                                     "example": "{\"totalCircuitRaces\":3,\"maxRacesCounted\":2,\"organizerScoringFraction\":0.5,\"minPointsAsOrg\":20}"
                                 }
                             },
-                            "description": "Generic object when: Add new creates ranking"
+                            "description": "Generic object when: Add new generates uuid server side"
                         }
                     }
                 }

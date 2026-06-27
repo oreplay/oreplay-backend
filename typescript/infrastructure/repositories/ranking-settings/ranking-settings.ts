@@ -115,7 +115,7 @@ export const prefetchGetListRankingSettingsQuery = async <
 }
 
 /**
- * Add new creates ranking
+ * Add new generates uuid server side
  */
 export const postListRankingSettings = (
   postListRankingSettingsBody: PostListRankingSettingsBody,

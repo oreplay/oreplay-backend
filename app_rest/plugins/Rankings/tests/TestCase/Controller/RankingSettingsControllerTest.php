@@ -30,10 +30,9 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         return ApiController::ROUTE_PREFIX . '/rankings/';
     }
 
-    private function _validCreateData(string $id): array
+    private function _validCreateData(): array
     {
         return [
-            'id' => $id,
             'scoring_algorithm' => SimpleScoreCalculator::class,
             'event_id' => EventsFixture::EVENT_TOMORROW_RANKING,
             'stage_id' => StagesFixture::STAGE_RANKING,
@@ -47,7 +46,7 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         $Rankings = RankingsTable::load();
         $ranking = $Rankings->newEmptyEntity();
         $ranking->id = $id;
-        $ranking = $Rankings->patchEntity($ranking, $this->_validCreateData($id));
+        $ranking = $Rankings->patchEntity($ranking, $this->_validCreateData());
         $Rankings->saveOrFail($ranking);
         $Rankings->updateAll(['created' => $created], ['id' => $id]);
     }
@@ -111,9 +110,9 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         $this->assertException('Not Found', 404);
     }
 
-    public function testAddNewCreatesRanking()
+    public function testAddNewGeneratesUuidServerSide()
     {
-        $data = $this->_validCreateData('newRanking2026');
+        $data = $this->_validCreateData();
         $data['title'] = 'My new ranking';
         $data['nc_true'] = 5;
         $data['nc_false'] = 10;
@@ -124,11 +123,12 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         $this->post($this->_getEndpoint(), $data);
 
         $json = $this->assertJsonResponseOK();
-        $this->assertEquals('newRanking2026', $json['data']['id']);
+        $newId = $json['data']['id'];
+        $this->assertMatchesRegularExpression('/^[0-9a-f-]{36}$/', $newId);
         $this->assertEquals(SimpleScoreCalculator::class, $json['data']['scoring_algorithm']);
         $this->assertEquals('My new ranking', $json['data']['title']);
 
-        $saved = RankingsTable::load()->get('newRanking2026');
+        $saved = RankingsTable::load()->get($newId);
         $this->assertEquals('My new ranking', $saved->title);
         $this->assertEquals(100, $saved->max_points);
         $this->assertEquals(5, $saved->nc_true);
@@ -141,32 +141,24 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         );
     }
 
-    public function testAddNewDuplicateIdReturnsConflict()
+    public function testAddNewRejectsClientProvidedNonUuidId()
     {
-        $this->post($this->_getEndpoint(), $this->_validCreateData(RankingsTable::FIRST_RANKING));
-
-        $this->assertException('Conflict', 409);
-    }
-
-    public function testAddNewMissingIdReturnsBadRequest()
-    {
-        $data = $this->_validCreateData('ignored');
-        unset($data['id']);
+        $data = $this->_validCreateData();
+        $data['id'] = 'regional100pts';
         $this->post($this->_getEndpoint(), $data);
 
-        $this->assertException('Bad Request', 400);
+        $this->assertExceptionMessage('ID must be in UUID format ISO 9834 or not provided', 400);
     }
 
     public function testAddNewMissingRequiredFieldReturnsValidationError()
     {
-        $this->post($this->_getEndpoint(), ['id' => 'incomplete2026']);
+        $this->post($this->_getEndpoint(), ['max_points' => 100]);
 
         $this->assertException('Validation error', 400);
     }
 
     public function testEditUpdatesRankingAndInvalidatesCache()
     {
-        // prime both cache keys
         $Rankings = RankingsTable::load();
         $Rankings->getCached(RankingsTable::FIRST_RANKING);
         $Rankings->getCachedByStage(StagesFixture::STAGE_RANKING);
@@ -175,9 +167,8 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         $this->assertNotEmpty(Cache::read($byId));
         $this->assertNotEmpty(Cache::read($byStage));
 
-        // a full example of every editable property, so the generated
-        // PatchRankingSettingsBody openapi/orval type is complete.
-        // every value differs from the fixture, so the asserts prove each field is editable
+        // full example of every editable property, so the generated PatchRankingSettingsBody type is
+        // complete; every value differs from the fixture so the asserts prove each field is editable
         $data = [
             '_c' => 'PatchRankingSettingsBody',
             'scoring_algorithm' => SimpleScoreCalculator::class,
@@ -200,7 +191,6 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         $this->assertEmpty(Cache::read($byId));
         $this->assertEmpty(Cache::read($byStage));
 
-        // confirm every editable field was persisted
         $saved = RankingsTable::load()->get(RankingsTable::FIRST_RANKING);
         $this->assertEquals('My circuit title', $saved->title);
         $this->assertEquals(250, $saved->max_points);
