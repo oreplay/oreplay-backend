@@ -1,0 +1,46 @@
+{
+    "PatchStageOrdersBody": {
+        "type": "object",
+        "properties": {
+            "description": [
+                {
+                    "type": "string",
+                    "example": "Updated description"
+                }
+            ]
+        },
+        "description": "Entity PatchStageOrdersBody"
+    },
+    "StageOrder": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "83dc3504-9edd-4bbd-80b8-589aa0359c2e"
+                }
+            ],
+            "description": [
+                {
+                    "type": "string",
+                    "example": "Updated description"
+                }
+            ]
+        },
+        "description": "Entity StageOrder"
+    },
+    "ResStageOrder": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "$ref": "#/components/schemas/StageOrder"
+                }
+            ]
+        },
+        "description": "Data wrapper for StageOrder",
+        "required": [
+            "data"
+        ]
+    }
+}

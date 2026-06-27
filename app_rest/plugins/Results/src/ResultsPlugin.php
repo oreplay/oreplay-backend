@@ -43,6 +43,10 @@ class ResultsPlugin extends RestPlugin
             '/events/{eventID}/stages/{stageID}/classes/*',
             \Results\Controller\StageClassesController::route()
         );
+        $builder->connect(
+            '/events/{eventID}/stages/{stageID}/stageOrders/*',
+            \Results\Controller\StageOrdersController::route()
+        );
         $builder->connect('/events/{eventID}/stages/*', \Results\Controller\StagesController::route());
         $builder->connect('/events/{eventID}/tokens/*', \Results\Controller\EventTokensController::route());
         $builder->connect('/events/*', \Results\Controller\EventsController::route());

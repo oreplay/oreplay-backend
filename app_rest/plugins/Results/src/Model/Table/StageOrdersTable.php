@@ -9,6 +9,7 @@ use App\Model\Table\AppTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Cake\Validation\Validator;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\StageOrder;
 
@@ -17,6 +18,14 @@ class StageOrdersTable extends AppTable
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
+    }
+
+    public function validationDefault(Validator $validator): Validator
+    {
+        $validator
+            ->notEmptyString('description')
+            ->maxLength('description', 255);
+        return $validator;
     }
 
     public static function load(): self
