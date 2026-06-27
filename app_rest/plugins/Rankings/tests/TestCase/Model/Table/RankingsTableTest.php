@@ -52,7 +52,7 @@ class RankingsTableTest extends TestCase
             'organizerScoringFraction' => 0.3, // how many races will be considered in the org avg
             'minPointsAsOrg' => 50, // min points got as organizer
         ];
-        $this->assertEquals($overallSettings, $ranking->_getOverallSettings());
+        $this->assertEquals($overallSettings, $ranking->getOverallSettings());
         $this->assertEquals(StagesFixture::STAGE_RANKING, $ranking->getStageId());
         $excluded = ['O NEGRO F', 'PROM'];
         $this->assertEquals($excluded, $ranking->getExcludedClassNames());

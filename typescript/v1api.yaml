@@ -690,6 +690,24 @@ paths:
                 round_precision:
                   type: number
                   example: 0
+                title:
+                  type: string
+                  example: My new ranking
+                nc_true:
+                  type: number
+                  example: 5
+                nc_false:
+                  type: number
+                  example: 10
+                status_scores:
+                  type: string
+                  example: '[null,1,2,3,4,5]'
+                excluded_class_names:
+                  type: string
+                  example: '["ELITE"]'
+                overall_settings:
+                  type: string
+                  example: '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}'
               description: 'Generic object when: Add new creates ranking'
   /api/v1/rankings/{rankingID}:
     get:
@@ -2109,21 +2127,8 @@ components:
           example: '[null,0,10,10,0,10]'
           nullable: true
         overall_settings:
-          type: object
-          properties:
-            totalCircuitRaces:
-              type: number
-              example: 9
-            maxRacesCounted:
-              type: number
-              example: 5
-            organizerScoringFraction:
-              type: number
-              example: 0.3
-            minPointsAsOrg:
-              type: number
-              example: 50
-          description: Generic object.
+          type: string
+          example: '{"totalCircuitRaces":9,"maxRacesCounted":5,"organizerScoringFraction":0.3,"minPointsAsOrg":50}'
           nullable: true
         excluded_class_names:
           type: string
@@ -2205,22 +2210,22 @@ components:
           example: 250
         round_precision:
           type: number
-          example: 0
+          example: 2
         nc_true:
           type: number
-          example: 0
+          example: 5
         nc_false:
           type: number
           example: 10
         status_scores:
           type: string
-          example: '[null,0,10,10,0,10]'
+          example: '[null,1,2,3,4,5]'
         excluded_class_names:
           type: string
-          example: '["O NEGRO F","PROM"]'
+          example: '["ELITE"]'
         overall_settings:
           type: string
-          example: '{"totalCircuitRaces":9,"maxRacesCounted":5,"organizerScoringFraction":0.3,"minPointsAsOrg":50}'
+          example: '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}'
         id:
           type: string
           example: hackedId

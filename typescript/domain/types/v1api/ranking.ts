@@ -3,7 +3,6 @@
  * O-replay - OpenAPI 3.0
  */
 import type { RankingLinks } from './rankingLinks'
-import type { RankingOverallSettings } from './rankingOverallSettings'
 
 /**
  * Entity Ranking
@@ -21,11 +20,8 @@ export interface Ranking {
   nc_false?: number | null
   /** @nullable */
   nc_true?: number | null
-  /**
-   * Generic object.
-   * @nullable
-   */
-  overall_settings?: RankingOverallSettings
+  /** @nullable */
+  overall_settings?: string | null
   round_precision: number
   scoring_algorithm: string
   stage_id: string

@@ -118,6 +118,10 @@
                 },
                 {
                     "type": "string",
+                    "example": "My new ranking"
+                },
+                {
+                    "type": "string",
                     "example": "Regional ranking 100pts"
                 },
                 {
@@ -174,7 +178,7 @@
                 },
                 {
                     "type": "number",
-                    "example": 0
+                    "example": 2
                 },
                 {
                     "type": "number",
@@ -193,11 +197,15 @@
                 },
                 {
                     "type": "number",
-                    "example": 0
+                    "example": 5
                 },
                 {
                     "type": "number",
                     "example": 0
+                },
+                {
+                    "type": "number",
+                    "example": 5
                 },
                 {
                     "type": "number",
@@ -214,6 +222,10 @@
                     "type": "string",
                     "nullable": true,
                     "example": null
+                },
+                {
+                    "type": "number",
+                    "example": 10
                 },
                 {
                     "type": "string",
@@ -242,11 +254,15 @@
                 },
                 {
                     "type": "string",
-                    "example": "[null,0,10,10,0,10]"
+                    "example": "[null,1,2,3,4,5]"
                 },
                 {
                     "type": "string",
                     "example": "[null,0,10,10,0,10]"
+                },
+                {
+                    "type": "string",
+                    "example": "[null,1,2,3,4,5]"
                 },
                 {
                     "type": "string",
@@ -255,26 +271,8 @@
             ],
             "overall_settings": [
                 {
-                    "type": "object",
-                    "properties": {
-                        "totalCircuitRaces": {
-                            "type": "number",
-                            "example": 9
-                        },
-                        "maxRacesCounted": {
-                            "type": "number",
-                            "example": 5
-                        },
-                        "organizerScoringFraction": {
-                            "type": "number",
-                            "example": 0.3
-                        },
-                        "minPointsAsOrg": {
-                            "type": "number",
-                            "example": 50
-                        }
-                    },
-                    "description": "Generic object."
+                    "type": "string",
+                    "example": "{\"totalCircuitRaces\":9,\"maxRacesCounted\":5,\"organizerScoringFraction\":0.3,\"minPointsAsOrg\":50}"
                 },
                 {
                     "type": "string",
@@ -282,70 +280,20 @@
                     "example": null
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "totalCircuitRaces": {
-                            "type": "number",
-                            "example": 9
-                        },
-                        "maxRacesCounted": {
-                            "type": "number",
-                            "example": 5
-                        },
-                        "organizerScoringFraction": {
-                            "type": "number",
-                            "example": 0.3
-                        },
-                        "minPointsAsOrg": {
-                            "type": "number",
-                            "example": 50
-                        }
-                    },
-                    "description": "Generic object."
+                    "type": "string",
+                    "example": "{\"totalCircuitRaces\":3,\"maxRacesCounted\":2,\"organizerScoringFraction\":0.5,\"minPointsAsOrg\":20}"
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "totalCircuitRaces": {
-                            "type": "number",
-                            "example": 9
-                        },
-                        "maxRacesCounted": {
-                            "type": "number",
-                            "example": 5
-                        },
-                        "organizerScoringFraction": {
-                            "type": "number",
-                            "example": 0.3
-                        },
-                        "minPointsAsOrg": {
-                            "type": "number",
-                            "example": 50
-                        }
-                    },
-                    "description": "Generic object."
+                    "type": "string",
+                    "example": "{\"totalCircuitRaces\":9,\"maxRacesCounted\":5,\"organizerScoringFraction\":0.3,\"minPointsAsOrg\":50}"
                 },
                 {
-                    "type": "object",
-                    "properties": {
-                        "totalCircuitRaces": {
-                            "type": "number",
-                            "example": 9
-                        },
-                        "maxRacesCounted": {
-                            "type": "number",
-                            "example": 5
-                        },
-                        "organizerScoringFraction": {
-                            "type": "number",
-                            "example": 0.3
-                        },
-                        "minPointsAsOrg": {
-                            "type": "number",
-                            "example": 50
-                        }
-                    },
-                    "description": "Generic object."
+                    "type": "string",
+                    "example": "{\"totalCircuitRaces\":3,\"maxRacesCounted\":2,\"organizerScoringFraction\":0.5,\"minPointsAsOrg\":20}"
+                },
+                {
+                    "type": "string",
+                    "example": "{\"totalCircuitRaces\":9,\"maxRacesCounted\":5,\"organizerScoringFraction\":0.3,\"minPointsAsOrg\":50}"
                 }
             ],
             "excluded_class_names": [
@@ -360,11 +308,15 @@
                 },
                 {
                     "type": "string",
-                    "example": "[\"O NEGRO F\",\"PROM\"]"
+                    "example": "[\"ELITE\"]"
                 },
                 {
                     "type": "string",
                     "example": "[\"O NEGRO F\",\"PROM\"]"
+                },
+                {
+                    "type": "string",
+                    "example": "[\"ELITE\"]"
                 },
                 {
                     "type": "string",
@@ -404,11 +356,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-27T06:02:15.894+00:00"
+                    "example": "2026-06-27T15:47:04.746+00:00"
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-27T06:02:15.933+00:00"
+                    "example": "2026-06-27T15:47:04.804+00:00"
                 },
                 {
                     "type": "string",
@@ -416,11 +368,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-27T06:02:15.980+00:00"
+                    "example": "2026-06-27T15:47:04.877+00:00"
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-27T06:02:15.997+00:00"
+                    "example": "2026-06-27T15:47:04.895+00:00"
                 }
             ],
             "_links": [
@@ -705,13 +657,13 @@
             "round_precision": [
                 {
                     "type": "number",
-                    "example": 0
+                    "example": 2
                 }
             ],
             "nc_true": [
                 {
                     "type": "number",
-                    "example": 0
+                    "example": 5
                 }
             ],
             "nc_false": [
@@ -723,19 +675,19 @@
             "status_scores": [
                 {
                     "type": "string",
-                    "example": "[null,0,10,10,0,10]"
+                    "example": "[null,1,2,3,4,5]"
                 }
             ],
             "excluded_class_names": [
                 {
                     "type": "string",
-                    "example": "[\"O NEGRO F\",\"PROM\"]"
+                    "example": "[\"ELITE\"]"
                 }
             ],
             "overall_settings": [
                 {
                     "type": "string",
-                    "example": "{\"totalCircuitRaces\":9,\"maxRacesCounted\":5,\"organizerScoringFraction\":0.3,\"minPointsAsOrg\":50}"
+                    "example": "{\"totalCircuitRaces\":3,\"maxRacesCounted\":2,\"organizerScoringFraction\":0.5,\"minPointsAsOrg\":20}"
                 }
             ],
             "id": [

@@ -76,28 +76,28 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         // how many races will be considered in the org avg
         // e.g. use 0.3 to use 30% of the races (where the organizer was taking place) in the
         // circuit to calculate organizer average (participated in 4, used for org avg 4*0.3=1.2=2)
-        return $this->_settings->_getOverallSettings()['organizerScoringFraction'];
+        return $this->_settings->getOverallSettings()['organizerScoringFraction'];
     }
 
     private function _getTotalRaces(): int
     {
         // number of races in this circuit
         // e.g. use 9 if there are 9 races in the circuit
-        return $this->_settings->_getOverallSettings()['totalCircuitRaces'];
+        return $this->_settings->getOverallSettings()['totalCircuitRaces'];
     }
 
     private function _getMaxRacesCounted(): int
     {
         // max number of races counted for each participant
         // e.g. use 6 if only 6 out of 9 races should be used to compute the total result
-        return $this->_settings->_getOverallSettings()['maxRacesCounted'];
+        return $this->_settings->getOverallSettings()['maxRacesCounted'];
     }
 
     private function _getMinAsOrg(): int
     {
         // min points got as organizer
         // e.g. if the participant should get 19 points he is getting 50 instead
-        return $this->_settings->_getOverallSettings()['minPointsAsOrg'] ?? 0;
+        return $this->_settings->getOverallSettings()['minPointsAsOrg'] ?? 0;
     }
 
     public function hasFewComputable(int $amountRacesParticipated, int $totalRaces = null): bool

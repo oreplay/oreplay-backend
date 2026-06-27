@@ -89,7 +89,7 @@ class Ranking extends AppEntity
         return $settings[$status] ?? null;
     }
 
-    public function _getOverallSettings(): ?array
+    public function getOverallSettings(): ?array
     {
         $s = $this->_fields['overall_settings'] ?? null;
         if (!$s) {

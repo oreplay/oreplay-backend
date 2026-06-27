@@ -113,15 +113,32 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNewCreatesRanking()
     {
-        $this->post($this->_getEndpoint(), $this->_validCreateData('newRanking2026'));
+        $data = $this->_validCreateData('newRanking2026');
+        $data['title'] = 'My new ranking';
+        $data['nc_true'] = 5;
+        $data['nc_false'] = 10;
+        $data['status_scores'] = '[null,1,2,3,4,5]';
+        $data['excluded_class_names'] = '["ELITE"]';
+        $data['overall_settings'] =
+            '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}';
+        $this->post($this->_getEndpoint(), $data);
 
         $json = $this->assertJsonResponseOK();
         $this->assertEquals('newRanking2026', $json['data']['id']);
         $this->assertEquals(SimpleScoreCalculator::class, $json['data']['scoring_algorithm']);
+        $this->assertEquals('My new ranking', $json['data']['title']);
 
-        // confirm it was persisted
         $saved = RankingsTable::load()->get('newRanking2026');
+        $this->assertEquals('My new ranking', $saved->title);
         $this->assertEquals(100, $saved->max_points);
+        $this->assertEquals(5, $saved->nc_true);
+        $this->assertEquals(10, $saved->nc_false);
+        $this->assertEquals('[null,1,2,3,4,5]', $saved->status_scores);
+        $this->assertEquals('["ELITE"]', $saved->excluded_class_names);
+        $this->assertEquals(
+            '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}',
+            $saved->overall_settings
+        );
     }
 
     public function testAddNewDuplicateIdReturnsConflict()
@@ -159,7 +176,8 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         $this->assertNotEmpty(Cache::read($byStage));
 
         // a full example of every editable property, so the generated
-        // PatchRankingSettingsBody openapi/orval type is complete
+        // PatchRankingSettingsBody openapi/orval type is complete.
+        // every value differs from the fixture, so the asserts prove each field is editable
         $data = [
             '_c' => 'PatchRankingSettingsBody',
             'scoring_algorithm' => SimpleScoreCalculator::class,
@@ -167,12 +185,12 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
             'stage_id' => StagesFixture::STAGE_RANKING,
             'title' => 'My circuit title',
             'max_points' => 250,
-            'round_precision' => 0,
-            'nc_true' => 0,
+            'round_precision' => 2,
+            'nc_true' => 5,
             'nc_false' => 10,
-            'status_scores' => '[null,0,10,10,0,10]',
-            'excluded_class_names' => '["O NEGRO F","PROM"]',
-            'overall_settings' => '{"totalCircuitRaces":9,"maxRacesCounted":5,"organizerScoringFraction":0.3,"minPointsAsOrg":50}',
+            'status_scores' => '[null,1,2,3,4,5]',
+            'excluded_class_names' => '["ELITE"]',
+            'overall_settings' => '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}',
         ];
         $this->patch($this->_getEndpoint() . RankingsTable::FIRST_RANKING, $data);
 
@@ -181,6 +199,20 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('My circuit title', $json['data']['title']);
         $this->assertEmpty(Cache::read($byId));
         $this->assertEmpty(Cache::read($byStage));
+
+        // confirm every editable field was persisted
+        $saved = RankingsTable::load()->get(RankingsTable::FIRST_RANKING);
+        $this->assertEquals('My circuit title', $saved->title);
+        $this->assertEquals(250, $saved->max_points);
+        $this->assertEquals(2, $saved->round_precision);
+        $this->assertEquals(5, $saved->nc_true);
+        $this->assertEquals(10, $saved->nc_false);
+        $this->assertEquals('[null,1,2,3,4,5]', $saved->status_scores);
+        $this->assertEquals('["ELITE"]', $saved->excluded_class_names);
+        $this->assertEquals(
+            '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}',
+            $saved->overall_settings
+        );
     }
 
     public function testEditIgnoresIdChange()

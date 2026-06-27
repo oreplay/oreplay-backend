@@ -123,6 +123,30 @@
                                 "round_precision": {
                                     "type": "number",
                                     "example": 0
+                                },
+                                "title": {
+                                    "type": "string",
+                                    "example": "My new ranking"
+                                },
+                                "nc_true": {
+                                    "type": "number",
+                                    "example": 5
+                                },
+                                "nc_false": {
+                                    "type": "number",
+                                    "example": 10
+                                },
+                                "status_scores": {
+                                    "type": "string",
+                                    "example": "[null,1,2,3,4,5]"
+                                },
+                                "excluded_class_names": {
+                                    "type": "string",
+                                    "example": "[\"ELITE\"]"
+                                },
+                                "overall_settings": {
+                                    "type": "string",
+                                    "example": "{\"totalCircuitRaces\":3,\"maxRacesCounted\":2,\"organizerScoringFraction\":0.5,\"minPointsAsOrg\":20}"
                                 }
                             },
                             "description": "Generic object when: Add new creates ranking"
