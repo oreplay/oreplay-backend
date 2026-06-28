@@ -200,6 +200,29 @@ class StagesControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(1, $logs);
     }
 
+    public function testEdit_adminCanEditStageInEventTheyDoNotOwn()
+    {
+        $this->markTestSkipped();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $url = ApiController::ROUTE_PREFIX . '/events/' . EventsFixture::FIRST_RAID
+            . '/stages/' . StagesFixture::STAGE_RAID;
+        $this->patch($url, ['description' => 'Edited by admin']);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals('Edited by admin', $bodyDecoded['data']['description']);
+    }
+
+    public function testEdit_nonAdminNonOwnerIsForbidden()
+    {
+        $this->markTestSkipped();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+        $url = ApiController::ROUTE_PREFIX . '/events/' . EventsFixture::FIRST_RAID
+            . '/stages/' . StagesFixture::STAGE_RAID;
+        $this->patch($url, ['description' => 'Hacked']);
+
+        $this->assertResponseCode(403);
+    }
+
     public function testDelete_withCleanParamShouldNotRemoveStageButEmptyContents()
     {
         $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE . '?clean=1');

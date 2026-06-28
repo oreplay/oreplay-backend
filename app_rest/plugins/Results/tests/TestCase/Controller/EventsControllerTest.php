@@ -524,13 +524,26 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
     public function testEdit_shouldNotEditFromAnotherUser()
     {
-        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
         $data = [
             'description' => 'Some description',
         ];
         $this->patch($this->_getEndpoint() . EventsFixture::EVENT_TODAY, $data);
 
         $this->assertResponseCode(403);
+    }
+
+    public function testEdit_adminCanEditEventTheyDoNotOwn()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $data = [
+            'description' => 'Edited by admin',
+        ];
+        $this->patch($this->_getEndpoint() . EventsFixture::EVENT_TODAY, $data);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals('Edited by admin', $bodyDecoded['data']['description']);
     }
 
     public function testEdit_shouldNotEditFinalDateBefaoreInitialDate()
@@ -562,7 +575,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
 
     public function testDelete_shouldNotDeleteFromAnotherUser()
     {
-        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
         $this->delete($this->_getEndpoint() . EventsFixture::EVENT_TODAY);
         $this->assertResponseCode(403);
     }

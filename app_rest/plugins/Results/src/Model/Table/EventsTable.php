@@ -169,7 +169,7 @@ class EventsTable extends AppTable
                 ]);
             })
             ->firstOrFail();
-        if (!$event->getFirstUser()) {
+        if (!$event->getFirstUser() && !UsersTable::load()->get($userId)->isManager()) {
             throw new ForbiddenException('Event not from this user');
         }
         return $event;
