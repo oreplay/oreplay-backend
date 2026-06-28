@@ -32,6 +32,7 @@ class ResultsByClassControllerTest extends ApiCommonErrorsTest
 
     public function testGetList()
     {
+        $this->skipNextRequestInSwagger();
         $this->get($this->_getEndpoint() . '?output=ReadablePointsCsv&contrib_text=(contrib.)');
 
         $body = $this->_getBodyAsString();
