@@ -45,4 +45,14 @@ class StageOrder extends AppEntity
         }
         return $description;
     }
+
+    public function toArrayManagement(): array
+    {
+        return $this->toChild('StageOrderManagement', [
+            'id' => $this->id,
+            'stage_order' => $this->stage_order,
+            'description' => $this->description,
+            'created' => $this->created,
+        ]);
+    }
 }

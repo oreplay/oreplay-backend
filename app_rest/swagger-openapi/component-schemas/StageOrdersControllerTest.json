@@ -1,4 +1,51 @@
 {
+    "StageOrderManagement": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "83dc3504-9edd-4bbd-80b8-589aa0359c2e"
+                }
+            ],
+            "stage_order": [
+                {
+                    "type": "number",
+                    "example": 1
+                }
+            ],
+            "description": [
+                {
+                    "type": "string",
+                    "example": "Long stage"
+                }
+            ],
+            "created": [
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                }
+            ]
+        },
+        "description": "Entity StageOrderManagement"
+    },
+    "ArrayStageOrderManagement": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/StageOrderManagement"
+                    }
+                }
+            ]
+        },
+        "description": "Data wrapper for StageOrderManagement",
+        "required": [
+            "data"
+        ]
+    },
     "PatchStageOrdersBody": {
         "type": "object",
         "properties": {

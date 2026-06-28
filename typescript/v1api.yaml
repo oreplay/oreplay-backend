@@ -1054,6 +1054,44 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArrayClub'
+  /api/v1/events/{eventID}/stages/{stageID}/stageOrders/:
+    get:
+      operationId: getListStageOrders
+      summary: ''
+      description: Get list returns only selected fields
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        - description: ID in URL
+          in: path
+          name: stageID
+          required: true
+          schema:
+            type: string
+          example: 51d63e99-5d7c-4382-a541-8567015d8eed
+        - description: Auth token
+          in: header
+          name: Authorization
+          example: Bearer ****************
+          required: true
+          schema:
+            type: string
+      tags:
+        - StageOrders
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayStageOrderManagement'
+      security:
+        - bearerAuth: []
   /api/v1/events/{eventID}/stages/{stageID}/stageOrders/{stageOrderID}:
     patch:
       operationId: patchStageOrders
@@ -2362,6 +2400,37 @@ components:
           items:
             $ref: '#/components/schemas/Club'
       description: Data wrapper for Club
+      required:
+        - data
+    StageOrderManagement:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 83dc3504-9edd-4bbd-80b8-589aa0359c2e
+        stage_order:
+          type: number
+          example: 1
+        description:
+          type: string
+          example: Long stage
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+      description: Entity StageOrderManagement
+      required:
+        - id
+        - stage_order
+        - description
+        - created
+    ArrayStageOrderManagement:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/StageOrderManagement'
+      description: Data wrapper for StageOrderManagement
       required:
         - data
     PatchStageOrdersBody:

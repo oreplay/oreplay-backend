@@ -13,6 +13,22 @@ use Results\Model\Table\StagesTable;
  */
 class StageOrdersController extends ApiController
 {
+    protected function getList()
+    {
+        $eventId = $this->request->getParam('eventID');
+        $stageId = $this->request->getParam('stageID');
+        $this->_isUserAllowedInStage($eventId, $stageId);
+
+        $this->return = $this->StageOrders->find()
+            ->where(['event_id' => $eventId, 'stage_id' => $stageId])
+            ->orderByAsc('stage_order')
+            ->all()
+            ->map(function (StageOrder $stageOrder) {
+                return $stageOrder->toArrayManagement();
+            })
+            ->toList();
+    }
+
     protected function edit($id, $data)
     {
         $eventId = $this->request->getParam('eventID');

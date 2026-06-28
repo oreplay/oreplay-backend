@@ -37,6 +37,41 @@ class StageOrdersControllerTest extends ApiCommonErrorsTest
             . '/stages/' . Stage::FIRST_STAGE . '/stageOrders/';
     }
 
+    public function testGetListReturnsOnlySelectedFields()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $this->get($this->_getEndpoint());
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertCount(1, $bodyDecoded['data']);
+        $row = $bodyDecoded['data'][0];
+        $this->assertEquals(['id', 'stage_order', 'description', 'created', '_c'], array_keys($row));
+        $this->assertEquals(StageOrdersFixture::STAGE_1, $row['id']);
+        $this->assertEquals(1, $row['stage_order']);
+        $this->assertEquals('Long stage', $row['description']);
+        $this->assertNotEmpty($row['created']);
+    }
+
+    public function testGetListForbiddenForNonOwner()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+        $this->get($this->_getEndpoint());
+
+        $this->assertResponseCode(403);
+    }
+
+    public function testEditForbiddenForNonOwner()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+        $this->patch($this->_getEndpoint() . StageOrdersFixture::STAGE_1, ['description' => 'x']);
+
+        $this->assertResponseCode(403);
+    }
+
     public function testEditUpdatesDescription()
     {
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
