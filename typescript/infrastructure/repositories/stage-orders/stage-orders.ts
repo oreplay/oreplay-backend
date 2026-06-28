@@ -17,7 +17,7 @@ import type {
 import type {
   ArrayStageOrderManagement,
   PatchStageOrdersBody,
-  ResStageOrder
+  ResStageOrderManagement
 } from '../../../domain/types/v1api'
 
 import { orvalAxiosInstance } from '../../orval/orval-axios-instance'
@@ -126,7 +126,7 @@ export const patchStageOrders = (
   patchStageOrdersBody: PatchStageOrdersBody,
   options?: SecondParameter<typeof orvalAxiosInstance>
 ) => {
-  return orvalAxiosInstance<ResStageOrder>(
+  return orvalAxiosInstance<ResStageOrderManagement>(
     {
       url: `/api/v1/events/${eventID}/stages/${stageID}/stageOrders/${stageOrderID}`,
       method: 'PATCH',

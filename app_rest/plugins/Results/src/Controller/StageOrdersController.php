@@ -42,7 +42,7 @@ class StageOrdersController extends ApiController
         $stageOrder = $this->StageOrders->patchEntity($stageOrder, $data);
         $saved = $this->StageOrders->saveOrFail($stageOrder);
         $this->StageOrders->deleteCache($stageId);
-        $this->return = $this->StageOrders->get($saved->id);
+        $this->return = $this->StageOrders->get($saved->id)->toArrayManagement();
     }
 
     private function _isUserAllowedInStage(string $eventId, string $stageId): void

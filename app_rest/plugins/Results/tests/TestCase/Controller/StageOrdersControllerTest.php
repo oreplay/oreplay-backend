@@ -46,6 +46,7 @@ class StageOrdersControllerTest extends ApiCommonErrorsTest
         $this->assertCount(1, $bodyDecoded['data']);
         $row = $bodyDecoded['data'][0];
         $this->assertEquals(['id', 'stage_order', 'description', 'created', '_c'], array_keys($row));
+        $this->assertEquals('StageOrderManagement', $row['_c']);
         $this->assertEquals(StageOrdersFixture::STAGE_1, $row['id']);
         $this->assertEquals(1, $row['stage_order']);
         $this->assertEquals('Long stage', $row['description']);
@@ -82,7 +83,14 @@ class StageOrdersControllerTest extends ApiCommonErrorsTest
         $this->patch($this->_getEndpoint() . StageOrdersFixture::STAGE_1, $data);
 
         $bodyDecoded = $this->assertJsonResponseOK();
-        $this->assertEquals('Updated description', $bodyDecoded['data']['description']);
+        // edit returns the same management object shape as getList
+        $row = $bodyDecoded['data'];
+        $this->assertEquals(['id', 'stage_order', 'description', 'created', '_c'], array_keys($row));
+        $this->assertEquals('StageOrderManagement', $row['_c']);
+        $this->assertEquals(StageOrdersFixture::STAGE_1, $row['id']);
+        $this->assertEquals(1, $row['stage_order']);
+        $this->assertEquals('Updated description', $row['description']);
+        $this->assertNotEmpty($row['created']);
         $db = StageOrdersTable::load()->get(StageOrdersFixture::STAGE_1);
         $this->assertEquals('Updated description', $db->description);
     }

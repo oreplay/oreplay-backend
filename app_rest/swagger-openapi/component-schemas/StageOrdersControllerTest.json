@@ -6,9 +6,17 @@
                 {
                     "type": "string",
                     "example": "83dc3504-9edd-4bbd-80b8-589aa0359c2e"
+                },
+                {
+                    "type": "string",
+                    "example": "83dc3504-9edd-4bbd-80b8-589aa0359c2e"
                 }
             ],
             "stage_order": [
+                {
+                    "type": "number",
+                    "example": 1
+                },
                 {
                     "type": "number",
                     "example": 1
@@ -18,9 +26,17 @@
                 {
                     "type": "string",
                     "example": "Long stage"
+                },
+                {
+                    "type": "string",
+                    "example": "Updated description"
                 }
             ],
             "created": [
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
                 {
                     "type": "string",
                     "example": "****-**-*****:**:**.***+**:**"
@@ -58,34 +74,16 @@
         },
         "description": "Entity PatchStageOrdersBody"
     },
-    "StageOrder": {
-        "type": "object",
-        "properties": {
-            "id": [
-                {
-                    "type": "string",
-                    "example": "83dc3504-9edd-4bbd-80b8-589aa0359c2e"
-                }
-            ],
-            "description": [
-                {
-                    "type": "string",
-                    "example": "Updated description"
-                }
-            ]
-        },
-        "description": "Entity StageOrder"
-    },
-    "ResStageOrder": {
+    "ResStageOrderManagement": {
         "type": "object",
         "properties": {
             "data": [
                 {
-                    "$ref": "#/components/schemas/StageOrder"
+                    "$ref": "#/components/schemas/StageOrderManagement"
                 }
             ]
         },
-        "description": "Data wrapper for StageOrder",
+        "description": "Data wrapper for StageOrderManagement",
         "required": [
             "data"
         ]
