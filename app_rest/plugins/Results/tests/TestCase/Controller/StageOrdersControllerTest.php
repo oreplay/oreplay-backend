@@ -56,7 +56,6 @@ class StageOrdersControllerTest extends ApiCommonErrorsTest
     public function testGetListForbiddenForNonOwner()
     {
         $this->skipNextRequestInSwagger();
-        $this->skipNextRequestInSwagger();
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
         $this->get($this->_getEndpoint());
 
@@ -65,7 +64,6 @@ class StageOrdersControllerTest extends ApiCommonErrorsTest
 
     public function testEditForbiddenForNonOwner()
     {
-        $this->skipNextRequestInSwagger();
         $this->skipNextRequestInSwagger();
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
         $this->patch($this->_getEndpoint() . StageOrdersFixture::STAGE_1, ['description' => 'x']);
