@@ -40,6 +40,18 @@ class User extends RestApiEntity
         'password',
     ];
 
+    protected array $_virtual = [
+        'scope',
+    ];
+
+    protected function _getScope(): string
+    {
+        if ($this->isManager()) {
+            return '*';
+        }
+        return 'results:*';
+    }
+
     protected function _setPassword($password)
     {
         if (strlen($password) > 0) {

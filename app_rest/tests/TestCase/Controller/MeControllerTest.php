@@ -40,6 +40,7 @@ class MeControllerTest extends ApiCommonErrorsTest
                 'email' => 'admin@example.com',
                 'first_name' => 'My Name',
                 'last_name' => 'My Surname',
+                'scope' => '*',
                 'created' => '2021-01-18T10:39:23.000+00:00',
                 'modified' => '2021-01-18T10:41:31.000+00:00',
             ]

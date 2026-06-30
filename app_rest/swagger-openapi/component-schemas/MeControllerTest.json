@@ -37,6 +37,12 @@
                     "type": "string",
                     "example": "2021-01-18T10:41:31.000+00:00"
                 }
+            ],
+            "scope": [
+                {
+                    "type": "string",
+                    "example": "*"
+                }
             ]
         },
         "description": "Entity User"

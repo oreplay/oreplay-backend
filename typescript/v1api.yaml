@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.4.13
+  version: 0.4.14
   title: O-replay - OpenAPI 3.0
   description: O-replay Rest API
   termsOfService: https://github.com/oreplay
@@ -1777,6 +1777,9 @@ components:
         modified:
           type: string
           example: '2021-01-18T10:41:31.000+00:00'
+        scope:
+          type: string
+          example: '*'
       description: Entity User
       required:
         - id
