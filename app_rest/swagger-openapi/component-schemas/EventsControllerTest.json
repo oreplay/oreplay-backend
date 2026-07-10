@@ -95,6 +95,10 @@
                 },
                 {
                     "type": "boolean",
+                    "example": true
+                },
+                {
+                    "type": "boolean",
                     "example": false
                 },
                 {
@@ -468,7 +472,7 @@
             "initial_date": [
                 {
                     "type": "string",
-                    "example": "2026-06-28"
+                    "example": "2026-07-11"
                 },
                 {
                     "type": "string",
@@ -476,11 +480,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-28"
+                    "example": "2026-07-11"
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-28"
+                    "example": "2026-07-11"
                 },
                 {
                     "type": "string",
@@ -492,11 +496,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-27"
+                    "example": "2026-07-10"
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-28"
+                    "example": "2026-07-11"
                 },
                 {
                     "type": "string",
@@ -522,7 +526,7 @@
             "final_date": [
                 {
                     "type": "string",
-                    "example": "2026-06-28"
+                    "example": "2026-07-11"
                 },
                 {
                     "type": "string",
@@ -530,11 +534,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-28"
+                    "example": "2026-07-11"
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-28"
+                    "example": "2026-07-11"
                 },
                 {
                     "type": "string",
@@ -546,11 +550,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-27"
+                    "example": "2026-07-10"
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-28"
+                    "example": "2026-07-11"
                 },
                 {
                     "type": "string",
@@ -770,7 +774,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-27T16:38:33.542+00:00"
+                    "example": "2026-07-10T14:42:46.666+00:00"
                 },
                 {
                     "type": "string",
@@ -782,7 +786,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-27T16:38:33.589+00:00"
+                    "example": "2026-07-10T14:42:46.703+00:00"
                 }
             ],
             "organizer_id": [
@@ -1503,7 +1507,7 @@
                     "properties": {
                         "href": {
                             "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2026-06-27&final_date:gte=2026-06-27&page=1"
+                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2026-07-10&final_date:gte=2026-07-10&page=1"
                         }
                     },
                     "description": "Generic object."

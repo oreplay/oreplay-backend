@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.4.14
+  version: 0.4.15
   title: O-replay - OpenAPI 3.0
   description: O-replay Rest API
   termsOfService: https://github.com/oreplay
@@ -167,14 +167,14 @@ paths:
         - description: ''
           in: query
           name: initial_date:lte
-          example: '2026-06-27'
+          example: '2026-07-10'
           required: false
           schema:
             type: string
         - description: ''
           in: query
           name: final_date:gte
-          example: '2026-06-27'
+          example: '2026-07-10'
           required: false
           schema:
             type: string
@@ -220,6 +220,9 @@ paths:
                 final_date:
                   type: string
                   example: '2024-03-26'
+                is_hidden:
+                  type: number
+                  example: 1
                 federation_id:
                   type: string
                   example: FEDO
@@ -1482,10 +1485,10 @@ components:
           nullable: true
         initial_date:
           type: string
-          example: '2026-06-28'
+          example: '2026-07-11'
         final_date:
           type: string
-          example: '2026-06-28'
+          example: '2026-07-11'
         timezone:
           type: string
           example: Europe/Madrid
@@ -1514,6 +1517,7 @@ components:
       description: Entity Event
       required:
         - id
+        - is_hidden
         - description
         - initial_date
         - final_date

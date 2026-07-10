@@ -444,6 +444,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'description' => 'Test New Race',
             'initial_date' => '2024-03-26',
             'final_date' => '2024-03-26',
+            'is_hidden' => true,
             'federation_id' => Federation::FEDO,
             'organizer_id' => Organizer::ID,
         ];
@@ -460,6 +461,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($data['description'], $db->description);
         $this->assertEquals($data['federation_id'], $db->federation_id);
         $this->assertEquals($data['organizer_id'], $db->organizer_id);
+        $this->assertEquals($data['is_hidden'], $db->is_hidden);
         $this->assertEquals($data['id'], $db->id);
     }
 
