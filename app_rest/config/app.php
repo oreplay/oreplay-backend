@@ -152,7 +152,7 @@ return [
      */
     'Asset' => [
         //'timestamp' => true,
-        // 'cacheTime' => '+1 year'
+        // 'cacheTime' => CacheGrp::LONGEST_CACHE
     ],
 
     /*
@@ -205,7 +205,7 @@ return [
             'className' => MemcachedEngine::class,
             'prefix' => env('TAG_VERSION', '') . '_myapp_cake_core_',
             'path' => CACHE . 'persistent' . DS,
-            'duration' => '+1 years',
+            'duration' => CacheGrp::LONGEST_CACHE,
             'url' => env('CACHE_DEFAULT_URL', null),
         ],
 
@@ -219,7 +219,7 @@ return [
             'className' => MemcachedEngine::class,
             'prefix' => env('TAG_VERSION', '') . '_myapp_cake_model_',
             'path' => CACHE . 'models' . DS,
-            'duration' => '+1 years',
+            'duration' => CacheGrp::LONGEST_CACHE,
             'url' => env('CACHE_DEFAULT_URL', null),
         ],
 
@@ -232,7 +232,7 @@ return [
             'className' => MemcachedEngine::class,
             'prefix' => env('TAG_VERSION', '') . '_myapp_cake_routes_',
             'path' => CACHE,
-            'duration' => '+1 years',
+            'duration' => CacheGrp::LONGEST_CACHE,
             'url' => env('CACHE_DEFAULT_URL', null),
         ],
     ],

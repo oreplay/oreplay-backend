@@ -6,6 +6,8 @@ namespace App\Lib\Consts;
 
 class CacheGrp
 {
+    const string LONGEST_CACHE = '+29 days';
+
     const DEFAULT = 'default';
     const ACL = 'acl';
     const UPLOAD = 'upload';
