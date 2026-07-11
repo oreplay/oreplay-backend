@@ -79,7 +79,7 @@ class StageOrdersTableTest extends TestCase
         $this->assertEquals(EventsFixture::FIRST_RAID, $last->original_event_id);
         $this->assertTrue($last->is_official);
         $this->assertInstanceOf(FrozenTime::class, $last->computed);
-        $this->assertNull($last->start); // STAGE_RAID has no start
+        $this->assertNull($last->start);
     }
 
     public function testGetAllCreatingOneCopiesSourceStageStart(): void
@@ -102,7 +102,6 @@ class StageOrdersTableTest extends TestCase
 
         $this->assertSame($maxLen, mb_strlen($truncated));
         $this->assertSame(mb_substr($tooLong, 0, $maxLen), $truncated);
-        // still valid utf-8: no multibyte character was split at the boundary
         $this->assertSame($truncated, mb_convert_encoding($truncated, 'UTF-8', 'UTF-8'));
     }
 }

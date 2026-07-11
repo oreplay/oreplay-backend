@@ -39,10 +39,20 @@ class StageOrdersController extends ApiController
         $stageOrder = $this->StageOrders->find()
             ->where(['id' => $id, 'stage_id' => $stageId])
             ->firstOrFail();
-        $stageOrder = $this->StageOrders->patchEntity($stageOrder, $data);
+        $stageOrder = $this->StageOrders->patchEntity($stageOrder, $data, [
+            'accessibleFields' => $this->_editableOriginalIds($stageOrder),
+        ]);
         $saved = $this->StageOrders->saveOrFail($stageOrder);
         $this->StageOrders->deleteCache($stageId);
         $this->return = $this->StageOrders->get($saved->id)->toArrayManagement();
+    }
+
+    private function _editableOriginalIds(StageOrder $stageOrder): array
+    {
+        return [
+            'original_event_id' => $stageOrder->original_event_id === null,
+            'original_stage_id' => $stageOrder->original_stage_id === null,
+        ];
     }
 
     private function _isUserAllowedInStage(string $eventId, string $stageId): void
