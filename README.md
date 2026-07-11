@@ -1,10 +1,23 @@
-# CakePHP Application Skeleton
+# O-Replay API backend
 
-A skeleton for creating applications with [CakePHP](https://cakephp.org) 4.x.
+A Rest api application writen with [CakePHP](https://cakephp.org)
 
 # License
 
 All code is licensed under MIT License
+
+# Before Writing Code
+
+- **Read this entire document**
+- **Check if files are auto-generated** (don't edit them!)
+- **Use existing patterns** (check similar components first)
+- **Refactor Over Hack**: Before adding changes, evaluate whether a refactor is needed. Avoid quick hacks or case-specific fixes — prefer clean, well-structured solutions that are maintainable long-term. If existing code needs restructuring to accommodate a change properly, refactor first.
+- **Consistency**: Match existing code style and patterns
+- **Readability**: Avoid long inline expressions (ternaries, complex conditions) — extract them into named variables
+- **DRY**: Extract duplicated logic into reusable domain functions rather than repeating inline expressions
+- **Maintainability**: Clear naming. Follow SOLID and Clean Code (Robert C. Martin) principles.
+- **Do not write any comments at all**: If you feel the need to write a comment explaining something, extract a variable or a function with a meaningful name, following SOLID and Clean Code (Robert C. Martin). A magic number becomes a named constant; a condition becomes a named predicate; a block becomes a named function. This includes JSDoc, section dividers (`// ─── Section ───`), inline notes, and per-section UI comments. Compiler and tooling directives (`eslint-disable`, `@ts-expect-error`, `#!/usr/bin/env`) are not comments and are exempt.
+- **Testing**: Write tests for new features
 
 # Serve and working with docker
 
