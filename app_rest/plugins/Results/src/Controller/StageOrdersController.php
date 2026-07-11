@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Controller;
 
+use App\Model\Table\UsersTable;
 use Cake\Http\Exception\ForbiddenException;
 use Results\Model\Entity\StageOrder;
 use Results\Model\Table\StagesTable;
@@ -27,6 +28,16 @@ class StageOrdersController extends ApiController
                 return $stageOrder->toArrayManagement();
             })
             ->toList();
+    }
+
+    protected function addNew($data)
+    {
+        $eventId = $this->request->getParam('eventID');
+        $stageId = $this->request->getParam('stageID');
+        $this->_isUserAllowedInStage($eventId, $stageId);
+
+        $stageOrder = $this->StageOrders->createInStage($data, $eventId, $stageId);
+        $this->return = $this->StageOrders->get($stageOrder->id)->toArrayManagement();
     }
 
     protected function edit($id, $data)

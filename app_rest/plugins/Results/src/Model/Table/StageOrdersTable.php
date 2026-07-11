@@ -10,6 +10,7 @@ use Cake\Cache\Cache;
 use Cake\Datasource\ResultSetInterface;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Cake\Utility\Text;
 use Cake\Validation\Validator;
 use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageOrder;
@@ -106,5 +107,25 @@ class StageOrdersTable extends AppTable
         } else {
             return $stages;
         }
+    }
+
+    public function createInStage(array $data, string $eventId, string $stageId): StageOrder
+    {
+        /** @var StageOrder $stageOrder */
+        $stageOrder = $this->newEmptyEntity();
+        $stageOrder->id = Text::uuid();
+        $stageOrder = $this->patchEntity($stageOrder, $data, [
+            'accessibleFields' => [
+                'original_event_id' => true,
+                'original_stage_id' => true,
+                'stage_order' => true,
+            ],
+        ]);
+        $stageOrder->event_id = $eventId;
+        $stageOrder->stage_id = $stageId;
+        $stageOrder->computed = FrozenTime::now();
+        $this->saveOrFail($stageOrder);
+        $this->deleteCache($stageId);
+        return $stageOrder;
     }
 }

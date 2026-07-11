@@ -78,6 +78,44 @@ class StageOrdersControllerTest extends ApiCommonErrorsTest
         $this->assertResponseCode(403);
     }
 
+    public function testAddNewAsManagerCreatesInStage()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $data = [
+            '_c' => 'PostStageOrdersBody',
+            'description' => 'Manual stage order',
+            'stage_order' => 5,
+            'start' => '2024-05-05 09:00:00',
+            'is_official' => true,
+            'original_event_id' => EventsFixture::FIRST_RAID,
+            'original_stage_id' => StagesFixture::STAGE_RAID,
+        ];
+        $this->post($this->_getEndpoint(), $data);
+
+        $json = $this->assertJsonResponseOK();
+        $row = $json['data'];
+        $this->assertEquals('StageOrderManagement', $row['_c']);
+        $this->assertEquals('Manual stage order', $row['description']);
+        $this->assertEquals(5, $row['stage_order']);
+        $this->assertTrue($row['is_official']);
+        $this->assertEquals(EventsFixture::FIRST_RAID, $row['original_event_id']);
+        $this->assertEquals(StagesFixture::STAGE_RAID, $row['original_stage_id']);
+
+        $db = StageOrdersTable::load()->get($row['id']);
+        $this->assertEquals(Event::FIRST_EVENT, $db->event_id);
+        $this->assertEquals(Stage::FIRST_STAGE, $db->stage_id);
+        $this->assertNotEmpty($db->computed);
+    }
+
+    public function testAddNewForbiddenForNonManager()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+        $this->post($this->_getEndpoint(), ['description' => 'x', 'stage_order' => 1]);
+
+        $this->assertResponseCode(403);
+    }
+
     public function testEditUpdatesEditableFields()
     {
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
