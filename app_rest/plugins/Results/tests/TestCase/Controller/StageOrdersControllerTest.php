@@ -45,11 +45,18 @@ class StageOrdersControllerTest extends ApiCommonErrorsTest
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertCount(1, $bodyDecoded['data']);
         $row = $bodyDecoded['data'][0];
-        $this->assertEquals(['id', 'stage_order', 'description', 'created', '_c'], array_keys($row));
+        $this->assertEquals([
+            'id', 'stage_order', 'description', 'original_event_id', 'original_stage_id',
+            'is_official', 'start', 'created', '_c',
+        ], array_keys($row));
         $this->assertEquals('StageOrderManagement', $row['_c']);
         $this->assertEquals(StageOrdersFixture::STAGE_1, $row['id']);
         $this->assertEquals(1, $row['stage_order']);
         $this->assertEquals('Long stage', $row['description']);
+        $this->assertEquals(Event::FIRST_EVENT, $row['original_event_id']);
+        $this->assertEquals(Stage::FIRST_STAGE, $row['original_stage_id']);
+        $this->assertFalse($row['is_official']);
+        $this->assertNotEmpty($row['start']);
         $this->assertNotEmpty($row['created']);
     }
 
@@ -83,7 +90,10 @@ class StageOrdersControllerTest extends ApiCommonErrorsTest
         $bodyDecoded = $this->assertJsonResponseOK();
         // edit returns the same management object shape as getList
         $row = $bodyDecoded['data'];
-        $this->assertEquals(['id', 'stage_order', 'description', 'created', '_c'], array_keys($row));
+        $this->assertEquals([
+            'id', 'stage_order', 'description', 'original_event_id', 'original_stage_id',
+            'is_official', 'start', 'created', '_c',
+        ], array_keys($row));
         $this->assertEquals('StageOrderManagement', $row['_c']);
         $this->assertEquals(StageOrdersFixture::STAGE_1, $row['id']);
         $this->assertEquals(1, $row['stage_order']);
@@ -91,6 +101,40 @@ class StageOrdersControllerTest extends ApiCommonErrorsTest
         $this->assertNotEmpty($row['created']);
         $db = StageOrdersTable::load()->get(StageOrdersFixture::STAGE_1);
         $this->assertEquals('Updated description', $db->description);
+    }
+
+    public function testEditUpdatesStartAndIsOfficial()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $data = [
+            'description' => 'Long stage',
+            'start' => '2024-05-05 09:00:00',
+            'is_official' => true,
+        ];
+        $this->patch($this->_getEndpoint() . StageOrdersFixture::STAGE_1, $data);
+
+        $this->assertJsonResponseOK();
+        $db = StageOrdersTable::load()->get(StageOrdersFixture::STAGE_1);
+        $this->assertTrue($db->is_official);
+        $this->assertEquals('2024-05-05 09:00:00', $db->start->format('Y-m-d H:i:s'));
+    }
+
+    public function testEditCannotChangeImmutableFields()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $data = [
+            'description' => 'Long stage',
+            'original_event_id' => 'ffffffff-ffff-4fff-8fff-ffffffffffff',
+            'computed' => '2000-01-01 00:00:00',
+        ];
+        $this->patch($this->_getEndpoint() . StageOrdersFixture::STAGE_1, $data);
+
+        $this->assertJsonResponseOK();
+        $db = StageOrdersTable::load()->get(StageOrdersFixture::STAGE_1);
+        $this->assertEquals(Event::FIRST_EVENT, $db->original_event_id); // unchanged
+        $this->assertEquals('2024-01-02 10:00:05', $db->computed->format('Y-m-d H:i:s')); // unchanged
     }
 
     public function testEditIgnoresNonDescriptionFields()

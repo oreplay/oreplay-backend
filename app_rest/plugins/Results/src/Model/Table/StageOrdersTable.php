@@ -8,13 +8,16 @@ use App\Lib\Consts\CacheGrp;
 use App\Model\Table\AppTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\ResultSetInterface;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\Validation\Validator;
-use Results\Model\Entity\Event;
+use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageOrder;
 
 class StageOrdersTable extends AppTable
 {
+    public const int DESCRIPTION_MAX_LENGTH = 255;
+
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
@@ -24,8 +27,13 @@ class StageOrdersTable extends AppTable
     {
         $validator
             ->notEmptyString('description')
-            ->maxLength('description', 255);
+            ->maxLength('description', self::DESCRIPTION_MAX_LENGTH);
         return $validator;
+    }
+
+    public static function truncateDescription(?string $description): string
+    {
+        return mb_substr((string)$description, 0, self::DESCRIPTION_MAX_LENGTH);
     }
 
     public static function load(): self
@@ -74,18 +82,21 @@ class StageOrdersTable extends AppTable
         });
 
         if ($currentStage->isEmpty()) {
-            /** @var Event $event */
-            $event = EventsTable::load()->find()
-                ->matching(StagesTable::name(), function ($q) use ($srcStageId) {
-                    return $q->where([StagesTable::field('id') => $srcStageId]);
-                })
+            /** @var Stage $srcStage */
+            $srcStage = StagesTable::load()->find()
+                ->where([StagesTable::field('id') => $srcStageId])
+                ->contain(EventsTable::name())
                 ->firstOrFail();
             /** @var StageOrder $new */
             $new = $this->fillNewWithUuid([]);
             $new->stage_id = $stageId;
             $new->event_id = $eventId;
-            $new->description = $event->description;
+            $new->description = self::truncateDescription($srcStage->event->description);
             $new->original_stage_id = $srcStageId;
+            $new->original_event_id = $srcStage->event_id;
+            $new->start = $srcStage->start;
+            $new->computed = FrozenTime::now();
+            $new->is_official = true;
             $new->stage_order = $stages->count() + 1;
             $this->saveOrFail($new);
 
