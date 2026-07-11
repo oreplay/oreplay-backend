@@ -13,7 +13,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "0b7edbf7-6283-4d8e-88a7-d41bb25414e2"
+                    "example": "0b2e0e47-8379-4c23-a02f-d6838af291af"
                 },
                 {
                     "type": "string",
@@ -26,6 +26,33 @@
                 {
                     "type": "string",
                     "example": "regional100pts"
+                }
+            ],
+            "title": [
+                {
+                    "type": "string",
+                    "example": "Regional ranking 100pts"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "example": "My new ranking"
+                },
+                {
+                    "type": "string",
+                    "example": "Regional ranking 100pts"
+                },
+                {
+                    "type": "string",
+                    "example": "My circuit title"
+                },
+                {
+                    "type": "string",
+                    "example": "Regional ranking 100pts"
                 }
             ],
             "scoring_algorithm": [
@@ -104,33 +131,6 @@
                 {
                     "type": "string",
                     "example": "e662499c-4d66-4675-8501-905bcfe28a41"
-                }
-            ],
-            "title": [
-                {
-                    "type": "string",
-                    "example": "Regional ranking 100pts"
-                },
-                {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
-                },
-                {
-                    "type": "string",
-                    "example": "My new ranking"
-                },
-                {
-                    "type": "string",
-                    "example": "Regional ranking 100pts"
-                },
-                {
-                    "type": "string",
-                    "example": "My circuit title"
-                },
-                {
-                    "type": "string",
-                    "example": "Regional ranking 100pts"
                 }
             ],
             "max_points": [
@@ -356,11 +356,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-27T16:38:38.707+00:00"
+                    "example": "2026-07-11T12:07:30.734+00:00"
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-27T16:38:38.759+00:00"
+                    "example": "2026-07-11T12:07:30.792+00:00"
                 },
                 {
                     "type": "string",
@@ -368,11 +368,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-27T16:38:38.808+00:00"
+                    "example": "2026-07-11T12:07:30.844+00:00"
                 },
                 {
                     "type": "string",
-                    "example": "2026-06-27T16:38:38.833+00:00"
+                    "example": "2026-07-11T12:07:30.863+00:00"
                 }
             ],
             "_links": [
@@ -420,7 +420,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/rankings/0b7edbf7-6283-4d8e-88a7-d41bb25414e2"
+                    "example": "http://dev.example.com/api/v1/rankings/0b2e0e47-8379-4c23-a02f-d6838af291af"
                 },
                 {
                     "type": "string",

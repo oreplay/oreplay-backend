@@ -5,7 +5,7 @@
             "id": [
                 {
                     "type": "string",
-                    "example": "850fbdfa-50b9-4f96-9114-b0ad6ae30211"
+                    "example": "74f79867-574c-46d0-be9a-e1f91a720820"
                 }
             ],
             "email": [
@@ -24,6 +24,12 @@
                 {
                     "type": "string",
                     "example": "Last"
+                }
+            ],
+            "scope": [
+                {
+                    "type": "string",
+                    "example": "results:*"
                 }
             ]
         },

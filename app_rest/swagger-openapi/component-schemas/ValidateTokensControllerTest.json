@@ -5,7 +5,7 @@
             "id": [
                 {
                     "type": "string",
-                    "example": "edc12cb6-75f3-4c01-b0ff-03d647934a29"
+                    "example": "a06ed0c4-0358-4ebc-941f-2b379233f34c"
                 }
             ],
             "email": [
@@ -35,7 +35,13 @@
             "modified": [
                 {
                     "type": "string",
-                    "example": "2026-03-01T14:59:00.000+00:00"
+                    "example": "2026-07-11T12:07:30.000+00:00"
+                }
+            ],
+            "scope": [
+                {
+                    "type": "string",
+                    "example": "results:*"
                 }
             ]
         },

@@ -9,6 +9,10 @@
                 },
                 {
                     "type": "string",
+                    "example": "2d5fd439-0626-471f-9940-19fb54ba6f8f"
+                },
+                {
+                    "type": "string",
                     "example": "83dc3504-9edd-4bbd-80b8-589aa0359c2e"
                 }
             ],
@@ -16,6 +20,10 @@
                 {
                     "type": "number",
                     "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 5
                 },
                 {
                     "type": "number",
@@ -29,10 +37,74 @@
                 },
                 {
                     "type": "string",
+                    "example": "Manual stage order"
+                },
+                {
+                    "type": "string",
                     "example": "Updated description"
                 }
             ],
+            "original_event_id": [
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                }
+            ],
+            "original_stage_id": [
+                {
+                    "type": "string",
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "type": "string",
+                    "example": "91c54cd6-98de-441c-a71c-cda466c1abc3"
+                },
+                {
+                    "type": "string",
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                }
+            ],
+            "is_official": [
+                {
+                    "type": "boolean",
+                    "example": false
+                },
+                {
+                    "type": "boolean",
+                    "example": true
+                },
+                {
+                    "type": "boolean",
+                    "example": true
+                }
+            ],
+            "start": [
+                {
+                    "type": "string",
+                    "example": "2023-11-01T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-05-05T09:00:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-05-05T09:00:00.000+00:00"
+                }
+            ],
             "created": [
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
                 {
                     "type": "string",
                     "example": "****-**-*****:**:**.***+**:**"
@@ -62,22 +134,55 @@
             "data"
         ]
     },
-    "PatchStageOrdersBody": {
+    "PostStageOrdersBody": {
         "type": "object",
         "properties": {
             "description": [
                 {
                     "type": "string",
-                    "example": "Updated description"
+                    "example": "Manual stage order"
+                }
+            ],
+            "stage_order": [
+                {
+                    "type": "number",
+                    "example": 5
+                }
+            ],
+            "start": [
+                {
+                    "type": "string",
+                    "example": "2024-05-05 09:00:00"
+                }
+            ],
+            "is_official": [
+                {
+                    "type": "number",
+                    "example": 1
+                }
+            ],
+            "original_event_id": [
+                {
+                    "type": "string",
+                    "example": "1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00"
+                }
+            ],
+            "original_stage_id": [
+                {
+                    "type": "string",
+                    "example": "91c54cd6-98de-441c-a71c-cda466c1abc3"
                 }
             ]
         },
-        "description": "Entity PatchStageOrdersBody"
+        "description": "Entity PostStageOrdersBody"
     },
     "ResStageOrderManagement": {
         "type": "object",
         "properties": {
             "data": [
+                {
+                    "$ref": "#/components/schemas/StageOrderManagement"
+                },
                 {
                     "$ref": "#/components/schemas/StageOrderManagement"
                 }
@@ -87,5 +192,41 @@
         "required": [
             "data"
         ]
+    },
+    "PatchStageOrdersBody": {
+        "type": "object",
+        "properties": {
+            "description": [
+                {
+                    "type": "string",
+                    "example": "Updated description"
+                }
+            ],
+            "start": [
+                {
+                    "type": "string",
+                    "example": "2024-05-05 09:00:00"
+                }
+            ],
+            "is_official": [
+                {
+                    "type": "number",
+                    "example": 1
+                }
+            ],
+            "original_event_id": [
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                }
+            ],
+            "original_stage_id": [
+                {
+                    "type": "string",
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                }
+            ]
+        },
+        "description": "Entity PatchStageOrdersBody"
     }
 }

@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.4.15
+  version: 0.4.16
   title: O-replay - OpenAPI 3.0
   description: O-replay Rest API
   termsOfService: https://github.com/oreplay
@@ -167,14 +167,14 @@ paths:
         - description: ''
           in: query
           name: initial_date:lte
-          example: '2026-07-10'
+          example: '2026-07-11'
           required: false
           schema:
             type: string
         - description: ''
           in: query
           name: final_date:gte
-          example: '2026-07-10'
+          example: '2026-07-11'
           required: false
           schema:
             type: string
@@ -602,7 +602,7 @@ paths:
                   example: computable_org
                 runner_id:
                   type: string
-                  example: b3ba1b17-c26e-4bfd-ae80-237e207791b7
+                  example: fbdc434e-2255-469e-a88b-be63ac783f46
                 stage_order:
                   type: number
                   example: 1
@@ -1095,11 +1095,54 @@ paths:
                 $ref: '#/components/schemas/ArrayStageOrderManagement'
       security:
         - bearerAuth: []
+    post:
+      operationId: postListStageOrders
+      summary: ''
+      description: Add new as manager creates in stage
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        - description: ID in URL
+          in: path
+          name: stageID
+          required: true
+          schema:
+            type: string
+          example: 51d63e99-5d7c-4382-a541-8567015d8eed
+        - description: Auth token
+          in: header
+          name: Authorization
+          example: Bearer ****************
+          required: true
+          schema:
+            type: string
+      tags:
+        - StageOrders
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResStageOrderManagement'
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostStageOrdersBody'
   /api/v1/events/{eventID}/stages/{stageID}/stageOrders/{stageOrderID}:
     patch:
       operationId: patchStageOrders
       summary: ''
-      description: Edit updates description
+      description: Edit updates editable fields
       parameters:
         - description: ID in URL
           in: path
@@ -1428,7 +1471,7 @@ components:
           example: '2034-01-06T13:09:01.523+00:00'
         token:
           type: string
-          example: TqwK8x
+          example: Syuege
         created:
           type: string
           example: '****-**-*****:**:**.***+**:**'
@@ -1485,10 +1528,10 @@ components:
           nullable: true
         initial_date:
           type: string
-          example: '2026-07-11'
+          example: '2026-07-12'
         final_date:
           type: string
-          example: '2026-07-11'
+          example: '2026-07-12'
         timezone:
           type: string
           example: Europe/Madrid
@@ -1790,6 +1833,7 @@ components:
         - email
         - first_name
         - last_name
+        - scope
     ResUser:
       type: object
       properties:
@@ -1813,7 +1857,7 @@ components:
       properties:
         id:
           type: string
-          example: 0a4c6954-c717-4e99-aab0-41e29aac6411
+          example: 9069fa2d-fabd-45f3-97a5-af785713bb8a
         short_name:
           type: string
           example: ME
@@ -1838,7 +1882,7 @@ components:
       properties:
         id:
           type: string
-          example: d878d2be-1a4f-4fc7-8087-bf33a64ad28c
+          example: a9fee8b2-f537-4176-96ff-350680e939bc
         sicard:
           type: number
           example: 2009933
@@ -1898,7 +1942,7 @@ components:
       properties:
         id:
           type: string
-          example: f30e24cc-e5f4-46fc-917d-21e32cb2651f
+          example: 5e2699bf-e6d9-42e0-b6ad-71c767d2b043
         short_name:
           type: string
           example: Club A
@@ -1911,7 +1955,7 @@ components:
       properties:
         id:
           type: string
-          example: 3959b8be-2bfb-432f-ac02-e880e8108584
+          example: b256bd54-9b39-45bb-8174-b23ef7dfacb9
         stage_order:
           type: number
           example: 1
@@ -1967,7 +2011,7 @@ components:
       properties:
         id:
           type: string
-          example: f03ce741-30e1-4c9e-bf9d-86668f9671dd
+          example: 8f63b935-7ee6-4cd7-86f9-f89e0c7cc960
         description:
           type: string
           example: Test Foot-o
@@ -1998,7 +2042,7 @@ components:
       properties:
         id:
           type: string
-          example: c7262a67-1732-45a5-949a-86f873f93704
+          example: 6bb434c7-49a0-455a-b207-023f639adb2c
         status_code:
           type: number
           example: 0
@@ -2100,6 +2144,10 @@ components:
         id:
           type: string
           example: regional100pts
+        title:
+          type: string
+          example: Regional ranking 100pts
+          nullable: true
         scoring_algorithm:
           type: string
           example: Rankings\Lib\ScoringAlgorithms\SimpleScoreCalculator
@@ -2109,10 +2157,6 @@ components:
         stage_id:
           type: string
           example: e662499c-4d66-4675-8501-905bcfe28a41
-        title:
-          type: string
-          example: Regional ranking 100pts
-          nullable: true
         max_points:
           type: number
           example: 100
@@ -2421,6 +2465,18 @@ components:
         description:
           type: string
           example: Long stage
+        original_event_id:
+          type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        original_stage_id:
+          type: string
+          example: 51d63e99-5d7c-4382-a541-8567015d8eed
+        is_official:
+          type: boolean
+          example: false
+        start:
+          type: string
+          example: '2023-11-01T10:01:00.000+00:00'
         created:
           type: string
           example: '****-**-*****:**:**.***+**:**'
@@ -2429,6 +2485,10 @@ components:
         - id
         - stage_order
         - description
+        - original_event_id
+        - original_stage_id
+        - is_official
+        - start
         - created
     ArrayStageOrderManagement:
       type: object
@@ -2440,15 +2500,28 @@ components:
       description: Data wrapper for StageOrderManagement
       required:
         - data
-    PatchStageOrdersBody:
+    PostStageOrdersBody:
       type: object
       properties:
         description:
           type: string
-          example: Updated description
-      description: Entity PatchStageOrdersBody
-      required:
-        - description
+          example: Manual stage order
+        stage_order:
+          type: number
+          example: 5
+        start:
+          type: string
+          example: '2024-05-05 09:00:00'
+        is_official:
+          type: number
+          example: 1
+        original_event_id:
+          type: string
+          example: 1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00
+        original_stage_id:
+          type: string
+          example: 91c54cd6-98de-441c-a71c-cda466c1abc3
+      description: Entity PostStageOrdersBody
     ResStageOrderManagement:
       type: object
       properties:
@@ -2457,6 +2530,25 @@ components:
       description: Data wrapper for StageOrderManagement
       required:
         - data
+    PatchStageOrdersBody:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Updated description
+        start:
+          type: string
+          example: '2024-05-05 09:00:00'
+        is_official:
+          type: number
+          example: 1
+        original_event_id:
+          type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        original_stage_id:
+          type: string
+          example: 51d63e99-5d7c-4382-a541-8567015d8eed
+      description: Entity PatchStageOrdersBody
     ArrayStage:
       type: object
       properties:
@@ -2601,7 +2693,7 @@ components:
             type: string
             example: |2
 
-                  [ERROR - 400] (3/1/26, 2:58 PM) Invalid payload structure configuration.contents StartList | ResultList and configuration.results_type Mixed 
+                  [ERROR - 400] (7/11/26, 12:07 PM) Invalid payload structure configuration.contents StartList | ResultList and configuration.results_type Mixed 
       description: Entity UploadedMeta
     ResUploaded:
       type: object

@@ -13,5 +13,5 @@ export interface User {
   id: string
   last_name: string
   modified?: string
-  scope?: string
+  scope: string
 }
