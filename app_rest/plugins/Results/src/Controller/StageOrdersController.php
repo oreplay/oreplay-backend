@@ -58,7 +58,7 @@ class StageOrdersController extends ApiController
     private function _isUserAllowedInStage(string $eventId, string $stageId): void
     {
         $stages = StagesTable::load();
-        $userId = $this->getLocalOauth()->verifyAuthorizationAndGetToken()->getUserId();
+        $userId = $this->OAuthServer->getUserID();
         $stages->Events->getEventFromUser($eventId, $userId);
         $stage = $stages->find()->where(['id' => $stageId, 'event_id' => $eventId])->first();
         if (!$stage) {

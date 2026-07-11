@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Controller\Component\OAuthServerComponent;
 use App\Lib\I18n\LegacyI18n;
 use App\Lib\Oauth\OAuthServer;
+use Cake\Http\Exception\InternalErrorException;
 use RestApi\Controller\Component\ApiRestCorsComponent;
 use RestApi\Controller\RestApiController;
 
@@ -44,6 +45,9 @@ abstract class ApiController extends RestApiController
         LegacyI18n::setDefaultLocale();
     }
 
+    /**
+     * @deprecated use getManualOauth() instead, only use getLocalOauth for overwriting
+     */
     protected function getLocalOauth(): OAuthServer
     {
         if ($this->_localOauth) {
@@ -52,5 +56,17 @@ abstract class ApiController extends RestApiController
         $this->_localOauth = new OAuthServer();
         $this->_localOauth->setupOauth($this);
         return $this->_localOauth;
+    }
+
+    protected function getManualOauth(): OAuthServer
+    {
+        if (!$this->isPublicController()) {
+            throw new InternalErrorException(
+                'getManualOauth() is only for public controllers, where the request lifecycle does '
+                . 'not verify auth. This controller is non-public: use $this->OAuthServer, which '
+                . 'OAuthServerComponent has already verified for the request.'
+            );
+        }
+        return $this->getLocalOauth();
     }
 }

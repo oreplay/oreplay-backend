@@ -29,7 +29,7 @@ class EventsController extends ApiController
         $userId = null;
         $isAdmin = false;
         if ($this->_getBearer()) {
-            $userId = $this->getLocalOauth()->verifyAuthorizationAndGetToken()->getUserId();
+            $userId = $this->getManualOauth()->verifyAuthorizationAndGetToken()->getUserId();
             $isAdmin = $this->Events->Users->get($userId)->isManager();
         }
 
@@ -48,7 +48,7 @@ class EventsController extends ApiController
             if ($isDesktopClientAuthenticated) {
                 $rootEntity = 'event';
             } else {
-                $this->getLocalOauth()->verifyAuthorizationAndGetToken();
+                $this->getManualOauth()->verifyAuthorizationAndGetToken();
             }
         }
         $this->flatResponse = true;
@@ -76,7 +76,7 @@ class EventsController extends ApiController
 
     protected function addNew($data)
     {
-        $userId = $this->getLocalOauth()->verifyAuthorizationAndGetToken()->getUserId();
+        $userId = $this->getManualOauth()->verifyAuthorizationAndGetToken()->getUserId();
         /** @var Event $event */
         $event = $this->Events->patchFromNewValidatingFederation($data);
         if ($event->getErrors()) {
@@ -103,7 +103,7 @@ class EventsController extends ApiController
 
     private function _getEventFromUser($id): Event
     {
-        $userId = $this->getLocalOauth()->verifyAuthorizationAndGetToken()->getUserId();
+        $userId = $this->getManualOauth()->verifyAuthorizationAndGetToken()->getUserId();
         return $this->Events->getEventFromUser($id, $userId);
     }
 }

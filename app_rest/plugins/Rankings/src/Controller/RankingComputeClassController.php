@@ -95,7 +95,7 @@ class RankingComputeClassController extends ApiController
         unset($data[self::SECRET_PARAM]);
         if ($querySecret === 'auth') {
             // request from frontend
-            $a = $this->getLocalOauth()->verifyAuthorizationAndGetToken();
+            $a = $this->getManualOauth()->verifyAuthorizationAndGetToken();
             $this->_currentUid = $a->getUserID();
             UsersTable::load()->getManagerOrFail($this->_currentUid);
         } else {
