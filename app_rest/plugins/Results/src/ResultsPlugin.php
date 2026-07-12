@@ -4,11 +4,20 @@ declare(strict_types = 1);
 
 namespace Results;
 
+use App\Lib\Rbac\ScopeRegistry;
+use Cake\Core\PluginApplicationInterface;
 use Cake\Routing\RouteBuilder;
 use RestApi\Lib\RestPlugin;
+use Results\Lib\Rbac\ResultsScopeContributor;
 
 class ResultsPlugin extends RestPlugin
 {
+    public function bootstrap(PluginApplicationInterface $app): void
+    {
+        parent::bootstrap($app);
+        ScopeRegistry::instance()->add(new ResultsScopeContributor());
+    }
+
     protected function routeConnectors(RouteBuilder $builder): void
     {
         $builder->connect(

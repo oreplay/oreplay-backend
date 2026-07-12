@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace App\Model\Entity;
 
+use App\Lib\Rbac\ScopeRegistry;
 use Authentication\PasswordHasher\DefaultPasswordHasher;
 use RestApi\Model\Entity\RestApiEntity;
 use function Cake\I18n\__;
@@ -49,7 +50,7 @@ class User extends RestApiEntity
         if ($this->isManager()) {
             return '*';
         }
-        return 'results:*';
+        return ScopeRegistry::instance()->assemble($this);
     }
 
     protected function _setPassword($password)

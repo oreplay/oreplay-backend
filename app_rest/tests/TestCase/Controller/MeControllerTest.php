@@ -55,4 +55,13 @@ class MeControllerTest extends ApiCommonErrorsTest
         ];
         $this->assertEquals($expectedHeaders, $headers);
     }
+
+    public function testGetList_nonAdmin_scopeComesFromResultsPlugin()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+        $this->get(ApiController::ROUTE_PREFIX . '/me');
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals('results:*', $bodyDecoded['data']['scope']);
+    }
 }
