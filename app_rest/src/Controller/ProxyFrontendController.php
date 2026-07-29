@@ -121,7 +121,10 @@ class ProxyFrontendController extends ApiController
 
     private function _getSimpleLang(): string
     {
-        $lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
+        $lang = $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? null;
+        if (!$lang) {
+            return 'en';
+        }
         $exploded = explode(',', $lang)[0];
         return explode('-', $exploded)[0];
     }
