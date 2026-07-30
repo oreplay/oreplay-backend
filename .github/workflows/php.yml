@@ -102,6 +102,16 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, intl, json
+          tools: composer
+
+      - name: Composer install
+        run: composer install -d app_rest --no-dev --optimize-autoloader --no-interaction --no-progress
+
       - name: Extract version from tag
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> "$GITHUB_ENV"
 
