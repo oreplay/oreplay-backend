@@ -4,12 +4,13 @@ declare(strict_types = 1);
 
 namespace App\Test\Fixture;
 
+use App\Lib\Consts\SeedIds;
 use RestApi\TestSuite\Fixture\RestApiFixture;
 
 class OauthAccessTokensFixture extends RestApiFixture
 {
     const LOAD = 'app.OauthAccessTokens';
-    const ACCESS_ADMIN_PROVIDER = '555ca191ca768883333c916a0c05bc72bdbbc89';
+    const ACCESS_ADMIN_PROVIDER = SeedIds::OAUTH_ACCESS_ADMIN_PROVIDER;
     const ACCESS_NON_ADMIN_PROVIDER = '253ca191ca768883592c916a0c05bc72bdbbc936';
 
     public string $table = 'oauth_access_tokens';

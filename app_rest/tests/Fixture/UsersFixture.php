@@ -4,13 +4,14 @@ declare(strict_types = 1);
 
 namespace App\Test\Fixture;
 
+use App\Lib\Consts\SeedIds;
 use RestApi\TestSuite\Fixture\RestApiFixture;
 
 class UsersFixture extends RestApiFixture
 {
     const LOAD = 'app.Users';
-    const USER_ADMIN_ID = '8186ef35-e8c1-4e5c-bcc4-42bb362f050b';
-    const USER_ADMIN_EMAIL = 'admin@example.com';
+    const USER_ADMIN_ID = SeedIds::USER_ADMIN_ID;
+    const USER_ADMIN_EMAIL = SeedIds::USER_ADMIN_EMAIL;
     const USER_NON_ADMIN_ID = '54';
     const USER_NON_ADMIN_EMAIL = 'user@example.com';
 

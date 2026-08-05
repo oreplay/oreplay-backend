@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-use App\Test\Fixture\OauthClientsFixture;
+use App\Lib\Consts\SeedIds;
 use Migrations\BaseSeed;
 
 class OauthClientsSeed extends BaseSeed
@@ -11,7 +11,7 @@ class OauthClientsSeed extends BaseSeed
     {
         $data = [
             [
-                'client_id' => OauthClientsFixture::DASHBOARD_CLI,
+                'client_id' => SeedIds::OAUTH_CLIENT_DASHBOARD_CLI,
                 'client_secret' => 'tes7secret_cse446dj',
                 'redirect_uri' => '',
                 'user_id' => null,
