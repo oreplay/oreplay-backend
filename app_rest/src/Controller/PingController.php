@@ -8,6 +8,7 @@ use App\Lib\Consts\CacheGrp;
 use App\Lib\I18n\LegacyI18n;
 use App\Model\Table\UsersTable;
 use Cake\Cache\Cache;
+use Cake\Datasource\ConnectionManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\FrozenTime;
 use Migrations\Migrations;
@@ -58,7 +59,11 @@ class PingController extends ApiController
                 RestMigrator::runMigrations($migrationList, $toRet);
             } catch (\InvalidArgumentException $e) {
                 // if db conexion does not exist a new db will be created or tested
+                $this->_rollbackAbandonedTransaction();
                 UsersTable::load()->find()->all();
+            } catch (\Throwable $e) {
+                $this->_rollbackAbandonedTransaction();
+                throw $e;
             }
             if ($this->request->getQuery('seeds') !== 'false') {
                 $this->_runMainSeed($migrationList);
@@ -71,7 +76,20 @@ class PingController extends ApiController
     {
         $migrations = new Migrations();
         foreach ($migrationList as $plugin) {
-            $migrations->seed($plugin);
+            try {
+                $migrations->seed($plugin);
+            } catch (\Throwable $e) {
+                $this->_rollbackAbandonedTransaction();
+                throw $e;
+            }
+        }
+    }
+
+    private function _rollbackAbandonedTransaction(): void
+    {
+        $connection = ConnectionManager::get('default');
+        if ($connection->inTransaction()) {
+            $connection->rollback();
         }
     }
 }
