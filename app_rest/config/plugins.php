@@ -4,7 +4,7 @@ declare(strict_types = 1);
 
 return [
     'Migrations',
-    \Bake\BakePlugin::class => [
+    'Bake' => [
         'onlyDebug' => true,
         'optional' => true,
     ],
