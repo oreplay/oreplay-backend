@@ -66,6 +66,15 @@ jobs:
         if: matrix.db-type == 'mysql' || matrix.db-type == 'mariadb'
         run: while ! `mysqladmin ping -h 127.0.0.1 --silent`; do printf 'Waiting for MySQL...\n'; sleep 2; done;
 
+      - name: Check production code does not reference dev-only namespaces
+        run: |
+          if grep -rEn '(App|Results|Rankings|RadioRelay|RestOauth)\\Test\\|PHPUnit\\|Cake\\TestSuite' \
+              app_rest/src app_rest/config app_rest/webroot \
+              app_rest/plugins/*/src app_rest/plugins/*/config; then
+            echo "::error::Production code references an autoload-dev namespace; it will not exist in a --no-dev build."
+            exit 1
+          fi
+
       - name: Run PHP code sniffer
         run: composer run-script cs-check -d app_rest
 
@@ -111,6 +120,15 @@ jobs:
 
       - name: Composer install
         run: composer install -d app_rest --no-dev --optimize-autoloader --no-interaction --no-progress
+
+      - name: Boot the app under the production autoloader
+        run: |
+          for debug in 0 1; do
+            echo "--- DEBUG=$debug ---"
+            DEBUG=$debug php -r 'require "app_rest/vendor/autoload.php";
+              (new App\Application("app_rest/config"))->bootstrap();
+              echo "bootstrap OK\n";' || exit 1
+          done
 
       - name: Extract version from tag
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> "$GITHUB_ENV"
