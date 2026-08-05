@@ -9,6 +9,7 @@ use Results\Model\Entity\AppEntity;
 /**
  * @property string $first_name
  * @property string $last_name
+ * @property string|null $description
  * @property string|null $runner_id
  * @property string $stage_order_id
  */
@@ -19,6 +20,7 @@ class RankingOrganizer extends AppEntity
         'id' => false,
         'first_name' => true,
         'last_name' => true,
+        'description' => true,
         'runner_id' => true,
     ];
 

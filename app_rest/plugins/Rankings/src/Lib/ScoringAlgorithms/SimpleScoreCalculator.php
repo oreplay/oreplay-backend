@@ -6,6 +6,7 @@ namespace Rankings\Lib\ScoringAlgorithms;
 
 use Cake\Log\LogTrait;
 use Rankings\Model\Entity\Ranking;
+use Rankings\Model\Entity\RankingOrganizer;
 use Rankings\Model\Table\ParticipantInterface;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\Overalls;
@@ -77,6 +78,13 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         // e.g. use 0.3 to use 30% of the races (where the organizer was taking place) in the
         // circuit to calculate organizer average (participated in 4, used for org avg 4*0.3=1.2=2)
         return $this->_settings->getOverallSettings()['organizerScoringFraction'];
+    }
+
+    public function limitOrganizers(RankingOrganizer $newOrganizer, array $existingRankingOrganizerArray = []): void
+    {
+        if (count($existingRankingOrganizerArray) > 100) {
+            throw new OrganizerLimitException('Maximum number of organizers is 100');
+        }
     }
 
     private function _getTotalRaces(): int

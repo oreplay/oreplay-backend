@@ -24,6 +24,8 @@ class RankingOrganizersTable extends AppTable
             ->requirePresence('last_name', 'create')
             ->notEmptyString('last_name')
             ->maxLength('last_name', 255)
+            ->allowEmptyString('description')
+            ->maxLength('description', 255)
             ->requirePresence('stage_order_id', 'create')
             ->notEmptyString('stage_order_id')
             ->maxLength('stage_order_id', 36)

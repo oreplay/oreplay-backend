@@ -7,6 +7,7 @@ namespace Rankings\Model\Table;
 use App\Model\Table\AppTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\EntityInterface;
+use Cake\Http\Exception\InternalErrorException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\Validation\Validator;
 use Rankings\Lib\RankingUploadConfigChecker;
@@ -134,7 +135,10 @@ class RankingsTable extends AppTable
     public static function getCalculator(string $rankingId): ScoringAlgorithm
     {
         $settings = RankingsTable::load()->getCached($rankingId);
-        return new SimpleScoreCalculator($settings);
+        if ($settings->scoring_algorithm == SimpleScoreCalculator::class) {
+            return new SimpleScoreCalculator($settings);
+        }
+        throw new InternalErrorException('Scoring algothm not supported');
     }
 
     public function saveAsOrganizer(Ranking $rk, string $runnerId, string $classId, int $stageOrder): RunnerResult

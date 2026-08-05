@@ -19,6 +19,7 @@ use Results\Model\Entity\AppEntity;
  * @property mixed $nc_false
  * @property string|null $status_scores
  * @property string|null $excluded_class_names
+ * @property string $scoring_algorithm
  */
 class Ranking extends AppEntity
 {

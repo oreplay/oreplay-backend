@@ -10,6 +10,7 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
 use Rankings\Model\Table\ParticipantInterface;
+use RestApi\Lib\Exception\DetailedException;
 use RestApi\Model\ORM\RestApiSelectQuery;
 use Results\Lib\ResultsSorter;
 use Results\Lib\UploadHelper;
@@ -65,6 +66,18 @@ class RunnersTable extends AppTable
             ])
             ->contain(RunnerResultsTable::name())
             ->orderBy(['modified' => 'DESC']);
+    }
+
+    public function assertRunnerExists(string $runnerId, string $eventId, string $stageId): void
+    {
+        $runner = $this->find()->where([
+            self::field('id') => $runnerId,
+            'event_id' => $eventId,
+            'stage_id' => $stageId,
+        ])->first();
+        if (!$runner) {
+            throw new DetailedException('Invalid runner_id');
+        }
     }
 
     public function matchRunner(array $runnerData, ClassEntity $class): Runner

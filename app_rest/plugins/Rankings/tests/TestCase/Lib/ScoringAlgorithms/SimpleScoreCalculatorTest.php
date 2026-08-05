@@ -5,8 +5,10 @@ declare(strict_types = 1);
 namespace Rankings\Test\Lib\ScoringAlgorithms;
 
 use Cake\TestSuite\TestCase;
+use Rankings\Lib\ScoringAlgorithms\OrganizerLimitException;
 use Rankings\Lib\ScoringAlgorithms\ScoringAlgorithm;
 use Rankings\Lib\ScoringAlgorithms\SimpleScoreCalculator;
+use Rankings\Model\Entity\RankingOrganizer;
 use Rankings\Model\Table\ParticipantInterface;
 use Rankings\Model\Table\RankingsTable;
 use Rankings\Model\Traits\ParticipantTrait;
@@ -71,6 +73,26 @@ class SimpleScoreCalculatorTest extends TestCase
         $this->traitObject->is_nc = true;
         $points = $calc->participantScore($this->traitObject, $this->traitObject);
         $this->assertEquals(0, $points);
+    }
+
+    public function testLimitOrganizersAllowsUpToLimit()
+    {
+        $settings = RankingsTable::load()->getCached(RankingsTable::FIRST_RANKING);
+        $calc = new SimpleScoreCalculator($settings);
+
+        $existing = array_fill(0, 100, new RankingOrganizer());
+        $calc->limitOrganizers(new RankingOrganizer(), $existing);
+        $this->assertCount(100, $existing);
+    }
+
+    public function testLimitOrganizersThrowsWhenOverLimit()
+    {
+        $settings = RankingsTable::load()->getCached(RankingsTable::FIRST_RANKING);
+        $calc = new SimpleScoreCalculator($settings);
+
+        $existing = array_fill(0, 101, new RankingOrganizer());
+        $this->expectException(OrganizerLimitException::class);
+        $calc->limitOrganizers(new RankingOrganizer(), $existing);
     }
 
     public function testHasFewComputable()

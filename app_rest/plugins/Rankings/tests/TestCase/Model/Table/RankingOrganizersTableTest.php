@@ -32,6 +32,8 @@ class RankingOrganizersTableTest extends TestCase
             'last_name' => 'Lovelace',
             'stage_order_id' => $stageOrderId,
         ]);
+        $organizer->stage_order_id = $stageOrderId;
+        $organizer->setDirty('stage_order_id');
         /** @var RankingOrganizer $saved */
         $saved = $this->RankingOrganizers->saveOrFail($organizer);
 
@@ -51,6 +53,8 @@ class RankingOrganizersTableTest extends TestCase
             'runner_id' => '0198b1f0-3333-7000-8000-000000000003',
             'stage_order_id' => '0198b1f0-2222-7000-8000-000000000002',
         ]);
+        $organizer->stage_order_id = '0198b1f0-2222-7000-8000-000000000002';
+        $organizer->setDirty('stage_order_id');
         $saved = $this->RankingOrganizers->saveOrFail($organizer);
         $this->assertSame('0198b1f0-3333-7000-8000-000000000003', $saved->runner_id);
     }
