@@ -6,6 +6,7 @@ return [
     'Migrations',
     \Bake\BakePlugin::class => [
         'onlyDebug' => true,
+        'optional' => true,
     ],
     \RadioRelay\RadioRelayPlugin::class,
     \Rankings\RankingsPlugin::class,
