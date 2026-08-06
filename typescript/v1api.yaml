@@ -883,6 +883,9 @@ paths:
                 excluded_class_names:
                   type: string
                   example: '["ELITE"]'
+                included_class_names:
+                  type: string
+                  example: '["ME","FE"]'
                 overall_settings:
                   type: string
                   example: '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}'
@@ -2416,6 +2419,10 @@ components:
           type: string
           example: '["O NEGRO F","PROM"]'
           nullable: true
+        included_class_names:
+          type: string
+          example: '["ME","FE"]'
+          nullable: true
         created:
           type: string
           example: '****-**-*****:**:**.***+**:**'
@@ -2505,6 +2512,9 @@ components:
         excluded_class_names:
           type: string
           example: '["ELITE"]'
+        included_class_names:
+          type: string
+          example: '["ME","FE"]'
         overall_settings:
           type: string
           example: '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}'
@@ -2522,6 +2532,7 @@ components:
         - nc_false
         - status_scores
         - excluded_class_names
+        - included_class_names
         - overall_settings
         - id
     SimpleLog:

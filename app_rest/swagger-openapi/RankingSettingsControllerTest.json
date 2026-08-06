@@ -140,6 +140,10 @@
                                     "type": "string",
                                     "example": "[\"ELITE\"]"
                                 },
+                                "included_class_names": {
+                                    "type": "string",
+                                    "example": "[\"ME\",\"FE\"]"
+                                },
                                 "overall_settings": {
                                     "type": "string",
                                     "example": "{\"totalCircuitRaces\":3,\"maxRacesCounted\":2,\"organizerScoringFraction\":0.5,\"minPointsAsOrg\":20}"
