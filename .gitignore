@@ -44,7 +44,8 @@ nbproject/*
 sonar-project.properties
 build/
 #agents
-/.claude
+/.claude/projects
+/docs/superpowers
 #more
 .env.production
 /app_rest/.phpunit.cache/code-coverage/
