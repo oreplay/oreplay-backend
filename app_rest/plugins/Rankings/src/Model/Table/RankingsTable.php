@@ -65,6 +65,9 @@ class RankingsTable extends AppTable
             ->numeric('nc_false')
             ->allowEmptyString('status_scores')
             ->allowEmptyString('excluded_class_names')
+            ->maxLength('excluded_class_names', 510)
+            ->allowEmptyString('included_class_names')
+            ->maxLength('included_class_names', 510)
             ->allowEmptyString('overall_settings');
         return $validator;
     }
@@ -262,9 +265,15 @@ class RankingsTable extends AppTable
             ->find()
             ->where(['event_id' => $eventId, 'stage_id' => $stageId])
             ->all()->toArray();
+        $includedCategoryNames = $config->getIncludedClassNames();
+        if ($includedCategoryNames) {
+            return array_filter($res, function (ClassEntity $class) use ($includedCategoryNames) {
+                return $class->isShortNameIn($includedCategoryNames);
+            });
+        }
         $excludedCategoryNames = $config->getExcludedClassNames();
-        return array_filter($res, function ($class) use ($excludedCategoryNames) {
-            return !in_array($class->short_name, $excludedCategoryNames, true);
+        return array_filter($res, function (ClassEntity $class) use ($excludedCategoryNames) {
+            return !$class->isShortNameIn($excludedCategoryNames);
         });
     }
 }

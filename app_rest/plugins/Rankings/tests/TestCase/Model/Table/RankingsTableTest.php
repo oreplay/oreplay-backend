@@ -5,19 +5,31 @@ declare(strict_types = 1);
 namespace Rankings\Test\Model\Table;
 
 use Cake\TestSuite\TestCase;
+use Rankings\Lib\ScoringAlgorithms\SimpleScoreCalculator;
+use Rankings\Model\Entity\Ranking;
 use Rankings\Model\Table\RankingsTable;
 use Rankings\Test\Fixture\RankingsFixture;
 use Results\Lib\Consts\StatusCode;
+use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
+use Results\Model\Entity\Stage;
+use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\EventsFixture;
+use Results\Test\Fixture\FederationsFixture;
 use Results\Test\Fixture\StagesFixture;
+use Results\Test\Fixture\StageTypesFixture;
 
 class RankingsTableTest extends TestCase
 {
     protected array $fixtures = [
         RankingsFixture::LOAD,
+        FederationsFixture::LOAD,
+        EventsFixture::LOAD,
+        StagesFixture::LOAD,
+        StageTypesFixture::LOAD,
+        ClassesFixture::LOAD,
     ];
 
     private RankingsTable $Rankings;
@@ -97,5 +109,57 @@ class RankingsTableTest extends TestCase
         $first = $this->Rankings->getFirstParticipant($participants);
         $this->assertFalse($first->isStatusOk());
         $this->assertFalse($first->isLeader());
+    }
+
+    public function testGetIncludedClassNames()
+    {
+        $rankingId = $this->_createRanking(['ME', 'FE'], null);
+        $ranking = $this->Rankings->getCached($rankingId);
+        $this->assertEquals(['ME', 'FE'], $ranking->getIncludedClassNames());
+    }
+
+    public function testGetClassIdsInclusiveModeKeepsOnlyListed()
+    {
+        $rankingId = $this->_createRanking(['ME'], ['ME']);
+        $shortNames = $this->_shortNames($rankingId);
+        $this->assertEquals(['ME'], $shortNames);
+    }
+
+    public function testGetClassIdsFallsBackToExcludedWhenIncludedIsNull()
+    {
+        $rankingId = $this->_createRanking(null, ['ME']);
+        $shortNames = $this->_shortNames($rankingId);
+        $this->assertEquals(['FE'], $shortNames);
+    }
+
+    public function testGetClassIdsFallsBackToExcludedWhenIncludedIsEmptyArray()
+    {
+        $rankingId = $this->_createRanking([], ['ME']);
+        $shortNames = $this->_shortNames($rankingId);
+        $this->assertEquals(['FE'], $shortNames);
+    }
+
+    private function _shortNames(string $rankingId): array
+    {
+        $classes = $this->Rankings->getClassIds(Event::FIRST_EVENT, Stage::FIRST_STAGE, $rankingId);
+        $shortNames = array_map(fn ($class) => $class->short_name, $classes);
+        sort($shortNames);
+        return $shortNames;
+    }
+
+    private function _createRanking(?array $included, ?array $excluded): string
+    {
+        $ranking = $this->Rankings->patchFromNewWithUuid([
+            'scoring_algorithm' => SimpleScoreCalculator::class,
+            'event_id' => Event::FIRST_EVENT,
+            'stage_id' => Stage::FIRST_STAGE,
+            'max_points' => 100,
+            'round_precision' => Ranking::USE_FLOOR_INSTEAD_OF_ROUND,
+            'included_class_names' => $included === null ? null : json_encode($included),
+            'excluded_class_names' => $excluded === null ? null : json_encode($excluded),
+        ]);
+        $this->Rankings->saveOrFail($ranking);
+        $this->Rankings->deleteCache($ranking->id);
+        return $ranking->id;
     }
 }

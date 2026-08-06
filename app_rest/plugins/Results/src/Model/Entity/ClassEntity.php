@@ -50,6 +50,11 @@ class ClassEntity extends AppEntity
         $this->runners = $runners;
     }
 
+    public function isShortNameIn(array $classNames): bool
+    {
+        return in_array($this->short_name, $classNames, true);
+    }
+
     public function isSameUploadHash(array $compareArray): bool
     {
         $uploadHash = UploadHelper::md5Encode($compareArray);

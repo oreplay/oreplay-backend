@@ -118,6 +118,7 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         $data['nc_false'] = 10;
         $data['status_scores'] = '[null,1,2,3,4,5]';
         $data['excluded_class_names'] = '["ELITE"]';
+        $data['included_class_names'] = '["ME","FE"]';
         $data['overall_settings'] =
             '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}';
         $this->post($this->_getEndpoint(), $data);
@@ -135,6 +136,7 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(10, $saved->nc_false);
         $this->assertEquals('[null,1,2,3,4,5]', $saved->status_scores);
         $this->assertEquals('["ELITE"]', $saved->excluded_class_names);
+        $this->assertEquals('["ME","FE"]', $saved->included_class_names);
         $this->assertEquals(
             '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}',
             $saved->overall_settings
@@ -181,6 +183,7 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
             'nc_false' => 10,
             'status_scores' => '[null,1,2,3,4,5]',
             'excluded_class_names' => '["ELITE"]',
+            'included_class_names' => '["ME","FE"]',
             'overall_settings' => '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}',
         ];
         $this->patch($this->_getEndpoint() . RankingsTable::FIRST_RANKING, $data);
@@ -199,6 +202,7 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(10, $saved->nc_false);
         $this->assertEquals('[null,1,2,3,4,5]', $saved->status_scores);
         $this->assertEquals('["ELITE"]', $saved->excluded_class_names);
+        $this->assertEquals('["ME","FE"]', $saved->included_class_names);
         $this->assertEquals(
             '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}',
             $saved->overall_settings

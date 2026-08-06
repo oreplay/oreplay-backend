@@ -19,6 +19,7 @@ use Results\Model\Entity\AppEntity;
  * @property mixed $nc_false
  * @property string|null $status_scores
  * @property string|null $excluded_class_names
+ * @property string|null $included_class_names
  * @property string $scoring_algorithm
  */
 class Ranking extends AppEntity
@@ -38,6 +39,7 @@ class Ranking extends AppEntity
         'nc_false' => true,
         'status_scores' => true,
         'excluded_class_names' => true,
+        'included_class_names' => true,
         'overall_settings' => true,
     ];
 
@@ -111,6 +113,19 @@ class Ranking extends AppEntity
 
     public function getExcludedClassNames(): array
     {
-        return json_decode($this->excluded_class_names);
+        return $this->_decodeClassNames($this->excluded_class_names);
+    }
+
+    public function getIncludedClassNames(): array
+    {
+        return $this->_decodeClassNames($this->included_class_names);
+    }
+
+    private function _decodeClassNames(?string $json): array
+    {
+        if (!$json) {
+            return [];
+        }
+        return json_decode($json) ?: [];
     }
 }
