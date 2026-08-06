@@ -60,5 +60,6 @@ class ResultsPlugin extends RestPlugin
         $builder->connect('/events/{eventID}/tokens/*', \Results\Controller\EventTokensController::route());
         $builder->connect('/events/*', \Results\Controller\EventsController::route());
         $builder->connect('/organizers/*', \Results\Controller\OrganizersController::route());
+        $builder->connect('/runners/search/*', \Results\Controller\RunnerSearchController::route());
     }
 }

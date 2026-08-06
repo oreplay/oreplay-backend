@@ -1,0 +1,71 @@
+{
+    "/api/v1/runners/search/": {
+        "get": {
+            "operationId": "getListRunnerSearch",
+            "summary": "",
+            "description": "Search by first name",
+            "parameters": [
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "text",
+                    "example": "Firs",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "event_id",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "stage_id",
+                    "example": "91c54cd6-98de-441c-a71c-cda466c1abc3",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "RunnerSearch"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArrayRunnerSearch"
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ]
+        }
+    }
+}

@@ -1180,6 +1180,51 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArrayParticipant'
+  /api/v1/runners/search/:
+    get:
+      operationId: getListRunnerSearch
+      summary: ''
+      description: Search by first name
+      parameters:
+        - description: ''
+          in: query
+          name: text
+          example: Firs
+          required: false
+          schema:
+            type: string
+        - description: Auth token
+          in: header
+          name: Authorization
+          example: Bearer ****************
+          required: true
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: event_id
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: stage_id
+          example: 91c54cd6-98de-441c-a71c-cda466c1abc3
+          required: false
+          schema:
+            type: string
+      tags:
+        - RunnerSearch
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayRunnerSearch'
+      security:
+        - bearerAuth: []
   /api/v1/events/{eventID}/stages/{stageID}/classes/:
     get:
       operationId: getListStageClasses
@@ -2675,6 +2720,33 @@ components:
           items:
             $ref: '#/components/schemas/Participant'
       description: Data wrapper for Participant
+      required:
+        - data
+    RunnerSearch:
+      type: object
+      properties:
+        id:
+          type: string
+          example: d08fa43b-ddf8-47f6-9a59-2f1828881765
+        first_name:
+          type: string
+          example: First
+        last_name:
+          type: string
+          example: Runner
+      description: Entity RunnerSearch
+      required:
+        - id
+        - first_name
+        - last_name
+    ArrayRunnerSearch:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunnerSearch'
+      description: Data wrapper for RunnerSearch
       required:
         - data
     ArrayClassEntity:

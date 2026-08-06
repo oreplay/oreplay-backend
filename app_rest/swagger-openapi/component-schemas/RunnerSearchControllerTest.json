@@ -1,0 +1,115 @@
+{
+    "RunnerSearch": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "d08fa43b-ddf8-47f6-9a59-2f1828881765"
+                },
+                {
+                    "type": "string",
+                    "example": "3c3b3cb5-1b86-491f-a6ef-f7d12e3d41b7"
+                },
+                {
+                    "type": "string",
+                    "example": "d08fa43b-ddf8-47f6-9a59-2f1828881765"
+                },
+                {
+                    "type": "string",
+                    "example": "3c3b3cb5-1b86-491f-a6ef-f7d12e3d41b7"
+                },
+                {
+                    "type": "string",
+                    "example": "351c8ab5-8ee1-4a34-bd58-3181ea452cdc"
+                }
+            ],
+            "first_name": [
+                {
+                    "type": "string",
+                    "example": "First"
+                },
+                {
+                    "type": "string",
+                    "example": "Second"
+                },
+                {
+                    "type": "string",
+                    "example": "First"
+                },
+                {
+                    "type": "string",
+                    "example": "Second"
+                },
+                {
+                    "type": "string",
+                    "example": "Zsearch20"
+                }
+            ],
+            "last_name": [
+                {
+                    "type": "string",
+                    "example": "Runner"
+                },
+                {
+                    "type": "string",
+                    "example": "Raider"
+                },
+                {
+                    "type": "string",
+                    "example": "Runner"
+                },
+                {
+                    "type": "string",
+                    "example": "Raider"
+                },
+                {
+                    "type": "string",
+                    "example": "Bulk"
+                }
+            ]
+        },
+        "description": "Entity RunnerSearch"
+    },
+    "ArrayRunnerSearch": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/RunnerSearch"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/RunnerSearch"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/RunnerSearch"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/RunnerSearch"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/RunnerSearch"
+                    }
+                }
+            ]
+        },
+        "description": "Data wrapper for RunnerSearch",
+        "required": [
+            "data"
+        ]
+    }
+}

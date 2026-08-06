@@ -7,6 +7,7 @@ namespace Results\Model\Table;
 use App\Model\Table\AppTable;
 use App\Model\Table\UsersTable;
 use Cake\Http\Exception\NotFoundException;
+use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
 use Rankings\Model\Table\ParticipantInterface;
@@ -122,6 +123,28 @@ class RunnersTable extends AppTable
     ): Runner {
         $runnerData = $participant->toArrayWithoutID();
         return $this->createRunnerIfNotExists($eventId, $stageId, $runnerData, $class);
+    }
+
+    /**
+     * @return Runner[]
+     */
+    public function searchByName(string $text, ?string $eventId = null, ?string $stageId = null): array
+    {
+        $query = $this->find()
+            ->where([
+                'OR' => [
+                    self::field('first_name') . ' LIKE' => '%' . $text . '%',
+                    self::field('last_name') . ' LIKE' => '%' . $text . '%',
+                ],
+            ])
+            ->where([self::field('created') . ' >=' => new FrozenTime('-1 year')]);
+        if ($eventId) {
+            $query->where([self::field('event_id') => $eventId]);
+        }
+        if ($stageId) {
+            $query->where([self::field('stage_id') => $stageId]);
+        }
+        return $query->orderByDesc(self::field('created'))->limit(20)->all()->toList();
     }
 
     private function _findRunnersInStage(string $eventId, string $stageId): RestApiSelectQuery
