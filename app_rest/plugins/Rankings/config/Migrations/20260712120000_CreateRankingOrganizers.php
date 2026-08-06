@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class CreateRankingOrganizers extends AbstractMigration
+class CreateRankingOrganizers extends BaseMigration
 {
     public function change(): void
     {

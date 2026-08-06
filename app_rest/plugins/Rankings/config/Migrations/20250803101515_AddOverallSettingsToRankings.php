@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddOverallSettingsToRankings extends AbstractMigration
+class AddOverallSettingsToRankings extends BaseMigration
 {
     public function change(): void
     {
