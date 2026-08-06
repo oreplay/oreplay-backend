@@ -1,0 +1,269 @@
+{
+    "/api/v1/rankings/{rankingID}/events/{eventID}/stages/{stageID}/stageOrders/{stageOrderID}/organizers/": {
+        "post": {
+            "operationId": "postListRankingOrganizers",
+            "summary": "",
+            "description": "Add new with existing runner id",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "rankingID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "a1b2c3d4-0000-4000-8000-0000000000a1"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "stageID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "stageOrderID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "83dc3504-9edd-4bbd-80b8-589aa0359c2e"
+                },
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "RankingOrganizers"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResRankingOrganizer"
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "first_name": {
+                                    "type": "string",
+                                    "example": "Grace"
+                                },
+                                "last_name": {
+                                    "type": "string",
+                                    "example": "Hopper"
+                                },
+                                "description": {
+                                    "type": "string",
+                                    "example": "Course setter"
+                                },
+                                "runner_id": {
+                                    "type": "string",
+                                    "example": "d08fa43b-ddf8-47f6-9a59-2f1828881765"
+                                }
+                            },
+                            "description": "Generic object when: Add new with existing runner id"
+                        }
+                    }
+                }
+            }
+        },
+        "get": {
+            "operationId": "getListRankingOrganizers",
+            "summary": "",
+            "description": "Get list returns organizers",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "rankingID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "a1b2c3d4-0000-4000-8000-0000000000a1"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "stageID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "stageOrderID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "83dc3504-9edd-4bbd-80b8-589aa0359c2e"
+                },
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "RankingOrganizers"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArrayRankingOrganizer"
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ]
+        }
+    },
+    "/api/v1/rankings/{rankingID}/events/{eventID}/stages/{stageID}/stageOrders/{stageOrderID}/organizers/{organizerID}": {
+        "delete": {
+            "operationId": "deleteRankingOrganizers",
+            "summary": "",
+            "description": "Delete soft deletes organizer",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "rankingID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "a1b2c3d4-0000-4000-8000-0000000000a1"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "stageID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "stageOrderID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "83dc3504-9edd-4bbd-80b8-589aa0359c2e"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "organizerID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "c0498e85-615e-4721-aac7-2b2d41857c68"
+                },
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "RankingOrganizers"
+            ],
+            "responses": {
+                "204": {
+                    "description": "No content. Successfully deleted."
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ]
+        }
+    }
+}

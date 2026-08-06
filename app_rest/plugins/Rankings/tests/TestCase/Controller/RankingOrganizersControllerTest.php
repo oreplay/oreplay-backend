@@ -68,6 +68,7 @@ class RankingOrganizersControllerTest extends ApiCommonErrorsTest
 
     public function testAddNewCreatesOrganizer()
     {
+        $this->skipNextRequestInSwagger();
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
         $this->post($this->_getEndpoint(), [
             'first_name' => 'Ada',
@@ -92,12 +93,14 @@ class RankingOrganizersControllerTest extends ApiCommonErrorsTest
         $this->post($this->_getEndpoint(), [
             'first_name' => 'Grace',
             'last_name' => 'Hopper',
+            'description' => 'Course setter',
             'runner_id' => Runner::FIRST_RUNNER,
         ]);
 
         $json = $this->assertJsonResponseOK();
         $db = RankingOrganizersTable::load()->get($json['data']['id']);
         $this->assertEquals(Runner::FIRST_RUNNER, $db->runner_id);
+        $this->assertEquals('Course setter', $db->description);
     }
 
     public function testAddNewWithUnknownRunnerIdIsRejected()

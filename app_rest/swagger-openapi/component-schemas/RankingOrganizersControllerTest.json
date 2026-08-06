@@ -1,0 +1,161 @@
+{
+    "RankingOrganizer": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "d546cb77-2fb7-481c-80a9-11f3f980f8a9"
+                },
+                {
+                    "type": "string",
+                    "example": "489a86fe-ff5e-4465-a41c-c156c7e24256"
+                },
+                {
+                    "type": "string",
+                    "example": "7a059e83-ec1e-45c7-b7b1-5eda9b581943"
+                }
+            ],
+            "first_name": [
+                {
+                    "type": "string",
+                    "example": "Grace"
+                },
+                {
+                    "type": "string",
+                    "example": "Ada"
+                },
+                {
+                    "type": "string",
+                    "example": "Ada"
+                }
+            ],
+            "last_name": [
+                {
+                    "type": "string",
+                    "example": "Hopper"
+                },
+                {
+                    "type": "string",
+                    "example": "Lovelace"
+                },
+                {
+                    "type": "string",
+                    "example": "Lovelace"
+                }
+            ],
+            "description": [
+                {
+                    "type": "string",
+                    "example": "Course setter"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "runner_id": [
+                {
+                    "type": "string",
+                    "example": "d08fa43b-ddf8-47f6-9a59-2f1828881765"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "stage_order_id": [
+                {
+                    "type": "string",
+                    "example": "83dc3504-9edd-4bbd-80b8-589aa0359c2e"
+                },
+                {
+                    "type": "string",
+                    "example": "83dc3504-9edd-4bbd-80b8-589aa0359c2e"
+                },
+                {
+                    "type": "string",
+                    "example": "83dc3504-9edd-4bbd-80b8-589aa0359c2e"
+                }
+            ],
+            "created": [
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                }
+            ],
+            "modified": [
+                {
+                    "type": "string",
+                    "example": "2026-08-06T07:03:07.664+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2026-08-06T07:03:07.850+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2026-08-06T07:03:07.875+00:00"
+                }
+            ]
+        },
+        "description": "Entity RankingOrganizer"
+    },
+    "ResRankingOrganizer": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "$ref": "#/components/schemas/RankingOrganizer"
+                }
+            ]
+        },
+        "description": "Data wrapper for RankingOrganizer",
+        "required": [
+            "data"
+        ]
+    },
+    "ArrayRankingOrganizer": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/RankingOrganizer"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/RankingOrganizer"
+                    }
+                }
+            ]
+        },
+        "description": "Data wrapper for RankingOrganizer",
+        "required": [
+            "data"
+        ]
+    }
+}

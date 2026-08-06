@@ -28,6 +28,7 @@
           <file>plugins/Rankings/tests/TestCase/Controller/RankingSettingsControllerTest.php</file>
           <file>plugins/Rankings/tests/TestCase/Controller/RankingComputeClassControllerTest.php</file>
           <file>plugins/Rankings/tests/TestCase/Controller/RankingComputeStageControllerTest.php</file>
+          <file>plugins/Rankings/tests/TestCase/Controller/RankingOrganizersControllerTest.php</file>
           <file>plugins/Rankings/tests/TestCase/Controller/RankingRunnerManagementControllerTest.php</file>
       </testsuite>
   </testsuites>
