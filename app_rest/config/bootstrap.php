@@ -220,6 +220,13 @@ TypeFactory::map('time', StringType::class);
         return \App\Lib\ApiFrozenTime::i18nFormatMillis(func_get_arg(0));
     });
 
+// tc-lib-pdf resolves font data through this global constant. It is defined here rather than
+// in HeadlessPdfsPlugin::bootstrap() because the test bootstrap loads this file without
+// booting the application, so plugin bootstraps never run for unit tests.
+if (!defined('K_PATH_FONTS')) {
+    define('K_PATH_FONTS', \HeadlessPdfs\HeadlessPdfsPlugin::fontsPath());
+}
+
 function migrationList(): array
 {
     return [

@@ -18,6 +18,9 @@
       <testsuite name="RadioRelay">
           <directory>plugins/RadioRelay/tests/TestCase/</directory>
       </testsuite>
+      <testsuite name="HeadlessPdfs">
+          <directory>plugins/HeadlessPdfs/tests/TestCase/</directory>
+      </testsuite>
       <testsuite name="Rankings">
           <directory>plugins/Rankings/tests/TestCase/</directory>
       </testsuite>

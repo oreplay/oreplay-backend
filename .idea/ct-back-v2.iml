@@ -14,7 +14,8 @@
       <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/RadioRelay/tests" isTestSource="true" packagePrefix="RadioRelay\Test\" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Rankings/src" isTestSource="false" packagePrefix="Rankings\" />
       <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/Rankings/tests" isTestSource="true" packagePrefix="Rankings\Test\" />
-      <sourceFolder url="file://$MODULE_DIR$/app_rest/spec" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/HeadlessPdfs/src" isTestSource="false" packagePrefix="HeadlessPdfs\" />
+      <sourceFolder url="file://$MODULE_DIR$/app_rest/plugins/HeadlessPdfs/tests" isTestSource="true" packagePrefix="HeadlessPdfs\Test\" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/logs" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/freefri/cake-rest-api" />
@@ -22,6 +23,20 @@
       <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/react/http" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/cakephp/authentication" />
       <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/ergebnis/agent-detector" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/tecnickcom/tc-lib-barcode" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/tecnickcom/tc-lib-color" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/tecnickcom/tc-lib-file" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/tecnickcom/tc-lib-pdf" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/tecnickcom/tc-lib-pdf-encrypt" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/tecnickcom/tc-lib-pdf-filter" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/tecnickcom/tc-lib-pdf-font" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/tecnickcom/tc-lib-pdf-graph" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/tecnickcom/tc-lib-pdf-image" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/tecnickcom/tc-lib-pdf-page" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/tecnickcom/tc-lib-pdf-parser" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/tecnickcom/tc-lib-pdf-sign" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/tecnickcom/tc-lib-unicode" />
+      <excludeFolder url="file://$MODULE_DIR$/app_rest/vendor/tecnickcom/tc-lib-unicode-data" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

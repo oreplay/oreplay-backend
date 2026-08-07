@@ -130,6 +130,10 @@ return [
         'tablePrefix' => '',
         'routePath' => \App\Controller\ApiController::ROUTE_PREFIX . '/radios',
     ],
+    'HeadlessPdfsPlugin' => [
+        'tablePrefix' => '',
+        'routePath' => \App\Controller\ApiController::ROUTE_PREFIX,
+    ],
 
     /*
      * Security and encryption configuration
