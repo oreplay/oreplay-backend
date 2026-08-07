@@ -8,6 +8,7 @@ use Cake\Http\Response;
 use Com\Tecnick\Pdf\Page\Unit;
 use Com\Tecnick\Pdf\PdfConformance;
 use Com\Tecnick\Pdf\Tcpdf;
+use HeadlessPdfs\HeadlessPdfsPlugin;
 use HeadlessPdfs\Lib\Exception\ImageFetchFailedException;
 use HeadlessPdfs\Lib\Pdf\Element\BreakPageElement;
 use HeadlessPdfs\Lib\Pdf\Element\ElementRegistry;
@@ -24,6 +25,7 @@ class PdfBookRenderer implements RestRenderer
 {
     private const FONT_FAMILY = 'notosans';
     private const MAX_REMOTE_IMAGE_BYTES = 2097152;
+    private const DOWNLOAD_FILENAME_HEADER = 'Content-Disposition';
 
     private ?int $backgroundImageId = null;
 
@@ -42,7 +44,11 @@ class PdfBookRenderer implements RestRenderer
         // $title is never passed by beforeRender(); the filename is already validated
         return $response
             ->withType('pdf')
-            ->withHeader('Content-Disposition', $this->contentDisposition($this->pdfBook['filename']));
+            ->withHeader(
+                self::DOWNLOAD_FILENAME_HEADER,
+                $this->contentDisposition($this->pdfBook['filename']),
+            )
+            ->withHeader('Access-Control-Expose-Headers', self::DOWNLOAD_FILENAME_HEADER);
     }
 
     private function contentDisposition(string $filename): string
@@ -80,6 +86,7 @@ class PdfBookRenderer implements RestRenderer
 
     private function newDocument(): Tcpdf
     {
+        self::ensureFontPathIsDefinedForTcLibPdf();
         $pdf = new Tcpdf(
             unit: Unit::Millimeter,
             isunicode: true,
@@ -100,6 +107,13 @@ class PdfBookRenderer implements RestRenderer
         $pdf->setCreator('OReplay');
         $pdf->setPDFFilename($this->pdfBook['filename']);
         return $pdf;
+    }
+
+    private static function ensureFontPathIsDefinedForTcLibPdf(): void
+    {
+        if (!defined('K_PATH_FONTS')) {
+            define('K_PATH_FONTS', HeadlessPdfsPlugin::fontsPath());
+        }
     }
 
     protected function loadBackgroundImage(Tcpdf $pdf): void

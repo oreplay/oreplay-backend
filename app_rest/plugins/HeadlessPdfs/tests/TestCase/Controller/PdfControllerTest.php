@@ -78,6 +78,29 @@ class PdfControllerTest extends ApiCommonErrorsTest
         );
     }
 
+    public function testPost_exposesContentDispositionSoACrossOriginCallerCanReadTheFilename()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->postBook($this->exampleBook());
+
+        $this->assertEquals(
+            'Content-Disposition',
+            $this->_response->getHeaderLine('Access-Control-Expose-Headers'),
+        );
+    }
+
+    public function testPost_keepsTheCorsAllowOriginHeaderAddedBeforeTheDownloadHeaders()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->postBook($this->exampleBook());
+
+        $this->assertEquals(
+            'http://dev.example.com',
+            $this->_response->getHeaderLine('Access-Control-Allow-Origin'),
+            'exposing a header is useless if the response is no longer a CORS response',
+        );
+    }
+
     public function testPost_nonAsciiFilename_isRfc6266EncodedInTheHeader()
     {
         $book = $this->exampleBook();

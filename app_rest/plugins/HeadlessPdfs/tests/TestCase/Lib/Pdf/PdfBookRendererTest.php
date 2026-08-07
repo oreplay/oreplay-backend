@@ -169,6 +169,18 @@ class PdfBookRendererTest extends TestCase
         );
     }
 
+    public function testSetHeadersForDownload_exposesContentDispositionToCrossOriginCallers()
+    {
+        $renderer = new PdfBookRenderer(PdfBookValidator::validate($this->minimalBook()));
+
+        $response = $renderer->setHeadersForDownload(new Response());
+
+        $this->assertEquals(
+            'Content-Disposition',
+            $response->getHeaderLine('Access-Control-Expose-Headers'),
+        );
+    }
+
     public function testSetHeadersForDownload_nonAsciiFilename_isRfc6266Encoded()
     {
         $renderer = new PdfBookRenderer(
