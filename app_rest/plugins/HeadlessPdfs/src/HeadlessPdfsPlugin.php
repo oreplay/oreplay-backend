@@ -22,5 +22,6 @@ class HeadlessPdfsPlugin extends RestPlugin
 
     protected function routeConnectors(RouteBuilder $builder): void
     {
+        $builder->connect('/pdf/*', \HeadlessPdfs\Controller\PdfController::route());
     }
 }

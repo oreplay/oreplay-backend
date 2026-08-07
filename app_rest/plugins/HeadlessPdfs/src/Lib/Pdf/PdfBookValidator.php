@@ -37,13 +37,18 @@ class PdfBookValidator
     }
 
     /**
+     * Lowercased so this list and the img() check below share one normalisation: the
+     * consuming file library's own host check is case-sensitive, so a mixed-case env
+     * entry would otherwise pass validation here and then be rejected at fetch time.
+     *
      * @return array<int, string>
      */
     public static function allowedImageHosts(): array
     {
         $raw = (string)env(self::ALLOWED_HOSTS_ENV, '');
         // an explicit callback, not the default truthiness filter, so a literal "0" host survives
-        return array_values(array_filter(array_map('trim', explode(',', $raw)), fn ($v) => $v !== ''));
+        $hosts = array_filter(array_map('trim', explode(',', $raw)), fn ($v) => $v !== '');
+        return array_values(array_map('strtolower', $hosts));
     }
 
     private static function assertLayout(array $pdfBook): void
@@ -91,9 +96,9 @@ class PdfBookValidator
         // hostnames are case-insensitive; parse_url() does not normalize case, so both sides
         // of the comparison are lowercased here
         $host = strtolower($host);
-        // checked here so a disallowed host is a 400 decided before any fetch is attempted
-        $allowedHosts = array_map('strtolower', self::allowedImageHosts());
-        if (!in_array($host, $allowedHosts, true)) {
+        // checked here so a disallowed host is a 400 decided before any fetch is attempted;
+        // allowedImageHosts() already lowercases its entries
+        if (!in_array($host, self::allowedImageHosts(), true)) {
             throw new InvalidPayloadException(
                 self::ROOT . '.img: host "' . $host . '" is not allowed'
             );
