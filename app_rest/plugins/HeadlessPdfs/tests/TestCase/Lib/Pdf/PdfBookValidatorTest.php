@@ -1,0 +1,246 @@
+<?php
+
+declare(strict_types = 1);
+
+namespace HeadlessPdfs\Test\TestCase\Lib\Pdf;
+
+use App\Lib\Exception\InvalidPayloadException;
+use Cake\TestSuite\TestCase;
+use HeadlessPdfs\Lib\Pdf\PdfBookValidator;
+
+class PdfBookValidatorTest extends TestCase
+{
+    private function minimalBook(array $overrides = []): array
+    {
+        return $overrides + [
+            'sections' => [
+                ['elements' => [
+                    ['type' => 'centeredElement', 'content' => 'x', 'position' => ['y' => 10]],
+                ]],
+            ],
+        ];
+    }
+
+    public function testValidate_flattensSectionsIntoOneStream()
+    {
+        $book = [
+            'layout' => 'default',
+            'sections' => [
+                ['elements' => [
+                    ['type' => 'centeredElement', 'content' => 'Título', 'size' => 36,
+                     'position' => ['y' => 'center']],
+                    ['type' => 'breakPage'],
+                    ['type' => 'centeredElement', 'content' => 'Segunda', 'size' => 24,
+                     'position' => ['y' => 150]],
+                ]],
+                ['elements' => [
+                    ['type' => 'text', 'content' => 'Otra', 'size' => 18,
+                     'position' => ['x' => 100, 'y' => 250]],
+                ]],
+            ],
+        ];
+
+        $result = PdfBookValidator::validate($book);
+
+        $this->assertCount(4, $result['elements'], 'sections are grouping only, not pages');
+        $this->assertEquals(
+            ['centeredElement', 'breakPage', 'centeredElement', 'text'],
+            array_column($result['elements'], 'type'),
+        );
+    }
+
+    public function testValidate_defaults()
+    {
+        $result = PdfBookValidator::validate($this->minimalBook());
+        $this->assertEquals('document.pdf', $result['filename']);
+        $this->assertNull($result['img']);
+    }
+
+    public function testValidate_notAnArray_throws()
+    {
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('pdfBook: is required and must be an object');
+        PdfBookValidator::validate(null);
+    }
+
+    public function testValidate_missingSections_throws()
+    {
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('pdfBook.sections: is required and must be a non-empty list');
+        PdfBookValidator::validate(['layout' => 'default']);
+    }
+
+    public function testValidate_emptySections_throws()
+    {
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('pdfBook.sections: is required and must be a non-empty list');
+        PdfBookValidator::validate(['sections' => []]);
+    }
+
+    public function testValidate_sectionWithoutElements_throws()
+    {
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('pdfBook.sections[0].elements: is required and must be a list');
+        PdfBookValidator::validate(['sections' => [['x' => 'y']]]);
+    }
+
+    public function testValidate_unknownLayout_throws()
+    {
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('pdfBook.layout: only "default" is supported');
+        PdfBookValidator::validate($this->minimalBook(['layout' => 'landscape']));
+    }
+
+    public function testValidate_unknownElementType_throwsWithFullPath()
+    {
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage(
+            'pdfBook.sections[1].elements[0].type: unknown element type "heading"'
+        );
+        PdfBookValidator::validate([
+            'sections' => [
+                ['elements' => [['type' => 'breakPage']]],
+                ['elements' => [['type' => 'heading', 'content' => 'x']]],
+            ],
+        ]);
+    }
+
+    public function testValidate_elementErrorCarriesItsFullPath()
+    {
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage(
+            'pdfBook.sections[0].elements[1].position.x: expected a number between 0 and 210'
+        );
+        PdfBookValidator::validate([
+            'sections' => [
+                ['elements' => [
+                    ['type' => 'breakPage'],
+                    ['type' => 'text', 'content' => 'x', 'position' => ['x' => 400, 'y' => 10]],
+                ]],
+            ],
+        ]);
+    }
+
+    public function testValidate_filenameIsSanitized()
+    {
+        $result = PdfBookValidator::validate($this->minimalBook(['filename' => 'certificates.pdf']));
+        $this->assertEquals('certificates.pdf', $result['filename']);
+    }
+
+    public function testValidate_filenameGetsPdfSuffix()
+    {
+        $result = PdfBookValidator::validate($this->minimalBook(['filename' => 'certificates']));
+        $this->assertEquals('certificates.pdf', $result['filename']);
+    }
+
+    public function testValidate_filenameWithPathSeparators_throws()
+    {
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage(
+            'pdfBook.filename: must not contain path separators, quotes or control characters'
+        );
+        PdfBookValidator::validate($this->minimalBook(['filename' => '../../etc/passwd']));
+    }
+
+    public function testValidate_filenameWithCrlf_throws()
+    {
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage(
+            'pdfBook.filename: must not contain path separators, quotes or control characters'
+        );
+        PdfBookValidator::validate($this->minimalBook(['filename' => "a\r\nX-Injected: 1"]));
+    }
+
+    public function testValidate_filenameWithControlCharacter_throws()
+    {
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage(
+            'pdfBook.filename: must not contain path separators, quotes or control characters'
+        );
+        PdfBookValidator::validate($this->minimalBook(['filename' => "a\x00b"]));
+    }
+
+    public function testValidate_tooManyPages_throws()
+    {
+        $elements = array_fill(0, PdfBookValidator::MAX_PAGES, ['type' => 'breakPage']);
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('pdfBook: exceeds the maximum of 500 pages');
+        PdfBookValidator::validate(['sections' => [['elements' => $elements]]]);
+    }
+
+    public function testValidate_maximumPagesIsAllowed()
+    {
+        $elements = array_fill(0, PdfBookValidator::MAX_PAGES - 1, ['type' => 'breakPage']);
+        $result = PdfBookValidator::validate(['sections' => [['elements' => $elements]]]);
+        $this->assertCount(PdfBookValidator::MAX_PAGES - 1, $result['elements']);
+    }
+
+    public function testValidate_tooManyElements_throws()
+    {
+        $element = ['type' => 'centeredElement', 'content' => 'x', 'position' => ['y' => 10]];
+        $elements = array_fill(0, PdfBookValidator::MAX_ELEMENTS + 1, $element);
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('pdfBook: exceeds the maximum of 20000 elements');
+        PdfBookValidator::validate(['sections' => [['elements' => $elements]]]);
+    }
+
+    public function testValidate_imgNotAnAbsoluteHttpUrl_throws()
+    {
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('pdfBook.img: must be an absolute http(s) URL');
+        PdfBookValidator::validate($this->minimalBook(['img' => '/images/background.png']));
+    }
+
+    public function testValidate_imgHostNotAllowed_throws()
+    {
+        // PDF_IMAGE_ALLOWED_HOSTS is unset in the test environment, so every host is rejected
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('pdfBook.img: host "cdn.example.com" is not allowed');
+        PdfBookValidator::validate($this->minimalBook(['img' => 'https://cdn.example.com/bg.png']));
+    }
+
+    public function testValidate_imgHostAllowed_passesThrough()
+    {
+        putenv('PDF_IMAGE_ALLOWED_HOSTS=cdn.example.com,other.example.com');
+        try {
+            $result = PdfBookValidator::validate(
+                $this->minimalBook(['img' => 'https://cdn.example.com/bg.png'])
+            );
+            $this->assertEquals('https://cdn.example.com/bg.png', $result['img']);
+        } finally {
+            putenv('PDF_IMAGE_ALLOWED_HOSTS');
+        }
+    }
+
+    public function testValidate_imgHostAllowed_caseInsensitive()
+    {
+        putenv('PDF_IMAGE_ALLOWED_HOSTS=cdn.example.com');
+        try {
+            $result = PdfBookValidator::validate(
+                $this->minimalBook(['img' => 'https://CDN.Example.com/bg.png'])
+            );
+            $this->assertEquals('https://CDN.Example.com/bg.png', $result['img']);
+        } finally {
+            putenv('PDF_IMAGE_ALLOWED_HOSTS');
+        }
+    }
+
+    public function testAllowedHosts_readsTheEnvVar()
+    {
+        putenv('PDF_IMAGE_ALLOWED_HOSTS=a.example.com, b.example.com ,');
+        try {
+            $this->assertEquals(
+                ['a.example.com', 'b.example.com'],
+                PdfBookValidator::allowedImageHosts(),
+                'entries are trimmed and blanks dropped',
+            );
+        } finally {
+            putenv('PDF_IMAGE_ALLOWED_HOSTS');
+        }
+    }
+
+    public function testAllowedHosts_unset_isEmpty()
+    {
+        $this->assertEquals([], PdfBookValidator::allowedImageHosts());
+    }
+}
