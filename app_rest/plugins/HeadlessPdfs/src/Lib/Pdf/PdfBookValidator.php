@@ -10,8 +10,10 @@ use HeadlessPdfs\Lib\Pdf\Element\ElementRegistry;
 
 class PdfBookValidator
 {
-    public const MAX_PAGES = 500;
-    public const MAX_ELEMENTS = 20000;
+    public const DEFAULT_MAX_PAGES = 500;
+    public const DEFAULT_MAX_ELEMENTS = 7000;
+    public const DEFAULT_MAX_CONTENT_CHARS = 250000;
+    public const MAX_FILENAME_LENGTH = 200;
     public const DEFAULT_FILENAME = 'document.pdf';
     public const DEFAULT_LAYOUT = 'default';
 
@@ -34,6 +36,39 @@ class PdfBookValidator
             'img' => self::img($pdfBook),
             'elements' => self::elements($pdfBook),
         ];
+    }
+
+    public static function maxPages(): int
+    {
+        return self::limit('PDF_MAX_PAGES', self::DEFAULT_MAX_PAGES);
+    }
+
+    public static function maxElements(): int
+    {
+        return self::limit('PDF_MAX_ELEMENTS', self::DEFAULT_MAX_ELEMENTS);
+    }
+
+    /**
+     * The characters of text a single request may lay out, summed over every element.
+     *
+     * A per-element cap alone does not bound a request: laying out text costs roughly
+     * linear time per character regardless of how it is split up, so only the total is a
+     * meaningful budget. The defaults keep a worst-case request well inside the production
+     * PHP-FPM max_execution_time and memory_limit; see docs/pdf-endpoint.md.
+     */
+    public static function maxContentChars(): int
+    {
+        return self::limit('PDF_MAX_CONTENT_CHARS', self::DEFAULT_MAX_CONTENT_CHARS);
+    }
+
+    /**
+     * A non-positive or non-numeric override would disable the limit entirely, so it falls
+     * back to the default instead: a typo in the deployment must not remove the bound.
+     */
+    private static function limit(string $envName, int $default): int
+    {
+        $value = (int)env($envName, (string)$default);
+        return $value > 0 ? $value : $default;
     }
 
     /**
@@ -75,6 +110,14 @@ class PdfBookValidator
                 self::ROOT . '.filename: must not contain path separators, quotes or control characters'
             );
         }
+        // an oversized header field-value overflows nginx's fastcgi_buffer_size and surfaces
+        // as a 502, hiding the fact that the request itself was the problem
+        if (mb_strlen($filename) > self::MAX_FILENAME_LENGTH) {
+            throw new InvalidPayloadException(
+                self::ROOT . '.filename: exceeds the maximum length of '
+                . self::MAX_FILENAME_LENGTH . ' characters'
+            );
+        }
         if (!str_ends_with(strtolower($filename), '.pdf')) {
             $filename .= '.pdf';
         }
@@ -87,14 +130,15 @@ class PdfBookValidator
         if ($img === null) {
             return null;
         }
-        $host = is_string($img) ? parse_url($img, PHP_URL_HOST) : null;
-        $scheme = is_string($img) ? parse_url($img, PHP_URL_SCHEME) : null;
+        $parts = is_string($img) ? parse_url($img) : null;
+        $host = is_array($parts) ? ($parts['host'] ?? null) : null;
+        $scheme = is_array($parts) ? ($parts['scheme'] ?? null) : null;
         $scheme = $scheme !== null ? strtolower($scheme) : null;
         if (!$host || !in_array($scheme, ['http', 'https'], true)) {
             throw new InvalidPayloadException(self::ROOT . '.img: must be an absolute http(s) URL');
         }
-        // hostnames are case-insensitive; parse_url() does not normalize case, so both sides
-        // of the comparison are lowercased here
+        // scheme and host are case-insensitive; parse_url() does not normalize case, so both
+        // sides of the comparison are lowercased here
         $host = strtolower($host);
         // checked here so a disallowed host is a 400 decided before any fetch is attempted;
         // allowedImageHosts() already lowercases its entries
@@ -103,7 +147,29 @@ class PdfBookValidator
                 self::ROOT . '.img: host "' . $host . '" is not allowed'
             );
         }
-        return $img;
+        return self::normalizedUrl($parts, $scheme, $host);
+    }
+
+    /**
+     * The URL rebuilt with its scheme and host lowercased, everything else byte-identical.
+     *
+     * The consuming file library repeats this allowlist check with case-sensitive
+     * comparisons of its own, so handing it the URL as typed would turn an explicitly
+     * allowed mixed-case host into a fetch failure. Path, query and fragment are
+     * case-sensitive and are carried over untouched.
+     */
+    private static function normalizedUrl(array $parts, string $scheme, string $host): string
+    {
+        $credentials = '';
+        if (isset($parts['user'])) {
+            $credentials = $parts['user']
+                . (isset($parts['pass']) ? ':' . $parts['pass'] : '') . '@';
+        }
+        return $scheme . '://' . $credentials . $host
+            . (isset($parts['port']) ? ':' . $parts['port'] : '')
+            . ($parts['path'] ?? '')
+            . (isset($parts['query']) ? '?' . $parts['query'] : '')
+            . (isset($parts['fragment']) ? '#' . $parts['fragment'] : '');
     }
 
     /**
@@ -121,6 +187,10 @@ class PdfBookValidator
 
         $elements = [];
         $pages = 1;
+        $contentChars = 0;
+        $maxPages = self::maxPages();
+        $maxElements = self::maxElements();
+        $maxContentChars = self::maxContentChars();
         foreach ($sections as $sectionIndex => $section) {
             $sectionPath = self::ROOT . '.sections[' . $sectionIndex . ']';
             $rawElements = $section['elements'] ?? null;
@@ -138,10 +208,12 @@ class PdfBookValidator
                 $normalized = $class::validate($element, $path);
                 if ($normalized['type'] === BreakPageElement::type()) {
                     $pages++;
-                    self::assertUnder($pages, self::MAX_PAGES, 'pages');
+                    self::assertUnder($pages, $maxPages, 'pages');
                 }
                 $elements[] = $normalized;
-                self::assertUnder(count($elements), self::MAX_ELEMENTS, 'elements');
+                self::assertUnder(count($elements), $maxElements, 'elements');
+                $contentChars += mb_strlen($normalized['content'] ?? '');
+                self::assertUnder($contentChars, $maxContentChars, 'content characters');
             }
         }
         return $elements;

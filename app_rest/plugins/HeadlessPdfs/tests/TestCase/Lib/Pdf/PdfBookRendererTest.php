@@ -8,6 +8,7 @@ use Cake\Http\Response;
 use Cake\TestSuite\TestCase;
 use Com\Tecnick\Pdf\Tcpdf;
 use HeadlessPdfs\Lib\Exception\ImageFetchFailedException;
+use HeadlessPdfs\Lib\Pdf\Element\ElementRenderer;
 use HeadlessPdfs\Lib\Pdf\PdfBookRenderer;
 use HeadlessPdfs\Lib\Pdf\PdfBookValidator;
 
@@ -163,9 +164,51 @@ class PdfBookRendererTest extends TestCase
 
         $this->assertEquals('application/pdf', $response->getHeaderLine('Content-Type'));
         $this->assertEquals(
-            'attachment; filename="certificates.pdf"',
+            'attachment; filename="certificates.pdf"; filename*=UTF-8\'\'certificates.pdf',
             $response->getHeaderLine('Content-Disposition'),
         );
+    }
+
+    public function testSetHeadersForDownload_nonAsciiFilename_isRfc6266Encoded()
+    {
+        $renderer = new PdfBookRenderer(
+            PdfBookValidator::validate([
+                'filename' => 'Título ñ',
+                'sections' => [['elements' => [['type' => 'breakPage']]]],
+            ])
+        );
+
+        $header = $renderer->setHeadersForDownload(new Response())
+            ->getHeaderLine('Content-Disposition');
+
+        $this->assertEquals(
+            'attachment; filename="T__tulo __.pdf"; '
+                . "filename*=UTF-8''T%C3%ADtulo%20%C3%B1.pdf",
+            $header,
+        );
+        $this->assertEquals(
+            $header,
+            preg_replace('/[^\x20-\x7E]/', '', $header),
+            'a header field-value carrying raw UTF-8 is what browsers mojibake',
+        );
+    }
+
+    /**
+     * The font size is applied by the renderer, not by the element, so an element type that
+     * draws no text - the image or line the design names as the next additions - reaches
+     * that call with no "size" in its normalized form. Before the guard that was an
+     * undefined-array-key warning followed by a TypeError, i.e. a 500.
+     */
+    public function testRender_elementWithoutASize_doesNotBlowUp()
+    {
+        $renderer = new SizelessElementRenderer([
+            'filename' => 'document.pdf',
+            'img' => null,
+            'elements' => [['type' => SizelessElement::TYPE]],
+        ]);
+
+        $this->assertStringStartsWith('%PDF-', $renderer->render());
+        $this->assertEquals(1, $renderer->element->rendered, 'the element still gets drawn');
     }
 
     public function testSetHeadersForDownload_worksBeforeRenderIsCalled()
@@ -228,6 +271,44 @@ class PdfBookRendererTest extends TestCase
         return ['sections' => [['elements' => [
             ['type' => 'centeredElement', 'content' => 'x', 'position' => ['y' => 10]],
         ]]]];
+    }
+}
+
+class SizelessElement implements ElementRenderer
+{
+    public const TYPE = 'sizeless';
+
+    public int $rendered = 0;
+
+    public static function type(): string
+    {
+        return self::TYPE;
+    }
+
+    public static function validate(array $el, string $path): array
+    {
+        return ['type' => self::TYPE];
+    }
+
+    public function render(Tcpdf $pdf, array $el): void
+    {
+        $this->rendered++;
+    }
+}
+
+class SizelessElementRenderer extends PdfBookRenderer
+{
+    public SizelessElement $element;
+
+    public function __construct(array $pdfBook)
+    {
+        parent::__construct($pdfBook);
+        $this->element = new SizelessElement();
+    }
+
+    protected function rendererFor(string $type): ElementRenderer
+    {
+        return $this->element;
     }
 }
 

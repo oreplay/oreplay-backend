@@ -60,7 +60,7 @@ class PdfControllerTest extends ApiCommonErrorsTest
         $this->assertResponseOk($this->_getBodyAsString());
         $this->assertEquals('application/pdf', $this->_response->getHeaderLine('Content-Type'));
         $this->assertEquals(
-            'attachment; filename="document.pdf"',
+            'attachment; filename="document.pdf"; filename*=UTF-8\'\'document.pdf',
             $this->_response->getHeaderLine('Content-Disposition'),
         );
         $this->assertStringStartsWith('%PDF-', $this->_getBodyAsString());
@@ -73,15 +73,45 @@ class PdfControllerTest extends ApiCommonErrorsTest
         $this->postBook($book);
 
         $this->assertEquals(
-            'attachment; filename="certificates.pdf"',
+            'attachment; filename="certificates.pdf"; filename*=UTF-8\'\'certificates.pdf',
             $this->_response->getHeaderLine('Content-Disposition'),
+        );
+    }
+
+    public function testPost_nonAsciiFilename_isRfc6266EncodedInTheHeader()
+    {
+        $book = $this->exampleBook();
+        $book['pdfBook']['filename'] = 'Diplomas Vuelta a España';
+        $this->postBook($book);
+
+        $header = $this->_response->getHeaderLine('Content-Disposition');
+        $this->assertStringContainsString('filename="Diplomas Vuelta a Espa__a.pdf"', $header);
+        $this->assertStringContainsString(
+            "filename*=UTF-8''Diplomas%20Vuelta%20a%20Espa%C3%B1a.pdf",
+            $header,
+        );
+    }
+
+    public function testPost_overlongFilename_is400()
+    {
+        $this->skipNextRequestInSwagger();
+        $book = $this->exampleBook();
+        // an unbounded filename would become an unbounded response header, which nginx
+        // rejects as "upstream sent too big header" - a 502 for what is a bad request
+        $book['pdfBook']['filename'] = str_repeat('a', 201);
+        $this->postBook($book);
+
+        $this->assertResponseError($this->_getBodyAsString());
+        $this->assertEquals(
+            'pdfBook.filename: exceeds the maximum length of 200 characters',
+            json_decode($this->_getBodyAsString(), true)['message'],
         );
     }
 
     public function testPost_unknownElementType_is400()
     {
         $this->skipNextRequestInSwagger();
-        $this->post(ApiController::ROUTE_PREFIX . '/pdf', ['pdfBook' => [
+        $this->postBook(['pdfBook' => [
             'sections' => [['elements' => [['type' => 'heading', 'content' => 'x']]]],
         ]]);
 
@@ -95,7 +125,7 @@ class PdfControllerTest extends ApiCommonErrorsTest
     public function testPost_missingPdfBookKey_is400()
     {
         $this->skipNextRequestInSwagger();
-        $this->post(ApiController::ROUTE_PREFIX . '/pdf', ['somethingElse' => 1]);
+        $this->postBook(['somethingElse' => 1]);
 
         $this->assertResponseError($this->_getBodyAsString());
         $this->assertEquals(
@@ -109,12 +139,34 @@ class PdfControllerTest extends ApiCommonErrorsTest
         $this->skipNextRequestInSwagger();
         $book = $this->exampleBook();
         $book['pdfBook']['img'] = 'https://cdn.example.com/bg.png';
-        $this->post(ApiController::ROUTE_PREFIX . '/pdf', $book);
+        $this->postBook($book);
 
         $this->assertResponseError($this->_getBodyAsString());
         $this->assertEquals(
             'pdfBook.img: host "cdn.example.com" is not allowed',
             json_decode($this->_getBodyAsString(), true)['message'],
+        );
+    }
+
+    public function testPost_unreachableImageHost_is502WithAJsonBody()
+    {
+        $this->skipNextRequestInSwagger();
+        // port 1 on loopback refuses immediately: deterministic, and no external network
+        putenv('PDF_IMAGE_ALLOWED_HOSTS=127.0.0.1');
+        try {
+            $book = $this->exampleBook();
+            $book['pdfBook']['img'] = 'http://127.0.0.1:1/x.png';
+            $this->postBook($book);
+        } finally {
+            putenv('PDF_IMAGE_ALLOWED_HOSTS');
+        }
+
+        $this->assertResponseCode(502, $this->_getBodyAsString());
+        $body = $this->_getBodyAsString();
+        $this->assertStringStartsNotWith('%PDF-', $body);
+        $this->assertIsArray(
+            json_decode($body, true),
+            'the client must get the JSON error body, not half a PDF: ' . $body,
         );
     }
 

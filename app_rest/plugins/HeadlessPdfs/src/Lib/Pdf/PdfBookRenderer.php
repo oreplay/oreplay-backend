@@ -11,6 +11,7 @@ use Com\Tecnick\Pdf\Tcpdf;
 use HeadlessPdfs\Lib\Exception\ImageFetchFailedException;
 use HeadlessPdfs\Lib\Pdf\Element\BreakPageElement;
 use HeadlessPdfs\Lib\Pdf\Element\ElementRegistry;
+use HeadlessPdfs\Lib\Pdf\Element\ElementRenderer;
 use RestApi\Lib\RestRenderer;
 
 /**
@@ -26,6 +27,9 @@ class PdfBookRenderer implements RestRenderer
 
     private ?int $backgroundImageId = null;
 
+    /** @var array<string, ElementRenderer> */
+    private array $renderers = [];
+
     /**
      * @param array $pdfBook Normalized output of PdfBookValidator::validate().
      */
@@ -38,7 +42,14 @@ class PdfBookRenderer implements RestRenderer
         // $title is never passed by beforeRender(); the filename is already validated
         return $response
             ->withType('pdf')
-            ->withHeader('Content-Disposition', 'attachment; filename="' . $this->pdfBook['filename'] . '"');
+            ->withHeader('Content-Disposition', $this->contentDisposition($this->pdfBook['filename']));
+    }
+
+    private function contentDisposition(string $filename): string
+    {
+        $asciiFallback = preg_replace('/[^\x20-\x7E]/', '_', $filename);
+        return 'attachment; filename="' . $asciiFallback . '"'
+            . "; filename*=UTF-8''" . rawurlencode($filename);
     }
 
     public function render(): string
@@ -47,19 +58,24 @@ class PdfBookRenderer implements RestRenderer
         $this->loadBackgroundImage($pdf);
         $this->newPage($pdf);
 
-        $renderers = [];
         foreach ($this->pdfBook['elements'] as $element) {
             if ($element['type'] === BreakPageElement::type()) {
                 $this->newPage($pdf);
                 continue;
             }
-            $class = ElementRegistry::all()[$element['type']];
-            $renderers[$element['type']] ??= new $class();
-            $this->useFontSize($pdf, $element['size']);
-            $renderers[$element['type']]->render($pdf, $element);
+            if (isset($element['size'])) {
+                $this->useFontSize($pdf, $element['size']);
+            }
+            $this->rendererFor($element['type'])->render($pdf, $element);
         }
 
         return $pdf->getOutPDFString();
+    }
+
+    protected function rendererFor(string $type): ElementRenderer
+    {
+        $class = ElementRegistry::all()[$type];
+        return $this->renderers[$type] ??= new $class();
     }
 
     private function newDocument(): Tcpdf

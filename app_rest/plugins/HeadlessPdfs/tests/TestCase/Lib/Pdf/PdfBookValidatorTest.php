@@ -6,6 +6,7 @@ namespace HeadlessPdfs\Test\TestCase\Lib\Pdf;
 
 use App\Lib\Exception\InvalidPayloadException;
 use Cake\TestSuite\TestCase;
+use HeadlessPdfs\Lib\Pdf\Element\CenteredTextElement;
 use HeadlessPdfs\Lib\Pdf\PdfBookValidator;
 
 class PdfBookValidatorTest extends TestCase
@@ -162,7 +163,7 @@ class PdfBookValidatorTest extends TestCase
 
     public function testValidate_tooManyPages_throws()
     {
-        $elements = array_fill(0, PdfBookValidator::MAX_PAGES, ['type' => 'breakPage']);
+        $elements = array_fill(0, PdfBookValidator::DEFAULT_MAX_PAGES, ['type' => 'breakPage']);
         $this->expectException(InvalidPayloadException::class);
         $this->expectExceptionMessage('pdfBook: exceeds the maximum of 500 pages');
         PdfBookValidator::validate(['sections' => [['elements' => $elements]]]);
@@ -170,18 +171,135 @@ class PdfBookValidatorTest extends TestCase
 
     public function testValidate_maximumPagesIsAllowed()
     {
-        $elements = array_fill(0, PdfBookValidator::MAX_PAGES - 1, ['type' => 'breakPage']);
+        $elements = array_fill(0, PdfBookValidator::DEFAULT_MAX_PAGES - 1, ['type' => 'breakPage']);
         $result = PdfBookValidator::validate(['sections' => [['elements' => $elements]]]);
-        $this->assertCount(PdfBookValidator::MAX_PAGES - 1, $result['elements']);
+        $this->assertCount(PdfBookValidator::DEFAULT_MAX_PAGES - 1, $result['elements']);
     }
 
     public function testValidate_tooManyElements_throws()
     {
         $element = ['type' => 'centeredElement', 'content' => 'x', 'position' => ['y' => 10]];
-        $elements = array_fill(0, PdfBookValidator::MAX_ELEMENTS + 1, $element);
+        $elements = array_fill(0, PdfBookValidator::DEFAULT_MAX_ELEMENTS + 1, $element);
         $this->expectException(InvalidPayloadException::class);
-        $this->expectExceptionMessage('pdfBook: exceeds the maximum of 20000 elements');
+        $this->expectExceptionMessage('pdfBook: exceeds the maximum of 7000 elements');
         PdfBookValidator::validate(['sections' => [['elements' => $elements]]]);
+    }
+
+    public function testValidate_maximumElementsIsAllowed()
+    {
+        $element = ['type' => 'centeredElement', 'content' => 'x', 'position' => ['y' => 10]];
+        $elements = array_fill(0, PdfBookValidator::DEFAULT_MAX_ELEMENTS, $element);
+        $result = PdfBookValidator::validate(['sections' => [['elements' => $elements]]]);
+        $this->assertCount(PdfBookValidator::DEFAULT_MAX_ELEMENTS, $result['elements']);
+    }
+
+    /**
+     * @return array<int, array> elements whose contents sum to exactly $totalChars
+     */
+    private function elementsTotalling(int $totalChars): array
+    {
+        $perElement = CenteredTextElement::MAX_CONTENT_LENGTH;
+        $elements = array_fill(0, intdiv($totalChars, $perElement), [
+            'type' => 'centeredElement',
+            'content' => str_repeat('x', $perElement),
+            'position' => ['y' => 10],
+        ]);
+        $remainder = $totalChars % $perElement;
+        if ($remainder > 0) {
+            $elements[] = ['type' => 'centeredElement', 'content' => str_repeat('x', $remainder),
+                           'position' => ['y' => 10]];
+        }
+        return $elements;
+    }
+
+    public function testValidate_maximumContentCharsIsAllowed()
+    {
+        $elements = $this->elementsTotalling(PdfBookValidator::DEFAULT_MAX_CONTENT_CHARS);
+        $result = PdfBookValidator::validate(['sections' => [['elements' => $elements]]]);
+        $this->assertCount(count($elements), $result['elements']);
+    }
+
+    public function testValidate_tooManyContentChars_throws()
+    {
+        $elements = $this->elementsTotalling(PdfBookValidator::DEFAULT_MAX_CONTENT_CHARS + 1);
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('pdfBook: exceeds the maximum of 250000 content characters');
+        PdfBookValidator::validate(['sections' => [['elements' => $elements]]]);
+    }
+
+    /**
+     * The per-element cap is not a budget: without an aggregate one, elements each well
+     * inside MAX_CONTENT_LENGTH still add up to an unbounded amount of layout work.
+     */
+    public function testValidate_contentCharsAreSummedAcrossSections()
+    {
+        putenv('PDF_MAX_CONTENT_CHARS=10');
+        try {
+            $element = ['type' => 'centeredElement', 'content' => 'xxxxxx', 'position' => ['y' => 10]];
+            $this->expectException(InvalidPayloadException::class);
+            $this->expectExceptionMessage('pdfBook: exceeds the maximum of 10 content characters');
+            PdfBookValidator::validate([
+                'sections' => [
+                    ['elements' => [$element]],
+                    ['elements' => [$element]],
+                ],
+            ]);
+        } finally {
+            putenv('PDF_MAX_CONTENT_CHARS');
+        }
+    }
+
+    public function testLimits_areReadFromTheEnvironment()
+    {
+        putenv('PDF_MAX_PAGES=7');
+        putenv('PDF_MAX_ELEMENTS=8');
+        putenv('PDF_MAX_CONTENT_CHARS=9');
+        try {
+            $this->assertEquals(7, PdfBookValidator::maxPages());
+            $this->assertEquals(8, PdfBookValidator::maxElements());
+            $this->assertEquals(9, PdfBookValidator::maxContentChars());
+        } finally {
+            putenv('PDF_MAX_PAGES');
+            putenv('PDF_MAX_ELEMENTS');
+            putenv('PDF_MAX_CONTENT_CHARS');
+        }
+    }
+
+    public function testLimits_unsetOrUnusable_fallBackToTheDefaults()
+    {
+        putenv('PDF_MAX_ELEMENTS=0');
+        putenv('PDF_MAX_CONTENT_CHARS=nonsense');
+        try {
+            $this->assertEquals(PdfBookValidator::DEFAULT_MAX_PAGES, PdfBookValidator::maxPages());
+            $this->assertEquals(
+                PdfBookValidator::DEFAULT_MAX_ELEMENTS,
+                PdfBookValidator::maxElements(),
+                'a limit of 0 would disable the bound entirely',
+            );
+            $this->assertEquals(
+                PdfBookValidator::DEFAULT_MAX_CONTENT_CHARS,
+                PdfBookValidator::maxContentChars(),
+            );
+        } finally {
+            putenv('PDF_MAX_ELEMENTS');
+            putenv('PDF_MAX_CONTENT_CHARS');
+        }
+    }
+
+    public function testValidate_filenameTooLong_throws()
+    {
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('pdfBook.filename: exceeds the maximum length of 200 characters');
+        PdfBookValidator::validate($this->minimalBook([
+            'filename' => str_repeat('a', PdfBookValidator::MAX_FILENAME_LENGTH + 1),
+        ]));
+    }
+
+    public function testValidate_maximumFilenameLengthIsAllowed()
+    {
+        $filename = str_repeat('a', PdfBookValidator::MAX_FILENAME_LENGTH);
+        $result = PdfBookValidator::validate($this->minimalBook(['filename' => $filename]));
+        $this->assertEquals($filename . '.pdf', $result['filename']);
     }
 
     public function testValidate_imgNotAnAbsoluteHttpUrl_throws()
@@ -212,14 +330,35 @@ class PdfBookValidatorTest extends TestCase
         }
     }
 
-    public function testValidate_imgHostAllowed_caseInsensitive()
+    /**
+     * Returning the URL as typed would hand a mixed-case host straight to the file
+     * library's own case-sensitive allowlist check, turning an explicitly allowed host
+     * into a fetch failure reported as a 502.
+     */
+    public function testValidate_imgHostAllowed_isReturnedLowercased()
     {
         putenv('PDF_IMAGE_ALLOWED_HOSTS=cdn.example.com');
         try {
             $result = PdfBookValidator::validate(
-                $this->minimalBook(['img' => 'https://CDN.Example.com/bg.png'])
+                $this->minimalBook(['img' => 'HTTPS://CDN.Example.com/bg.png'])
             );
-            $this->assertEquals('https://CDN.Example.com/bg.png', $result['img']);
+            $this->assertEquals('https://cdn.example.com/bg.png', $result['img']);
+        } finally {
+            putenv('PDF_IMAGE_ALLOWED_HOSTS');
+        }
+    }
+
+    public function testValidate_imgPathQueryAndFragmentKeepTheirCase()
+    {
+        putenv('PDF_IMAGE_ALLOWED_HOSTS=cdn.example.com');
+        try {
+            $url = 'https://CDN.example.com:8443/Images/BG-Logo.PNG?Token=AbC#Frag';
+            $result = PdfBookValidator::validate($this->minimalBook(['img' => $url]));
+            $this->assertEquals(
+                'https://cdn.example.com:8443/Images/BG-Logo.PNG?Token=AbC#Frag',
+                $result['img'],
+                'only the host is case-insensitive; everything after it must survive intact',
+            );
         } finally {
             putenv('PDF_IMAGE_ALLOWED_HOSTS');
         }
