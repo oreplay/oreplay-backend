@@ -7,6 +7,7 @@ namespace HeadlessPdfs\Test\TestCase\Lib\Pdf;
 use App\Lib\Exception\InvalidPayloadException;
 use Cake\TestSuite\TestCase;
 use HeadlessPdfs\Lib\Pdf\Element\CenteredTextElement;
+use HeadlessPdfs\Lib\Pdf\Element\ElementFields;
 use HeadlessPdfs\Lib\Pdf\PdfBookValidator;
 
 class PdfBookValidatorTest extends TestCase
@@ -249,19 +250,91 @@ class PdfBookValidatorTest extends TestCase
         }
     }
 
+    private const COST_TEST_SIZE = 260;
+
+    private function elementsCosting(int $cost): array
+    {
+        $chars = intdiv($cost, self::COST_TEST_SIZE);
+        $elements = [];
+        $left = $chars;
+        while ($left > 0) {
+            $len = min($left, CenteredTextElement::MAX_CONTENT_LENGTH);
+            $left -= $len;
+            $elements[] = ['type' => 'centeredElement', 'content' => str_repeat('x', $len),
+                           'size' => self::COST_TEST_SIZE, 'position' => ['y' => 10]];
+        }
+        return $elements;
+    }
+
+    public function testValidate_maximumContentCostIsAllowed()
+    {
+        $elements = $this->elementsCosting(PdfBookValidator::DEFAULT_MAX_CONTENT_COST);
+        $result = PdfBookValidator::validate(['sections' => [['elements' => $elements]]]);
+        $this->assertCount(count($elements), $result['elements']);
+    }
+
+    public function testValidate_tooMuchContentCost_throws()
+    {
+        $elements = $this->elementsCosting(PdfBookValidator::DEFAULT_MAX_CONTENT_COST);
+        // one more character at the same size steps exactly one size unit past the cap
+        $elements[] = ['type' => 'centeredElement', 'content' => 'x',
+                       'size' => self::COST_TEST_SIZE, 'position' => ['y' => 10]];
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('pdfBook: exceeds the maximum of 13000000 content cost');
+        PdfBookValidator::validate(['sections' => [['elements' => $elements]]]);
+    }
+
+    public function testValidate_maximumSizeAtFullCharacterBudget_isRejected()
+    {
+        $elements = array_fill(0, 25, [
+            'type' => 'centeredElement',
+            'content' => str_repeat('x', CenteredTextElement::MAX_CONTENT_LENGTH),
+            'size' => ElementFields::MAX_SIZE,
+            'position' => ['y' => 10],
+        ]);
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('pdfBook: exceeds the maximum of 13000000 content cost');
+        PdfBookValidator::validate(['sections' => [['elements' => $elements]]]);
+    }
+
+    public function testValidate_theSameCharactersPassOrFailDependingOnSize()
+    {
+        $book = fn (int $size) => ['sections' => [['elements' => [[
+            'type' => 'centeredElement',
+            'content' => str_repeat('x', CenteredTextElement::MAX_CONTENT_LENGTH),
+            'size' => $size,
+            'position' => ['y' => 10],
+        ]]]]];
+
+        $result = PdfBookValidator::validate($book(12));
+        $this->assertCount(1, $result['elements'], '10 000 characters at size 12 is cheap');
+
+        putenv('PDF_MAX_CONTENT_COST=100000');
+        try {
+            $this->expectException(InvalidPayloadException::class);
+            $this->expectExceptionMessage('pdfBook: exceeds the maximum of 100000 content cost');
+            PdfBookValidator::validate($book(ElementFields::MAX_SIZE));
+        } finally {
+            putenv('PDF_MAX_CONTENT_COST');
+        }
+    }
+
     public function testLimits_areReadFromTheEnvironment()
     {
         putenv('PDF_MAX_PAGES=7');
         putenv('PDF_MAX_ELEMENTS=8');
         putenv('PDF_MAX_CONTENT_CHARS=9');
+        putenv('PDF_MAX_CONTENT_COST=11');
         try {
             $this->assertEquals(7, PdfBookValidator::maxPages());
             $this->assertEquals(8, PdfBookValidator::maxElements());
             $this->assertEquals(9, PdfBookValidator::maxContentChars());
+            $this->assertEquals(11, PdfBookValidator::maxContentCost());
         } finally {
             putenv('PDF_MAX_PAGES');
             putenv('PDF_MAX_ELEMENTS');
             putenv('PDF_MAX_CONTENT_CHARS');
+            putenv('PDF_MAX_CONTENT_COST');
         }
     }
 
@@ -269,6 +342,7 @@ class PdfBookValidatorTest extends TestCase
     {
         putenv('PDF_MAX_ELEMENTS=0');
         putenv('PDF_MAX_CONTENT_CHARS=nonsense');
+        putenv('PDF_MAX_CONTENT_COST=-1');
         try {
             $this->assertEquals(PdfBookValidator::DEFAULT_MAX_PAGES, PdfBookValidator::maxPages());
             $this->assertEquals(
@@ -280,9 +354,14 @@ class PdfBookValidatorTest extends TestCase
                 PdfBookValidator::DEFAULT_MAX_CONTENT_CHARS,
                 PdfBookValidator::maxContentChars(),
             );
+            $this->assertEquals(
+                PdfBookValidator::DEFAULT_MAX_CONTENT_COST,
+                PdfBookValidator::maxContentCost(),
+            );
         } finally {
             putenv('PDF_MAX_ELEMENTS');
             putenv('PDF_MAX_CONTENT_CHARS');
+            putenv('PDF_MAX_CONTENT_COST');
         }
     }
 

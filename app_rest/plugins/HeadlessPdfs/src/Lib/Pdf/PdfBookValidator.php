@@ -13,6 +13,7 @@ class PdfBookValidator
     public const DEFAULT_MAX_PAGES = 500;
     public const DEFAULT_MAX_ELEMENTS = 7000;
     public const DEFAULT_MAX_CONTENT_CHARS = 250000;
+    public const DEFAULT_MAX_CONTENT_COST = 13000000;
     public const MAX_FILENAME_LENGTH = 200;
     public const DEFAULT_FILENAME = 'document.pdf';
     public const DEFAULT_LAYOUT = 'default';
@@ -53,12 +54,17 @@ class PdfBookValidator
      *
      * A per-element cap alone does not bound a request: laying out text costs roughly
      * linear time per character regardless of how it is split up, so only the total is a
-     * meaningful budget. The defaults keep a worst-case request well inside the production
-     * PHP-FPM max_execution_time and memory_limit; see docs/pdf-endpoint.md.
+     * meaningful budget. This one bounds the low-size, high-volume end, where peak memory
+     * tracks the character count; maxContentCost() bounds the other end.
      */
     public static function maxContentChars(): int
     {
         return self::limit('PDF_MAX_CONTENT_CHARS', self::DEFAULT_MAX_CONTENT_CHARS);
+    }
+
+    public static function maxContentCost(): int
+    {
+        return self::limit('PDF_MAX_CONTENT_COST', self::DEFAULT_MAX_CONTENT_COST);
     }
 
     /**
@@ -188,9 +194,11 @@ class PdfBookValidator
         $elements = [];
         $pages = 1;
         $contentChars = 0;
+        $contentCost = 0;
         $maxPages = self::maxPages();
         $maxElements = self::maxElements();
         $maxContentChars = self::maxContentChars();
+        $maxContentCost = self::maxContentCost();
         foreach ($sections as $sectionIndex => $section) {
             $sectionPath = self::ROOT . '.sections[' . $sectionIndex . ']';
             $rawElements = $section['elements'] ?? null;
@@ -212,8 +220,13 @@ class PdfBookValidator
                 }
                 $elements[] = $normalized;
                 self::assertUnder(count($elements), $maxElements, 'elements');
-                $contentChars += mb_strlen($normalized['content'] ?? '');
+                // both accumulated before anything is rendered, so a payload that busts
+                // either budget costs no layout time at all
+                $length = mb_strlen($normalized['content'] ?? '');
+                $contentChars += $length;
                 self::assertUnder($contentChars, $maxContentChars, 'content characters');
+                $contentCost += (int)round($length * ($normalized['size'] ?? 0));
+                self::assertUnder($contentCost, $maxContentCost, 'content cost');
             }
         }
         return $elements;
