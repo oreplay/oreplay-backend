@@ -80,9 +80,7 @@ class TeamImporter
         }
 
         if (!$runners) {
-            // warning: the ?? never applies here, "." binds tighter, so a payload without
-            // team_name logs an undefined array key instead of falling back to ''
-            $metrics->setWarning('Team without runners ' . $teamData['team_name'] ?? '');
+            $metrics->setWarning('Team without runners ' . ($teamData['team_name'] ?? ''));
         }
         $noClass = $this->_classOfTeamRunners();
         foreach ($runners as $runnerData) {

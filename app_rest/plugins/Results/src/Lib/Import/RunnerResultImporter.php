@@ -66,6 +66,8 @@ class RunnerResultImporter
         }
         $resultToSave = $this->_runnerResults
             ->fillNewWithStage($resultData, $context->getEventId(), $context->getStageId());
+        // a team member is saved under its team and keeps runners.class_id null, so this is
+        // the only place its class is recorded and what getClassesStats() joins on
         $resultToSave->class_id = $context->getClassId();
         $resultToSave->upload_type = $checker->preCheckType();
         $resultToSave->result_type = $this->_resultTypes
