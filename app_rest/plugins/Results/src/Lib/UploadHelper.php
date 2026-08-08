@@ -80,8 +80,6 @@ class UploadHelper
 
     public function inClass(string $classId): self
     {
-        // warning: shallow on purpose: metrics and the results index have to stay shared with the
-        // original, only the class id is per clone; a new mutable field would be shared too
         $inClass = clone $this;
         $inClass->_classId = $classId;
         return $inClass;
