@@ -77,11 +77,6 @@ class UploadMetrics
         return round($this->_durations[$timer], 2);
     }
 
-    private function _roundUp(float $value): float
-    {
-        // warning: does not round despite the name, the value is only rounded by toArray()
-        return $value;
-    }
     private function startTotal()
     {
         $this->_startTimeTotal = microtime(true);
@@ -93,7 +88,7 @@ class UploadMetrics
 
     private function endProcessing()
     {
-        $this->_processingDuration += $this->_roundUp(microtime(true) - $this->_startTimeProcessing);
+        $this->_processingDuration += microtime(true) - $this->_startTimeProcessing;
     }
 
     /**
@@ -110,7 +105,7 @@ class UploadMetrics
         $startTimeSaving = microtime(true);
         $classes->saveManyWithRelations($singleClassToSave);
         $end = microtime(true);
-        $this->_savingDuration += $this->_roundUp($end - $startTimeSaving);
+        $this->_savingDuration += $end - $startTimeSaving;
         $this->startProcessing();
         return $this->_classesToSave;
     }
@@ -122,7 +117,7 @@ class UploadMetrics
     public function getTotalTime()
     {
         $end = microtime(true);
-        return $this->_roundUp($end - $this->_startTimeTotal);
+        return $end - $this->_startTimeTotal;
     }
 
     public function isTakingTooLong(): bool
