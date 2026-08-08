@@ -1,0 +1,163 @@
+{
+    "PdfBook": {
+        "type": "object",
+        "properties": {
+            "layout": [
+                {
+                    "type": "string",
+                    "example": "default"
+                },
+                {
+                    "type": "string",
+                    "example": "default"
+                }
+            ],
+            "filename": [
+                {
+                    "type": "string",
+                    "example": "document.pdf"
+                },
+                {
+                    "type": "string",
+                    "example": "document.pdf"
+                }
+            ],
+            "sections": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/PdfSection"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/PdfSection"
+                    }
+                }
+            ]
+        },
+        "description": "Entity PdfBook"
+    },
+    "PdfElement": {
+        "type": "object",
+        "properties": {
+            "type": [
+                {
+                    "type": "string",
+                    "example": "text"
+                },
+                {
+                    "type": "string",
+                    "example": "text"
+                }
+            ],
+            "content": [
+                {
+                    "type": "string",
+                    "example": "Otra secci\u00f3n"
+                },
+                {
+                    "type": "string",
+                    "example": "Otra secci\u00f3n"
+                }
+            ],
+            "size": [
+                {
+                    "type": "number",
+                    "example": 18
+                },
+                {
+                    "type": "number",
+                    "example": 18
+                }
+            ],
+            "position": [
+                {
+                    "$ref": "#/components/schemas/PdfPosition"
+                },
+                {
+                    "$ref": "#/components/schemas/PdfPosition"
+                }
+            ]
+        },
+        "description": "Entity PdfElement"
+    },
+    "PdfPosition": {
+        "type": "object",
+        "properties": {
+            "x": [
+                {
+                    "type": "number",
+                    "example": 100
+                },
+                {
+                    "type": "number",
+                    "example": 100
+                }
+            ],
+            "y": [
+                {
+                    "type": "number",
+                    "example": 250
+                },
+                {
+                    "type": "number",
+                    "example": 250
+                }
+            ]
+        },
+        "description": "Entity PdfPosition"
+    },
+    "PdfSection": {
+        "type": "object",
+        "properties": {
+            "elements": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/PdfElement"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/PdfElement"
+                    }
+                }
+            ]
+        },
+        "description": "Entity PdfSection"
+    },
+    "PdfRequest": {
+        "type": "object",
+        "properties": {
+            "pdfBook": [
+                {
+                    "$ref": "#/components/schemas/PdfBook"
+                }
+            ],
+            "runDry": [
+                {
+                    "type": "boolean",
+                    "example": true
+                }
+            ]
+        },
+        "description": "Entity PdfRequest"
+    },
+    "ResPdfBook": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "$ref": "#/components/schemas/PdfBook"
+                }
+            ]
+        },
+        "description": "Data wrapper for PdfBook",
+        "required": [
+            "data"
+        ]
+    }
+}

@@ -52,7 +52,7 @@ class ElementFields
         if (!self::isNumberBetween($y, 0.0, PageGeometry::HEIGHT_MM, true)) {
             throw new InvalidPayloadException(
                 $path . '.position.y: expected a number between 0 and '
-                . (int)PageGeometry::HEIGHT_MM . ', or "' . self::CENTER . '"'
+                . (int)PageGeometry::HEIGHT_MM . ', or "' . self::CENTER . '" but got ' . json_encode($el)
             );
         }
         return (float)$y;

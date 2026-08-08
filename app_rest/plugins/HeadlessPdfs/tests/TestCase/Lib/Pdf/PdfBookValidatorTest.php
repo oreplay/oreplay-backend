@@ -86,9 +86,10 @@ class PdfBookValidatorTest extends TestCase
         PdfBookValidator::validate(['sections' => [['x' => 'y']]]);
     }
 
-    public function testValidate_unknownLayout_throws()
+    public function testValidate_unknownLayout_isNotImplementedRatherThanABadRequest()
     {
         $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionCode(501);
         $this->expectExceptionMessage('pdfBook.layout: only "default" is supported');
         PdfBookValidator::validate($this->minimalBook(['layout' => 'landscape']));
     }

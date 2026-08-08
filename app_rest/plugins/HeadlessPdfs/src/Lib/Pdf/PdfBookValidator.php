@@ -97,7 +97,8 @@ class PdfBookValidator
         $layout = $pdfBook['layout'] ?? self::DEFAULT_LAYOUT;
         if ($layout !== self::DEFAULT_LAYOUT) {
             throw new InvalidPayloadException(
-                self::ROOT . '.layout: only "' . self::DEFAULT_LAYOUT . '" is supported'
+                self::ROOT . '.layout: only "' . self::DEFAULT_LAYOUT . '" is supported',
+                501
             );
         }
     }

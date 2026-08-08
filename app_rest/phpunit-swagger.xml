@@ -16,6 +16,7 @@
     <env name="SWAGGER_NAMESPACE_TO_REMOVE" value="Results"/>
     <env name="SWAGGER_NAMESPACE_TO_REMOVE_2" value="RestApi"/>
     <env name="SWAGGER_NAMESPACE_TO_REMOVE_3" value="Rankings"/>
+    <env name="SWAGGER_NAMESPACE_TO_REMOVE_4" value="HeadlessPdfs"/>
   </php>
   <!-- Add any additional test suites you want to run here -->
   <testsuites>
@@ -30,6 +31,7 @@
           <file>plugins/Rankings/tests/TestCase/Controller/RankingComputeStageControllerTest.php</file>
           <file>plugins/Rankings/tests/TestCase/Controller/RankingOrganizersControllerTest.php</file>
           <file>plugins/Rankings/tests/TestCase/Controller/RankingRunnerManagementControllerTest.php</file>
+          <file>plugins/HeadlessPdfs/tests/TestCase/Controller/PdfControllerTest.php</file>
       </testsuite>
   </testsuites>
   <extensions>

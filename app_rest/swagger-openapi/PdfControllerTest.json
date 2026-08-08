@@ -1,0 +1,51 @@
+{
+    "/api/v1/pdf/": {
+        "post": {
+            "operationId": "postListPdf",
+            "summary": "",
+            "description": "Post run dry echoes the validated book as json instead of rendering it",
+            "parameters": [
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "Pdf"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResPdfBook"
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/PdfRequest"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

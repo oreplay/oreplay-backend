@@ -23,6 +23,15 @@ class PdfController extends ApiController
     protected function addNew($data)
     {
         $pdfBook = PdfBookValidator::validate($data['pdfBook'] ?? null);
-        $this->return = new PdfBookRenderer($pdfBook);
+        if ($this->isRunDryRequested($data)) {
+            $this->return = $data['pdfBook'];
+        } else {
+            $this->return = new PdfBookRenderer($pdfBook);
+        }
+    }
+
+    private function isRunDryRequested($data): bool
+    {
+        return ($data['runDry'] ?? false) === true;
     }
 }

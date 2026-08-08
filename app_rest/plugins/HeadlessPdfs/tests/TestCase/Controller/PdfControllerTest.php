@@ -25,22 +25,40 @@ class PdfControllerTest extends ApiCommonErrorsTest
 
     private function exampleBook(): array
     {
-        return ['pdfBook' => [
+        return ['_c' => 'PdfRequest', 'pdfBook' => [
+            '_c' => 'PdfBook',
             'layout' => 'default',
+            'filename' => 'document.pdf',
             'sections' => [
-                ['elements' => [
-                    ['type' => 'centeredElement', 'content' => 'Título del documento',
-                     'size' => 36, 'position' => ['y' => 'center']],
-                    ['type' => 'breakPage'],
-                    ['type' => 'centeredElement', 'content' => 'Segunda página',
-                     'size' => 24, 'position' => ['y' => 150]],
+                ['_c' => 'PdfSection', 'elements' => [
+                    ['_c' => 'PdfElement', 'type' => 'text', 'content' => 'Otra sección',
+                     'size' => 18, 'position' => ['_c' => 'PdfPosition', 'x' => 100, 'y' => 250]],
                 ]],
-                ['elements' => [
-                    ['type' => 'text', 'content' => 'Otra sección',
-                     'size' => 18, 'position' => ['x' => 100, 'y' => 250]],
+                ['_c' => 'PdfSection', 'elements' => [
+                    ['_c' => 'PdfElement', 'type' => 'centeredElement',
+                     'content' => 'Título del documento',
+                     'size' => 36, 'position' => ['_c' => 'PdfPosition', 'y' => 'center']],
+                    ['_c' => 'PdfElement', 'type' => 'breakPage'],
+                    ['_c' => 'PdfElement', 'type' => 'centeredElement', 'content' => 'Segunda página',
+                     'size' => 24, 'position' => ['_c' => 'PdfPosition', 'y' => 150]],
                 ]],
             ],
         ]];
+    }
+
+    public function testPost_runDry_echoesTheValidatedBookAsJsonInsteadOfRenderingIt()
+    {
+        $book = $this->exampleBook();
+        $book['runDry'] = true;
+        $this->configRequest(['post' => $book]);
+        $this->post(ApiController::ROUTE_PREFIX . '/pdf', $book);
+
+        $this->assertResponseOk($this->_getBodyAsString());
+        $this->assertEquals(
+            $this->exampleBook()['pdfBook'],
+            json_decode($this->_getBodyAsString(), true)['data'],
+            'the response must carry the same shape the request posted',
+        );
     }
 
     private function postBook(array $book): void
@@ -55,6 +73,7 @@ class PdfControllerTest extends ApiCommonErrorsTest
 
     public function testPost_returnsADownloadablePdf()
     {
+        $this->skipNextRequestInSwagger();
         $this->postBook($this->exampleBook());
 
         $this->assertResponseOk($this->_getBodyAsString());
@@ -68,6 +87,7 @@ class PdfControllerTest extends ApiCommonErrorsTest
 
     public function testPost_usesTheRequestedFilename()
     {
+        $this->skipNextRequestInSwagger();
         $book = $this->exampleBook();
         $book['pdfBook']['filename'] = 'certificates';
         $this->postBook($book);
@@ -103,6 +123,7 @@ class PdfControllerTest extends ApiCommonErrorsTest
 
     public function testPost_nonAsciiFilename_isRfc6266EncodedInTheHeader()
     {
+        $this->skipNextRequestInSwagger();
         $book = $this->exampleBook();
         $book['pdfBook']['filename'] = 'Diplomas Vuelta a España';
         $this->postBook($book);

@@ -421,6 +421,36 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArrayOrganizer'
+  /api/v1/pdf/:
+    post:
+      operationId: postListPdf
+      summary: ''
+      description: Post run dry echoes the validated book as json instead of rendering it
+      parameters:
+        - description: Auth token
+          in: header
+          name: Authorization
+          example: Bearer ****************
+          required: true
+          schema:
+            type: string
+      tags:
+        - Pdf
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResPdfBook'
+      security:
+        - bearerAuth: []
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PdfRequest'
   /api/v1/rankings/{rankingID}/events/{eventID}/stages/{stageID}/classes/{classID}/compute/:
     post:
       operationId: postListRankingComputeClass
@@ -2076,6 +2106,72 @@ components:
           items:
             $ref: '#/components/schemas/Organizer'
       description: Data wrapper for Organizer
+      required:
+        - data
+    PdfBook:
+      type: object
+      properties:
+        layout:
+          type: string
+          example: default
+        filename:
+          type: string
+          example: document.pdf
+        sections:
+          type: array
+          items:
+            $ref: '#/components/schemas/PdfSection'
+      description: Entity PdfBook
+    PdfElement:
+      type: object
+      properties:
+        type:
+          type: string
+          example: text
+        content:
+          type: string
+          example: Otra sección
+        size:
+          type: number
+          example: 18
+        position:
+          $ref: '#/components/schemas/PdfPosition'
+      description: Entity PdfElement
+    PdfPosition:
+      type: object
+      properties:
+        x:
+          type: number
+          example: 100
+        y:
+          type: number
+          example: 250
+      description: Entity PdfPosition
+    PdfSection:
+      type: object
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/PdfElement'
+      description: Entity PdfSection
+      required:
+        - elements
+    PdfRequest:
+      type: object
+      properties:
+        pdfBook:
+          $ref: '#/components/schemas/PdfBook'
+        runDry:
+          type: boolean
+          example: true
+      description: Entity PdfRequest
+    ResPdfBook:
+      type: object
+      properties:
+        data:
+          $ref: '#/components/schemas/PdfBook'
+      description: Data wrapper for PdfBook
       required:
         - data
     ClassEntity:
