@@ -32,7 +32,7 @@ class UploadsController extends ApiController
 {
     public const NEW_VERSION = 402;
 
-    private UploadHelper $_helper;
+    private UploadMetrics $_metrics;
     private ClassesTable $Classes;
 
     public function isPublicController(): bool
@@ -215,13 +215,14 @@ class UploadsController extends ApiController
     {
         $this->Classes = ClassesTable::load();
         $this->flatResponse = true;
+        $this->_metrics = new UploadMetrics();
         try {
             $reUploadedData = RawUploadsTable::load()->getReUploadedData($data, $this->request->getParam('eventID'));
             if ($reUploadedData) {
                 $data = $reUploadedData;
             }
-            $this->_helper = new UploadHelper($data, $this->request->getParam('eventID'));
-            $this->return = $this->_addNew($this->_helper);
+            $helper = new UploadHelper($data, $this->request->getParam('eventID'), $this->_metrics);
+            $this->return = $this->_addNew($helper);
         } catch (\PDOException $e) {
             $this->log('Uploads PDOException: ' . $e->getMessage()
                 . " \n\n" . json_encode($data)
@@ -248,8 +249,7 @@ class UploadsController extends ApiController
     {
         $now = new FrozenTime();
         $this->response = $this->response->withStatus(202);
-        return $this->_helper->getMetrics()
-            ->toArrayError(["\n    [ERROR - $code] ($now) $message \n"]);
+        return $this->_metrics->toArrayError(["\n    [ERROR - $code] ($now) $message \n"]);
     }
 
     private function _getBearer(): ?string

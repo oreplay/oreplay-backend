@@ -15,7 +15,7 @@ use Results\Model\Table\ClassesTable;
 class UploadMetrics
 {
     public const COURSES = 'courses';
-    // warning: this bucket is not only club creation, the importers also measure
+    // covers participant matching as well as club creation, both importers measure
     // createRunnerIfNotExists() and createTeamIfNotExists() with it
     public const CLUBS = 'clubs';
     public const PARTICIPANT_RESULTS = 'participantResults';

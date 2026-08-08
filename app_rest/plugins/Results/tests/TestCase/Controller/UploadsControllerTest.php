@@ -138,6 +138,21 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($expected, $jsonDecoded);
     }
 
+    public function testAddNew_shouldRespondErrorWhenTheRawUploadIsNotFound()
+    {
+        Cache::clear();
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $data = [
+            'raw_upload_id' => '8fa0a698-5b49-433a-9339-e78ef216f12f',
+            'stage_id' => StagesFixture::STAGE_FEDO_2,
+        ];
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $this->assertStringContainsString('[ERROR', $jsonDecoded['meta']['human'][0]);
+        $this->assertEquals(['classes' => 0, 'runners' => 0], $jsonDecoded['meta']['updated']);
+    }
+
     public function testAddNew_shouldDecodeGzip()
     {
         Cache::clear();

@@ -19,6 +19,7 @@ use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
 use Results\Lib\Import\RunnerResultImporter;
 use Results\Lib\UploadHelper;
+use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\RunnerResult;
@@ -248,7 +249,7 @@ class RankingsTable extends AppTable
         $data['event']['stages'][0]['id'] = $rk->getEventId();
         $uploadHelper = new UploadHelper([
             'oreplay_data_transfer' => $data
-        ], $rk->getEventId());
+        ], $rk->getEventId(), new UploadMetrics());
         $checker = new RankingUploadConfigChecker($rk);
         $uploadHelper->setConfigChecker($checker);
         return $uploadHelper->inClass($class->id);

@@ -24,7 +24,7 @@ class UploadHelper
     private ExistingResultsIndex $_existingResults;
     private UploadMetrics $_metrics;
 
-    public function __construct(array $data, string $eventID)
+    public function __construct(array $data, string $eventID, UploadMetrics $metrics)
     {
         if (!$data) {
             throw new InternalErrorException('Payload $data is mandatory');
@@ -38,7 +38,7 @@ class UploadHelper
         if ($uploadLogId) {
             $this->_data = $this->_loadFromRawUploads($uploadLogId);
         }
-        $this->_metrics = new UploadMetrics();
+        $this->_metrics = $metrics;
         $this->_existingResults = new ExistingResultsIndex();
     }
 

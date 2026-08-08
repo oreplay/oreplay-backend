@@ -10,6 +10,7 @@ use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\UploadHelper;
+use Results\Lib\UploadMetrics;
 use Results\Model\Entity\UploadLog;
 use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\TokensTable;
@@ -76,7 +77,7 @@ class RawUploadsController extends ApiController
 
     protected function addNew($data)
     {
-        $helper = new UploadHelper($data, $this->request->getParam('eventID'));
+        $helper = new UploadHelper($data, $this->request->getParam('eventID'), new UploadMetrics());
 
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($helper->getEventId(), $token);

@@ -7,6 +7,7 @@ namespace Results\Test\TestCase\Lib;
 use Cake\TestSuite\TestCase;
 use Results\Lib\UploadConfigChecker;
 use Results\Lib\UploadHelper;
+use Results\Lib\UploadMetrics;
 
 class UploadHelperTest extends TestCase
 {
@@ -18,7 +19,7 @@ class UploadHelperTest extends TestCase
         $data = ['oreplay_data_transfer' => [
             'event' => ['id' => $eventId, 'stages' => [['id' => 'fake_stage_id', 'classes' => []]]],
         ]];
-        $helper = new UploadHelper($data, $eventId);
+        $helper = new UploadHelper($data, $eventId, new UploadMetrics());
         $helper->setConfigChecker((new UploadConfigChecker($data))->validateStructure($eventId));
         return $helper;
     }
@@ -49,7 +50,7 @@ class UploadHelperTest extends TestCase
 
     public function testIsArrayWithoutValues()
     {
-        $helper = new UploadHelper(['fake' => 'data'], 'fake_event_id');
+        $helper = new UploadHelper(['fake' => 'data'], 'fake_event_id', new UploadMetrics());
 
         // empty array
         $arr = [];
