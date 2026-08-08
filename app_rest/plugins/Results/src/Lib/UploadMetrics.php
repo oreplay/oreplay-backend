@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Lib;
 
+use Cake\Http\Exception\InternalErrorException;
 use Cake\I18n\FrozenTime;
 use RestApi\Model\Entity\RestApiEntity;
 use Results\Lib\Consts\Color;
@@ -43,6 +44,7 @@ class UploadMetrics
         self::PARTICIPANTS_LOOP => 0.0,
         self::PARTICIPANTS_IN_LOOP => 0.0,
     ];
+    private array $_timersInProgress = [];
     private string $_lastWarning = '';
 
     public function __construct()
@@ -53,12 +55,19 @@ class UploadMetrics
 
     public function measure(string $timer, callable $work)
     {
-        // warning: measuring one timer nested inside itself adds both spans to the bucket,
-        // and a timer outside the constants above silently gets a bucket toArray() drops
+        if (!array_key_exists($timer, $this->_durations)) {
+            throw new InternalErrorException('Unknown upload timer ' . $timer);
+        }
+        if (isset($this->_timersInProgress[$timer])) {
+            // an outer measurement of this timer already covers this span
+            return $work();
+        }
+        $this->_timersInProgress[$timer] = true;
         $start = microtime(true);
         try {
             return $work();
         } finally {
+            unset($this->_timersInProgress[$timer]);
             $this->_durations[$timer] += microtime(true) - $start;
         }
     }
