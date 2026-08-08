@@ -60,6 +60,8 @@ class ExistingResultsIndex
         Runner|Team $participant,
         RunnerResult|TeamResult $resultToSave
     ): array {
+        // warning: an index never filled by index*() answers "no existing results" here instead of
+        // failing, and the caller then saves a duplicate row per participant on re-upload
         $storage = $this->_storageFor($resultToSave);
         return $storage->getExistingDbDataForThisId($participant->id, $resultToSave);
     }

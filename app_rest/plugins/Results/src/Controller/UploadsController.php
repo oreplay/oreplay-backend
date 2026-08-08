@@ -75,6 +75,8 @@ class UploadsController extends ApiController
         //$rawUrl = $this->_getHost() . '/api/v1/events/' . $helper->getEventId() . '/rawUploads';
         //FireAndForget::postJson($rawUrl, $helper->getData(), ['Authorization' => 'Bearer ' . $token]);
 
+        // warning: moving this into or below the class loop leaves the index empty, which silently
+        // duplicates every result row instead of failing
         $helper->loadExistingResults($this->runnerResultsTable(), $this->teamResultsTable());
 
         if ($configChecker->isStartLists() && $helper->hasAlreadyFinishTimes()) {
