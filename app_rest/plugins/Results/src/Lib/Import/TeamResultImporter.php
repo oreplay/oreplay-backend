@@ -49,6 +49,8 @@ class TeamResultImporter
         $context = $this->_helper->getContext();
         $resultToSave = $this->_teamResults
             ->fillNewWithStage($resultData, $context->getEventId(), $context->getStageId());
+        // warning: team results are stored without class_id while runner results get one,
+        // the asymmetry is inherited and adding it here would change what is written
         $resultToSave->upload_type = $checker->preCheckType();
         $resultToSave->result_type = $this->_resultTypes
             ->getCachedWithDefault($checker, $resultData['result_type']['id'] ?? null);

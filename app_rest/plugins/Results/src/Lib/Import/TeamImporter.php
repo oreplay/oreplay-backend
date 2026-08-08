@@ -81,6 +81,8 @@ class TeamImporter
         }
 
         if (!$runners) {
+            // warning: the ?? never applies here, "." binds tighter, so a payload without
+            // team_name logs an undefined array key instead of falling back to ''
             $metrics->setWarning('Team without runners ' . $teamData['team_name'] ?? '');
         }
         $noClass = $this->_classOfTeamRunners();
@@ -98,6 +100,8 @@ class TeamImporter
 
     private function _classOfTeamRunners(): ClassEntity
     {
+        // warning: every runner of the team shares this one instance, which only holds
+        // while participant matching keeps treating the class entity as read only
         $noClass = new ClassEntity();
         $noClass->id = null;
         return $noClass;
