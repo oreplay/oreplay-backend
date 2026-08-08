@@ -59,22 +59,18 @@ class UploadMetrics
         try {
             return $work();
         } finally {
-            // warning: rounding per call instead of at output quantizes short spans, 1000
-            // runners at 4ms each record 0.00s and at 6ms each record 10s. Kept so the
-            // reported numbers do not move, accumulate raw to make these buckets usable
-            $this->_durations[$timer] += round(microtime(true) - $start, 2);
+            $this->_durations[$timer] += microtime(true) - $start;
         }
     }
 
     private function _duration(string $timer): float
     {
-        return $this->_durations[$timer];
+        return round($this->_durations[$timer], 2);
     }
 
     private function _roundUp(float $value): float
     {
-        // warning: does not round, so the processing and saving totals stay raw and are
-        // only rounded by toArray(), which is why they do not match the sum of the buckets
+        // warning: does not round despite the name, the value is only rounded by toArray()
         return $value;
     }
     private function startTotal()
