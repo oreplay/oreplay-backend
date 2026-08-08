@@ -14,6 +14,8 @@ use Results\Model\Table\ClassesTable;
 class UploadMetrics
 {
     public const COURSES = 'courses';
+    // warning: this bucket is not only club creation, the importers also measure
+    // createRunnerIfNotExists() and createTeamIfNotExists() with it
     public const CLUBS = 'clubs';
     public const PARTICIPANT_RESULTS = 'participantResults';
     public const SPLITS = 'splits';
@@ -51,10 +53,15 @@ class UploadMetrics
 
     public function measure(string $timer, callable $work)
     {
+        // warning: measuring one timer nested inside itself adds both spans to the bucket,
+        // and a timer outside the constants above silently gets a bucket toArray() drops
         $start = microtime(true);
         try {
             return $work();
         } finally {
+            // warning: rounding per call instead of at output quantizes short spans, 1000
+            // runners at 4ms each record 0.00s and at 6ms each record 10s. Kept so the
+            // reported numbers do not move, accumulate raw to make these buckets usable
             $this->_durations[$timer] += round(microtime(true) - $start, 2);
         }
     }
@@ -66,6 +73,8 @@ class UploadMetrics
 
     private function _roundUp(float $value): float
     {
+        // warning: does not round, so the processing and saving totals stay raw and are
+        // only rounded by toArray(), which is why they do not match the sum of the buckets
         return $value;
     }
     private function startTotal()
