@@ -187,7 +187,7 @@ class UploadsController extends ApiController
             $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . json_encode($data)
                 . " \n" . $e->getTraceAsString());
             $this->return = $this->respondError($e->getMessage(), $e->getCode());
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->log('Uploads GeneralException: ' . $e->getMessage() . " \n" . json_encode($data)
                 . " \n" . $e->getTraceAsString());
             $exploded = explode('\\', get_class($e));
