@@ -17,6 +17,7 @@ use Rankings\Model\Entity\Ranking;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
+use Results\Lib\Import\RunnerResultImporter;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\ResultType;
@@ -226,8 +227,10 @@ class RankingsTable extends AppTable
 
             $Runners = RunnersTable::load();
             $runner = $Runners->duplicateIfNotExists($rk->getEventId(), $rk->getStageId(), $participant, $class);
-            $runner = $Runners->RunnerResults
-                ->createSimpleRunnerResult($resultData, $runner, $this->_getHelper($rk, $class));
+            /** @var RunnerResultsTable $runnerResults */
+            $runnerResults = $Runners->RunnerResults->getTarget();
+            $importer = new RunnerResultImporter($runnerResults, $this->_getHelper($rk, $class));
+            $runner = $importer->importSimpleInto($runner, $resultData);
 
             if ($participant->_getClub()) {
                 $club = $participant->_getClub()->toArray();

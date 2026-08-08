@@ -9,8 +9,6 @@ use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Results\Lib\UploadContext;
-use Results\Lib\UploadHelper;
-use Results\Model\Entity\Team;
 use Results\Model\Entity\TeamResult;
 
 /**
@@ -52,30 +50,5 @@ class TeamResultsTable extends AppTable
         return $this->findWhereEventAndStage($context)
             ->orderByAsc('team_id')
             ->all();
-    }
-
-    private function _newResultWithType(array $resultData, UploadHelper $helper): TeamResult
-    {
-        $resultToSave = $this->fillNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
-        $resultToSave->upload_type = $helper->getChecker()->preCheckType();
-
-        $resultToSave->result_type = $this->ResultTypes
-            ->getCachedWithDefault($helper->getChecker(), $resultData['result_type']['id'] ?? null);
-
-        return $resultToSave;
-    }
-
-    public function createTeamResult(array $resultData, Team $participant, UploadHelper $helper): Team
-    {
-        $helper->getMetrics()->startRunnerResultsTime();
-        $teamResultToSave = $this->_newResultWithType($resultData, $helper);
-
-        $participant = $helper->processRunnerResults($teamResultToSave, $participant);
-
-        $splits = $resultData['splits'] ?? [];
-        /** @var TeamResult $teamResultToSave */
-        $teamResultToSave = $this->Splits->uploadAllSplits($splits, $teamResultToSave, $helper); // NOT TESTED
-        // needs testing in UploadsControllerTest
-        return $participant->addTeamResult($teamResultToSave);
     }
 }

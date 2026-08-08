@@ -12,6 +12,8 @@ use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
+use Results\Lib\Import\RunnerImporter;
+use Results\Lib\Import\TeamImporter;
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
@@ -119,6 +121,7 @@ class UploadsController extends ApiController
     private function _addAllRunnersInClass(array $classArray, ClassEntity $class, UploadHelper $helper): ClassEntity
     {
         $this->runnersTable()->ifDifferentClassEmptyStoredList($class->id);
+        $importer = new RunnerImporter($this->runnersTable(), $helper);
         $runners = [];
         $runnerArray = $classArray['runners'] ?? [];
         $runnerCount = count($runnerArray);
@@ -127,7 +130,7 @@ class UploadsController extends ApiController
         for ($i = 0; $i < $runnerCount; $i++) {
             $helper->getMetrics()->startRunnersInLoopTime();
             $runnerData = $runnerArray[$i];
-            $runner = $this->runnersTable()->createRunnerWithResults($runnerData, $class, $helper);
+            $runner = $importer->import($runnerData, $class);
             if (in_array($runner->id, $existingRunnerIDs)) {
                 $helper->getMetrics()
                     ->setWarning('Duplicated runner ' . $runner->_getFullName() . ' ' . $runner->bib_number);
@@ -145,6 +148,7 @@ class UploadsController extends ApiController
     private function _addAllTeamsInClass(array $classArray, ClassEntity $class, UploadHelper $helper): ClassEntity
     {
         $this->teamsTable()->ifDifferentClassEmptyStoredList($class->id);
+        $importer = new TeamImporter($this->teamsTable(), $helper);
         $teams = [];
         $runnerArray = $classArray['teams'] ?? [];
         $teamCount = count($runnerArray);
@@ -152,7 +156,7 @@ class UploadsController extends ApiController
         for ($i = 0; $i < $teamCount; $i++) {
             $helper->getMetrics()->startRunnersInLoopTime();
             $teamData = $runnerArray[$i];
-            $teams[] = $this->teamsTable()->createTeamWithResults($teamData, $class, $helper);
+            $teams[] = $importer->import($teamData, $class);
             $helper->getMetrics()->endRunnersInLoopTime();
         }
         $helper->getMetrics()->endRunnersOutLoopTime();

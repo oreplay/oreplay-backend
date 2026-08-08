@@ -7,6 +7,7 @@ namespace Results\Test\TestCase\Model\Table;
 use Cake\TestSuite\TestCase;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
+use Results\Lib\Import\TeamImporter;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Stage;
@@ -90,7 +91,7 @@ class TeamsTableTest extends TestCase
             ['leg_number' => 2], // existing leg 2
             [3] // missing
         ];
-        $res = $this->Teams->getMissingLegs($runners, $results);
+        $res = TeamImporter::getMissingLegs($runners, $results);
 
         $expected = [1, 3];
         $this->assertEquals($expected, $res);

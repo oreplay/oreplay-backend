@@ -9,7 +9,6 @@ use Cake\Http\Exception\NotFoundException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
 use RestApi\Model\ORM\RestApiSelectQuery;
-use Results\Lib\UploadHelper;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Team;
 use Results\Model\Traits\StoredParticipantTrait;
@@ -90,71 +89,6 @@ class TeamsTable extends AppTable
             $team = $this->fillNewWithStage($teamData, $eventId, $stageId);
             $this->addParticipantInClass($team, $class->id);
         }
-        return $team;
-    }
-
-    public function getMissingLegs(mixed $runners, mixed $results): array
-    {
-        $totalResults = count($runners);
-        $hasSameRunnersAsResults = count($runners) && $totalResults;
-        if (!$hasSameRunnersAsResults) {
-            return [];
-        }
-        $legs = [];
-        foreach ($results as $current) {
-            $currentLeg = $current['leg_number'] ?? null;
-            if ($currentLeg) {
-                $legs[$currentLeg] = $currentLeg;
-            }
-        }
-        $missingLegs = [];
-        for ($i = 1; $i <= $totalResults; $i++) {
-            if (!isset($legs[$i])) {
-                $missingLegs[] = $i;
-            }
-        }
-        return $missingLegs;
-    }
-
-    public function createTeamWithResults(array $teamData, ClassEntity $class, UploadHelper $helper): Team
-    {
-        $helper->getMetrics()->startClubsTime();
-        $team = $this->createTeamIfNotExists($helper->getEventId(), $helper->getStageId(), $teamData, $class);
-        $helper->getMetrics()->endClubsTime();
-
-        $results = $teamData['team_results'] ?? [];
-        if (!$results) {
-            $helper->getMetrics()->setWarning('Team without team_results');
-        }
-        $runners = $teamData['runners'] ?? [];
-        $missingLegs = $this->getMissingLegs($runners, $results);
-        foreach ($results as $resultData) {
-            $isRelayLegNotFinished = $missingLegs
-                && !($resultData['time_seconds'] ?? null)
-                && !($resultData['points_final'] ?? null)
-                && !($resultData['leg_number'] ?? null);
-            if ($isRelayLegNotFinished) {
-                $resultData['leg_number'] = array_pop($missingLegs);
-            }
-            $helper->getMetrics()->addOneTeamResultToCounter();
-            $team = $this->TeamResults->createTeamResult($resultData, $team, $helper);
-        }
-        if (!$runners) {
-            $helper->getMetrics()->setWarning('Team without runners ' . $teamData['team_name'] ?? '');
-        }
-        foreach ($runners as $runnerData) {
-            $nullClass = new ClassEntity();
-            $nullClass->id = null;
-            $team->addRunner($this->Runners->createRunnerWithResults($runnerData, $nullClass, $helper));
-        }
-
-        $helper->getMetrics()->startClubsTime();
-        $club = $teamData['club'] ?? null;
-        if ($club) {
-            $team->addClub($this->Clubs->createIfNotExists($helper->getEventId(), $helper->getStageId(), $club));
-        }
-        $helper->getMetrics()->endClubsTime();
-        $helper->getMetrics()->addToTeamCounter(1);
         return $team;
     }
 }

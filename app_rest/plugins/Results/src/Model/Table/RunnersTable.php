@@ -14,7 +14,6 @@ use Rankings\Model\Table\ParticipantInterface;
 use RestApi\Lib\Exception\DetailedException;
 use RestApi\Model\ORM\RestApiSelectQuery;
 use Results\Lib\ResultsSorter;
-use Results\Lib\UploadHelper;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Team;
@@ -226,34 +225,6 @@ class RunnersTable extends AppTable
                         });
                 });
             });
-    }
-
-    public function createRunnerWithResults(array $runnerData, ClassEntity $class, UploadHelper $helper): Runner
-    {
-        if (!isset($runnerData['leg_number']) && isset($runnerData['runner_results'][0]['leg_number'])) {
-            $runnerData['leg_number'] = $runnerData['runner_results'][0]['leg_number'];
-        }
-        $helper->getMetrics()->startClubsTime();
-        $runner = $this->createRunnerIfNotExists($helper->getEventId(), $helper->getStageId(), $runnerData, $class);
-        $helper->getMetrics()->endClubsTime();
-
-        $results = $runnerData['runner_results'] ?? [];
-        if (!$results) {
-            $helper->getMetrics()->setWarning('Runner without runner_results');
-        }
-        foreach ($results as $resultData) {
-            $helper->getMetrics()->addOneRunnerResultToCounter();
-            $runner = $this->RunnerResults->createRunnerResult($resultData, $runner, $helper);
-        }
-
-        $helper->getMetrics()->startClubsTime();
-        $club = $runnerData['club'] ?? null;
-        if ($club && !$helper->isArrayWithoutValues($club)) {
-            $runner->addClub($this->Clubs->createIfNotExists($helper->getEventId(), $helper->getStageId(), $club));
-        }
-        $helper->getMetrics()->endClubsTime();
-        $helper->getMetrics()->addToRunnerCounter(1);
-        return $runner;
     }
 
     public function removeFromRanking(string $id, string $note): int

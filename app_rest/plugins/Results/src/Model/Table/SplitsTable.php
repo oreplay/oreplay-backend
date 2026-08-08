@@ -11,7 +11,6 @@ use Cake\Datasource\EntityInterface;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Results\Lib\UploadHelper;
-use Results\Model\Entity\ParticipantResultsEntity;
 use Results\Model\Entity\Split;
 
 /**
@@ -70,68 +69,6 @@ class SplitsTable extends AppTable
     public function deleteAllByRunnerResultId(string $runnerId): int
     {
         return $this->deleteAll(['runner_result_id' => $runnerId]);
-    }
-
-    private function _skipSplit(array $split): bool
-    {
-        if (($split['status'] ?? '') === Split::STATUS_ADDITIONAL) {
-            // additional punches out of the course are not stored
-            return true;
-        }
-        return false;
-    }
-
-    public function uploadForEachSplit(
-        ParticipantResultsEntity $resultToSave,
-        array $splits,
-        UploadHelper $helper
-    ): ParticipantResultsEntity {
-        $context = $helper->getContext();
-        $existingResults = $helper->getExistingResults();
-        if ($splits) {
-            foreach ($splits as $split) {
-                if ($this->_skipSplit($split)) {
-                    // additional punches out of the course are not stored
-                    continue;
-                }
-                $split['is_intermediate'] = $helper->getChecker()->isIntermediates();
-                //if ($split['is_intermediate'] && !isset($split['reading_time'])) {
-                //    // do not save radio splits without time
-                //    continue;
-                //}
-                $splitToSave = $this->fillNewWithStage($split, $context->getEventId(), $context->getStageId());
-                $splitToSave->class_id = $context->getClassId();
-                if ($split['station'] ?? null) {
-                    $control = $this->Controls->createControlIfNotExists($context, $existingResults, $split);
-                    $splitToSave->addControl($control);
-                }
-                $helper->getMetrics()->addOneSplit();
-                $resultToSave->addSplit($splitToSave);
-            }
-        }
-        return $resultToSave;
-    }
-
-    public function uploadAllSplits(
-        $splits,
-        ParticipantResultsEntity $runnerResultToSave,
-        UploadHelper $helper,
-        string $warningMessage = ''
-    ): ParticipantResultsEntity {
-        $helper->getMetrics()->startSplitsTime();
-        if ($splits && !$runnerResultToSave->hasSameSplits($splits)) {
-            $runnerResultToSave->setHash($splits);
-            if (!$helper->getChecker()->isIntermediates()) {
-                $this->deleteAllByRunnerResultId($runnerResultToSave->getId());
-            }
-            $runnerResultToSave = $this->uploadForEachSplit($runnerResultToSave, $splits, $helper);
-        }
-        $helper->getMetrics()->endSplitsTime();
-        if ($runnerResultToSave->hasInvalidFinishTime()) {
-            $helper->getMetrics()
-                ->setWarning('Runner results has finish_times without time_seconds' . $warningMessage);
-        }
-        return $runnerResultToSave;
     }
 
     /**

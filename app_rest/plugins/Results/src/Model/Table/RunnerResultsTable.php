@@ -11,9 +11,6 @@ use Cake\ORM\Behavior\TimestampBehavior;
 use RestApi\Model\Entity\RestApiEntity;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\UploadContext;
-use Results\Lib\UploadHelper;
-use Results\Model\Entity\ResultType;
-use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Traits\TimingTrait;
 
@@ -208,45 +205,5 @@ class RunnerResultsTable extends AppTable
         return $this->findWhereEventAndStage($context)
             ->orderByAsc('runner_id')
             ->all();
-    }
-
-    private function _newResultWithType(array $resultData, UploadHelper $helper): RunnerResult
-    {
-        if ($helper->getChecker()->isTotals()) {
-            $resultType = $resultData['result_type']['id'] ?? null;
-            if ($resultType === ResultType::STAGE) {
-                $helper->getMetrics()->setWarning('Result type STAGE converted to PARTIAL_OVERALL');
-                $resultData['result_type'] = ['id' => ResultType::PARTIAL_OVERALL];
-            }
-        }
-        $resultToSave = $this->fillNewWithStage($resultData, $helper->getEventId(), $helper->getStageId());
-        $resultToSave->upload_type = $helper->getChecker()->preCheckType();
-
-        $resultToSave->result_type = $this->ResultTypes
-            ->getCachedWithDefault($helper->getChecker(), $resultData['result_type']['id'] ?? null);
-
-        return $resultToSave;
-    }
-
-    public function createSimpleRunnerResult(array $resultData, Runner $runner, UploadHelper $helper): Runner
-    {
-        $runnerResultToSave = $this->_newResultWithType($resultData, $helper);
-        $runnerResultToSave->class_id = $helper->getContext()->getClassId();
-        return $runner->addRunnerResult($runnerResultToSave);
-    }
-
-    public function createRunnerResult(array $resultData, Runner $participant, UploadHelper $helper): Runner
-    {
-        $helper->getMetrics()->startRunnerResultsTime();
-        $runnerResultToSave = $this->_newResultWithType($resultData, $helper);
-        $runnerResultToSave->class_id = $helper->getContext()->getClassId();
-
-        $participant = $helper->processRunnerResults($runnerResultToSave, $participant);
-
-        $splits = $resultData['splits'] ?? [];
-        $warningMsg = 'card: ' . $participant->sicard;
-        /** @var RunnerResult $runnerResultToSave */
-        $runnerResultToSave = $this->Splits->uploadAllSplits($splits, $runnerResultToSave, $helper, $warningMsg);
-        return $participant->addRunnerResult($runnerResultToSave);
     }
 }
