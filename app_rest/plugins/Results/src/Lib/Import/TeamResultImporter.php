@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Lib\Import;
 
 use Results\Lib\UploadHelper;
+use Results\Lib\UploadMetrics;
 use Results\Model\Entity\Team;
 use Results\Model\Entity\TeamResult;
 use Results\Model\Table\ResultTypesTable;
@@ -32,15 +33,21 @@ class TeamResultImporter
 
     public function importInto(Team $participant, array $resultData): Team
     {
-        $this->_helper->getMetrics()->startRunnerResultsTime();
-        $resultToSave = $this->_newResultWithType($resultData);
-
-        $participant = $this->_helper->processRunnerResults($resultToSave, $participant);
+        [$participant, $resultToSave] = $this->_helper->getMetrics()->measure(
+            UploadMetrics::PARTICIPANT_RESULTS,
+            fn() => $this->_reconcileWithExistingResults($participant, $resultData)
+        );
 
         $splits = $resultData['splits'] ?? [];
         /** @var TeamResult $resultToSave */
         $resultToSave = $this->_splits->importInto($resultToSave, $splits);
         return $participant->addTeamResult($resultToSave);
+    }
+
+    private function _reconcileWithExistingResults(Team $participant, array $resultData): array
+    {
+        $resultToSave = $this->_newResultWithType($resultData);
+        return [$this->_helper->processRunnerResults($resultToSave, $participant), $resultToSave];
     }
 
     private function _newResultWithType(array $resultData): TeamResult

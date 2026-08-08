@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Lib\Import;
 
 use Results\Lib\UploadHelper;
+use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Team;
 use Results\Model\Table\ClubsTable;
@@ -63,10 +64,8 @@ class TeamImporter
         $metrics = $this->_helper->getMetrics();
         $context = $this->_helper->getContext();
 
-        $metrics->startClubsTime();
-        $team = $this->_teams
-            ->createTeamIfNotExists($context->getEventId(), $context->getStageId(), $teamData, $class);
-        $metrics->endClubsTime();
+        $team = $metrics->measure(UploadMetrics::CLUBS, fn() => $this->_teams
+            ->createTeamIfNotExists($context->getEventId(), $context->getStageId(), $teamData, $class));
 
         $results = $teamData['team_results'] ?? [];
         if (!$results) {
@@ -90,9 +89,10 @@ class TeamImporter
             $team->addRunner($this->_runners->import($runnerData, $noClass));
         }
 
-        $metrics->startClubsTime();
-        $team = $this->_addClub($team, $teamData['club'] ?? null);
-        $metrics->endClubsTime();
+        $team = $metrics->measure(
+            UploadMetrics::CLUBS,
+            fn() => $this->_addClub($team, $teamData['club'] ?? null)
+        );
 
         $metrics->addToTeamCounter(1);
         return $team;

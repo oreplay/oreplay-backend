@@ -13,6 +13,13 @@ use Results\Model\Table\ClassesTable;
 
 class UploadMetrics
 {
+    public const COURSES = 'courses';
+    public const CLUBS = 'clubs';
+    public const PARTICIPANT_RESULTS = 'participantResults';
+    public const SPLITS = 'splits';
+    public const PARTICIPANTS_LOOP = 'participantsLoop';
+    public const PARTICIPANTS_IN_LOOP = 'participantsInLoop';
+
     private array $_classesToSave = [];
     private int $classCount = 0;
     private int $runnerCount = 0;
@@ -26,24 +33,35 @@ class UploadMetrics
     private float $_processingDuration = 0.0;
     private float $_savingDuration = 0.0;
     private float $_totalDuration = 0.0;
-    private float $_splitDuration = 0.0;
-    private float $_runnerResultsDuration = 0.0;
-    private float $_startsTimeSplits = 0.0;
-    private float $_startRunnerTime = 0.0;
-    private float $_startsCoursesTime = 0.0;
-    private float $_coursesDuration = 0.0;
-    private float $_startClubsTime = 0.0;
-    private float $_clubsDuration = 0.0;
-    private float $_startRunnerOutLoopTime = 0.0;
-    private float $_runnersOutLoopDuration = 0.0;
-    private float $_startRunnerInLoopTime = 0.0;
-    private float $_runnersInLoopDuration = 0.0;
+    private array $_durations = [
+        self::COURSES => 0.0,
+        self::CLUBS => 0.0,
+        self::PARTICIPANT_RESULTS => 0.0,
+        self::SPLITS => 0.0,
+        self::PARTICIPANTS_LOOP => 0.0,
+        self::PARTICIPANTS_IN_LOOP => 0.0,
+    ];
     private string $_lastWarning = '';
 
     public function __construct()
     {
         $this->startTotal();
         $this->startProcessing();
+    }
+
+    public function measure(string $timer, callable $work)
+    {
+        $start = microtime(true);
+        try {
+            return $work();
+        } finally {
+            $this->_durations[$timer] += round(microtime(true) - $start, 2);
+        }
+    }
+
+    private function _duration(string $timer): float
+    {
+        return $this->_durations[$timer];
     }
 
     private function _roundUp(float $value): float
@@ -109,61 +127,9 @@ class UploadMetrics
         $this->teamCount += $toAdd;
     }
 
-    public function startSplitsTime()
+    public function addOneCourse()
     {
-        $this->_startsTimeSplits = microtime(true);
-    }
-
-    public function startRunnerResultsTime()
-    {
-        $this->_startRunnerTime = microtime(true);
-    }
-    public function endRunnerResultsTime()
-    {
-        $this->_runnerResultsDuration += round(microtime(true) - $this->_startRunnerTime, 2);
-    }
-
-    public function startCoursesTime()
-    {
-        $this->_startsCoursesTime = microtime(true);
-    }
-    public function endCoursesTime()
-    {
-        $this->_coursesDuration += round(microtime(true) - $this->_startsCoursesTime, 2);
         $this->coursesCount++;
-    }
-
-    public function startRunnersOutLoopTime()
-    {
-        $this->_startRunnerOutLoopTime = microtime(true);
-    }
-
-    public function endRunnersOutLoopTime()
-    {
-        $this->_runnersOutLoopDuration += round(microtime(true) - $this->_startRunnerOutLoopTime, 2);
-    }
-
-    public function startRunnersInLoopTime()
-    {
-        $this->_startRunnerInLoopTime = microtime(true);
-    }
-    public function endRunnersInLoopTime()
-    {
-        $this->_runnersInLoopDuration += round(microtime(true) - $this->_startRunnerInLoopTime, 2);
-    }
-
-    public function startClubsTime()
-    {
-        $this->_startClubsTime = microtime(true);
-    }
-    public function endClubsTime()
-    {
-        $this->_clubsDuration += round(microtime(true) - $this->_startClubsTime, 2);
-    }
-
-    public function endSplitsTime()
-    {
-        $this->_splitDuration += round(microtime(true) - $this->_startsTimeSplits, 2);
     }
 
     public function addOneSplit()
@@ -215,9 +181,13 @@ class UploadMetrics
     {
         $now = new FrozenTime();
         $newLine = "<br>";
-        $runnersInLoop = $this->_runnersInLoopDuration;
-        $loopingTime = $this->_runnersOutLoopDuration - $runnersInLoop;
-        $resultsTotal = round($this->_runnersOutLoopDuration, 2);
+        $runnersInLoop = $this->_duration(self::PARTICIPANTS_IN_LOOP);
+        $loopingTime = $this->_duration(self::PARTICIPANTS_LOOP) - $runnersInLoop;
+        $resultsTotal = round($this->_duration(self::PARTICIPANTS_LOOP), 2);
+        $coursesDuration = $this->_duration(self::COURSES);
+        $clubsDuration = $this->_duration(self::CLUBS);
+        $participantResultsDuration = $this->_duration(self::PARTICIPANT_RESULTS);
+        $splitsDuration = $this->_duration(self::SPLITS);
         $processingDuration = round($this->_processingDuration, 2);
         $savingDuration = round($this->_savingDuration, 2);
         $total = round($this->_totalDuration, 2);
@@ -254,13 +224,13 @@ class UploadMetrics
                 ],
                 'timings' => [
                     'processing' => [
-                        'courses' => $this->_coursesDuration,
+                        'courses' => $coursesDuration,
                         'runners' => [
                             'runnerLoop' => $loopingTime,
                             'runnersInLoop' => $runnersInLoop,
-                            'clubs' => $this->_clubsDuration,
-                            'runnerResults' => $this->_runnerResultsDuration,
-                            'splits' => $this->_splitDuration,
+                            'clubs' => $clubsDuration,
+                            'runnerResults' => $participantResultsDuration,
+                            'splits' => $splitsDuration,
                             'total' => $resultsTotal,
                         ],
                         'total' => $processingDuration
@@ -273,12 +243,12 @@ class UploadMetrics
                 'humanColor' => $humanColor,
                 'human' => [
                     "Updated$extraMessage $this->classCount classes, "
-                    . "$this->coursesCount courses ($this->_coursesDuration s) $newLine"
+                    . "$this->coursesCount courses ($coursesDuration s) $newLine"
                     . "$participantCount participants "
                     . "(and $participantResultsCount results in $resultsTotal s "
-                    . "[$loopingTime looping + $runnersInLoop s + $this->_clubsDuration clubs + "
-                    . "$this->_runnerResultsDuration results]), $newLine"
-                    . "$this->splitCount splits (in $this->_splitDuration s), $newLine"
+                    . "[$loopingTime looping + $runnersInLoop s + $clubsDuration clubs + "
+                    . "$participantResultsDuration results]), $newLine"
+                    . "$this->splitCount splits (in $splitsDuration s), $newLine"
                     . "in $total seconds ($processingDuration processing + $savingDuration saving)",
                     "($now - $type)",
                 ]

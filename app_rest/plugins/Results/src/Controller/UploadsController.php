@@ -17,6 +17,8 @@ use Results\Lib\Import\TeamImporter;
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
+use Results\Model\Entity\Runner;
+use Results\Model\Entity\Team;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\RunnerResultsTable;
@@ -92,11 +94,12 @@ class UploadsController extends ApiController
             if (!$class->isSameUploadHash($classObj) && !$isTakingTooLong) {
                 $class->setHash($classObj);
                 $classHelper = $helper->inClass($class->id);
-                $helper->getMetrics()->startCoursesTime();
                 // if no change is done in the whole class, we could totally skip processing it
-                $course = $this->Classes->Courses->createIfNotExists($helper->getEventId(), $stageId, $classObj);
-                $class->course = $course;
-                $helper->getMetrics()->endCoursesTime();
+                $class->course = $metrics->measure(
+                    UploadMetrics::COURSES,
+                    fn() => $this->Classes->Courses->createIfNotExists($helper->getEventId(), $stageId, $classObj)
+                );
+                $metrics->addOneCourse();
                 $class = $this->_addAllRunnersInClass($classObj, $class, $classHelper);
                 $class = $this->_addAllTeamsInClass($classObj, $class, $classHelper);
                 $metrics->saveManyOrFail($this->Classes, $class);
@@ -122,46 +125,72 @@ class UploadsController extends ApiController
     {
         $this->runnersTable()->ifDifferentClassEmptyStoredList($class->id);
         $importer = new RunnerImporter($this->runnersTable(), $helper);
-        $runners = [];
         $runnerArray = $classArray['runners'] ?? [];
-        $runnerCount = count($runnerArray);
+        $runners = $helper->getMetrics()->measure(
+            UploadMetrics::PARTICIPANTS_LOOP,
+            fn() => $this->_importEachRunner($runnerArray, $class, $importer, $helper)
+        );
+        $class->addRunners($runners);
+        return $class;
+    }
+
+    /**
+     * @return Runner[]
+     */
+    private function _importEachRunner(
+        array $runnerArray,
+        ClassEntity $class,
+        RunnerImporter $importer,
+        UploadHelper $helper
+    ): array {
+        $metrics = $helper->getMetrics();
+        $runners = [];
         $existingRunnerIDs = [];
-        $helper->getMetrics()->startRunnersOutLoopTime();
-        for ($i = 0; $i < $runnerCount; $i++) {
-            $helper->getMetrics()->startRunnersInLoopTime();
-            $runnerData = $runnerArray[$i];
-            $runner = $importer->import($runnerData, $class);
+        foreach ($runnerArray as $runnerData) {
+            $runner = $metrics->measure(
+                UploadMetrics::PARTICIPANTS_IN_LOOP,
+                fn() => $importer->import($runnerData, $class)
+            );
             if (in_array($runner->id, $existingRunnerIDs)) {
-                $helper->getMetrics()
-                    ->setWarning('Duplicated runner ' . $runner->_getFullName() . ' ' . $runner->bib_number);
+                $metrics->setWarning('Duplicated runner ' . $runner->_getFullName() . ' ' . $runner->bib_number);
             } else {
                 $existingRunnerIDs[] = $runner->id;
             }
             $runners[] = $runner;
-            $helper->getMetrics()->endRunnersInLoopTime();
         }
-        $helper->getMetrics()->endRunnersOutLoopTime();
-        $class->addRunners($runners);
-        return $class;
+        return $runners;
     }
 
     private function _addAllTeamsInClass(array $classArray, ClassEntity $class, UploadHelper $helper): ClassEntity
     {
         $this->teamsTable()->ifDifferentClassEmptyStoredList($class->id);
         $importer = new TeamImporter($this->teamsTable(), $helper);
-        $teams = [];
-        $runnerArray = $classArray['teams'] ?? [];
-        $teamCount = count($runnerArray);
-        $helper->getMetrics()->startRunnersOutLoopTime();
-        for ($i = 0; $i < $teamCount; $i++) {
-            $helper->getMetrics()->startRunnersInLoopTime();
-            $teamData = $runnerArray[$i];
-            $teams[] = $importer->import($teamData, $class);
-            $helper->getMetrics()->endRunnersInLoopTime();
-        }
-        $helper->getMetrics()->endRunnersOutLoopTime();
-        $class->teams = $teams;
+        $teamArray = $classArray['teams'] ?? [];
+        $class->teams = $helper->getMetrics()->measure(
+            UploadMetrics::PARTICIPANTS_LOOP,
+            fn() => $this->_importEachTeam($teamArray, $class, $importer, $helper)
+        );
         return $class;
+    }
+
+    /**
+     * @return Team[]
+     */
+    private function _importEachTeam(
+        array $teamArray,
+        ClassEntity $class,
+        TeamImporter $importer,
+        UploadHelper $helper
+    ): array {
+        $metrics = $helper->getMetrics();
+        $teams = [];
+        foreach ($teamArray as $teamData) {
+            $teams[] = $metrics->measure(
+                UploadMetrics::PARTICIPANTS_IN_LOOP,
+                fn() => $importer->import($teamData, $class)
+            );
+        }
+        return $teams;
     }
 
     private function teamsTable(): TeamsTable

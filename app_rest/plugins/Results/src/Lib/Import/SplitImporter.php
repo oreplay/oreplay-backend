@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Lib\Import;
 
 use Results\Lib\UploadHelper;
+use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ParticipantResultsEntity;
 use Results\Model\Entity\Split;
 use Results\Model\Table\ControlsTable;
@@ -31,19 +32,28 @@ class SplitImporter
         string $warningMessage = ''
     ): ParticipantResultsEntity {
         $metrics = $this->_helper->getMetrics();
-        $metrics->startSplitsTime();
-        if ($splits && !$resultToSave->hasSameSplits($splits)) {
-            $resultToSave->setHash($splits);
-            if (!$this->_helper->getChecker()->isIntermediates()) {
-                $this->_splits->deleteAllByRunnerResultId($resultToSave->getId());
-            }
-            $resultToSave = $this->_addEachSplit($resultToSave, $splits);
-        }
-        $metrics->endSplitsTime();
+        $resultToSave = $metrics->measure(
+            UploadMetrics::SPLITS,
+            fn() => $this->_replaceSplitsWhenChanged($resultToSave, $splits)
+        );
         if ($resultToSave->hasInvalidFinishTime()) {
             $metrics->setWarning('Runner results has finish_times without time_seconds' . $warningMessage);
         }
         return $resultToSave;
+    }
+
+    private function _replaceSplitsWhenChanged(
+        ParticipantResultsEntity $resultToSave,
+        array $splits
+    ): ParticipantResultsEntity {
+        if (!$splits || $resultToSave->hasSameSplits($splits)) {
+            return $resultToSave;
+        }
+        $resultToSave->setHash($splits);
+        if (!$this->_helper->getChecker()->isIntermediates()) {
+            $this->_splits->deleteAllByRunnerResultId($resultToSave->getId());
+        }
+        return $this->_addEachSplit($resultToSave, $splits);
     }
 
     private function _addEachSplit(

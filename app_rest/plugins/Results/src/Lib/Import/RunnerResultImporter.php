@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Lib\Import;
 
 use Results\Lib\UploadHelper;
+use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
@@ -33,10 +34,10 @@ class RunnerResultImporter
 
     public function importInto(Runner $participant, array $resultData): Runner
     {
-        $this->_helper->getMetrics()->startRunnerResultsTime();
-        $resultToSave = $this->_newResultWithType($resultData);
-
-        $participant = $this->_helper->processRunnerResults($resultToSave, $participant);
+        [$participant, $resultToSave] = $this->_helper->getMetrics()->measure(
+            UploadMetrics::PARTICIPANT_RESULTS,
+            fn() => $this->_reconcileWithExistingResults($participant, $resultData)
+        );
 
         $splits = $resultData['splits'] ?? [];
         $warningMessage = 'card: ' . $participant->sicard;
@@ -48,6 +49,12 @@ class RunnerResultImporter
     public function importSimpleInto(Runner $participant, array $resultData): Runner
     {
         return $participant->addRunnerResult($this->_newResultWithType($resultData));
+    }
+
+    private function _reconcileWithExistingResults(Runner $participant, array $resultData): array
+    {
+        $resultToSave = $this->_newResultWithType($resultData);
+        return [$this->_helper->processRunnerResults($resultToSave, $participant), $resultToSave];
     }
 
     private function _newResultWithType(array $resultData): RunnerResult

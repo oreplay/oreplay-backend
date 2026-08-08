@@ -163,7 +163,6 @@ class UploadHelper
                 $resultToSave->setUploadTypeSplits();
             }
         }
-        $this->getMetrics()->endRunnerResultsTime();
         return $participant;
     }
 
