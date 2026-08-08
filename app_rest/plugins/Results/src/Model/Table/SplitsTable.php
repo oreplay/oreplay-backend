@@ -86,6 +86,8 @@ class SplitsTable extends AppTable
         array $splits,
         UploadHelper $helper
     ): ParticipantResultsEntity {
+        $context = $helper->getContext();
+        $existingResults = $helper->getExistingResults();
         if ($splits) {
             foreach ($splits as $split) {
                 if ($this->_skipSplit($split)) {
@@ -97,10 +99,10 @@ class SplitsTable extends AppTable
                 //    // do not save radio splits without time
                 //    continue;
                 //}
-                $splitToSave = $this->fillNewWithStage($split, $helper->getEventId(), $helper->getStageId());
-                $splitToSave->class_id = $helper->getCurrentClassId();
+                $splitToSave = $this->fillNewWithStage($split, $context->getEventId(), $context->getStageId());
+                $splitToSave->class_id = $context->getClassId();
                 if ($split['station'] ?? null) {
-                    $control = $this->Controls->createControlIfNotExists($helper, $split);
+                    $control = $this->Controls->createControlIfNotExists($context, $existingResults, $split);
                     $splitToSave->addControl($control);
                 }
                 $helper->getMetrics()->addOneSplit();

@@ -11,7 +11,7 @@ use Cake\ORM\Query;
 use Cake\Utility\Text;
 use RestApi\Lib\Exception\DetailedException;
 use RestApi\Model\Table\RestApiTable;
-use Results\Lib\UploadHelper;
+use Results\Lib\UploadContext;
 use Results\Model\Entity\AppEntity;
 
 abstract class AppTable extends RestApiTable
@@ -49,11 +49,11 @@ abstract class AppTable extends RestApiTable
         return $entity->fastPatch($data, $schema, $timezone);
     }
 
-    public function findWhereEventAndStage(UploadHelper $helper): Query
+    public function findWhereEventAndStage(UploadContext $context): Query
     {
         return $this->find()->where([
-            'event_id' => $helper->getEventId(),
-            'stage_id' => $helper->getStageId()
+            'event_id' => $context->getEventId(),
+            'stage_id' => $context->getStageId()
         ]);
     }
 

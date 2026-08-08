@@ -246,10 +246,9 @@ class RankingsTable extends AppTable
         $uploadHelper = new UploadHelper([
             'oreplay_data_transfer' => $data
         ], $rk->getEventId());
-        $uploadHelper->setCurrentClassId($class->id);
         $checker = new RankingUploadConfigChecker($rk);
         $uploadHelper->setConfigChecker($checker);
-        return $uploadHelper;
+        return $uploadHelper->inClass($class->id);
     }
 
     /**

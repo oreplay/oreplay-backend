@@ -8,6 +8,7 @@ use App\Model\Table\AppTable;
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Results\Lib\UploadContext;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\Team;
 use Results\Model\Entity\TeamResult;
@@ -46,9 +47,9 @@ class TeamResultsTable extends AppTable
         return $res;
     }
 
-    public function getAllResults(UploadHelper $helper): ResultSetInterface
+    public function getAllResults(UploadContext $context): ResultSetInterface
     {
-        return $this->findWhereEventAndStage($helper)
+        return $this->findWhereEventAndStage($context)
             ->orderByAsc('team_id')
             ->all();
     }

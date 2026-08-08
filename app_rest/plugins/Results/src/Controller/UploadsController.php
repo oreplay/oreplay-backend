@@ -17,7 +17,9 @@ use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\RawUploadsTable;
+use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\RunnersTable;
+use Results\Model\Table\TeamResultsTable;
 use Results\Model\Table\TeamsTable;
 use Results\Model\Table\TokensTable;
 use Results\Model\Table\UploadLogsTable;
@@ -73,7 +75,7 @@ class UploadsController extends ApiController
         //$rawUrl = $this->_getHost() . '/api/v1/events/' . $helper->getEventId() . '/rawUploads';
         //FireAndForget::postJson($rawUrl, $helper->getData(), ['Authorization' => 'Bearer ' . $token]);
 
-        $helper->setExistingData($this->runnersTable()->RunnerResults, $this->teamsTable()->TeamResults);
+        $helper->loadExistingResults($this->runnerResultsTable(), $this->teamResultsTable());
 
         if ($configChecker->isStartLists() && $helper->hasAlreadyFinishTimes()) {
             throw new InvalidPayloadException('Cannot add start times when there are already finish times');
@@ -85,14 +87,14 @@ class UploadsController extends ApiController
             $isTakingTooLong = $this->_setIsTakingTooLongWarning($metrics, $counter);
             if (!$class->isSameUploadHash($classObj) && !$isTakingTooLong) {
                 $class->setHash($classObj);
-                $this->_helper->setCurrentClassId($class->id);
+                $classHelper = $helper->inClass($class->id);
                 $helper->getMetrics()->startCoursesTime();
                 // if no change is done in the whole class, we could totally skip processing it
                 $course = $this->Classes->Courses->createIfNotExists($helper->getEventId(), $stageId, $classObj);
                 $class->course = $course;
                 $helper->getMetrics()->endCoursesTime();
-                $class = $this->_addAllRunnersInClass($classObj, $class, $helper);
-                $class = $this->_addAllTeamsInClass($classObj, $class, $helper);
+                $class = $this->_addAllRunnersInClass($classObj, $class, $classHelper);
+                $class = $this->_addAllTeamsInClass($classObj, $class, $classHelper);
                 $metrics->saveManyOrFail($this->Classes, $class);
                 $counter++;
             }
@@ -164,6 +166,16 @@ class UploadsController extends ApiController
     private function runnersTable(): RunnersTable
     {
         return $this->Classes->Runners->getTarget();
+    }
+
+    private function runnerResultsTable(): RunnerResultsTable
+    {
+        return $this->runnersTable()->RunnerResults->getTarget();
+    }
+
+    private function teamResultsTable(): TeamResultsTable
+    {
+        return $this->teamsTable()->TeamResults->getTarget();
     }
 
     protected function addNew($data)

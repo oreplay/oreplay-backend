@@ -10,6 +10,7 @@ use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\Behavior\TimestampBehavior;
 use RestApi\Model\Entity\RestApiEntity;
 use Results\Lib\Consts\StatusCode;
+use Results\Lib\UploadContext;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
@@ -202,9 +203,9 @@ class RunnerResultsTable extends AppTable
         return (bool)$res;
     }
 
-    public function getAllResults(UploadHelper $helper): ResultSetInterface
+    public function getAllResults(UploadContext $context): ResultSetInterface
     {
-        return $this->findWhereEventAndStage($helper)
+        return $this->findWhereEventAndStage($context)
             ->orderByAsc('runner_id')
             ->all();
     }
@@ -230,7 +231,7 @@ class RunnerResultsTable extends AppTable
     public function createSimpleRunnerResult(array $resultData, Runner $runner, UploadHelper $helper): Runner
     {
         $runnerResultToSave = $this->_newResultWithType($resultData, $helper);
-        $runnerResultToSave->class_id = $helper->getCurrentClassId();
+        $runnerResultToSave->class_id = $helper->getContext()->getClassId();
         return $runner->addRunnerResult($runnerResultToSave);
     }
 
@@ -238,7 +239,7 @@ class RunnerResultsTable extends AppTable
     {
         $helper->getMetrics()->startRunnerResultsTime();
         $runnerResultToSave = $this->_newResultWithType($resultData, $helper);
-        $runnerResultToSave->class_id = $helper->getCurrentClassId();
+        $runnerResultToSave->class_id = $helper->getContext()->getClassId();
 
         $participant = $helper->processRunnerResults($runnerResultToSave, $participant);
 

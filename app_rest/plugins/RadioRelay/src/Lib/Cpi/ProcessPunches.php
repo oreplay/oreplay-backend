@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace RadioRelay\Lib\Cpi;
 
 use Cake\Log\LogTrait;
+use Results\Lib\ExistingResultsIndex;
+use Results\Lib\UploadContext;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Split;
 use Results\Model\Table\RunnersTable;
@@ -15,12 +17,14 @@ class ProcessPunches
     use LogTrait;
 
     private PayloadParser $data;
+    private ExistingResultsIndex $existingResults;
     private RunnersTable $Runners;
     private SplitsTable $Splits;
 
     public function __construct(PayloadParser $data)
     {
         $this->data = $data;
+        $this->existingResults = new ExistingResultsIndex();
     }
 
     public function setRunnersTable(RunnersTable $table)
@@ -82,7 +86,8 @@ class ProcessPunches
         // maybe add $splitToSave->runner_result_id = $runner->_getStage()->id;
         $splitToSave->battery_perc = $punch['battery'] ?? null;
         $splitToSave->battery_time = $punch['reading'] ?? null;
-        $control = $this->Splits->Controls->createControlIfNotExists($this->data, $split);
+        $context = new UploadContext($eventId, $stageId);
+        $control = $this->Splits->Controls->createControlIfNotExists($context, $this->existingResults, $split);
         $splitToSave->addControl($control);
         /** @var Split $ret */
         $ret = $this->Splits->save($splitToSave);

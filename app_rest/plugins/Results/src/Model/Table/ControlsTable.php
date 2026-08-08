@@ -8,8 +8,8 @@ use App\Model\Table\AppTable;
 use Cake\Datasource\ResultSetInterface;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\ORM\Behavior\TimestampBehavior;
-use Results\Lib\UploadInterface;
-use Results\Lib\UploadHelper;
+use Results\Lib\ExistingResultsIndex;
+use Results\Lib\UploadContext;
 use Results\Model\Entity\Control;
 
 /**
@@ -25,15 +25,18 @@ class ControlsTable extends AppTable
         ControlTypesTable::addHasMany($this);
     }
 
-    public function createControlIfNotExists(UploadInterface $helper, array $data): Control
-    {
+    public function createControlIfNotExists(
+        UploadContext $context,
+        ExistingResultsIndex $existingResults,
+        array $data
+    ): Control {
         if (!($data['station'] ?? null)) {
             throw new InternalErrorException('Station number is needed to create control ' . json_encode($data));
         }
-        $entity = $helper->getExistingControlByStation($data['station']);
+        $entity = $existingResults->getExistingControlByStation($data['station']);
         if (!$entity) {
-            $entity = $this->fillNewWithStage($data, $helper->getEventId(), $helper->getStageId());
-            $helper->storeControlByStation($entity);
+            $entity = $this->fillNewWithStage($data, $context->getEventId(), $context->getStageId());
+            $existingResults->storeControlByStation($entity);
         }
         $entity->setAsNew();
         if ($data['station'] === 1 || $data['station'] === '1') {
@@ -53,9 +56,9 @@ class ControlsTable extends AppTable
         return $res;
     }
 
-    public function getAllControls(UploadHelper $helper): ResultSetInterface
+    public function getAllControls(UploadContext $context): ResultSetInterface
     {
-        return $this->findWhereEventAndStage($helper)
+        return $this->findWhereEventAndStage($context)
             ->orderByAsc('station')
             ->all();
     }

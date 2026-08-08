@@ -15,16 +15,13 @@ use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\StagesTable;
 use Results\Model\Table\TeamResultsTable;
 
-class UploadHelper implements UploadInterface
+class UploadHelper
 {
-    use UploadControlsTrait;
-
     private array $_data;
     private string $_eventId;
-    private string $_currentClassId;
+    private string $_classId = '';
     private UploadConfigChecker $_checker;
-    private StorageHelper $_existingRunnerResults;
-    private StorageHelper $_existingTeamResults;
+    private ExistingResultsIndex $_existingResults;
     private UploadMetrics $_metrics;
 
     public function __construct(array $data, string $eventID)
@@ -42,6 +39,7 @@ class UploadHelper implements UploadInterface
             $this->_data = $this->_loadFromRawUploads($uploadLogId);
         }
         $this->_metrics = new UploadMetrics();
+        $this->_existingResults = new ExistingResultsIndex();
     }
 
     private function _loadFromRawUploads(string $uploadLogId): array
@@ -70,6 +68,23 @@ class UploadHelper implements UploadInterface
         return $this->_metrics;
     }
 
+    public function getExistingResults(): ExistingResultsIndex
+    {
+        return $this->_existingResults;
+    }
+
+    public function getContext(): UploadContext
+    {
+        return new UploadContext($this->_eventId, $this->getStageId(), $this->_classId);
+    }
+
+    public function inClass(string $classId): self
+    {
+        $inClass = clone $this;
+        $inClass->_classId = $classId;
+        return $inClass;
+    }
+
     public function getData(): array
     {
         return $this->_data;
@@ -78,16 +93,6 @@ class UploadHelper implements UploadInterface
     public function getEventId(): string
     {
         return $this->_eventId;
-    }
-
-    public function setCurrentClassId(string $id): void
-    {
-        $this->_currentClassId = $id;
-    }
-
-    public function getCurrentClassId(): string
-    {
-        return $this->_currentClassId;
     }
 
     public function getStageId(): string
@@ -131,32 +136,17 @@ class UploadHelper implements UploadInterface
         }
     }
 
-    public function setExistingData($RunnerResults, $TeamResults)
+    public function loadExistingResults(RunnerResultsTable $RunnerResults, TeamResultsTable $TeamResults): void
     {
-        /** @var RunnerResultsTable $RunnerResults */
-        $this->_existingRunnerResults = new StorageHelper('runner_id');
-        $this->_existingRunnerResults->setExistingData($RunnerResults->getAllResults($this));
-        /** @var TeamResultsTable $TeamResults */
-        $this->_existingTeamResults = new StorageHelper('team_id');
-        $this->_existingTeamResults->setExistingData($TeamResults->getAllResults($this));
-        $this->setExistingControls($RunnerResults->Splits->Controls->getAllControls($this));
-    }
-
-    public function getExistingDbResults(
-        Runner|Team $participant,
-        RunnerResult|TeamResult $resultToSave
-    ): array {
-        if ($resultToSave instanceof RunnerResult) {
-            $storage = $this->_existingRunnerResults;
-        } else {
-            $storage = $this->_existingTeamResults;
-        }
-        return $storage->getExistingDbDataForThisId($participant->id, $resultToSave);
+        $context = $this->getContext();
+        $this->_existingResults->indexRunnerResults($RunnerResults->getAllResults($context));
+        $this->_existingResults->indexTeamResults($TeamResults->getAllResults($context));
+        $this->_existingResults->indexControls($RunnerResults->Splits->Controls->getAllControls($context));
     }
 
     public function processRunnerResults(RunnerResult|TeamResult $resultToSave, Runner|Team $participant): Runner|Team
     {
-        $existingResults = $this->getExistingDbResults($participant, $resultToSave);
+        $existingResults = $this->_existingResults->getExistingDbResults($participant, $resultToSave);
         $existingResultAmount = count($existingResults);
         if ($existingResultAmount) {
             if ($existingResultAmount === 1) {

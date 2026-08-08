@@ -9,7 +9,7 @@ use Results\Model\Entity\ParticipantResultsEntity;
 
 class StorageHelper
 {
-    private array $_existingData;
+    private array $_existingData = [];
     private string $_foreignKey;
 
     public function __construct(string $foreignKey)
