@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Lib;
 
 use Cake\Datasource\ResultSetInterface;
+use Cake\Http\Exception\InternalErrorException;
 use Results\Model\Entity\Control;
 use Results\Model\Entity\ParticipantResultsEntity;
 use Results\Model\Entity\Runner;
@@ -60,9 +61,12 @@ class ExistingResultsIndex
         Runner|Team $participant,
         RunnerResult|TeamResult $resultToSave
     ): array {
-        // warning: an index never filled by index*() answers "no existing results" here instead of
-        // failing, and the caller then saves a duplicate row per participant on re-upload
         $storage = $this->_storageFor($resultToSave);
+        if (!$storage->isLoaded()) {
+            throw new InternalErrorException(
+                'Existing results were not indexed, call indexRunnerResults() and indexTeamResults() first'
+            );
+        }
         return $storage->getExistingDbDataForThisId($participant->id, $resultToSave);
     }
 

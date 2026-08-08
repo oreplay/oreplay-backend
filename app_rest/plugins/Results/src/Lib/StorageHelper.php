@@ -9,12 +9,17 @@ use Results\Model\Entity\ParticipantResultsEntity;
 
 class StorageHelper
 {
-    private array $_existingData = [];
+    private ?array $_existingData = null;
     private string $_foreignKey;
 
     public function __construct(string $foreignKey)
     {
         $this->_foreignKey = $foreignKey;
+    }
+
+    public function isLoaded(): bool
+    {
+        return $this->_existingData !== null;
     }
 
     public function setExistingData(ResultSetInterface $existingRunnerResults): void
