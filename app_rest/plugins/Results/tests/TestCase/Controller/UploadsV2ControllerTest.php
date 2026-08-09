@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
-use App\Lib\Consts\CacheGrp;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Cake\Cache\Cache;
 use Cake\I18n\FrozenTime;
