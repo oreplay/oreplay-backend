@@ -33,7 +33,7 @@ class RawUploadsTable extends AppTable
         $raw->id = Text::uuid();
         $raw->event_id = $helper->getEventId();
         $raw->stage_id = $helper->getStageId();
-        $raw->file_data = json_encode($helper->getData(), JSON_PRETTY_PRINT);
+        $raw->file_data = json_encode($helper->getData());
         $raw->upload_log_id = $log->id;
 
         /** @var RawUpload $saved */
