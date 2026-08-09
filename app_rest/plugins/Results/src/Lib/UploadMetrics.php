@@ -24,6 +24,7 @@ class UploadMetrics
     public const PARTICIPANTS_IN_LOOP = 'participantsInLoop';
 
     private array $_classesToSave = [];
+    private bool $_keepSavedClasses = true;
     private int $classCount = 0;
     private int $runnerCount = 0;
     private int $teamCount = 0;
@@ -51,6 +52,13 @@ class UploadMetrics
     {
         $this->startTotal();
         $this->startProcessing();
+    }
+
+    public static function withoutSavedClasses(): self
+    {
+        $metrics = new self();
+        $metrics->_keepSavedClasses = false;
+        return $metrics;
     }
 
     public function measure(string $timer, callable $work)
@@ -91,15 +99,12 @@ class UploadMetrics
         $this->_processingDuration += microtime(true) - $this->_startTimeProcessing;
     }
 
-    /**
-     * @return ClassEntity[]
-     */
-    public function saveManyOrFail(ClassesTable $classes, ClassEntity $singleClassToSave): array
+    public function saveManyOrFail(ClassesTable $classes, ClassEntity $singleClassToSave): void
     {
-        //$this->addToRunnerCounter(count($singleClassToSave->runners));
-        //$this->addToTeamCounter(count($singleClassToSave->teams));
-        $this->_classesToSave[] = $singleClassToSave;
-        $this->classCount = count($this->_classesToSave);
+        $this->classCount++;
+        if ($this->_keepSavedClasses) {
+            $this->_classesToSave[] = $singleClassToSave;
+        }
         $this->endProcessing();
 
         $startTimeSaving = microtime(true);
@@ -107,7 +112,6 @@ class UploadMetrics
         $end = microtime(true);
         $this->_savingDuration += $end - $startTimeSaving;
         $this->startProcessing();
-        return $this->_classesToSave;
     }
     public function endTotalTimer()
     {

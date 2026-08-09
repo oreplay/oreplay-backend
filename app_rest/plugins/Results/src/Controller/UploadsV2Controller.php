@@ -30,8 +30,6 @@ use Results\Model\Table\UploadLogsTable;
 
 class UploadsV2Controller extends ApiController
 {
-    public const NEW_VERSION = 402;
-
     private UploadMetrics $_metrics;
     private ClassesTable $Classes;
 
@@ -111,10 +109,6 @@ class UploadsV2Controller extends ApiController
 
         $metrics->endTotalTimer();
 
-        $queryParam = $this->getRequest()->getQuery('version');
-        if (!$queryParam || $queryParam < UploadsV2Controller::NEW_VERSION) {
-            return $metrics->toArrayLegacy($configChecker->preCheckType());
-        }
         return $metrics->toArray($configChecker->preCheckType());
     }
 
@@ -214,7 +208,7 @@ class UploadsV2Controller extends ApiController
     {
         $this->Classes = ClassesTable::load();
         $this->flatResponse = true;
-        $this->_metrics = new UploadMetrics();
+        $this->_metrics = UploadMetrics::withoutSavedClasses();
         try {
             $reUploadedData = RawUploadsTable::load()->getReUploadedData($data, $this->request->getParam('eventID'));
             if ($reUploadedData) {
