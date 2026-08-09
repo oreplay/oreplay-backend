@@ -70,17 +70,17 @@ class ElementFieldsTest extends TestCase
     public function testPositionY_boundaries()
     {
         $this->assertEquals(0.0, ElementFields::positionY(['position' => ['y' => 0]], 'p'));
-        $this->assertEquals(297.0, ElementFields::positionY(['position' => ['y' => 297]], 'p'));
+        $this->assertEquals(1189.0, ElementFields::positionY(['position' => ['y' => 1189]], 'p'));
 
         $this->expectException(InvalidPayloadException::class);
-        $this->expectExceptionMessage('p.position.y: expected a number between 0 and 297, or "center"');
-        ElementFields::positionY(['position' => ['y' => 297.5]], 'p');
+        $this->expectExceptionMessage('p.position.y: expected a number between 0 and 1189, or "center"');
+        ElementFields::positionY(['position' => ['y' => 1189.5]], 'p');
     }
 
     public function testPositionY_missing_throws()
     {
         $this->expectException(InvalidPayloadException::class);
-        $this->expectExceptionMessage('p.position.y: expected a number between 0 and 297, or "center"');
+        $this->expectExceptionMessage('p.position.y: expected a number between 0 and 1189, or "center"');
         ElementFields::positionY(['position' => []], 'p');
     }
 
@@ -92,17 +92,15 @@ class ElementFieldsTest extends TestCase
     public function testPositionX_rejectsCenterKeyword()
     {
         $this->expectException(InvalidPayloadException::class);
-        $this->expectExceptionMessage('p.position.x: expected a number between 0 and 210');
+        $this->expectExceptionMessage('p.position.x: expected a number between 0 and 1189');
         ElementFields::positionX(['position' => ['x' => 'center']], 'p');
     }
 
     public function testPositionX_rightEdgeIsExclusive()
     {
-        $this->assertEquals(209.9, ElementFields::positionX(['position' => ['x' => 209.9]], 'p'));
+        $this->assertEquals(1188.9, ElementFields::positionX(['position' => ['x' => 1188.9]], 'p'));
 
-        // a cell starting exactly at the right edge would have zero width, which tc-lib-pdf
-        // reinterprets as "extend to the right margin"
         $this->expectException(InvalidPayloadException::class);
-        ElementFields::positionX(['position' => ['x' => 210]], 'p');
+        ElementFields::positionX(['position' => ['x' => 1189]], 'p');
     }
 }

@@ -7,6 +7,7 @@ namespace HeadlessPdfs\Test\TestCase\Lib\Pdf\Element;
 use App\Lib\Exception\InvalidPayloadException;
 use Cake\TestSuite\TestCase;
 use HeadlessPdfs\Lib\Pdf\Element\CenteredTextElement;
+use HeadlessPdfs\Lib\Pdf\PageGeometry;
 use HeadlessPdfs\Test\TestCase\Lib\Pdf\RecordingTcpdf;
 
 class CenteredTextElementTest extends TestCase
@@ -29,6 +30,7 @@ class CenteredTextElementTest extends TestCase
             'type' => 'centeredElement',
             'content' => 'Título del documento',
             'size' => 36.0,
+            'color' => '#000000',
             'y' => 'center',
         ], $normalized);
     }
@@ -52,7 +54,7 @@ class CenteredTextElementTest extends TestCase
     public function testValidate_missingY_throws()
     {
         $this->expectException(InvalidPayloadException::class);
-        $this->expectExceptionMessage('p.position.y: expected a number between 0 and 297, or "center"');
+        $this->expectExceptionMessage('p.position.y: expected a number between 0 and 1189, or "center"');
         CenteredTextElement::validate(['type' => 'centeredElement', 'content' => 'x'], 'p');
     }
 
@@ -66,7 +68,7 @@ class CenteredTextElementTest extends TestCase
             'content' => 'Segunda página',
             'size' => 24.0,
             'y' => 150.0,
-        ]);
+        ], PageGeometry::a4());
 
         $calls = $pdf->callsTo('addTextCellXY');
         $this->assertCount(1, $calls);
@@ -92,7 +94,7 @@ class CenteredTextElementTest extends TestCase
             'content' => 'Título del documento',
             'size' => 36.0,
             'y' => 'center',
-        ]);
+        ], PageGeometry::a4());
 
         $calls = $pdf->callsTo('addTextCellXY');
         $this->assertEquals(0.0, $calls[0]['posy']);

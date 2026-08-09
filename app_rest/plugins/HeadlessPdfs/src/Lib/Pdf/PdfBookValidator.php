@@ -19,7 +19,8 @@ class PdfBookValidator
     public const DEFAULT_LAYOUT = 'default';
 
     private const ROOT = 'pdfBook';
-    private const ALLOWED_HOSTS_ENV = 'PDF_IMAGE_ALLOWED_HOSTS';
+    private const ALLOWED_HOSTS_ENV = 'PDF_BACKGROUND_ALLOWED_HOSTS';
+    private const ANY_HOST = '*';
 
     /**
      * @param mixed $pdfBook The raw pdfBook value from the request body.
@@ -35,6 +36,7 @@ class PdfBookValidator
         return [
             'filename' => self::filename($pdfBook),
             'img' => self::img($pdfBook),
+            'backgroundPdf' => self::backgroundPdf($pdfBook),
             'elements' => self::elements($pdfBook),
         ];
     }
@@ -78,18 +80,27 @@ class PdfBookValidator
     }
 
     /**
-     * Lowercased so this list and the img() check below share one normalisation: the
-     * consuming file library's own host check is case-sensitive, so a mixed-case env
+     * Lowercased so this list and the isHostAllowed() check below share one normalisation:
+     * the consuming file library's own host check is case-sensitive, so a mixed-case env
      * entry would otherwise pass validation here and then be rejected at fetch time.
+     *
+     * The default allows any host: tc-lib-file reads "*" as a wildcard, and an empty list
+     * would reject every host instead.
      *
      * @return array<int, string>
      */
-    public static function allowedImageHosts(): array
+    public static function allowedBackgroundHosts(): array
     {
-        $raw = (string)env(self::ALLOWED_HOSTS_ENV, '');
+        $raw = (string)env(self::ALLOWED_HOSTS_ENV, self::ANY_HOST);
         // an explicit callback, not the default truthiness filter, so a literal "0" host survives
         $hosts = array_filter(array_map('trim', explode(',', $raw)), fn ($v) => $v !== '');
-        return array_values(array_map('strtolower', $hosts));
+        return array_values(array_map('strtolower', $hosts)) ?: [self::ANY_HOST];
+    }
+
+    private static function isHostAllowed(string $host): bool
+    {
+        $allowed = self::allowedBackgroundHosts();
+        return in_array(self::ANY_HOST, $allowed, true) || in_array($host, $allowed, true);
     }
 
     private static function assertLayout(array $pdfBook): void
@@ -137,21 +148,39 @@ class PdfBookValidator
         if ($img === null) {
             return null;
         }
-        $parts = is_string($img) ? parse_url($img) : null;
+        return self::allowedUrl($img, '.img');
+    }
+
+    /**
+     * URL of the PDF whose first page is drawn underneath everything else.
+     */
+    private static function backgroundPdf(array $pdfBook): ?string
+    {
+        $background = $pdfBook['backgroundPdf'] ?? null;
+        if ($background === null) {
+            return null;
+        }
+        return self::allowedUrl($background, '.backgroundPdf');
+    }
+
+    private static function allowedUrl($url, string $field): string
+    {
+        $parts = is_string($url) ? parse_url($url) : null;
         $host = is_array($parts) ? ($parts['host'] ?? null) : null;
         $scheme = is_array($parts) ? ($parts['scheme'] ?? null) : null;
         $scheme = $scheme !== null ? strtolower($scheme) : null;
         if (!$host || !in_array($scheme, ['http', 'https'], true)) {
-            throw new InvalidPayloadException(self::ROOT . '.img: must be an absolute http(s) URL');
+            throw new InvalidPayloadException(
+                self::ROOT . $field . ': must be an absolute http(s) URL'
+            );
         }
         // scheme and host are case-insensitive; parse_url() does not normalize case, so both
         // sides of the comparison are lowercased here
         $host = strtolower($host);
-        // checked here so a disallowed host is a 400 decided before any fetch is attempted;
-        // allowedImageHosts() already lowercases its entries
-        if (!in_array($host, self::allowedImageHosts(), true)) {
+        // checked here so a disallowed host is a 400 decided before any fetch is attempted
+        if (!self::isHostAllowed($host)) {
             throw new InvalidPayloadException(
-                self::ROOT . '.img: host "' . $host . '" is not allowed'
+                self::ROOT . $field . ': host "' . $host . '" is not allowed'
             );
         }
         return self::normalizedUrl($parts, $scheme, $host);

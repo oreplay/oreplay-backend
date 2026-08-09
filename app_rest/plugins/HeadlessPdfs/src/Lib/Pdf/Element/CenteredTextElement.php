@@ -22,11 +22,12 @@ class CenteredTextElement implements ElementRenderer
             'type' => self::type(),
             'content' => ElementFields::string($el, 'content', $path, self::MAX_CONTENT_LENGTH),
             'size' => ElementFields::size($el, $path),
+            'color' => ElementFields::color($el, $path),
             'y' => ElementFields::positionY($el, $path),
         ];
     }
 
-    public function render(Tcpdf $pdf, array $el): void
+    public function render(Tcpdf $pdf, array $el, PageGeometry $page): void
     {
         $isCentered = $el['y'] === ElementFields::CENTER;
         $pdf->addTextCellXY(
@@ -34,8 +35,8 @@ class CenteredTextElement implements ElementRenderer
             -1,
             posx: 0.0,
             posy: $isCentered ? 0.0 : $el['y'],
-            width: PageGeometry::WIDTH_MM,
-            height: $isCentered ? PageGeometry::HEIGHT_MM : 0.0,
+            width: $page->widthMm,
+            height: $isCentered ? $page->heightMm : 0.0,
             valign: $isCentered ? 'C' : 'T',
             halign: 'C',
             drawcell: false,

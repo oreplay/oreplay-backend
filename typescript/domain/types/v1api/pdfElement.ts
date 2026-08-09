@@ -8,6 +8,7 @@ import type { PdfPosition } from './pdfPosition'
  * Entity PdfElement
  */
 export interface PdfElement {
+  color?: string
   content?: string
   position?: PdfPosition
   size?: number

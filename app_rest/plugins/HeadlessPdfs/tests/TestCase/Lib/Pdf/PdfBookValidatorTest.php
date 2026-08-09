@@ -112,13 +112,13 @@ class PdfBookValidatorTest extends TestCase
     {
         $this->expectException(InvalidPayloadException::class);
         $this->expectExceptionMessage(
-            'pdfBook.sections[0].elements[1].position.x: expected a number between 0 and 210'
+            'pdfBook.sections[0].elements[1].position.x: expected a number between 0 and 1189'
         );
         PdfBookValidator::validate([
             'sections' => [
                 ['elements' => [
                     ['type' => 'breakPage'],
-                    ['type' => 'text', 'content' => 'x', 'position' => ['x' => 400, 'y' => 10]],
+                    ['type' => 'text', 'content' => 'x', 'position' => ['x' => 4000, 'y' => 10]],
                 ]],
             ],
         ]);
@@ -391,22 +391,26 @@ class PdfBookValidatorTest extends TestCase
 
     public function testValidate_imgHostNotAllowed_throws()
     {
-        // PDF_IMAGE_ALLOWED_HOSTS is unset in the test environment, so every host is rejected
-        $this->expectException(InvalidPayloadException::class);
-        $this->expectExceptionMessage('pdfBook.img: host "cdn.example.com" is not allowed');
-        PdfBookValidator::validate($this->minimalBook(['img' => 'https://cdn.example.com/bg.png']));
+        putenv('PDF_BACKGROUND_ALLOWED_HOSTS=other.example.com');
+        try {
+            $this->expectException(InvalidPayloadException::class);
+            $this->expectExceptionMessage('pdfBook.img: host "cdn.example.com" is not allowed');
+            PdfBookValidator::validate($this->minimalBook(['img' => 'https://cdn.example.com/bg.png']));
+        } finally {
+            putenv('PDF_BACKGROUND_ALLOWED_HOSTS');
+        }
     }
 
     public function testValidate_imgHostAllowed_passesThrough()
     {
-        putenv('PDF_IMAGE_ALLOWED_HOSTS=cdn.example.com,other.example.com');
+        putenv('PDF_BACKGROUND_ALLOWED_HOSTS=cdn.example.com,other.example.com');
         try {
             $result = PdfBookValidator::validate(
                 $this->minimalBook(['img' => 'https://cdn.example.com/bg.png'])
             );
             $this->assertEquals('https://cdn.example.com/bg.png', $result['img']);
         } finally {
-            putenv('PDF_IMAGE_ALLOWED_HOSTS');
+            putenv('PDF_BACKGROUND_ALLOWED_HOSTS');
         }
     }
 
@@ -417,20 +421,20 @@ class PdfBookValidatorTest extends TestCase
      */
     public function testValidate_imgHostAllowed_isReturnedLowercased()
     {
-        putenv('PDF_IMAGE_ALLOWED_HOSTS=cdn.example.com');
+        putenv('PDF_BACKGROUND_ALLOWED_HOSTS=cdn.example.com');
         try {
             $result = PdfBookValidator::validate(
                 $this->minimalBook(['img' => 'HTTPS://CDN.Example.com/bg.png'])
             );
             $this->assertEquals('https://cdn.example.com/bg.png', $result['img']);
         } finally {
-            putenv('PDF_IMAGE_ALLOWED_HOSTS');
+            putenv('PDF_BACKGROUND_ALLOWED_HOSTS');
         }
     }
 
     public function testValidate_imgPathQueryAndFragmentKeepTheirCase()
     {
-        putenv('PDF_IMAGE_ALLOWED_HOSTS=cdn.example.com');
+        putenv('PDF_BACKGROUND_ALLOWED_HOSTS=cdn.example.com');
         try {
             $url = 'https://CDN.example.com:8443/Images/BG-Logo.PNG?Token=AbC#Frag';
             $result = PdfBookValidator::validate($this->minimalBook(['img' => $url]));
@@ -440,26 +444,26 @@ class PdfBookValidatorTest extends TestCase
                 'only the host is case-insensitive; everything after it must survive intact',
             );
         } finally {
-            putenv('PDF_IMAGE_ALLOWED_HOSTS');
+            putenv('PDF_BACKGROUND_ALLOWED_HOSTS');
         }
     }
 
     public function testAllowedHosts_readsTheEnvVar()
     {
-        putenv('PDF_IMAGE_ALLOWED_HOSTS=a.example.com, b.example.com ,');
+        putenv('PDF_BACKGROUND_ALLOWED_HOSTS=a.example.com, b.example.com ,');
         try {
             $this->assertEquals(
                 ['a.example.com', 'b.example.com'],
-                PdfBookValidator::allowedImageHosts(),
+                PdfBookValidator::allowedBackgroundHosts(),
                 'entries are trimmed and blanks dropped',
             );
         } finally {
-            putenv('PDF_IMAGE_ALLOWED_HOSTS');
+            putenv('PDF_BACKGROUND_ALLOWED_HOSTS');
         }
     }
 
-    public function testAllowedHosts_unset_isEmpty()
+    public function testAllowedHosts_unset_allowsAnyHost()
     {
-        $this->assertEquals([], PdfBookValidator::allowedImageHosts());
+        $this->assertEquals(['*'], PdfBookValidator::allowedBackgroundHosts());
     }
 }

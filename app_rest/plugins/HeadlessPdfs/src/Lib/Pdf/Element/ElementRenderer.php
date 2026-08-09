@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace HeadlessPdfs\Lib\Pdf\Element;
 
 use Com\Tecnick\Pdf\Tcpdf;
+use HeadlessPdfs\Lib\Pdf\PageGeometry;
 
 /**
  * One PDF element type, owning both its validation and its drawing.
@@ -26,6 +27,7 @@ interface ElementRenderer
 
     /**
      * @param array $el A normalized element, as returned by validate().
+     * @param PageGeometry $page Size of the page being drawn, which follows the background.
      */
-    public function render(Tcpdf $pdf, array $el): void;
+    public function render(Tcpdf $pdf, array $el, PageGeometry $page): void;
 }

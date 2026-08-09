@@ -12,7 +12,9 @@ class ElementFields
     public const CENTER = 'center';
     public const MIN_SIZE = 1;
     public const MAX_SIZE = 300;
+    public const DEFAULT_COLOR = '#000000';
     private const DEFAULT_SIZE = 12.0;
+    private const HEX_COLOR = '/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/';
 
     public static function string(array $el, string $key, string $path, int $maxLength): string
     {
@@ -43,16 +45,32 @@ class ElementFields
         return (float)$size;
     }
 
+    /**
+     * Hex only: a named colour would resolve through the spot-colour table, which needs a
+     * colour space registered in the page resources that nothing here writes.
+     */
+    public static function color(array $el, string $path): string
+    {
+        $color = $el['color'] ?? self::DEFAULT_COLOR;
+        if (!is_string($color) || preg_match(self::HEX_COLOR, $color) !== 1) {
+            throw new InvalidPayloadException(
+                $path . '.color: expected a hex colour such as "#1a2b3c" but got '
+                . json_encode($color)
+            );
+        }
+        return $color;
+    }
+
     public static function positionY(array $el, string $path): float|string
     {
         $y = $el['position']['y'] ?? null;
         if ($y === self::CENTER) {
             return self::CENTER;
         }
-        if (!self::isNumberBetween($y, 0.0, PageGeometry::HEIGHT_MM, true)) {
+        if (!self::isNumberBetween($y, 0.0, PageGeometry::MAX_SIDE_MM, true)) {
             throw new InvalidPayloadException(
                 $path . '.position.y: expected a number between 0 and '
-                . (int)PageGeometry::HEIGHT_MM . ', or "' . self::CENTER . '" but got ' . json_encode($el)
+                . (int)PageGeometry::MAX_SIDE_MM . ', or "' . self::CENTER . '" but got ' . json_encode($el)
             );
         }
         return (float)$y;
@@ -61,11 +79,9 @@ class ElementFields
     public static function positionX(array $el, string $path): float
     {
         $x = $el['position']['x'] ?? null;
-        // the maximum is exclusive: a cell starting at the right edge would have zero width,
-        // which tc-lib-pdf reinterprets as "extend to the right margin"
-        if (!self::isNumberBetween($x, 0.0, PageGeometry::WIDTH_MM, false)) {
+        if (!self::isNumberBetween($x, 0.0, PageGeometry::MAX_SIDE_MM, false)) {
             throw new InvalidPayloadException(
-                $path . '.position.x: expected a number between 0 and ' . (int)PageGeometry::WIDTH_MM
+                $path . '.position.x: expected a number between 0 and ' . (int)PageGeometry::MAX_SIDE_MM
             );
         }
         return (float)$x;

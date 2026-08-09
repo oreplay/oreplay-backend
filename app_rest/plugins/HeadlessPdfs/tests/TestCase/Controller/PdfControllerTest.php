@@ -29,10 +29,12 @@ class PdfControllerTest extends ApiCommonErrorsTest
             '_c' => 'PdfBook',
             'layout' => 'default',
             'filename' => 'document.pdf',
+            'backgroundPdf' => 'https://cdn.example.com/template.pdf',
             'sections' => [
                 ['_c' => 'PdfSection', 'elements' => [
                     ['_c' => 'PdfElement', 'type' => 'text', 'content' => 'Otra sección',
-                     'size' => 18, 'position' => ['_c' => 'PdfPosition', 'x' => 100, 'y' => 250]],
+                     'size' => 18, 'color' => '#1a2b3c',
+                     'position' => ['_c' => 'PdfPosition', 'x' => 100, 'y' => 250]],
                 ]],
                 ['_c' => 'PdfSection', 'elements' => [
                     ['_c' => 'PdfElement', 'type' => 'centeredElement',
@@ -68,7 +70,16 @@ class PdfControllerTest extends ApiCommonErrorsTest
             'Authorization' => $this->_request['headers']['Authorization'],
             'Content-Type' => 'application/json',
         ]]);
-        $this->post(ApiController::ROUTE_PREFIX . '/pdf', json_encode($book));
+        $this->post(
+            ApiController::ROUTE_PREFIX . '/pdf',
+            json_encode(self::withoutRemoteBackground($book)),
+        );
+    }
+
+    private static function withoutRemoteBackground(array $book): array
+    {
+        unset($book['pdfBook']['backgroundPdf']);
+        return $book;
     }
 
     public function testPost_returnsADownloadablePdf()
@@ -181,9 +192,14 @@ class PdfControllerTest extends ApiCommonErrorsTest
     public function testPost_imageHostNotAllowed_is400()
     {
         $this->skipNextRequestInSwagger();
-        $book = $this->exampleBook();
-        $book['pdfBook']['img'] = 'https://cdn.example.com/bg.png';
-        $this->postBook($book);
+        putenv('PDF_BACKGROUND_ALLOWED_HOSTS=other.example.com');
+        try {
+            $book = $this->exampleBook();
+            $book['pdfBook']['img'] = 'https://cdn.example.com/bg.png';
+            $this->postBook($book);
+        } finally {
+            putenv('PDF_BACKGROUND_ALLOWED_HOSTS');
+        }
 
         $this->assertResponseError($this->_getBodyAsString());
         $this->assertEquals(
@@ -196,13 +212,13 @@ class PdfControllerTest extends ApiCommonErrorsTest
     {
         $this->skipNextRequestInSwagger();
         // port 1 on loopback refuses immediately: deterministic, and no external network
-        putenv('PDF_IMAGE_ALLOWED_HOSTS=127.0.0.1');
+        putenv('PDF_BACKGROUND_ALLOWED_HOSTS=127.0.0.1');
         try {
             $book = $this->exampleBook();
             $book['pdfBook']['img'] = 'http://127.0.0.1:1/x.png';
             $this->postBook($book);
         } finally {
-            putenv('PDF_IMAGE_ALLOWED_HOSTS');
+            putenv('PDF_BACKGROUND_ALLOWED_HOSTS');
         }
 
         $this->assertResponseCode(502, $this->_getBodyAsString());

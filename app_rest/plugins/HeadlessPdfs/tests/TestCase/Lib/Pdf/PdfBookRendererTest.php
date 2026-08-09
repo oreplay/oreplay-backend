@@ -9,6 +9,7 @@ use Cake\TestSuite\TestCase;
 use Com\Tecnick\Pdf\Tcpdf;
 use HeadlessPdfs\Lib\Exception\ImageFetchFailedException;
 use HeadlessPdfs\Lib\Pdf\Element\ElementRenderer;
+use HeadlessPdfs\Lib\Pdf\PageGeometry;
 use HeadlessPdfs\Lib\Pdf\PdfBookRenderer;
 use HeadlessPdfs\Lib\Pdf\PdfBookValidator;
 
@@ -245,7 +246,7 @@ class PdfBookRendererTest extends TestCase
     public function testRender_unreachableAllowedHost_is502()
     {
         // port 1 on loopback refuses immediately: deterministic, and no external network
-        putenv('PDF_IMAGE_ALLOWED_HOSTS=127.0.0.1');
+        putenv('PDF_BACKGROUND_ALLOWED_HOSTS=127.0.0.1');
         try {
             $renderer = new PdfBookRenderer(PdfBookValidator::validate([
                 'img' => 'http://127.0.0.1:1/bg.png',
@@ -256,7 +257,7 @@ class PdfBookRendererTest extends TestCase
             $this->expectExceptionCode(502);
             $renderer->render();
         } finally {
-            putenv('PDF_IMAGE_ALLOWED_HOSTS');
+            putenv('PDF_BACKGROUND_ALLOWED_HOSTS');
         }
     }
 
@@ -302,7 +303,7 @@ class SizelessElement implements ElementRenderer
         return ['type' => self::TYPE];
     }
 
-    public function render(Tcpdf $pdf, array $el): void
+    public function render(Tcpdf $pdf, array $el, PageGeometry $page): void
     {
         $this->rendered++;
     }

@@ -8,6 +8,7 @@ import type { PdfSection } from './pdfSection'
  * Entity PdfBook
  */
 export interface PdfBook {
+  backgroundPdf?: string
   filename?: string
   layout?: string
   sections?: PdfSection[]

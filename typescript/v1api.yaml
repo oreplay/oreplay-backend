@@ -2117,6 +2117,9 @@ components:
         filename:
           type: string
           example: document.pdf
+        backgroundPdf:
+          type: string
+          example: https://cdn.example.com/template.pdf
         sections:
           type: array
           items:
@@ -2134,6 +2137,9 @@ components:
         size:
           type: number
           example: 18
+        color:
+          type: string
+          example: '#1a2b3c'
         position:
           $ref: '#/components/schemas/PdfPosition'
       description: Entity PdfElement

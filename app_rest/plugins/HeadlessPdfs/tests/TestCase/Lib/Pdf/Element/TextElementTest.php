@@ -7,6 +7,7 @@ namespace HeadlessPdfs\Test\TestCase\Lib\Pdf\Element;
 use App\Lib\Exception\InvalidPayloadException;
 use Cake\TestSuite\TestCase;
 use HeadlessPdfs\Lib\Pdf\Element\TextElement;
+use HeadlessPdfs\Lib\Pdf\PageGeometry;
 use HeadlessPdfs\Test\TestCase\Lib\Pdf\RecordingTcpdf;
 
 class TextElementTest extends TestCase
@@ -29,6 +30,7 @@ class TextElementTest extends TestCase
             'type' => 'text',
             'content' => 'Bilbao, 7 Aug 2026',
             'size' => 10.0,
+            'color' => '#000000',
             'x' => 20.0,
             'y' => 260.0,
         ], $normalized);
@@ -37,7 +39,7 @@ class TextElementTest extends TestCase
     public function testValidate_missingX_throws()
     {
         $this->expectException(InvalidPayloadException::class);
-        $this->expectExceptionMessage('p.position.x: expected a number between 0 and 210');
+        $this->expectExceptionMessage('p.position.x: expected a number between 0 and 1189');
         TextElement::validate(['type' => 'text', 'content' => 'x', 'position' => ['y' => 10]], 'p');
     }
 
@@ -52,7 +54,7 @@ class TextElementTest extends TestCase
             'size' => 18.0,
             'x' => 100.0,
             'y' => 250.0,
-        ]);
+        ], PageGeometry::a4());
 
         $calls = $pdf->callsTo('addTextCellXY');
         $this->assertCount(1, $calls);
@@ -79,7 +81,7 @@ class TextElementTest extends TestCase
             'size' => 12.0,
             'x' => 20.0,
             'y' => 'center',
-        ]);
+        ], PageGeometry::a4());
 
         $calls = $pdf->callsTo('addTextCellXY');
         $this->assertEquals(0.0, $calls[0]['posy']);

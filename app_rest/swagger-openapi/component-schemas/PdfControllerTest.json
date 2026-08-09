@@ -22,6 +22,16 @@
                     "example": "document.pdf"
                 }
             ],
+            "backgroundPdf": [
+                {
+                    "type": "string",
+                    "example": "https://cdn.example.com/template.pdf"
+                },
+                {
+                    "type": "string",
+                    "example": "https://cdn.example.com/template.pdf"
+                }
+            ],
             "sections": [
                 {
                     "type": "array",
@@ -70,6 +80,16 @@
                 {
                     "type": "number",
                     "example": 18
+                }
+            ],
+            "color": [
+                {
+                    "type": "string",
+                    "example": "#1a2b3c"
+                },
+                {
+                    "type": "string",
+                    "example": "#1a2b3c"
                 }
             ],
             "position": [
