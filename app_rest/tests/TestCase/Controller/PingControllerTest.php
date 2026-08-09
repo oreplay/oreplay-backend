@@ -31,6 +31,7 @@ class PingControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($lang, $bodyDecoded['data'][0]);
         $this->assertEquals('dev.example.com', $bodyDecoded['data'][1]);
         $this->assertEquals('use cache', $bodyDecoded['data'][3]);
+        $this->assertEquals(['xd', 'ml'], array_keys($bodyDecoded['data'][8]));
     }
 
     public function testGetData_withoutSecret()

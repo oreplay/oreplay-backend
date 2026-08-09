@@ -51,6 +51,7 @@ class PingController extends ApiController
             '5' => env('TEST_ENV', ''),
             '6' => env('TAG_VERSION', ''),
             '7' => SwaggerJsonController::version(),
+            '8' => $this->_phpRuntime(),
         ];
 
         $migrationList = migrationList();
@@ -70,6 +71,14 @@ class PingController extends ApiController
             }
         }
         $this->return = $toRet;
+    }
+
+    private function _phpRuntime(): array
+    {
+        return [
+            'xd' => extension_loaded('xdebug') ? (string)ini_get('xdebug.mode') : 'off',
+            'ml' => (string)ini_get('memory_limit'),
+        ];
     }
 
     private function _runMainSeed(array $migrationList)
