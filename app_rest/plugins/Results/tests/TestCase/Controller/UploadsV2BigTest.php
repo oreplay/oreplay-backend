@@ -6,9 +6,7 @@ namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
-use Cake\Cache\Cache;
 use Cake\ORM\Query;
-use Cake\Utility\Text;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\Event;
@@ -77,19 +75,22 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
 
     private const SPLITS_STORED_BEFORE_RE_SYNC = 280;
 
+    private const STAGE_ID = 'b19e7e57-0000-4000-8000-0000000000b1';
+
     private string $_stageId = '';
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->_stageId = $this->_createStageForThisRun();
+        $this->flushMemcached();
+        $this->_stageId = $this->_createEmptyStage();
     }
 
-    private function _createStageForThisRun(): string
+    private function _createEmptyStage(): string
     {
         $stages = StagesTable::load();
         $stage = $stages->newEmptyEntity();
-        $stage->id = Text::uuid();
+        $stage->id = self::STAGE_ID;
         $stage->event_id = Event::FIRST_EVENT;
         $stage->description = BigEventExamples::EVENT_NAME;
         $stage->order_number = 1;
@@ -111,13 +112,12 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldReplayAWholeRealEvent()
     {
-        Cache::clear();
-
         $this->_firstRadiosWhileTheyRun();
         $this->_sameRunnersDownloadTheirCards();
         $this->_moreRunnersFinishInOldAndNewClasses();
         $this->_secondRadioBatchForRunnersStillOut();
         $this->_organiserReSyncsTheWholeEvent();
+        $this->flushMemcached();
         $this->_reUploadingTheWholeEventChangesNothing();
     }
 
@@ -269,7 +269,7 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
 
     private function _reUploadingTheWholeEventChangesNothing(): void
     {
-        $meta = $this->_uploadWithColdCache(BigEventExamples::wholeEvent($this->_stageId));
+        $meta = $this->_upload(BigEventExamples::wholeEvent($this->_stageId));
         $this->_assertUpdated([
             'classes' => 0,
             'courses' => 0,
@@ -286,16 +286,6 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
             'splits' => self::EVENT_SPLITS,
             'controls' => self::EVENT_STATIONS,
         ], 'identical re-upload');
-    }
-
-    private function _uploadWithColdCache(array $dataTransfer): array
-    {
-        Cache::disable();
-        try {
-            return $this->_upload($dataTransfer);
-        } finally {
-            Cache::enable();
-        }
     }
 
     private function _upload(array $dataTransfer): array
