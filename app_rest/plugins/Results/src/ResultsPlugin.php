@@ -37,6 +37,10 @@ class ResultsPlugin extends RestPlugin
             \Results\Controller\StatsController::route()
         );
         $builder->connect(
+            '/events/{eventID}/uploads/v2/*',
+            \Results\Controller\UploadsV2Controller::route()
+        );
+        $builder->connect(
             '/events/{eventID}/uploads/*',
             \Results\Controller\UploadsController::route()
         );
