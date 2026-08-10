@@ -6,6 +6,7 @@ namespace Results\Lib\Import;
 
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMetrics;
+use Results\Model\Entity\Control;
 use Results\Model\Entity\ParticipantResultsEntity;
 use Results\Model\Entity\Split;
 use Results\Model\Table\ControlsTable;
@@ -73,12 +74,21 @@ class SplitImporter
             $splitToSave->class_id = $context->getClassId();
             if ($split['station'] ?? null) {
                 $control = $this->_controls->createControlIfNotExists($context, $existingResults, $split);
-                $splitToSave->addControl($control);
+                $this->_linkControl($splitToSave, $control);
             }
             $metrics->addOneSplit();
             $resultToSave->addSplit($splitToSave);
         }
         return $resultToSave;
+    }
+
+    private function _linkControl(Split $splitToSave, Control $control): void
+    {
+        if ($this->_helper->getExistingResults()->takeControlToWrite($control)) {
+            $splitToSave->addControl($control);
+            return;
+        }
+        $splitToSave->control_id = $control->id;
     }
 
     private function _isPunchOutOfCourse(array $split): bool

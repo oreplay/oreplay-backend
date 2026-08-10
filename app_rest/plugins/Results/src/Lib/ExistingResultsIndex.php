@@ -18,6 +18,7 @@ class ExistingResultsIndex
     private StorageHelper $_runnerResults;
     private StorageHelper $_teamResults;
     private array $_controlsByStation = [];
+    private array $_controlsToWrite = [];
 
     public function __construct()
     {
@@ -38,9 +39,10 @@ class ExistingResultsIndex
     public function indexControls(ResultSetInterface $controls): void
     {
         $this->_controlsByStation = [];
+        $this->_controlsToWrite = [];
         /** @var Control $control */
         foreach ($controls as $control) {
-            $this->storeControlByStation($control);
+            $this->_controlsByStation[$control->station] = $control;
         }
     }
 
@@ -52,6 +54,21 @@ class ExistingResultsIndex
     public function storeControlByStation(Control $control): void
     {
         $this->_controlsByStation[$control->station] = $control;
+        $this->_controlsToWrite[$control->station] = true;
+    }
+
+    /**
+     * Controls are shared by every class of the stage, so each one has to be written at most
+     * once per upload. Answers true only for the first split that reaches a control missing
+     * from the database; every later split can just point at its id.
+     */
+    public function takeControlToWrite(Control $control): bool
+    {
+        if (!isset($this->_controlsToWrite[$control->station])) {
+            return false;
+        }
+        unset($this->_controlsToWrite[$control->station]);
+        return true;
     }
 
     /**
