@@ -13,8 +13,19 @@ class ElementFields
     public const MIN_SIZE = 1;
     public const MAX_SIZE = 300;
     public const DEFAULT_COLOR = '#000000';
+    public const DEFAULT_STYLE = 'regular';
     private const DEFAULT_SIZE = 12.0;
     private const HEX_COLOR = '/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/';
+
+    /**
+     * Only the styles with a font file shipped in resources/fonts. Italic is left out on
+     * purpose: tc-lib-pdf-font would synthesise it by slanting the regular face, and its
+     * bold-italic derives from the regular face rather than the bold one.
+     */
+    private const FONT_STYLE_CODES = [
+        'regular' => '',
+        'bold' => 'B',
+    ];
 
     public static function string(array $el, string $key, string $path, int $maxLength): string
     {
@@ -59,6 +70,24 @@ class ElementFields
             );
         }
         return $color;
+    }
+
+    public static function style(array $el, string $path): string
+    {
+        $style = $el['style'] ?? self::DEFAULT_STYLE;
+        if (!is_string($style) || !array_key_exists($style, self::FONT_STYLE_CODES)) {
+            throw new InvalidPayloadException(
+                $path . '.style: expected one of "'
+                . implode('", "', array_keys(self::FONT_STYLE_CODES))
+                . '" but got ' . json_encode($style)
+            );
+        }
+        return $style;
+    }
+
+    public static function fontStyleCode(string $style): string
+    {
+        return self::FONT_STYLE_CODES[$style] ?? '';
     }
 
     public static function positionY(array $el, string $path): float|string

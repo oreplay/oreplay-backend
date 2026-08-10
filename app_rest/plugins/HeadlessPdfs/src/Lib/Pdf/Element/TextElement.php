@@ -23,6 +23,7 @@ class TextElement implements ElementRenderer
             'content' => ElementFields::string($el, 'content', $path, self::MAX_CONTENT_LENGTH),
             'size' => ElementFields::size($el, $path),
             'color' => ElementFields::color($el, $path),
+            'style' => ElementFields::style($el, $path),
             'x' => ElementFields::positionX($el, $path),
             'y' => ElementFields::positionY($el, $path),
         ];

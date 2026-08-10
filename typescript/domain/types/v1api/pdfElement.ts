@@ -12,5 +12,6 @@ export interface PdfElement {
   content?: string
   position?: PdfPosition
   size?: number
+  style?: string
   type?: string
 }

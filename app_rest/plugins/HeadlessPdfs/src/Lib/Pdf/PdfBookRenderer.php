@@ -13,6 +13,7 @@ use Com\Tecnick\Pdf\Tcpdf;
 use HeadlessPdfs\HeadlessPdfsPlugin;
 use HeadlessPdfs\Lib\Exception\ImageFetchFailedException;
 use HeadlessPdfs\Lib\Pdf\Element\BreakPageElement;
+use HeadlessPdfs\Lib\Pdf\Element\ElementFields;
 use HeadlessPdfs\Lib\Pdf\Element\ElementRegistry;
 use HeadlessPdfs\Lib\Pdf\Element\ElementRenderer;
 use RestApi\Lib\RestRenderer;
@@ -73,7 +74,7 @@ class PdfBookRenderer implements RestRenderer
                 continue;
             }
             if (isset($element['size'])) {
-                $this->useFontSize($pdf, $element['size']);
+                $this->useFont($pdf, $element['size'], $element['style'] ?? ElementFields::DEFAULT_STYLE);
             }
             if (isset($element['color'])) {
                 $this->useFillColor($pdf, $element['color']);
@@ -244,9 +245,14 @@ class PdfBookRenderer implements RestRenderer
         $pdf->page->addContent($pdf->color->getPdfFillColor($color));
     }
 
-    private function useFontSize(Tcpdf $pdf, float $size): void
+    private function useFont(Tcpdf $pdf, float $size, string $style): void
     {
-        $font = $pdf->font->insert($pdf->pon, self::FONT_FAMILY, '', $size);
+        $font = $pdf->font->insert(
+            $pdf->pon,
+            self::FONT_FAMILY,
+            ElementFields::fontStyleCode($style),
+            $size,
+        );
         $pdf->page->addContent($font['out']);
     }
 }

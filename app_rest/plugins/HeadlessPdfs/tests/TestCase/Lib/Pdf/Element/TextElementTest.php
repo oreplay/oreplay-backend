@@ -31,6 +31,7 @@ class TextElementTest extends TestCase
             'content' => 'Bilbao, 7 Aug 2026',
             'size' => 10.0,
             'color' => '#000000',
+            'style' => 'regular',
             'x' => 20.0,
             'y' => 260.0,
         ], $normalized);

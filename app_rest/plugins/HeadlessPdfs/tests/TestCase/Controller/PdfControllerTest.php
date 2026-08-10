@@ -33,7 +33,7 @@ class PdfControllerTest extends ApiCommonErrorsTest
             'sections' => [
                 ['_c' => 'PdfSection', 'elements' => [
                     ['_c' => 'PdfElement', 'type' => 'text', 'content' => 'Otra sección',
-                     'size' => 18, 'color' => '#1a2b3c',
+                     'size' => 18, 'color' => '#1a2b3c', 'style' => 'bold',
                      'position' => ['_c' => 'PdfPosition', 'x' => 100, 'y' => 250]],
                 ]],
                 ['_c' => 'PdfSection', 'elements' => [

@@ -92,6 +92,16 @@
                     "example": "#1a2b3c"
                 }
             ],
+            "style": [
+                {
+                    "type": "string",
+                    "example": "bold"
+                },
+                {
+                    "type": "string",
+                    "example": "bold"
+                }
+            ],
             "position": [
                 {
                     "$ref": "#/components/schemas/PdfPosition"

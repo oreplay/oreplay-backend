@@ -31,6 +31,7 @@ class CenteredTextElementTest extends TestCase
             'content' => 'Título del documento',
             'size' => 36.0,
             'color' => '#000000',
+            'style' => 'regular',
             'y' => 'center',
         ], $normalized);
     }

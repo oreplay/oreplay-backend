@@ -2140,6 +2140,9 @@ components:
         color:
           type: string
           example: '#1a2b3c'
+        style:
+          type: string
+          example: bold
         position:
           $ref: '#/components/schemas/PdfPosition'
       description: Entity PdfElement
