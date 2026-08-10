@@ -278,9 +278,10 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ->all();
         $this->assertEquals(2, count($addedClasses));
         $expectedClasses = ['ME', 'WE'];
+        $expectedCourses = ['ME', 'WE/M20'];
         foreach ($addedClasses as $k => $class) {
             $this->assertEquals($expectedClasses[$k], $class->short_name);
-            $this->assertEquals($expectedClasses[$k], $class->course->short_name);
+            $this->assertEquals($expectedCourses[$k], $class->course->short_name);
         }
 
         $res = RunnersTable::load()
@@ -359,9 +360,10 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ->all();
         $this->assertEquals(2, count($addedClasses));
         $expectedClasses = ['ME', 'WE'];
+        $expectedCourses = ['ME', 'WE/M20'];
         foreach ($addedClasses as $k => $class) {
             $this->assertEquals($expectedClasses[$k], $class->short_name);
-            $this->assertEquals($expectedClasses[$k], $class->course->short_name);
+            $this->assertEquals($expectedCourses[$k], $class->course->short_name);
         }
 
         $res = RunnersTable::load()
@@ -451,10 +453,14 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ->all();
         $this->assertEquals(2, count($addedClasses));
         $expectedClasses = ['Individual', 'DUAL.TEAM'];
+        $sharedCourse = 'Full Score';
+        $courseIds = [];
         foreach ($addedClasses as $k => $class) {
             $this->assertEquals($expectedClasses[$k], $class->short_name);
-            $this->assertEquals($expectedClasses[$k], $class->course->short_name);
+            $this->assertEquals($sharedCourse, $class->course->short_name);
+            $courseIds[] = $class->course->id;
         }
+        $this->assertEquals(1, count(array_unique($courseIds)), 'both classes share the same course row');
 
         $res = RunnersTable::load()
             ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
@@ -485,7 +491,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 $value->getResultList()[0]->result_type_id);
         }
         $this->_assertNewOptionalTables(0, 1, 1, 0);
-        $this->_assertNewBasicTables(2, 2, 2, 3, 3);
+        $this->_assertNewBasicTables(2, 1, 2, 3, 3);
         $this->_assertNewResultsTables(0, 0);
         // check uploaded teams
         $dbTeams = TeamsTable::load()
@@ -1292,12 +1298,12 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $expectedMeta = [
             'classes' => 1,
             'runners' => 4,
-            'courses' => 1,
+            'courses' => 0,
             'splits' => 0,
             'runnerResults' => 5,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 1 courses (', $human);
+        $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 0 courses (', $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -1342,7 +1348,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 //                $value->getRunnerResults()[0]->result_type_id);
 //        }
         $this->_assertNewOptionalTables(0, 1, 2, 0);
-        $this->_assertNewBasicTables(1, 1, 1, 3, 3);
+        $this->_assertNewBasicTables(1, 0, 1, 3, 3);
         $this->_assertNewResultsTables(0, 0);
     }
 
@@ -1376,12 +1382,12 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $expectedMeta = [
             'classes' => 1,
             'runners' => 2,
-            'courses' => 1,
+            'courses' => 0,
             'splits' => 0,
             'runnerResults' => 6,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 1 courses (0', $human);
+        $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 0 courses (0', $human);
 
         $newStage = StagesTable::load()->find()->orderByDesc('created')->firstOrFail();
         $this->assertEquals(StageType::TOTALS, $newStage->stage_type_id);
@@ -1404,7 +1410,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $this->assertEquals(0, count($decodedData[0]['teams']));
         $this->_assertNewOptionalTables(0, 0, 0, 0);
-        $this->_assertNewBasicTables(2, 1, 1, 2, 6);
+        $this->_assertNewBasicTables(2, 0, 1, 2, 6);
         $this->_assertNewResultsTables(0, 0);
     }
 
@@ -1424,12 +1430,12 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $expectedMeta = [
             'classes' => 1,
             'runners' => 1,
-            'courses' => 1,
+            'courses' => 0,
             'splits' => 0,
             'runnerResults' => 2,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 1 courses (0', $human);
+        $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 0 courses (0', $human);
         /** @var Stage $stage */
         $stage = StagesTable::load()->find()
             ->where(['stage_type_id' => StageType::TOTALS])->orderByDesc('created')->first();
@@ -1469,12 +1475,12 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $expectedMeta = [
             'classes' => 1,
             'runners' => 1,
-            'courses' => 1,
+            'courses' => 0,
             'splits' => 0,
             'runnerResults' => 3,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 1 courses (0', $human);
+        $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 0 courses (0', $human);
         /** @var Stage $stage */
         $stage = StagesTable::load()->find()
             ->where(['stage_type_id' => StageType::TOTALS])->orderByDesc('created')->first();

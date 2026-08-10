@@ -10,6 +10,7 @@ use RestApi\Model\Entity\RestApiEntity;
 use Results\Lib\Consts\Color;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ClassEntity;
+use Results\Model\Entity\Course;
 use Results\Model\Table\ClassesTable;
 
 class UploadMetrics
@@ -31,7 +32,7 @@ class UploadMetrics
     private int $splitCount = 0;
     private int $runnerResultsCount = 0;
     private int $teamResultsCount = 0;
-    private int $coursesCount = 0;
+    private array $_courseIdsTouched = [];
     private float $_startTimeTotal = 0.0;
     private float $_startTimeProcessing = 0.0;
     private float $_processingDuration = 0.0;
@@ -140,9 +141,14 @@ class UploadMetrics
         $this->teamCount += $toAdd;
     }
 
-    public function addOneCourse()
+    public function addCourse(Course $course)
     {
-        $this->coursesCount++;
+        $this->_courseIdsTouched[$course->id] = true;
+    }
+
+    private function _courseCount(): int
+    {
+        return count($this->_courseIdsTouched);
     }
 
     public function addOneSplit()
@@ -206,6 +212,7 @@ class UploadMetrics
         $total = round($this->_totalDuration, 2);
         $participantResultsCount = $this->runnerResultsCount + $this->teamResultsCount;
         $participantCount = $this->runnerCount + $this->teamCount;
+        $courseCount = $this->_courseCount();
         $humanColor = Color::GREEN;
         if (!$this->classCount) {
             $humanColor = Color::BLUE;
@@ -230,7 +237,7 @@ class UploadMetrics
             'meta' => [
                 'updated' => [
                     'classes' => $this->classCount,
-                    'courses' => $this->coursesCount,
+                    'courses' => $courseCount,
                     'runners' => $participantCount,
                     'splits' => $this->splitCount,
                     'runnerResults' => $participantResultsCount,
@@ -256,7 +263,7 @@ class UploadMetrics
                 'humanColor' => $humanColor,
                 'human' => [
                     "Updated$extraMessage $this->classCount classes, "
-                    . "$this->coursesCount courses ($coursesDuration s) $newLine"
+                    . "$courseCount courses ($coursesDuration s) $newLine"
                     . "$participantCount participants "
                     . "(and $participantResultsCount results in $resultsTotal s "
                     . "[$loopingTime looping + $runnersInLoop s + $clubsDuration clubs + "

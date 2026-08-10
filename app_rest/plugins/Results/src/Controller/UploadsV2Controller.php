@@ -90,11 +90,7 @@ class UploadsV2Controller extends ApiController
                 $class->setHash($classObj);
                 $classHelper = $helper->inClass($class->id);
                 // if no change is done in the whole class, we could totally skip processing it
-                $class->course = $metrics->measure(
-                    UploadMetrics::COURSES,
-                    fn() => $this->Classes->Courses->createIfNotExists($helper->getEventId(), $stageId, $classObj)
-                );
-                $metrics->addOneCourse();
+                $class = $this->_addCourseToClass($classObj, $class, $helper);
                 $class = $this->_addAllRunnersInClass($classObj, $class, $classHelper);
                 $class = $this->_addAllTeamsInClass($classObj, $class, $classHelper);
                 $metrics->saveManyOrFail($this->Classes, $class);
@@ -108,6 +104,26 @@ class UploadsV2Controller extends ApiController
         $metrics->endTotalTimer();
 
         return $metrics->toArray($configChecker->preCheckType());
+    }
+
+    private function _addCourseToClass(array $classArray, ClassEntity $class, UploadHelper $helper): ClassEntity
+    {
+        $courseArray = $classArray['course'] ?? [];
+        if (!$courseArray) {
+            return $class;
+        }
+        $metrics = $helper->getMetrics();
+        $course = $metrics->measure(
+            UploadMetrics::COURSES,
+            fn() => $this->Classes->Courses->createIfNotExists(
+                $helper->getEventId(),
+                $helper->getStageId(),
+                $courseArray
+            )
+        );
+        $class->course = $course;
+        $metrics->addCourse($course);
+        return $class;
     }
 
     private function _addAllRunnersInClass(array $classArray, ClassEntity $class, UploadHelper $helper): ClassEntity

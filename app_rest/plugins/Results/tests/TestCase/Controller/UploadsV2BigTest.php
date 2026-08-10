@@ -68,6 +68,9 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
     private const MISSING_PUNCH_BIB = '100';
 
     private const EVENT_CLASSES = 19;
+    private const EVENT_COURSES = 9;
+    private const COURSE_NAMES = ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'ORG'];
+    private const CLASSES_ON_COURSE_C1 = ['Sub20 M', 'Sen M', 'Vet M'];
     private const EVENT_CLUBS = 19;
     private const EVENT_RUNNERS = 194;
     private const EVENT_SPLITS = 3347;
@@ -243,14 +246,14 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
         $meta = $this->_upload(BigEventExamples::wholeEvent($this->_stageId));
         $this->_assertUpdated([
             'classes' => self::EVENT_CLASSES,
-            'courses' => self::EVENT_CLASSES,
+            'courses' => self::EVENT_COURSES,
             'runners' => self::EVENT_RUNNERS,
             'splits' => self::EVENT_SPLITS - self::SPLITS_STORED_BEFORE_RE_SYNC,
             'runnerResults' => self::EVENT_RUNNERS,
         ], $meta, 'whole event re-sync');
         $this->_assertDatabase([
             'classes' => self::EVENT_CLASSES,
-            'courses' => self::EVENT_CLASSES,
+            'courses' => self::EVENT_COURSES,
             'clubs' => self::EVENT_CLUBS,
             'runners' => self::EVENT_RUNNERS,
             'runnerResults' => self::EVENT_RUNNERS,
@@ -264,6 +267,10 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
             StatusCode::DNF => 13,
             StatusCode::MP => 5,
         ], $this->_resultAmountByStatus());
+        $this->assertEquals(self::COURSE_NAMES, $this->_courseShortNames(),
+            'courses are named after the course, not after the class');
+        $this->assertEquals(1, count($this->_courseIdsOfClasses(self::CLASSES_ON_COURSE_C1)),
+            'classes running the same course share one course row');
     }
 
     private function _reUploadingTheWholeEventChangesNothing(): void
@@ -278,7 +285,7 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
         ], $meta, 'identical re-upload');
         $this->_assertDatabase([
             'classes' => self::EVENT_CLASSES,
-            'courses' => self::EVENT_CLASSES,
+            'courses' => self::EVENT_COURSES,
             'clubs' => self::EVENT_CLUBS,
             'runners' => self::EVENT_RUNNERS,
             'runnerResults' => self::EVENT_RUNNERS,
@@ -315,6 +322,22 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
     private function _amountInStage($table): int
     {
         return $table->find()->where(['stage_id' => $this->_stageId])->all()->count();
+    }
+
+    private function _courseShortNames(): array
+    {
+        return CoursesTable::load()->find()
+            ->where(['stage_id' => $this->_stageId])
+            ->orderByAsc('short_name')
+            ->all()->extract('short_name')->toList();
+    }
+
+    private function _courseIdsOfClasses(array $classShortNames): array
+    {
+        $courseIds = ClassesTable::load()->find()
+            ->where(['stage_id' => $this->_stageId, 'short_name IN' => $classShortNames])
+            ->all()->extract('course_id')->toList();
+        return array_unique($courseIds);
     }
 
     private function _intermediateSplitAmount(): int
