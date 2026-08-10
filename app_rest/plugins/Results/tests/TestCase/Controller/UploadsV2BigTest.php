@@ -117,7 +117,6 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
         $this->_moreRunnersFinishInOldAndNewClasses();
         $this->_secondRadioBatchForRunnersStillOut();
         $this->_organiserReSyncsTheWholeEvent();
-        $this->flushMemcached();
         $this->_reUploadingTheWholeEventChangesNothing();
     }
 

@@ -42,7 +42,7 @@ class UploadsController extends ApiController
 
     private function _clearUploadCache()
     {
-        Cache::clear(CacheGrp::UPLOAD);
+        Cache::clearGroup(CacheGrp::UPLOAD_ENTITIES_GROUP, CacheGrp::UPLOAD);
         $this->runnersTable()->emptyStoredList();
     }
 
@@ -104,8 +104,6 @@ class UploadsController extends ApiController
                 $counter++;
             }
         }
-
-        $this->_clearUploadCache();
 
         $log = UploadLogsTable::load()->saveUploadLog($helper);
         RawUploadsTable::load()->saveFile($log, $helper);
@@ -242,6 +240,8 @@ class UploadsController extends ApiController
                 $exceptionName = array_pop($exploded);
             }
             $this->return = $this->respondError($exceptionName, $e->getCode());
+        } finally {
+            $this->_clearUploadCache();
         }
     }
 

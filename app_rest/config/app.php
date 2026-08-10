@@ -187,6 +187,7 @@ return [
         CacheGrp::UPLOAD => [
             'className' => MemcachedEngine::class,
             'prefix' => env('TAG_VERSION', ''). '_' . CacheGrp::UPLOAD . '_',
+            'groups' => [CacheGrp::UPLOAD_ENTITIES_GROUP],
             'duration' => '+10 seconds',
             'path' => CACHE,
             'url' => env('CACHE_DEFAULT_URL', null),
