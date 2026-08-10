@@ -6,7 +6,6 @@ namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
-use Cake\Cache\Cache;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
 use Results\Controller\UploadsController;
@@ -84,6 +83,12 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         return ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/uploads/';
     }
 
+    public function setUp(): void
+    {
+        $this->flushMemcached();
+        parent::setUp();
+    }
+
     protected function _getEndpoint(): string
     {
         $this->skipNextRequestInSwagger();
@@ -92,7 +97,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_onError()
     {
-        Cache::clear();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
@@ -140,7 +144,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldRespondErrorWhenTheRawUploadIsNotFound()
     {
-        Cache::clear();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = [
             'raw_upload_id' => '8fa0a698-5b49-433a-9339-e78ef216f12f',
@@ -155,7 +158,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldDecodeGzip()
     {
-        Cache::clear();
         //$this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
@@ -213,7 +215,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddMixedContent()
     {
-        $this->flushMemcached();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
@@ -246,7 +247,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddStartTimes()
     {
-        Cache::clear();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
@@ -322,7 +322,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddEntryListsWihtouStartTimes()
     {
-        Cache::clear();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
@@ -409,7 +408,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddStartTimesWithTeams()
     {
-        Cache::clear();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
@@ -505,7 +503,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddIntermediatesWithRadios()
     {
-        Cache::clear();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
@@ -555,7 +552,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddIntermediatesWithRadiosAndDuplicatedBibs()
     {
-        Cache::clear();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
@@ -660,7 +656,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddFinishTimesTwice()
     {
-        Cache::clear();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
@@ -716,11 +711,8 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->post($this->_getEndpoint() . '?version=300', $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
-        $decodedData = $jsonDecoded['data'];
+        $this->assertEquals([], $jsonDecoded['data'], json_encode($jsonDecoded));
         $this->assertEquals($expectedRunnerAmount, count($res), 'Runner count in db');
-        $this->assertEquals(1, count($decodedData), json_encode($jsonDecoded));
-        $this->assertEquals($expectedRunnerAmount, count($decodedData[0]['runners']), json_encode($decodedData));
-        $this->_assertRunnersWithFinishTimes($decodedData, true);
         $this->assertEquals($expectedControlAmount, ControlsTable::load()->find()->all()->count());
 
         $dbSplits = SplitsTable::load()->find()
@@ -739,7 +731,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddFinishTimesAsDNSAndLaterAsDNF()
     {
-        Cache::clear();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
@@ -844,7 +835,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldNotUpdateStartListWhenThereAreFinishTimes()
     {
-        Cache::clear();
         RunnerResultsTable::load()->updateAll([
             'stage_id' => StagesFixture::STAGE_FEDO_2,
             'finish_time' => new FrozenTime()
@@ -957,7 +947,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddStartsAndSplits()
     {
-        Cache::clear();
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
@@ -1155,7 +1144,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddRelayResultsWithoutSamePersonRunningTwice()
     {
-        Cache::clear();
         $RunnersTable = RunnersTable::load();
         $existingRunners = $RunnersTable->find()->all()->count();
         $ClassesTable = ClassesTable::load();
@@ -1181,7 +1169,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddRelayResultsWithEvolution()
     {
-        Cache::clear();
         $RunnersTable = RunnersTable::load();
         $existingRunners = $RunnersTable->find()->all()->count();
         $ClassesTable = ClassesTable::load();
@@ -1276,7 +1263,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddRelayResultsWithoutSplitsTwice()
     {
-        Cache::clear();
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
@@ -1362,7 +1348,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddTotalsWithPointsTwice()
     {
-        Cache::clear();
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
@@ -1425,7 +1410,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddTotalsIn2Stages()
     {
-        Cache::clear();
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
@@ -1519,7 +1503,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddSplitsAndLaterIntermediatesWithRadios()
     {
-        Cache::clear();
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
             ['stage_id' => StagesFixture::STAGE_FEDO_2],

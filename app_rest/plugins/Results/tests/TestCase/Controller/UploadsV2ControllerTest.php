@@ -87,9 +87,14 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         return $this->_getEndpointAddingToSwagger();
     }
 
+    public function setUp(): void
+    {
+        $this->flushMemcached();
+        parent::setUp();
+    }
+
     public function testAddNew_onError()
     {
-        Cache::clear();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
@@ -642,7 +647,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddFinishTimesTwice()
     {
-        Cache::clear();
+        $this->flushMemcached();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(
