@@ -198,7 +198,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     public function testAddNew_shouldAddMixedContent()
     {
-        Cache::clear();
+        $this->flushMemcached();
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $ClassesTable = ClassesTable::load();
         $ClassesTable->updateAll(

@@ -33,4 +33,12 @@ abstract class ApiCommonErrorsTest extends \RestApi\TestSuite\ApiCommonErrorsTes
         parent::tearDown();
         Configure::write('Swagger.identifyEntities', '');
     }
+
+    protected function flushMemcached(): void
+    {
+        $config = Cache::getConfig(CacheGrp::DEFAULT);
+        $memcached = new \Memcached();
+        $memcached->addServer($config['host'], (int)$config['port']);
+        $memcached->flush();
+    }
 }
