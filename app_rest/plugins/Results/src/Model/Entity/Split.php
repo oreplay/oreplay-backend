@@ -74,6 +74,7 @@ class Split extends AppEntity
     public function addControl(Control $control): self
     {
         $this->_fields['control'] = $control;
+        $this->setDirty('control');
         return $this;
     }
 
