@@ -45,6 +45,27 @@ class SplitsTable extends AppTable
         return parent::_insert($entity, $data);
     }
 
+    public function save(EntityInterface $entity, array $options = []): EntityInterface|false
+    {
+        return parent::save($entity, $this->_withoutExistenceProbe($options));
+    }
+
+    private function _withoutExistenceProbe(array $options): array
+    {
+        $options['checkExisting'] = false;
+        $options['associated'] = $this->_associationsKeepingExistenceProbe();
+        return $options;
+    }
+
+    private function _associationsKeepingExistenceProbe(): array
+    {
+        $keepingProbe = [];
+        foreach ($this->associations() as $association) {
+            $keepingProbe[$association->getName()] = ['checkExisting' => true];
+        }
+        return $keepingProbe;
+    }
+
     public function fillNewWithStage(array $data, string $eventId, string $stageId)
     {
         /** @var Split $split */
