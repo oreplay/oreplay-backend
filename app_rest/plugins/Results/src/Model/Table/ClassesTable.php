@@ -9,6 +9,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Log\LogTrait;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
+use Results\Lib\Import\SplitsToReplace;
 use Results\Model\Entity\ClassEntity;
 
 /**
@@ -102,13 +103,22 @@ class ClassesTable extends AppTable
         return $res;
     }
 
-    public function saveManyWithRelations(ClassEntity $singleClassToSave)
+    public function saveManyWithRelations(ClassEntity $singleClassToSave, SplitsToReplace $splitsToReplace)
     {
-        try {
-            return $this->saveManyOrFail([$singleClassToSave]);
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        return $this->getConnection()->transactional(
+            fn() => $this->_deleteReplacedSplitsAndSaveNeverRetrying($singleClassToSave, $splitsToReplace)
+        );
+    }
+
+    // warning: never call this from a retry such as saveOrFailRetrying(). deleteAndForget() consumes
+    // the collected ids, so a rollback undoes the deletes while the collection is already empty and
+    // the second attempt would save the new splits next to the stored ones it was meant to replace.
+    private function _deleteReplacedSplitsAndSaveNeverRetrying(
+        ClassEntity $singleClassToSave,
+        SplitsToReplace $splitsToReplace
+    ) {
+        $splitsToReplace->deleteAndForget(SplitsTable::load());
+        return $this->saveManyOrFail([$singleClassToSave]);
     }
 
     public function saveOrFailRetrying(ClassEntity $class): EntityInterface

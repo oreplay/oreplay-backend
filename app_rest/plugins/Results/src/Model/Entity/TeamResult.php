@@ -29,6 +29,11 @@ class TeamResult extends AppEntity implements ParticipantResultsEntity
     use ResultTrait;
     use ResultTraitMatcher;
 
+    public function getSplitsForeignKey(): string
+    {
+        return 'team_result_id';
+    }
+
     protected array $_accessible = [
         '*' => false,
         'id' => false,

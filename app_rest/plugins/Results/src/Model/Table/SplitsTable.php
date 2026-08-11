@@ -87,9 +87,12 @@ class SplitsTable extends AppTable
         return $entity;
     }
 
-    public function deleteAllByRunnerResultId(string $runnerId): int
+    public function deleteAllByResultIds(string $foreignKey, array $resultIds): int
     {
-        return $this->deleteAll(['runner_result_id' => $runnerId]);
+        if (!$resultIds) {
+            return 0;
+        }
+        return $this->deleteAll([$foreignKey . ' IN' => $resultIds]);
     }
 
     /**

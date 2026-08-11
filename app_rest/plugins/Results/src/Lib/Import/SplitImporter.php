@@ -52,7 +52,7 @@ class SplitImporter
         }
         $resultToSave->setHash($splits);
         if ($this->_replacesEveryStoredSplit()) {
-            $this->_splits->deleteAllByRunnerResultId($resultToSave->getId());
+            $this->_helper->getSplitsToReplace()->add($resultToSave);
         }
         return $this->_addEachSplit($resultToSave, $splits);
     }

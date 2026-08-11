@@ -93,7 +93,7 @@ class UploadsV2Controller extends ApiController
                 $class = $this->_addCourseToClass($classObj, $class, $helper);
                 $class = $this->_addAllRunnersInClass($classObj, $class, $classHelper);
                 $class = $this->_addAllTeamsInClass($classObj, $class, $classHelper);
-                $metrics->saveManyOrFail($this->Classes, $class);
+                $metrics->saveManyOrFail($this->Classes, $class, $helper->getSplitsToReplace());
                 $counter++;
             }
         }
@@ -157,6 +157,9 @@ class UploadsV2Controller extends ApiController
                 fn() => $importer->import($runnerData, $class)
             );
             if (in_array($runner->id, $existingRunnerIDs)) {
+                // warning: two payload entries can match one runner (same bib, or same name in the class,
+                // see Runner::getMatchedRunner) so two real people silently become one row and one set of
+                // results. Dropping the duplicate here only avoids saving it twice; the merge still happens.
                 $metrics->setWarning('Duplicated runner ' . $runner->_getFullName() . ' ' . $runner->bib_number);
                 continue;
             }

@@ -6,6 +6,7 @@ namespace Results\Lib;
 
 use Cake\Http\Exception\InternalErrorException;
 use RestApi\Lib\Exception\DetailedException;
+use Results\Lib\Import\SplitsToReplace;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Team;
@@ -23,6 +24,7 @@ class UploadHelper
     private UploadConfigChecker $_checker;
     private ExistingResultsIndex $_existingResults;
     private UploadMetrics $_metrics;
+    private SplitsToReplace $_splitsToReplace;
     private bool $_reprocessAll = false;
 
     public function __construct(array $data, string $eventID, UploadMetrics $metrics)
@@ -41,6 +43,7 @@ class UploadHelper
         }
         $this->_metrics = $metrics;
         $this->_existingResults = new ExistingResultsIndex();
+        $this->_splitsToReplace = new SplitsToReplace();
     }
 
     private function _loadFromRawUploads(string $uploadLogId): array
@@ -72,6 +75,11 @@ class UploadHelper
     public function getExistingResults(): ExistingResultsIndex
     {
         return $this->_existingResults;
+    }
+
+    public function getSplitsToReplace(): SplitsToReplace
+    {
+        return $this->_splitsToReplace;
     }
 
     public function getContext(): UploadContext

@@ -13,6 +13,7 @@ use Results\Model\Table\SplitsTable;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\RunnerResultsFixture;
 use Results\Test\Fixture\SplitsFixture;
+use Results\Test\Fixture\TeamResultsFixture;
 
 class SplitsTableTest extends TestCase
 {
@@ -20,6 +21,7 @@ class SplitsTableTest extends TestCase
         EventsFixture::LOAD,
         SplitsFixture::LOAD,
         RunnerResultsFixture::LOAD,
+        TeamResultsFixture::LOAD,
     ];
     /** @var SplitsTable Runners */
     private $Splits;
@@ -56,13 +58,25 @@ class SplitsTableTest extends TestCase
         $this->assertEquals($expected, $res);
     }
 
-    public function testDeleteAllByRunnerId()
+    public function testDeleteAllByResultIdsRemovesRunnerSplitsInOneStatement()
     {
-        /** @var Split $res */
-        $res = $this->Splits->deleteAllByRunnerResultId(RunnerResult::FIRST_RES);
-        $this->assertEquals(2, $res);
+        $deleted = $this->Splits->deleteAllByResultIds('runner_result_id', [RunnerResult::FIRST_RES]);
 
-        $res = $this->Splits->findById(SplitsFixture::SPLIT_1)->first();
-        $this->assertNull($res);
+        $this->assertEquals(2, $deleted);
+        $this->assertNull($this->Splits->findById(SplitsFixture::SPLIT_1)->first());
+    }
+
+    public function testDeleteAllByResultIdsRemovesTeamSplits()
+    {
+        $deleted = $this->Splits->deleteAllByResultIds('team_result_id', [TeamResultsFixture::TEAM_RESULT_1]);
+
+        $this->assertEquals(1, $deleted);
+        $this->assertNull($this->Splits->findById(SplitsFixture::SPLIT_2)->first());
+    }
+
+    public function testDeleteAllByResultIdsIgnoresAnEmptyList()
+    {
+        $this->assertEquals(0, $this->Splits->deleteAllByResultIds('runner_result_id', []));
+        $this->assertNotNull($this->Splits->findById(SplitsFixture::SPLIT_1)->first());
     }
 }
