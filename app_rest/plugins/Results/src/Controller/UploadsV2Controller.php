@@ -86,7 +86,7 @@ class UploadsV2Controller extends ApiController
         foreach ($configChecker->getClasses() as $classObj) {
             $class = $this->Classes->createIfNotExists($helper->getEventId(), $stageId, $classObj);
             $isTakingTooLong = $this->_setIsTakingTooLongWarning($metrics, $counter);
-            if (!$class->isSameUploadHash($classObj) && !$isTakingTooLong) {
+            if ($this->_needsProcessing($class, $classObj, $helper) && !$isTakingTooLong) {
                 $class->setHash($classObj);
                 $classHelper = $helper->inClass($class->id);
                 // if no change is done in the whole class, we could totally skip processing it
@@ -229,6 +229,9 @@ class UploadsV2Controller extends ApiController
                 $data = $reUploadedData;
             }
             $helper = new UploadHelper($data, $this->request->getParam('eventID'), $this->_metrics);
+            if ($this->_isReprocessAllRequested()) {
+                $helper->reprocessAll();
+            }
             $this->return = $this->_addNew($helper);
         } catch (\PDOException $e) {
             $this->log('Uploads PDOException: ' . $e->getMessage()
@@ -268,6 +271,16 @@ class UploadsV2Controller extends ApiController
             return null;
         }
         return substr($auth, strlen('Bearer '));
+    }
+
+    private function _needsProcessing(ClassEntity $class, array $classObj, UploadHelper $helper): bool
+    {
+        return $helper->isReprocessingAll() || !$class->isSameUploadHash($classObj);
+    }
+
+    private function _isReprocessAllRequested(): bool
+    {
+        return filter_var($this->getRequest()->getQuery('reprocess_all'), FILTER_VALIDATE_BOOLEAN);
     }
 
     private function _setIsTakingTooLongWarning(UploadMetrics $metrics, int $counter): bool

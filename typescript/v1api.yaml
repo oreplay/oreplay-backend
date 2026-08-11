@@ -1637,6 +1637,13 @@ paths:
           required: false
           schema:
             type: string
+        - description: ''
+          in: query
+          name: reprocess_all
+          example: '1'
+          required: false
+          schema:
+            type: string
       tags:
         - Uploads
       responses:
@@ -3114,7 +3121,7 @@ components:
             type: string
             example: |2
 
-                  [ERROR - 400] (7/11/26, 12:07 PM) Invalid payload structure configuration.contents StartList | ResultList and configuration.results_type Mixed 
+                  [ERROR - 400] (8/11/26, 7:14 AM) Invalid payload structure configuration.contents StartList | ResultList and configuration.results_type Mixed 
       description: Entity UploadedMeta
     ResUploaded:
       type: object

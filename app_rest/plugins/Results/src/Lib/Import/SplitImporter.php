@@ -47,14 +47,27 @@ class SplitImporter
         ParticipantResultsEntity $resultToSave,
         array $splits
     ): ParticipantResultsEntity {
-        if (!$splits || $resultToSave->hasSameSplits($splits)) {
+        if (!$splits || $this->_isAlreadyStored($resultToSave, $splits)) {
             return $resultToSave;
         }
         $resultToSave->setHash($splits);
-        if (!$this->_helper->getChecker()->isIntermediates()) {
+        if ($this->_replacesEveryStoredSplit()) {
             $this->_splits->deleteAllByRunnerResultId($resultToSave->getId());
         }
         return $this->_addEachSplit($resultToSave, $splits);
+    }
+
+    private function _isAlreadyStored(ParticipantResultsEntity $resultToSave, array $splits): bool
+    {
+        if ($this->_helper->isReprocessingAll() && $this->_replacesEveryStoredSplit()) {
+            return false;
+        }
+        return $resultToSave->hasSameSplits($splits);
+    }
+
+    private function _replacesEveryStoredSplit(): bool
+    {
+        return !$this->_helper->getChecker()->isIntermediates();
     }
 
     private function _addEachSplit(

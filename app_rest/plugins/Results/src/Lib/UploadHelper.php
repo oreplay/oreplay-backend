@@ -23,6 +23,7 @@ class UploadHelper
     private UploadConfigChecker $_checker;
     private ExistingResultsIndex $_existingResults;
     private UploadMetrics $_metrics;
+    private bool $_reprocessAll = false;
 
     public function __construct(array $data, string $eventID, UploadMetrics $metrics)
     {
@@ -76,6 +77,16 @@ class UploadHelper
     public function getContext(): UploadContext
     {
         return new UploadContext($this->_eventId, $this->getStageId(), $this->_classId);
+    }
+
+    public function reprocessAll(): void
+    {
+        $this->_reprocessAll = true;
+    }
+
+    public function isReprocessingAll(): bool
+    {
+        return $this->_reprocessAll;
     }
 
     public function inClass(string $classId): self

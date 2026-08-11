@@ -5,4 +5,5 @@
 
 export type PostListUploadsParams = {
   version?: string
+  reprocess_all?: string
 }

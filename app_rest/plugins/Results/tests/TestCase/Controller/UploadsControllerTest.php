@@ -122,7 +122,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 ]
             ]
         ];
-        $this->post($this->_getEndpointAddingToSwagger() . '?version=501', $data);
+        $this->post($this->_getEndpointAddingToSwagger() . '?version=501&reprocess_all=1', $data);
 
         $jsonDecoded = $this->assertJsonResponseOK();
         $expected = [

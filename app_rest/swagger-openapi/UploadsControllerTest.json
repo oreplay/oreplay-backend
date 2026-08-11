@@ -24,6 +24,16 @@
                     "schema": {
                         "type": "string"
                     }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "reprocess_all",
+                    "example": "1",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
                 }
             ],
             "tags": [

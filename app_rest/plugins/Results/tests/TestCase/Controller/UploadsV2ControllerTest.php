@@ -732,6 +732,60 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($runnerResultAmount, RunnerResultsTable::load()->find()->all()->count());
     }
 
+    public function testAddNew_shouldReprocessAnUnchangedClassWhenReprocessAllIsRequested()
+    {
+        $this->flushMemcached();
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        ClassesTable::load()->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+        $this->post($this->_getEndpoint(), $data);
+        $firstUpload = $this->assertJsonResponseOK()['meta']['updated'];
+
+        $expectedDatabase = [
+            'runners' => RunnersTable::load()->find()->all()->count(),
+            'runnerResults' => RunnerResultsTable::load()->find()->all()->count(),
+            'splits' => SplitsTable::load()->find()->all()->count(),
+            'controls' => ControlsTable::load()->find()->all()->count(),
+        ];
+
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), $data);
+        $skipped = $this->assertJsonResponseOK()['meta']['updated'];
+        $this->assertEquals(0, $skipped['classes'], 'an unchanged class is skipped without force');
+
+        $storedSplitIds = $this->_splitIdsInUploadedStage();
+
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint() . '?reprocess_all=1', $data);
+        $reprocessed = $this->assertJsonResponseOK()['meta']['updated'];
+        $this->assertEquals(1, $reprocessed['classes'], 'reprocess_all ignores the hash of an unchanged class');
+        $this->assertEquals(1, $reprocessed['courses']);
+        $this->assertEquals(2, $reprocessed['runners']);
+        $this->assertEquals($firstUpload['splits'], $reprocessed['splits'],
+            'reprocess_all ignores the hash of unchanged results and writes every split again');
+
+        $rewrittenSplitIds = $this->_splitIdsInUploadedStage();
+        $this->assertEquals([], array_intersect($storedSplitIds, $rewrittenSplitIds),
+            'the stored splits are replaced, not kept');
+
+        $this->assertEquals($expectedDatabase, [
+            'runners' => RunnersTable::load()->find()->all()->count(),
+            'runnerResults' => RunnerResultsTable::load()->find()->all()->count(),
+            'splits' => SplitsTable::load()->find()->all()->count(),
+            'controls' => ControlsTable::load()->find()->all()->count(),
+        ], 'forcing reprocesses without duplicating anything');
+    }
+
+    private function _splitIdsInUploadedStage(): array
+    {
+        return SplitsTable::load()->find()
+            ->where(['Splits.stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->all()->extract('id')->toList();
+    }
+
     public function testAddNew_shouldAddFinishTimesAsDNSAndLaterAsDNF()
     {
         Cache::clear();
