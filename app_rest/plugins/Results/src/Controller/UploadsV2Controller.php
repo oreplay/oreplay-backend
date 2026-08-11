@@ -158,9 +158,9 @@ class UploadsV2Controller extends ApiController
             );
             if (in_array($runner->id, $existingRunnerIDs)) {
                 $metrics->setWarning('Duplicated runner ' . $runner->_getFullName() . ' ' . $runner->bib_number);
-            } else {
-                $existingRunnerIDs[] = $runner->id;
+                continue;
             }
+            $existingRunnerIDs[] = $runner->id;
             $runners[] = $runner;
         }
         return $runners;
