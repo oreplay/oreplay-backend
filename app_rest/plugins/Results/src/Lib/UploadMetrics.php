@@ -9,6 +9,7 @@ use Cake\I18n\FrozenTime;
 use RestApi\Model\Entity\RestApiEntity;
 use Results\Lib\Consts\Color;
 use Results\Lib\Consts\UploadTypes;
+use Results\Lib\Import\RowsToInsert;
 use Results\Lib\Import\SplitsToReplace;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Course;
@@ -104,7 +105,8 @@ class UploadMetrics
     public function saveManyOrFail(
         ClassesTable $classes,
         ClassEntity $singleClassToSave,
-        SplitsToReplace $splitsToReplace
+        SplitsToReplace $splitsToReplace,
+        RowsToInsert $rowsToInsert
     ): void {
         $this->classCount++;
         if ($this->_keepSavedClasses) {
@@ -113,7 +115,7 @@ class UploadMetrics
         $this->endProcessing();
 
         $startTimeSaving = microtime(true);
-        $classes->saveManyWithRelations($singleClassToSave, $splitsToReplace);
+        $classes->saveManyWithRelations($singleClassToSave, $splitsToReplace, $rowsToInsert);
         $end = microtime(true);
         $this->_savingDuration += $end - $startTimeSaving;
         $this->startProcessing();

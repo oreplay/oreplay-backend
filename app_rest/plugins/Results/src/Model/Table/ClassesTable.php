@@ -9,6 +9,7 @@ use Cake\Datasource\EntityInterface;
 use Cake\Log\LogTrait;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
+use Results\Lib\Import\RowsToInsert;
 use Results\Lib\Import\SplitsToReplace;
 use Results\Model\Entity\ClassEntity;
 
@@ -103,10 +104,17 @@ class ClassesTable extends AppTable
         return $res;
     }
 
-    public function saveManyWithRelations(ClassEntity $singleClassToSave, SplitsToReplace $splitsToReplace)
-    {
+    public function saveManyWithRelations(
+        ClassEntity $singleClassToSave,
+        SplitsToReplace $splitsToReplace,
+        RowsToInsert $rowsToInsert
+    ) {
         return $this->getConnection()->transactional(
-            fn() => $this->_deleteReplacedSplitsAndSaveNeverRetrying($singleClassToSave, $splitsToReplace)
+            fn() => $this->_deleteReplacedSplitsAndSaveNeverRetrying(
+                $singleClassToSave,
+                $splitsToReplace,
+                $rowsToInsert
+            )
         );
     }
 
@@ -115,10 +123,35 @@ class ClassesTable extends AppTable
     // the second attempt would save the new splits next to the stored ones it was meant to replace.
     private function _deleteReplacedSplitsAndSaveNeverRetrying(
         ClassEntity $singleClassToSave,
-        SplitsToReplace $splitsToReplace
+        SplitsToReplace $splitsToReplace,
+        RowsToInsert $rowsToInsert
     ) {
         $splitsToReplace->deleteAndForget(SplitsTable::load());
-        return $this->saveManyOrFail([$singleClassToSave]);
+        $saved = $this->saveManyOrFail([$singleClassToSave], ['associated' => $this->_splitsSavedInBulk()]);
+        $rowsToInsert->insertAndForget(ControlsTable::load(), SplitsTable::load());
+        return $saved;
+    }
+
+    private function _splitsSavedInBulk(): array
+    {
+        return $this->_associationsExcept('Splits', $this, []);
+    }
+
+    private function _associationsExcept(string $skip, \Cake\ORM\Table $table, array $path): array
+    {
+        $found = [];
+        foreach ($table->associations() as $association) {
+            $name = $association->getName();
+            if ($name === $skip || in_array($name, $path, true)) {
+                continue;
+            }
+            $found[$name] = ['associated' => $this->_associationsExcept(
+                $skip,
+                $association->getTarget(),
+                array_merge($path, [$name])
+            )];
+        }
+        return $found;
     }
 
     public function saveOrFailRetrying(ClassEntity $class): EntityInterface

@@ -95,7 +95,12 @@ class UploadsController extends ApiController
                 $class = $this->_addCourseToClass($classObj, $class, $helper);
                 $class = $this->_addAllRunnersInClass($classObj, $class, $classHelper);
                 $class = $this->_addAllTeamsInClass($classObj, $class, $classHelper);
-                $metrics->saveManyOrFail($this->Classes, $class, $helper->getSplitsToReplace());
+                $metrics->saveManyOrFail(
+                    $this->Classes,
+                    $class,
+                    $helper->getSplitsToReplace(),
+                    $helper->getRowsToInsert()
+                );
                 $counter++;
             }
         }

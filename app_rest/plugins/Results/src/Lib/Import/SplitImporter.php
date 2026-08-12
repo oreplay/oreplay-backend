@@ -90,6 +90,8 @@ class SplitImporter
                 $this->_linkControl($splitToSave, $control);
             }
             $metrics->addOneSplit();
+            $splitToSave->linkToResult($resultToSave);
+            $this->_helper->getRowsToInsert()->addSplit($splitToSave);
             $resultToSave->addSplit($splitToSave);
         }
         return $resultToSave;
@@ -98,8 +100,8 @@ class SplitImporter
     private function _linkControl(Split $splitToSave, Control $control): void
     {
         if ($this->_helper->getExistingResults()->takeControlToWrite($control)) {
+            $this->_helper->getRowsToInsert()->addControl($control);
             $splitToSave->addControl($control);
-            return;
         }
         $splitToSave->control_id = $control->id;
     }

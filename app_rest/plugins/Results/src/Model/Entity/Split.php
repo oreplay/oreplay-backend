@@ -71,6 +71,12 @@ class Split extends AppEntity
     private bool $_compareWithoutDay = false;
     private ?SplitCompareReason $_reason = null;
 
+    public function linkToResult(ParticipantResultsEntity $result): self
+    {
+        $this->set($result->getSplitsForeignKey(), $result->getId());
+        return $this;
+    }
+
     public function addControl(Control $control): self
     {
         $this->_fields['control'] = $control;
