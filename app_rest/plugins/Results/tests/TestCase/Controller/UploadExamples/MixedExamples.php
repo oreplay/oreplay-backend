@@ -361,4 +361,29 @@ class MixedExamples
             ]
         ];
     }
+
+    public static function teamResultWithSplitsAtStations(array $stations): array
+    {
+        $data = self::importMixed();
+        $data['event']['stages'][0]['classes'][1]['teams'][0]['team_results'][0]['splits']
+            = self::_splitsAtStations($stations);
+        return $data;
+    }
+
+    private static function _splitsAtStations(array $stations): array
+    {
+        $splits = [];
+        foreach ($stations as $orderNumber => $station) {
+            $splits[] = [
+                'sicard' => '8186666',
+                'station' => (string)$station,
+                'points' => 0,
+                'reading_time' => '2024-01-28T10:15:0' . $orderNumber . '.000',
+                'reading_milli' => 1706433305000 + $orderNumber,
+                'time_seconds' => 600 + $orderNumber,
+                'order_number' => $orderNumber + 1,
+            ];
+        }
+        return $splits;
+    }
 }

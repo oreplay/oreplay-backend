@@ -779,6 +779,36 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         ], 'forcing reprocesses without duplicating anything');
     }
 
+    public function testAddNew_shouldReplaceTeamSplitsInsteadOfAccumulatingThem()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $data = ['oreplay_data_transfer' => MixedExamples::teamResultWithSplitsAtStations([31, 32])];
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertJsonResponseOK();
+
+        $this->assertEquals([31, 32], $this->_teamSplitStations());
+
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $data = ['oreplay_data_transfer' => MixedExamples::teamResultWithSplitsAtStations([31, 33])];
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertJsonResponseOK();
+
+        $this->assertEquals([31, 33], $this->_teamSplitStations(),
+            'the stored team splits are replaced, the old station 32 must be gone');
+    }
+
+    private function _teamSplitStations(): array
+    {
+        $stations = SplitsTable::load()->find()
+            ->where([
+                'Splits.team_result_id IS NOT' => null,
+                'Splits.stage_id' => StagesFixture::STAGE_FEDO_2,
+            ])
+            ->orderByAsc('Splits.order_number')
+            ->all()->extract('station')->toList();
+        return array_map('intval', $stations);
+    }
+
     private function _splitIdsInUploadedStage(): array
     {
         return SplitsTable::load()->find()

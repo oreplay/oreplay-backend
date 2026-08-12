@@ -44,6 +44,7 @@ class UploadsController extends ApiController
     {
         Cache::clearGroup(CacheGrp::UPLOAD_ENTITIES_GROUP, CacheGrp::UPLOAD);
         $this->runnersTable()->emptyStoredList();
+        $this->teamsTable()->emptyStoredList();
     }
 
     private function _getHost()
