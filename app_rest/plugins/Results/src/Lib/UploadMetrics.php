@@ -10,6 +10,7 @@ use RestApi\Model\Entity\RestApiEntity;
 use Results\Lib\Consts\Color;
 use Results\Lib\Consts\UploadTypes;
 use Results\Lib\Import\RowsToInsert;
+use Results\Lib\Import\SavedRowsCheck;
 use Results\Lib\Import\SplitsToReplace;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Course;
@@ -115,7 +116,15 @@ class UploadMetrics
         $this->endProcessing();
 
         $startTimeSaving = microtime(true);
-        $classes->saveManyWithRelations($singleClassToSave, $splitsToReplace, $rowsToInsert);
+        $missing = (new SavedRowsCheck())->rowsMissingAfter(
+            $singleClassToSave,
+            fn() => $classes->saveManyWithRelations($singleClassToSave, $splitsToReplace, $rowsToInsert)
+        );
+        if ($missing) {
+            $this->setWarning(
+                'Not saved in database: ' . $missing . ' rows of class ' . $singleClassToSave->short_name
+            );
+        }
         $end = microtime(true);
         $this->_savingDuration += $end - $startTimeSaving;
         $this->startProcessing();

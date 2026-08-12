@@ -6,6 +6,7 @@ namespace Results\Lib\Import;
 
 use App\Model\Table\AppTable;
 use Cake\Datasource\EntityInterface;
+use Cake\Http\Exception\InternalErrorException;
 use Cake\I18n\FrozenTime;
 use Results\Model\Entity\Control;
 use Results\Model\Entity\Split;
@@ -74,7 +75,13 @@ class RowsToInsert
             foreach ($chunk as $entity) {
                 $query->values($this->_withTimestampsTheOrmWouldHaveSet($entity, $columns));
             }
-            $written += $query->execute()->rowCount();
+            $rows = $query->execute()->rowCount();
+            if ($rows !== count($chunk)) {
+                throw new InternalErrorException(
+                    'Bulk insert into ' . $table->getAlias() . ' wrote ' . $rows . ' of ' . count($chunk) . ' rows'
+                );
+            }
+            $written += $rows;
         }
         return $written;
     }
