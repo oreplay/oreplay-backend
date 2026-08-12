@@ -127,12 +127,12 @@ class ClassesTable extends AppTable
         RowsToInsert $rowsToInsert
     ) {
         $splitsToReplace->deleteAndForget(SplitsTable::load());
-        $saved = $this->saveManyOrFail([$singleClassToSave], ['associated' => $this->_splitsSavedInBulk()]);
+        $saved = $this->saveManyOrFail([$singleClassToSave], ['associated' => $this->_associationsSavedByOrm()]);
         $rowsToInsert->insertAndForget(ControlsTable::load(), SplitsTable::load());
         return $saved;
     }
 
-    private function _splitsSavedInBulk(): array
+    private function _associationsSavedByOrm(): array
     {
         return $this->_associationsExcept('Splits', $this, []);
     }

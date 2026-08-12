@@ -36,14 +36,14 @@ class RowsToInsert
 
     public function insertAndForget(AppTable $controls, AppTable $splits): int
     {
-        $written = $this->_insertInto($controls, array_values($this->_controls));
-        $written += $this->_insertInto($splits, $this->_splits);
+        $written = $this->_bulkInsertWithoutOrmLifecycle($controls, array_values($this->_controls));
+        $written += $this->_bulkInsertWithoutOrmLifecycle($splits, $this->_splits);
         $this->_controls = [];
         $this->_splits = [];
         return $written;
     }
 
-    private function _timestamped(EntityInterface $entity, array $columns): array
+    private function _withTimestampsTheOrmWouldHaveSet(EntityInterface $entity, array $columns): array
     {
         $row = $entity->extract($columns);
         foreach (['created', 'modified'] as $stamp) {
@@ -57,7 +57,7 @@ class RowsToInsert
     /**
      * @param EntityInterface[] $entities
      */
-    private function _insertInto(AppTable $table, array $entities): int
+    private function _bulkInsertWithoutOrmLifecycle(AppTable $table, array $entities): int
     {
         if (!$entities) {
             return 0;
@@ -72,7 +72,7 @@ class RowsToInsert
         foreach (array_chunk($entities, self::ROWS_PER_STATEMENT) as $chunk) {
             $query = $table->insertQuery()->insert($columns, $types);
             foreach ($chunk as $entity) {
-                $query->values($this->_timestamped($entity, $columns));
+                $query->values($this->_withTimestampsTheOrmWouldHaveSet($entity, $columns));
             }
             $written += $query->execute()->rowCount();
         }
