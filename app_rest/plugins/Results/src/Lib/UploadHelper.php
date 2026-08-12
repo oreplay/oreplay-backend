@@ -13,8 +13,10 @@ use Results\Model\Entity\Team;
 use Results\Model\Entity\TeamResult;
 use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\RunnerResultsTable;
+use Results\Model\Table\RunnersTable;
 use Results\Model\Table\StagesTable;
 use Results\Model\Table\TeamResultsTable;
+use Results\Model\Table\TeamsTable;
 
 class UploadHelper
 {
@@ -44,6 +46,13 @@ class UploadHelper
         $this->_metrics = $metrics;
         $this->_existingResults = new ExistingResultsIndex();
         $this->_splitsToReplace = new SplitsToReplace();
+        $this->_forgetParticipantsFromPreviousUploads();
+    }
+
+    private function _forgetParticipantsFromPreviousUploads(): void
+    {
+        RunnersTable::load()->emptyStoredList();
+        TeamsTable::load()->emptyStoredList();
     }
 
     private function _loadFromRawUploads(string $uploadLogId): array
