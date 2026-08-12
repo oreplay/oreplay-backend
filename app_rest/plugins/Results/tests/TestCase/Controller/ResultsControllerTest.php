@@ -265,7 +265,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'time_adjusted' => null,
             'time_penalty' => null,
             'time_bonus' => null,
-            'points_behind' => 0,
+            'points_behind' => null,
             'points_adjusted' => null,
             'points_penalty' => null,
             'points_bonus' => null,

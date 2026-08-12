@@ -40,6 +40,7 @@ class RunnerResultsFixture extends RestApiFixture
             'time_penalty' => null,
             'time_bonus' => null,
             'points_final' => null,
+            'points_behind' => null,
             'points_adjusted' => null,
             'points_penalty' => null,
             'points_bonus' => null,

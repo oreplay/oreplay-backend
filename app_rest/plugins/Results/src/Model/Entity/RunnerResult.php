@@ -73,6 +73,7 @@ class RunnerResult extends AppEntity implements ParticipantResultsEntity
         'stage_id',
         'runner_id',
         'class_id',
+        'course_id',
         'stage_order',
         'runner_uuid',
         'class_uuid',
