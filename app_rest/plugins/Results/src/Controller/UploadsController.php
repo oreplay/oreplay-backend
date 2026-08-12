@@ -204,6 +204,9 @@ class UploadsController extends ApiController
         $metrics = $helper->getMetrics();
         $teams = [];
         foreach ($teamArray as $teamData) {
+            // warning: unlike _importEachRunner() this has no duplicate detection, so two teams
+            // sharing a bib (see Team::getMatchedRunner) are matched as one team and appended twice.
+            // No upload example carries duplicated team bibs, so nothing exercises it.
             $teams[] = $metrics->measure(
                 UploadMetrics::PARTICIPANTS_IN_LOOP,
                 fn() => $importer->import($teamData, $class)
