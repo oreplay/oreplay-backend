@@ -12,6 +12,7 @@ use Cake\ORM\Query;
 use Results\Lib\Import\RowsToInsert;
 use Results\Lib\Import\SplitsToReplace;
 use Results\Model\Entity\ClassEntity;
+use Results\Model\Entity\Control;
 
 /**
  * @property RunnersTable $Runners
@@ -68,16 +69,67 @@ class ClassesTable extends AppTable
         return $res;
     }
 
-    // this is what GET /events/ID/stages/ID/classes returns, and the splits it contains are what the
-    // frontend shows as radio controls. It is the read path courses phase 3 replaces with
-    // controls.is_intermediate and course_controls; keep it unchanged until that lands.
+    // this is what GET /events/ID/stages/ID/classes returns, and the radios it contains are what the
+    // frontend shows as radio controls
+    public function getAllInStage(string $eventId, string $stageId)
+    {
+        return $this->find()
+            ->where(['event_id' => $eventId, 'stage_id' => $stageId])
+            ->orderBy(['CAST(oe_key AS UNSIGNED)' => 'ASC', 'short_name' => 'ASC'])
+            ->all();
+    }
+
     public function getByStageWithRadios(string $eventId, string $stageId)
     {
+        $classes = $this->getAllInStage($eventId, $stageId);
+        $stationsByCourse = CourseControlsTable::load()->stationsByCourseInStage($stageId);
+        $radios = ControlsTable::load()->intermediateInStage($stageId);
+        $withoutAStoredCourse = [];
+        /** @var ClassEntity $class */
+        foreach ($classes as $class) {
+            $courseStations = $stationsByCourse[$class->course_id ?? ''] ?? [];
+            if ($courseStations) {
+                $class->splits = $this->_radiosInCourseOrder($courseStations, $radios);
+            } else {
+                $withoutAStoredCourse[] = $class;
+            }
+        }
+        $this->_addRadiosFromPunches($withoutAStoredCourse, $eventId, $stageId);
+        return $classes;
+    }
+
+    /**
+     * @param string[] $courseStations
+     * @param Control[] $radios keyed by station
+     * @return Control[]
+     */
+    private function _radiosInCourseOrder(array $courseStations, array $radios): array
+    {
+        $inOrder = [];
+        foreach ($courseStations as $station) {
+            if (isset($radios[$station])) {
+                $inOrder[] = $radios[$station];
+            }
+        }
+        return $inOrder;
+    }
+
+    /**
+     * Stations are only discovered here once somebody punches them, and the download that replaces
+     * the punch hides them again, so a re-synced stage reports no radios at all. Kept for the
+     * classes whose course has no stored control list yet: score and raid stages, which have no
+     * course order to report, and anything uploaded before course_controls existed.
+     *
+     * @param ClassEntity[] $classes
+     */
+    private function _addRadiosFromPunches(array $classes, string $eventId, string $stageId): void
+    {
+        if (!$classes) {
+            return;
+        }
         $stationsInClass = $this->Splits->getStationsFromLeaderInStage($eventId, $stageId);
-        $query = $this->find()->where([
-            'event_id' => $eventId,
-            'stage_id' => $stageId,
-        ])
+        $punched = $this->find()
+            ->where(['id IN' => array_map(fn(ClassEntity $class) => $class->id, $classes)])
             ->contain(SplitsTable::name(), function (Query $q) {
                 $select = [
                     'class_id',
@@ -85,32 +137,19 @@ class ClassesTable extends AppTable
                     'reading_time'  => $q->func()->min(SplitsTable::field('reading_time'), ['string']),
                     'id' => $q->func()->max(SplitsTable::field('id'), ['string']),
                 ];
-                // a station only appears here once a runner has punched it, because is_intermediate
-                // is set on the split by a Radiocontrols upload, so a class shows no radios until
-                // someone reaches one. course_controls.is_radio has to be observed the same way:
-                // no production payload carries the radio stations. In the long run we should
-                // actually process the radios from the real upload, but keeping in mind some radios
-                // could come directly to the server via http direct conection (instead of being
-                // uploaded as xml/json via the uploadsController or Uploadsv2)
-                // ---
-                // class_id
-                // order_number
-                // station
-                // is_intermediate
                 return $q
                     ->select($select)
                     ->where([SplitsTable::field('is_intermediate') => true])
                     ->groupBy(['station', 'class_id'])
                     ->orderBy(['station' => 'DESC'], true);
             })
-            ->orderBy(['CAST(oe_key AS UNSIGNED)' => 'ASC', 'short_name' => 'ASC']);
-        $res = $query->all();
-        /** @var ClassEntity $r */
-        foreach ($res as $r) {
-            $courseStations = $stationsInClass[$r->id] ?? [];
-            $r->setSplitsAsSimpleArray($courseStations);
+            ->all()
+            ->indexBy('id')
+            ->toArray();
+        foreach ($classes as $class) {
+            $class->splits = $punched[$class->id]->splits ?? [];
+            $class->setSplitsAsSimpleArray($stationsInClass[$class->id] ?? []);
         }
-        return $res;
     }
 
     public function saveManyWithRelations(

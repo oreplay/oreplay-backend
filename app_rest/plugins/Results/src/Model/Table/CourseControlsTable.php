@@ -51,6 +51,27 @@ class CourseControlsTable extends AppTable
         return count($toSave);
     }
 
+    /**
+     * @return array<string, string[]> station numbers in course order, keyed by course id
+     */
+    public function stationsByCourseInStage(string $stageId): array
+    {
+        $rows = $this->find()
+            ->select(['course_id', 'station'])
+            ->where([
+                CourseControlsTable::field('stage_id') => $stageId,
+                CourseControlsTable::field('deleted') . ' IS' => null,
+            ])
+            ->orderByAsc(CourseControlsTable::field('order_number'))
+            ->all();
+        $byCourse = [];
+        /** @var CourseControl $row */
+        foreach ($rows as $row) {
+            $byCourse[$row->course_id][] = (string)$row->station;
+        }
+        return $byCourse;
+    }
+
     public function findByCourse(string $courseId): array
     {
         /** @var CourseControl[] $res */

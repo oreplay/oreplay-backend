@@ -13,7 +13,7 @@ class ResultsByClassController extends ResultsController
         $eventId = $this->request->getParam('eventID');
         $stageId = $this->request->getParam('stageID');
         $filters = $this->request->getQueryParams();
-        $classes = $this->Runners->Classes->getByStageWithRadios($eventId, $stageId);
+        $classes = $this->Runners->Classes->getAllInStage($eventId, $stageId);
         $toRet = [];
         /** @var ClassEntity $class */
         foreach ($classes as $class) {

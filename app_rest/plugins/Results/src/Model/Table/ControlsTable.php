@@ -65,6 +65,27 @@ class ControlsTable extends AppTable
     }
 
     /**
+     * @return Control[] keyed by station, holding only the fields the radio list exposes
+     */
+    public function intermediateInStage(string $stageId): array
+    {
+        $controls = $this->find()
+            ->select(['id', 'station'])
+            ->where([
+                ControlsTable::field('stage_id') => $stageId,
+                ControlsTable::field('is_intermediate') => true,
+                ControlsTable::field('deleted') . ' IS' => null,
+            ])
+            ->all();
+        $byStation = [];
+        /** @var Control $control */
+        foreach ($controls as $control) {
+            $byStation[(string)$control->station] = $control;
+        }
+        return $byStation;
+    }
+
+    /**
      * Controls already stored are never rewritten by the upload, so the flag set on the entity
      * would be lost for every station but the ones created by this upload.
      */

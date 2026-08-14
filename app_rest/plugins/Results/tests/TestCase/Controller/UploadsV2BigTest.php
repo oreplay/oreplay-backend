@@ -80,6 +80,8 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
     private const EVENT_STATIONS = 31;
     private const FIRST_BATCH_INTERMEDIATE_STATIONS = ['40', '48', '49', '55', '57'];
     // the two radio batches together, and only those: a downloaded card is not evidence of a radio
+    // C1 order filtered to the flagged stations: 31 and 47 lead, then 41, 40, and the finish
+    private const RADIOS_SHOWN_ON_COURSE_C1 = ['31', '47', '41', '40', '200'];
     private const EVERY_INTERMEDIATE_STATION = ['31', '40', '41', '47', '48', '49', '55', '57', '200'];
 
     private const SPLITS_STORED_BEFORE_RE_SYNC = 280;
@@ -272,6 +274,8 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
             'the re-sync replaces every radio punch of the runners still out');
         $this->assertEquals(self::EVERY_INTERMEDIATE_STATION, $this->_intermediateStations(),
             'a station keeps its radio flag after the download replaced the punch that revealed it');
+        $this->assertEquals(self::RADIOS_SHOWN_ON_COURSE_C1, $this->_radiosShownForClass('Sen M'),
+            'the classes endpoint reports the radios in course order once every radio punch is gone');
         $this->assertEquals([
             StatusCode::OK => 176,
             StatusCode::DNF => 13,
@@ -457,5 +461,16 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
     private function _splitsWithoutReadingTime(RunnerResult $result): array
     {
         return array_values(array_filter($result->splits, fn($split) => $split->reading_time === null));
+    }
+
+    private function _radiosShownForClass(string $shortName): array
+    {
+        $classes = ClassesTable::load()->getByStageWithRadios(Event::FIRST_EVENT, $this->_stageId);
+        foreach ($classes as $class) {
+            if ($class->short_name === $shortName) {
+                return array_map(fn($radio) => (string)$radio->station, $class->splits);
+            }
+        }
+        return [];
     }
 }

@@ -12,9 +12,13 @@ use Results\Model\Entity\Event;
 use Results\Model\Entity\Split;
 use Results\Model\Entity\Stage;
 use Results\Model\Table\ClassesTable;
+use Results\Model\Table\ControlsTable;
+use Results\Model\Table\CourseControlsTable;
+use Results\Model\Table\CoursesTable;
 use Results\Model\Table\SplitsTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ControlsFixture;
+use Results\Test\Fixture\CoursesFixture;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\SplitsFixture;
 use Results\Test\Fixture\StagesFixture;
@@ -27,6 +31,7 @@ class ClassesTableTest extends TestCase
         StagesFixture::LOAD,
         ControlsFixture::LOAD,
         SplitsFixture::LOAD,
+        CoursesFixture::LOAD,
     ];
     /** @var ClassesTable Runners */
     private $Classes;
@@ -209,5 +214,26 @@ class ClassesTableTest extends TestCase
         foreach ($times as $i => $time) {
             $this->assertEquals($time, $res[1]['splits'][$i]->reading_time, $i . '');
         }
+    }
+
+    public function testGetByStageWithRadios_shouldReadTheCourseInsteadOfThePunches()
+    {
+        $course = CoursesTable::load()->get(CoursesFixture::COURSE_1);
+        CourseControlsTable::load()->replaceForCourse($course, ['82', '31', '81']);
+        ControlsTable::load()->markIntermediateStations(Stage::FIRST_STAGE, ['31', '81']);
+        $this->Classes->updateAll(['course_id' => $course->id], ['id' => ClassEntity::ME]);
+
+        $res = $this->Classes
+            ->getByStageWithRadios(Event::FIRST_EVENT, Stage::FIRST_STAGE)
+            ->toArray();
+
+        $this->assertEquals('ME', $res[1]['short_name']);
+        $expected = [
+            ['id' => ControlsFixture::CONTROL_31, 'station' => '31'],
+            ['id' => ControlsFixture::CONTROL_81, 'station' => '81'],
+        ];
+        $actual = array_map(fn($radio) => $radio->toArray(), $res[1]['splits']);
+        $this->assertEquals($expected, $actual,
+            'station 82 is in the course but carries no radio, and 81 has a radio but no punch');
     }
 }
