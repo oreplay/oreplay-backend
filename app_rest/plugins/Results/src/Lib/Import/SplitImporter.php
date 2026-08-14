@@ -88,6 +88,9 @@ class SplitImporter
             if ($split['station'] ?? null) {
                 $control = $this->_controls->createControlIfNotExists($context, $existingResults, $split);
                 $this->_linkControl($splitToSave, $control);
+                if ($isIntermediate) {
+                    $this->_helper->getIntermediateStations()->add((string)$split['station']);
+                }
             }
             $metrics->addOneSplit();
             $splitToSave->linkToResult($resultToSave);

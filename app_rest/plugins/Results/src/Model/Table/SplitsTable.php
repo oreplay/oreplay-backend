@@ -118,7 +118,7 @@ class SplitsTable extends AppTable
             ->where([
                 SplitsTable::field('event_id') => $eventId,
                 SplitsTable::field('stage_id') => $stageId,
-                'is_intermediate' => 0,
+                SplitsTable::field('is_intermediate') => 0,
                 ])
             ->matching(RunnerResultsTable::name(), function ($q) use ($eventId, $stageId) {
                 return $q->where([

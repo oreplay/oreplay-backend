@@ -9,11 +9,13 @@ use Cake\I18n\FrozenTime;
 use RadioRelay\Lib\Cpi\Consts\PunchType;
 use RestApi\TestSuite\ApiCommonErrorsTest;
 use Results\Model\Entity\ClassEntity;
+use Results\Model\Entity\ControlType;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Split;
 use Results\Model\Entity\Stage;
+use Results\Model\Table\ControlsTable;
 use Results\Model\Table\SplitsTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ControlTypesFixture;
@@ -86,6 +88,41 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(ClassEntity::ME, $last->class_id);
         $this->assertEquals(Runner::FIRST_RUNNER, $last->runner_id);
         $this->assertEquals(RunnerResult::FIRST_RES, $last->runner_result_id);
+        $this->assertEquals(['31'], $this->_intermediateStations(),
+            'a punch arriving straight from the radio hardware flags its station too');
+    }
+
+    public function testAddNew_shouldFlagAStationStoredBeforeTheRadioEverPunchedIt()
+    {
+        $controls = ControlsTable::load();
+        $storedByAnEarlierUpload = $controls->fillNewWithStage(
+            ['station' => '31'],
+            Event::FIRST_EVENT,
+            Stage::FIRST_STAGE
+        );
+        $storedByAnEarlierUpload->control_type_id = ControlType::NORMAL;
+        $storedByAnEarlierUpload->is_intermediate = false;
+        $controls->saveOrFail($storedByAnEarlierUpload);
+
+        $data = [
+            'order' => 'ProcessPunches',
+            'data' => [Stage::FIRST_STAGE, Event::FIRST_EVENT . TokensFixture::FIRST_TOKEN, '+01:00'],
+            'punches' => [[
+                'date' => '2025-03-08',
+                'raw' => '02d30d80160f85d41b01013c1e7400019db903',
+                'reading' => '2025-03-08 05:58:26',
+                'sicard' => '2009933',
+                'station' => '31',
+                'time' => '12:50',
+                'battery' => '9',
+                'type' => PunchType::SI_CARD,
+            ]],
+        ];
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertJsonResponseOK();
+
+        $this->assertTrue($controls->get($storedByAnEarlierUpload->id)->is_intermediate,
+            'the row an earlier upload stored is the one the read path will find, so it must be flagged');
     }
 
     public function testAddNew_shouldStoreUnknownSiCard()
@@ -207,4 +244,12 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
 
         $this->assertResponseError();
     }
+
+    private function _intermediateStations(): array
+    {
+        return ControlsTable::load()->find()
+            ->where(['stage_id' => Stage::FIRST_STAGE, 'is_intermediate' => true])
+            ->all()->extract('station')->toList();
+    }
+
 }

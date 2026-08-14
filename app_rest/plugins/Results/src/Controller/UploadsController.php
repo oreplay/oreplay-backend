@@ -21,6 +21,7 @@ use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Team;
 use Results\Model\Table\ClassesTable;
+use Results\Model\Table\ControlsTable;
 use Results\Model\Table\CourseControlsTable;
 use Results\Model\Table\CoursesTable;
 use Results\Model\Table\RawUploadsTable;
@@ -109,6 +110,8 @@ class UploadsController extends ApiController
             }
         }
 
+        $this->_markIntermediateStations($helper);
+
         $log = UploadLogsTable::load()->saveUploadLog($helper);
         RawUploadsTable::load()->saveFile($log, $helper);
 
@@ -145,6 +148,14 @@ class UploadsController extends ApiController
     {
         $importer = new CourseImporter(CourseControlsTable::load(), CoursesTable::load(), $helper);
         $importer->importInto($class);
+    }
+
+    private function _markIntermediateStations(UploadHelper $helper): void
+    {
+        ControlsTable::load()->markIntermediateStations(
+            $helper->getStageId(),
+            $helper->getIntermediateStations()->toList()
+        );
     }
 
     private function _addAllRunnersInClass(array $classArray, ClassEntity $class, UploadHelper $helper): ClassEntity

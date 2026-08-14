@@ -99,7 +99,7 @@ class ClassesTable extends AppTable
                 // is_intermediate
                 return $q
                     ->select($select)
-                    ->where(['is_intermediate' => true])
+                    ->where([SplitsTable::field('is_intermediate') => true])
                     ->groupBy(['station', 'class_id'])
                     ->orderBy(['station' => 'DESC'], true);
             })

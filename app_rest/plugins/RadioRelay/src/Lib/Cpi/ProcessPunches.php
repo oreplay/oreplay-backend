@@ -39,10 +39,15 @@ class ProcessPunches
     public function process(): array
     {
         $punchAmount = 0;
+        $stations = [];
         foreach ($this->data->getPunches() as $punch) {
             $this->_processPunch($punch);
+            if ($punch['station'] ?? null) {
+                $stations[] = (string)$punch['station'];
+            }
             $punchAmount++;
         }
+        $this->Splits->Controls->markIntermediateStations($this->data->getStageId(), array_unique($stations));
         $lastId = '1'; // must be numeric
         return ['OK', '' . $punchAmount, $lastId];
     }

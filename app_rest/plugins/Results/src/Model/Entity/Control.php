@@ -6,6 +6,7 @@ namespace Results\Model\Entity;
 
 /**
  * @property mixed $station
+ * @property bool $is_intermediate
  * @property string $control_type_id
  * @property ControlType $control_type
  */
@@ -23,6 +24,7 @@ class Control extends AppEntity
     protected array $_hidden = [
         'event_id',
         'stage_id',
+        'is_intermediate',
         'control_name',
         'coord_system',
         'datum',

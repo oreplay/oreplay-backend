@@ -78,6 +78,9 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
     private const EVENT_RUNNERS = 194;
     private const EVENT_SPLITS = 3347;
     private const EVENT_STATIONS = 31;
+    private const FIRST_BATCH_INTERMEDIATE_STATIONS = ['40', '48', '49', '55', '57'];
+    // the two radio batches together, and only those: a downloaded card is not evidence of a radio
+    private const EVERY_INTERMEDIATE_STATION = ['31', '40', '41', '47', '48', '49', '55', '57', '200'];
 
     private const SPLITS_STORED_BEFORE_RE_SYNC = 280;
 
@@ -148,6 +151,8 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
             'controls' => 5,
         ], 'radios while they run');
         $this->assertEquals(15, $this->_intermediateSplitAmount(), 'every radio punch is intermediate');
+        $this->assertEquals(self::FIRST_BATCH_INTERMEDIATE_STATIONS, $this->_intermediateStations(),
+            'the stations the radio punches came from are flagged as carrying a radio unit');
 
         $leader = $this->_resultOfBib(self::LEADER_BIB);
         $this->assertEquals(UploadTypes::INTERMEDIATES, $leader->upload_type);
@@ -265,6 +270,8 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
         ], 'whole event re-sync');
         $this->assertEquals(0, $this->_intermediateSplitAmount(),
             'the re-sync replaces every radio punch of the runners still out');
+        $this->assertEquals(self::EVERY_INTERMEDIATE_STATION, $this->_intermediateStations(),
+            'a station keeps its radio flag after the download replaced the punch that revealed it');
         $this->assertEquals([
             StatusCode::OK => 176,
             StatusCode::DNF => 13,
@@ -396,6 +403,16 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
             ->where(['stage_id' => $this->_stageId, 'is_intermediate' => true])
             ->all()->count();
     }
+
+    private function _intermediateStations(): array
+    {
+        $stations = ControlsTable::load()->find()
+            ->where(['stage_id' => $this->_stageId, 'is_intermediate' => true])
+            ->all()->extract('station')->toList();
+        sort($stations);
+        return $stations;
+    }
+
 
     private function _resultAmountByStatus(): array
     {

@@ -7,7 +7,6 @@ namespace Results\Model\Entity;
 /**
  * @property mixed $station
  * @property mixed $order_number
- * @property mixed $is_radio
  * @property string $course_id
  * @property string $control_id
  */

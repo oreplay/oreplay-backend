@@ -39,6 +39,7 @@ class ControlsTable extends AppTable
             $existingResults->storeControlByStation($entity);
         }
         $entity->setAsNew();
+        $entity->is_intermediate = $this->_stillIntermediateAfter($entity, $data);
         if ($data['station'] === 1 || $data['station'] === '1') {
             $entity->setTypeClearIfNotDefined();
         } else if ($data['station'] > 19 && $data['station'] < 30) {
@@ -49,11 +50,33 @@ class ControlsTable extends AppTable
         return $entity;
     }
 
+    // a station that has ever been read by a radio keeps the flag: the later download that replaces
+    // the punch is not evidence that the radio was removed
+    private function _stillIntermediateAfter(Control $entity, array $data): bool
+    {
+        return ($entity->is_intermediate ?? false) || (bool)($data['is_intermediate'] ?? false);
+    }
+
     public function fillNewWithStage(array $data, string $eventId, string $stageId): Control
     {
         /** @var Control $res */
         $res = parent::fillNewWithStage($data, $eventId, $stageId);
         return $res;
+    }
+
+    /**
+     * Controls already stored are never rewritten by the upload, so the flag set on the entity
+     * would be lost for every station but the ones created by this upload.
+     */
+    public function markIntermediateStations(string $stageId, array $stations): int
+    {
+        if (!$stations) {
+            return 0;
+        }
+        return $this->updateAll(
+            ['is_intermediate' => true],
+            ['stage_id' => $stageId, 'station IN' => $stations, 'is_intermediate' => false]
+        );
     }
 
     public function getAllControls(UploadContext $context): ResultSetInterface

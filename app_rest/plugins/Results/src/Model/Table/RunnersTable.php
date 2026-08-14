@@ -199,7 +199,7 @@ class RunnersTable extends AppTable
                     $order = [
                         //'order_number' => 'DESC', // order number will change from splits or radios export
                         'reading_time' => 'DESC', // 1st punch time (latest first, null last)
-                        'is_intermediate' => 'ASC', // 2nd no radio before radio
+                        SplitsTable::field('is_intermediate') => 'ASC', // 2nd no radio before radio
                         SplitsTable::field('created') => 'DESC' // 4th db created
                     ];
                     if ($filters['forceSameDay'] ?? null) {

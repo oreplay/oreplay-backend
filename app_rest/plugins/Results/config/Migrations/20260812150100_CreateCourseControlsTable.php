@@ -46,10 +46,6 @@ class CreateCourseControlsTable extends BaseMigration
                 'limit' => 36,
                 'null' => true,
             ])
-            ->addColumn('is_radio', 'boolean', [
-                'default' => false,
-                'null' => false,
-            ])
             ->addColumn('kilometer', 'decimal', [
                 'precision' => 6,
                 'scale' => 2,

@@ -6,6 +6,7 @@ namespace Results\Lib;
 
 use Cake\Http\Exception\InternalErrorException;
 use RestApi\Lib\Exception\DetailedException;
+use Results\Lib\Import\IntermediateStations;
 use Results\Lib\Import\RowsToInsert;
 use Results\Lib\Import\SplitsToReplace;
 use Results\Model\Entity\Runner;
@@ -31,6 +32,7 @@ class UploadHelper
     private UploadMetrics $_metrics;
     private SplitsToReplace $_splitsToReplace;
     private RowsToInsert $_rowsToInsert;
+    private IntermediateStations $_intermediateStations;
     private bool $_reprocessAll = false;
 
     public function __construct(array $data, string $eventID, UploadMetrics $metrics)
@@ -51,6 +53,7 @@ class UploadHelper
         $this->_existingResults = new ExistingResultsIndex();
         $this->_splitsToReplace = new SplitsToReplace();
         $this->_rowsToInsert = new RowsToInsert();
+        $this->_intermediateStations = new IntermediateStations();
         $this->_forgetParticipantsFromPreviousUploads();
     }
 
@@ -99,6 +102,11 @@ class UploadHelper
     public function getRowsToInsert(): RowsToInsert
     {
         return $this->_rowsToInsert;
+    }
+
+    public function getIntermediateStations(): IntermediateStations
+    {
+        return $this->_intermediateStations;
     }
 
     public function getContext(): UploadContext
