@@ -49,4 +49,5 @@ build/
 #more
 .env.production
 /app_rest/.phpunit.cache/code-coverage/
+/app_rest/**/schema-dump-test.lock
 /a
