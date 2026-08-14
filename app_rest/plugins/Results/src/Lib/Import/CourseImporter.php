@@ -1,0 +1,126 @@
+<?php
+
+declare(strict_types = 1);
+
+namespace Results\Lib\Import;
+
+use Results\Lib\Consts\StatusCode;
+use Results\Lib\UploadHelper;
+use Results\Model\Entity\ClassEntity;
+use Results\Model\Entity\Course;
+use Results\Model\Entity\RunnerResult;
+use Results\Model\Entity\StageType;
+use Results\Model\Table\CourseControlsTable;
+use Results\Model\Table\CoursesTable;
+
+class CourseImporter
+{
+    private const UNORDERED_STAGE_TYPES = [StageType::SCORE, StageType::RAID];
+
+    private CourseControlsTable $_courseControls;
+    private CoursesTable $_courses;
+    private UploadHelper $_helper;
+
+    public function __construct(CourseControlsTable $courseControls, CoursesTable $courses, UploadHelper $helper)
+    {
+        $this->_courseControls = $courseControls;
+        $this->_courses = $courses;
+        $this->_helper = $helper;
+    }
+
+    public function importInto(ClassEntity $class): void
+    {
+        $course = $class->course ?? null;
+        if (!($course instanceof Course) || !$course->id) {
+            return;
+        }
+        if ($this->_isUnorderedStage()) {
+            $this->_markAsUnordered($course);
+            return;
+        }
+        if (!$this->_carriesTheWholeCourse()) {
+            return;
+        }
+        $stations = $this->_stationsMostRunnersPunched($class);
+        if (!$stations || $course->isSameUploadHash($stations)) {
+            return;
+        }
+        $course->setHash($stations);
+        $this->_courseControls->replaceForCourse($course, $stations);
+        $this->_courses->saveOrFail($course);
+    }
+
+    private function _isUnorderedStage(): bool
+    {
+        return in_array($this->_helper->getStageTypeId(), self::UNORDERED_STAGE_TYPES, true);
+    }
+
+    private function _markAsUnordered(Course $course): void
+    {
+        // a new course has the field unset rather than false, so only an already stored false skips
+        if ($course->is_ordered === false) {
+            return;
+        }
+        $course->is_ordered = false;
+        $this->_courses->saveOrFail($course);
+    }
+
+    // the splits of a Radiocontrols upload are only the stations with a radio, and a start list has
+    // no splits at all, so neither can define the order of the whole course
+    private function _carriesTheWholeCourse(): bool
+    {
+        return !$this->_helper->getChecker()->isIntermediates()
+            && !$this->_helper->getChecker()->isStartLists();
+    }
+
+    /**
+     * @return string[] station numbers in course order
+     */
+    private function _stationsMostRunnersPunched(ClassEntity $class): array
+    {
+        $votesBySequence = [];
+        foreach ($this->_finishedResultsOf($class) as $result) {
+            $sequence = $this->_stationsOf($result);
+            if (!$sequence) {
+                continue;
+            }
+            $key = implode('-', $sequence);
+            $votesBySequence[$key] = ($votesBySequence[$key] ?? 0) + 1;
+        }
+        if (!$votesBySequence) {
+            return [];
+        }
+        arsort($votesBySequence);
+        return explode('-', (string)array_key_first($votesBySequence));
+    }
+
+    /**
+     * @return RunnerResult[]
+     */
+    private function _finishedResultsOf(ClassEntity $class): array
+    {
+        $results = [];
+        foreach ($class->runners ?? [] as $runner) {
+            foreach ($runner->runner_results ?? [] as $result) {
+                if ($result->status_code === StatusCode::OK) {
+                    $results[] = $result;
+                }
+            }
+        }
+        return $results;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function _stationsOf(RunnerResult $result): array
+    {
+        $stations = [];
+        foreach ($result->getSplits() as $split) {
+            if ($split->station) {
+                $stations[] = (string)$split->station;
+            }
+        }
+        return $stations;
+    }
+}

@@ -27,6 +27,7 @@ use Results\Model\Table\ClassesControlsTable;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\ClubsTable;
 use Results\Model\Table\ControlsTable;
+use Results\Model\Table\CourseControlsTable;
 use Results\Model\Table\CoursesTable;
 use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\RunnersTable;
@@ -777,6 +778,28 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             'splits' => SplitsTable::load()->find()->all()->count(),
             'controls' => ControlsTable::load()->find()->all()->count(),
         ], 'forcing reprocesses without duplicating anything');
+    }
+
+    public function testAddNew_shouldNotInventAnOrderForAnUnorderedStage()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        StagesTable::load()->updateAll(
+            ['stage_type_id' => StageType::RAID],
+            ['id' => StagesFixture::STAGE_FEDO_2]);
+        ClassesTable::load()->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertJsonResponseOK();
+
+        $course = CoursesTable::load()->find()
+            ->where(['Courses.stage_id' => StagesFixture::STAGE_FEDO_2])->firstOrFail();
+        $this->assertFalse((bool)$course->is_ordered, 'a raid course has no order between its controls');
+        $this->assertEquals(0, CourseControlsTable::load()->find()
+            ->where(['CourseControls.stage_id' => StagesFixture::STAGE_FEDO_2])->all()->count(),
+            'no control sequence is derived when the controls have no order');
     }
 
     public function testAddNew_shouldReplaceTeamSplitsInsteadOfAccumulatingThem()

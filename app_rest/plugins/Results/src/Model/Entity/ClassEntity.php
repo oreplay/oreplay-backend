@@ -19,6 +19,8 @@ use Results\Lib\UploadHelper;
  */
 class ClassEntity extends AppEntity
 {
+    use UploadHashTrait;
+
     public const ME = 'd8a87faf-68a4-487b-8f28-6e0ead6c1a57';
     public const FE = 'd8a87faf-68a4-487b-8f28-6e0ead6c1a56';
 
@@ -53,20 +55,6 @@ class ClassEntity extends AppEntity
     public function isShortNameIn(array $classNames): bool
     {
         return in_array($this->short_name, $classNames, true);
-    }
-
-    public function isSameUploadHash(array $compareArray): bool
-    {
-        $uploadHash = UploadHelper::md5Encode($compareArray);
-        $existingHash = $this->_fields['upload_hash'] ?? 'hash_class_does_not_exist';
-        return $existingHash == $uploadHash;
-    }
-
-    public function setHash(array $resultData)
-    {
-        $hash = UploadHelper::md5Encode($resultData);
-        $this->_fields['upload_hash'] = $hash;
-        $this->setDirty('upload_hash');
     }
 
     public function setSplitsAsSimpleArray(array $courseStations)

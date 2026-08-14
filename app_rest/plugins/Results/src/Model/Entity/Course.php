@@ -17,6 +17,8 @@ namespace Results\Model\Entity;
  */
 class Course extends AppEntity
 {
+    use UploadHashTrait;
+
     protected array $_accessible = [
         '*' => false,
         'id' => false,

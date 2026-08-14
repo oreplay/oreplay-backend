@@ -12,6 +12,7 @@ use Cake\Core\Configure;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
+use Results\Lib\Import\CourseImporter;
 use Results\Lib\Import\RunnerImporter;
 use Results\Lib\Import\TeamImporter;
 use Results\Lib\UploadHelper;
@@ -20,6 +21,8 @@ use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Team;
 use Results\Model\Table\ClassesTable;
+use Results\Model\Table\CourseControlsTable;
+use Results\Model\Table\CoursesTable;
 use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\RunnersTable;
@@ -98,6 +101,7 @@ class UploadsV2Controller extends ApiController
                     $helper->getSplitsToReplace(),
                     $helper->getRowsToInsert()
                 );
+                $this->_storeCourseOf($class, $helper);
                 $counter++;
             }
         }
@@ -128,6 +132,12 @@ class UploadsV2Controller extends ApiController
         $class->course = $course;
         $metrics->addCourse($course);
         return $class;
+    }
+
+    private function _storeCourseOf(ClassEntity $class, UploadHelper $helper): void
+    {
+        $importer = new CourseImporter(CourseControlsTable::load(), CoursesTable::load(), $helper);
+        $importer->importInto($class);
     }
 
     private function _addAllRunnersInClass(array $classArray, ClassEntity $class, UploadHelper $helper): ClassEntity

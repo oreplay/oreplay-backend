@@ -25,6 +25,7 @@ class UploadHelper
     private string $_eventId;
     private string $_classId = '';
     private string $_courseId = '';
+    private string $_stageTypeId = '';
     private UploadConfigChecker $_checker;
     private ExistingResultsIndex $_existingResults;
     private UploadMetrics $_metrics;
@@ -206,6 +207,14 @@ class UploadHelper
             }
         }
         return $participant;
+    }
+
+    public function getStageTypeId(): string
+    {
+        if (!$this->_stageTypeId) {
+            $this->_stageTypeId = StagesTable::load()->getStageTypeId($this->getStageId());
+        }
+        return $this->_stageTypeId;
     }
 
     public function getChecker(): UploadConfigChecker

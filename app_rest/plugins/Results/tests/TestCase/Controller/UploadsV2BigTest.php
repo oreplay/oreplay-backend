@@ -15,6 +15,7 @@ use Results\Model\Entity\StageType;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\ClubsTable;
 use Results\Model\Table\ControlsTable;
+use Results\Model\Table\CourseControlsTable;
 use Results\Model\Table\CoursesTable;
 use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\RunnersTable;
@@ -69,6 +70,8 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
 
     private const EVENT_CLASSES = 19;
     private const EVENT_COURSES = 9;
+    // 20+19+18+17+16+14+14+14+1, the sum of the nine course lengths
+    private const EVENT_COURSE_CONTROLS = 133;
     private const COURSE_NAMES = ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'ORG'];
     private const CLASSES_ON_COURSE_C1 = ['Sub20 M', 'Sen M', 'Vet M'];
     private const EVENT_CLUBS = 19;
@@ -275,6 +278,13 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
             'every result records the course its runner ran');
         $this->assertEquals(self::EVENT_COURSES, $this->_distinctCoursesOnResults(),
             'the results point at the 9 real courses, not one per class');
+        $this->assertEquals(self::EVENT_COURSE_CONTROLS, $this->_courseControlAmount(),
+            'each course stores its ordered control list once, not once per class');
+        $this->assertEquals(
+            ['31', '47', '56', '59', '42', '32', '38', '34', '35', '36',
+             '33', '41', '40', '60', '37', '46', '39', '44', '45', '200'],
+            $this->_stationsOfCourse('C1'),
+            'course C1 is stored in the order the runners punched it, finish last');
     }
 
     private function _reUploadingTheWholeEventChangesNothing(): void
@@ -326,6 +336,23 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
     private function _amountInStage($table): int
     {
         return $table->find()->where(['stage_id' => $this->_stageId])->all()->count();
+    }
+
+    private function _courseControlAmount(): int
+    {
+        return CourseControlsTable::load()->find()
+            ->where(['CourseControls.stage_id' => $this->_stageId])->all()->count();
+    }
+
+    private function _stationsOfCourse(string $shortName): array
+    {
+        $course = CoursesTable::load()->find()
+            ->where(['Courses.stage_id' => $this->_stageId, 'Courses.short_name' => $shortName])
+            ->firstOrFail();
+        return array_map(
+            fn($courseControl) => (string)$courseControl->station,
+            CourseControlsTable::load()->findByCourse($course->id)
+        );
     }
 
     private function _resultsWithACourse(): int
