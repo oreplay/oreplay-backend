@@ -271,6 +271,10 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
             'courses are named after the course, not after the class');
         $this->assertEquals(1, count($this->_courseIdsOfClasses(self::CLASSES_ON_COURSE_C1)),
             'classes running the same course share one course row');
+        $this->assertEquals(self::EVENT_RUNNERS, $this->_resultsWithACourse(),
+            'every result records the course its runner ran');
+        $this->assertEquals(self::EVENT_COURSES, $this->_distinctCoursesOnResults(),
+            'the results point at the 9 real courses, not one per class');
     }
 
     private function _reUploadingTheWholeEventChangesNothing(): void
@@ -322,6 +326,25 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
     private function _amountInStage($table): int
     {
         return $table->find()->where(['stage_id' => $this->_stageId])->all()->count();
+    }
+
+    private function _resultsWithACourse(): int
+    {
+        return $this->_resultCourseIds()->count();
+    }
+
+    private function _distinctCoursesOnResults(): int
+    {
+        return count(array_unique($this->_resultCourseIds()->extract('course_id')->toList()));
+    }
+
+    private function _resultCourseIds(): \Cake\Datasource\ResultSetInterface
+    {
+        return RunnerResultsTable::load()->find()
+            ->where([
+                'RunnerResults.stage_id' => $this->_stageId,
+                'RunnerResults.course_id IS NOT' => null,
+            ])->all();
     }
 
     private function _courseShortNames(): array

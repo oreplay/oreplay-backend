@@ -69,6 +69,7 @@ class RunnerResultImporter
         // a team member is saved under its team and keeps runners.class_id null, so this is
         // the only place its class is recorded and what getClassesStats() joins on
         $resultToSave->class_id = $context->getClassId();
+        $resultToSave->course_id = $context->getCourseId() ?: null;
         $resultToSave->upload_type = $checker->preCheckType();
         $resultToSave->result_type = $this->_resultTypes
             ->getCachedWithDefault($checker, $resultData['result_type']['id'] ?? null);

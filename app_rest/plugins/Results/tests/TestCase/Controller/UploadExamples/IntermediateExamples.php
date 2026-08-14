@@ -28,6 +28,9 @@ class IntermediateExamples
                 'oe_key' => '1',
                 'short_name' => 'R1'
             ],
+            // warning: synthetic, never captured from a client, and read by no production code.
+            // Absent from every production payload we could sample, but radio uploads could not be
+            // sampled at all, so its real shape is still unknown. Do not treat it as a contract.
             'classes_controls' => [
                 (int) 0 => [
                     'control' => [

@@ -24,6 +24,7 @@ class UploadHelper
     private array $_data;
     private string $_eventId;
     private string $_classId = '';
+    private string $_courseId = '';
     private UploadConfigChecker $_checker;
     private ExistingResultsIndex $_existingResults;
     private UploadMetrics $_metrics;
@@ -101,7 +102,7 @@ class UploadHelper
 
     public function getContext(): UploadContext
     {
-        return new UploadContext($this->_eventId, $this->getStageId(), $this->_classId);
+        return new UploadContext($this->_eventId, $this->getStageId(), $this->_classId, $this->_courseId);
     }
 
     public function reprocessAll(): void
@@ -119,6 +120,13 @@ class UploadHelper
         $inClass = clone $this;
         $inClass->_classId = $classId;
         return $inClass;
+    }
+
+    public function runningCourse(string $courseId): self
+    {
+        $inCourse = clone $this;
+        $inCourse->_courseId = $courseId;
+        return $inCourse;
     }
 
     public function getData(): array

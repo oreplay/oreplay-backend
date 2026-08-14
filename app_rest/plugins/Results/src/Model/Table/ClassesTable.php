@@ -68,6 +68,9 @@ class ClassesTable extends AppTable
         return $res;
     }
 
+    // this is what GET /events/ID/stages/ID/classes returns, and the splits it contains are what the
+    // frontend shows as radio controls. It is the read path courses phase 3 replaces with
+    // course_controls.is_radio; keep it unchanged until that lands.
     public function getByStageWithRadios(string $eventId, string $stageId)
     {
         $stationsInClass = $this->Splits->getStationsFromLeaderInStage($eventId, $stageId);
@@ -82,7 +85,13 @@ class ClassesTable extends AppTable
                     'reading_time'  => $q->func()->min(SplitsTable::field('reading_time'), ['string']),
                     'id' => $q->func()->max(SplitsTable::field('id'), ['string']),
                 ];
-                // create courses cache table
+                // a station only appears here once a runner has punched it, because is_intermediate
+                // is set on the split by a Radiocontrols upload, so a class shows no radios until
+                // someone reaches one. course_controls.is_radio has to be observed the same way:
+                // no production payload carries the radio stations. In the long run we should
+                // actually process the radios from the real upload, but keeping in mind some radios
+                // could come directly to the server via http direct conection (instead of being
+                // uploaded as xml/json via the uploadsController or Uploadsv2)
                 // ---
                 // class_id
                 // order_number

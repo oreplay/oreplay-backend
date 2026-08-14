@@ -90,9 +90,9 @@ class UploadsController extends ApiController
             $isTakingTooLong = $this->_setIsTakingTooLongWarning($metrics, $counter);
             if ($this->_needsProcessing($class, $classObj, $helper) && !$isTakingTooLong) {
                 $class->setHash($classObj);
-                $classHelper = $helper->inClass($class->id);
                 // if no change is done in the whole class, we could totally skip processing it
                 $class = $this->_addCourseToClass($classObj, $class, $helper);
+                $classHelper = $helper->inClass($class->id)->runningCourse($class->course->id ?? '');
                 $class = $this->_addAllRunnersInClass($classObj, $class, $classHelper);
                 $class = $this->_addAllTeamsInClass($classObj, $class, $classHelper);
                 $metrics->saveManyOrFail(
