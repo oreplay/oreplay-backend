@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Results\Controller;
 
+use App\Lib\Consts\CacheGrp;
+use Cake\Cache\Cache;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
 use Results\Model\Entity\Stage;
@@ -92,8 +94,16 @@ class StagesController extends ApiController
         if (!$clean) {
             $this->Stages->updateAll(['deleted' => $now], ['id' => $id, 'deleted is null']);
         }
+        $this->_forgetCachesOfTheDeletedStage($id);
         $this->return = false;
         UploadLogsTable::load()->saveClearLog($eventId, $id);
+    }
+
+    private function _forgetCachesOfTheDeletedStage(string $stageId): void
+    {
+        Cache::clearGroup(CacheGrp::UPLOAD_ENTITIES_GROUP, CacheGrp::UPLOAD);
+        SplitsTable::load()->deleteStationsFromLeaderCache($stageId);
+        StageOrdersTable::load()->deleteCache($stageId);
     }
 
     protected function edit($id, $data)

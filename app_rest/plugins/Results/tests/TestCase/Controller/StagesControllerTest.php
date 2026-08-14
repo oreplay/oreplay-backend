@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
+use App\Lib\Consts\CacheGrp;
+use Cake\Cache\Cache;
 use App\Test\Fixture\OauthAccessTokensFixture;
 use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
@@ -14,8 +16,11 @@ use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageType;
 use Results\Model\Entity\UploadLog;
 use Results\Model\Table\ClassesTable;
+use Results\Model\Table\SplitsTable;
+use Results\Model\Table\StageOrdersTable;
 use Results\Model\Table\StagesTable;
 use Results\Model\Table\UploadLogsTable;
+use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
@@ -35,6 +40,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
         EventsFixture::LOAD,
         StagesFixture::LOAD,
         StageTypesFixture::LOAD,
+        ClassesFixture::LOAD,
         ClubsFixture::LOAD,
         RunnersFixture::LOAD,
         OauthAccessTokensFixture::LOAD,
@@ -243,5 +249,39 @@ class StagesControllerTest extends ApiCommonErrorsTest
         $this->assertNull($stage);
         $class = ClassesTable::load()->findById(Stage::FIRST_STAGE)->first();
         $this->assertNull($class);
+    }
+
+    public function testDelete_shouldNotServeADeletedClassFromTheCache()
+    {
+        $this->flushMemcached();
+        $classes = ClassesTable::load();
+        $this->assertNotNull($classes->getByShortName(Event::FIRST_EVENT, Stage::FIRST_STAGE, 'ME'),
+            'the class is resolved and cached before the stage is deleted');
+
+        $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE);
+        $this->assertEquals(204, $this->_response->getStatusCode(), $this->_getBodyAsString());
+
+        $this->assertNull($classes->getByShortName(Event::FIRST_EVENT, Stage::FIRST_STAGE, 'ME'),
+            'the class is soft deleted, so the next upload must not resolve it from the cache');
+    }
+
+    public function testDelete_shouldForgetTheMemoisedRadioOrderAndStageOrders()
+    {
+        $this->flushMemcached();
+        // the keys these two memoise under, kept here so the test breaks if either one moves
+        $radioOrderKey = 'getStationsFromLeaderInStage' . Stage::FIRST_STAGE;
+        $stageOrdersKey = '_getAllInSt3age_' . Stage::FIRST_STAGE;
+        SplitsTable::load()->getStationsFromLeaderInStage(Event::FIRST_EVENT, Stage::FIRST_STAGE);
+        StageOrdersTable::load()->getAllInStage(Stage::FIRST_STAGE);
+        $this->assertNotNull(Cache::read($radioOrderKey, CacheGrp::SHORT), 'radio order is memoised');
+        $this->assertNotNull(Cache::read($stageOrdersKey, CacheGrp::DEFAULT), 'stage orders are memoised');
+
+        $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE);
+        $this->assertEquals(204, $this->_response->getStatusCode(), $this->_getBodyAsString());
+
+        $this->assertNull(Cache::read($radioOrderKey, CacheGrp::SHORT),
+            'the splits behind the radio order were deleted with the stage');
+        $this->assertNull(Cache::read($stageOrdersKey, CacheGrp::DEFAULT),
+            'the stage orders were deleted with the stage');
     }
 }

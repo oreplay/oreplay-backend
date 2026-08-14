@@ -107,9 +107,19 @@ class SplitsTable extends AppTable
         return $this->updateAll(['deleted' => new FrozenTime()], ['id in' => $splitIds]);
     }
 
+    private function _cacheKeyStationsFromLeader(string $stageId): string
+    {
+        return 'getStationsFromLeaderInStage' . $stageId;
+    }
+
+    public function deleteStationsFromLeaderCache(string $stageId): void
+    {
+        Cache::delete($this->_cacheKeyStationsFromLeader($stageId), CacheGrp::SHORT);
+    }
+
     public function getStationsFromLeaderInStage(string $eventId, string $stageId): array
     {
-        $cacheKey = 'getStationsFromLeaderInStage' . $stageId;
+        $cacheKey = $this->_cacheKeyStationsFromLeader($stageId);
         $res = Cache::read($cacheKey, CacheGrp::SHORT);
         if ($res) {
             return $res;
