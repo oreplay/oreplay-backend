@@ -25,7 +25,6 @@ use Results\Model\Entity\StageType;
 use Results\Model\Entity\Team;
 use Results\Model\Entity\TeamResult;
 use Results\Model\Table\AnswersTable;
-use Results\Model\Table\ClassesControlsTable;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\ClubsTable;
 use Results\Model\Table\ControlsTable;
@@ -318,7 +317,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
                 $value->getResultList()[0]->result_type_id);
         }
         $this->assertEquals('F', $runnersJson[0]['sex']);
-        $this->_assertNewOptionalTables(0, 0, 0, 0);
+        $this->_assertNewOptionalTables(0, 0, 0);
         $this->_assertNewBasicTables(2, 2, 1, 4, 4);
         $this->_assertNewResultsTables(0, 0);
     }
@@ -405,7 +404,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             }
         }
         $this->assertEquals('F', $runnersJson[0]['sex']);
-        $this->_assertNewOptionalTables(0, 0, 0, 0);
+        $this->_assertNewOptionalTables(0, 0, 0);
         $this->_assertNewBasicTables(2, 2, 1, 4, 1);
         $this->_assertNewResultsTables(0, 0);
     }
@@ -492,7 +491,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals(ResultType::STAGE,
                 $value->getResultList()[0]->result_type_id);
         }
-        $this->_assertNewOptionalTables(0, 1, 1, 0);
+        $this->_assertNewOptionalTables(1, 1, 0);
         $this->_assertNewBasicTables(2, 1, 2, 3, 3);
         $this->_assertNewResultsTables(0, 0);
         // check uploaded teams
@@ -1052,7 +1051,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals(ResultType::STAGE,
                 $value->getResultList()[0]->result_type_id);
         }
-        $this->_assertNewOptionalTables(0, 0, 0, 0);
+        $this->_assertNewOptionalTables(0, 0, 0);
         $this->_assertNewBasicTables(2, 2, 2, 2, 2);
         $this->_assertNewResultsTables(0, 0);
     }
@@ -1111,7 +1110,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             $this->assertEquals(ResultType::STAGE,
                 $value->getResultList()[0]->result_type_id);
         }
-        $this->_assertNewOptionalTables(0, 0, 0, 0);
+        $this->_assertNewOptionalTables(0, 0, 0);
         $this->_assertNewBasicTables(2, 2, 2, 2, 2);
         $this->_assertNewResultsTables(2, 1);
         /** @var RunnerResult $res */
@@ -1123,9 +1122,8 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('bab8412b5a99d7b26e7a645c7caa9244', $res->upload_hash);
     }
 
-    private function _assertNewOptionalTables($classesControls, $teams, $teamsResults, $answers): void
+    private function _assertNewOptionalTables($teams, $teamsResults, $answers): void
     {
-        $this->assertEquals($classesControls, ClassesControlsTable::load()->find()->all()->count());
         $this->assertEquals($teams + 1, TeamsTable::load()->find()->all()->count(), 'Teams');
         $this->assertEquals($teamsResults + 1, TeamResultsTable::load()->find()->all()->count(), 'TeamResults');
         $this->assertEquals($answers, AnswersTable::load()->find()->all()->count());
@@ -1374,7 +1372,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 //            $this->assertEquals(ResultType::STAGE,
 //                $value->getRunnerResults()[0]->result_type_id);
 //        }
-        $this->_assertNewOptionalTables(0, 1, 2, 0);
+        $this->_assertNewOptionalTables(1, 2, 0);
         $this->_assertNewBasicTables(1, 0, 1, 3, 3);
         $this->_assertNewResultsTables(0, 0);
     }
@@ -1436,7 +1434,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(2, count($res), 'Runner count in db');
 
         $this->assertEquals(0, count($decodedData[0]['teams']));
-        $this->_assertNewOptionalTables(0, 0, 0, 0);
+        $this->_assertNewOptionalTables(0, 0, 0);
         $this->_assertNewBasicTables(2, 0, 1, 2, 6);
         $this->_assertNewResultsTables(0, 0);
     }

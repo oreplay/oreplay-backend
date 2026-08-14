@@ -9,7 +9,6 @@ use Cake\I18n\FrozenTime;
 use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageType;
 use Results\Model\Table\AnswersTable;
-use Results\Model\Table\ClassesControlsTable;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\ClubsTable;
 use Results\Model\Table\ControlsTable;
@@ -79,7 +78,6 @@ class StagesController extends ApiController
             TeamsTable::load(),
             RunnersTable::load(),
             ControlsTable::load(),
-            ClassesControlsTable::load(),
             RunnerResultsTable::load(),
             TeamResultsTable::load(),
             SplitsTable::load(),
