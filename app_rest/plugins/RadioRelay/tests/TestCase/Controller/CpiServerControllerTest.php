@@ -245,6 +245,50 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
         $this->assertResponseError();
     }
 
+    public function testAddNew_shouldReuseTheControlAnEarlierUploadStored()
+    {
+        $controls = ControlsTable::load();
+        $stored = $controls->fillNewWithStage(['station' => '31'], Event::FIRST_EVENT, Stage::FIRST_STAGE);
+        $stored->control_type_id = ControlType::NORMAL;
+        $stored->is_intermediate = false;
+        $controls->saveOrFail($stored);
+
+        $this->post($this->_getEndpoint(), $this->_punchAtStation31());
+        $this->assertJsonResponseOK();
+
+        $this->assertEquals(1, $this->_controlAmountAtStation('31'),
+            'the radio punched a station that already had a control, so no second row belongs there');
+        /** @var Split $last */
+        $last = SplitsTable::load()->find()->orderByDesc('created')->first();
+        $this->assertEquals($stored->id, $last->control_id,
+            'the punch points at the stored control, the one every other query already joins');
+    }
+
+    private function _punchAtStation31(): array
+    {
+        return [
+            'order' => 'ProcessPunches',
+            'data' => [Stage::FIRST_STAGE, Event::FIRST_EVENT . TokensFixture::FIRST_TOKEN, '+01:00'],
+            'punches' => [[
+                'date' => '2025-03-08',
+                'raw' => '02d30d80160f85d41b01013c1e7400019db903',
+                'reading' => '2025-03-08 05:58:26',
+                'sicard' => '2009933',
+                'station' => '31',
+                'time' => '12:50',
+                'battery' => '9',
+                'type' => PunchType::SI_CARD,
+            ]],
+        ];
+    }
+
+    private function _controlAmountAtStation(string $station): int
+    {
+        return ControlsTable::load()->find()
+            ->where(['stage_id' => Stage::FIRST_STAGE, 'station' => $station])
+            ->all()->count();
+    }
+
     private function _intermediateStations(): array
     {
         return ControlsTable::load()->find()

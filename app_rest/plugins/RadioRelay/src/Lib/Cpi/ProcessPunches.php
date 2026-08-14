@@ -38,6 +38,7 @@ class ProcessPunches
 
     public function process(): array
     {
+        $this->_indexStoredControls();
         $punchAmount = 0;
         $stations = [];
         foreach ($this->data->getPunches() as $punch) {
@@ -50,6 +51,14 @@ class ProcessPunches
         $this->Splits->Controls->markIntermediateStations($this->data->getStageId(), array_unique($stations));
         $lastId = '1'; // must be numeric
         return ['OK', '' . $punchAmount, $lastId];
+    }
+
+    // without this the index starts empty on every request, so a station already stored by an
+    // upload or by an earlier punch is not recognised and a second control row is created for it
+    private function _indexStoredControls(): void
+    {
+        $context = new UploadContext($this->data->getEventId(), $this->data->getStageId());
+        $this->existingResults->indexControls($this->Splits->Controls->getAllControls($context));
     }
 
     private function _processPunch(array $punch): ?Split
@@ -93,7 +102,10 @@ class ProcessPunches
         $splitToSave->battery_time = $punch['reading'] ?? null;
         $context = new UploadContext($eventId, $stageId);
         $control = $this->Splits->Controls->createControlIfNotExists($context, $this->existingResults, $split);
-        $splitToSave->addControl($control);
+        if ($this->existingResults->takeControlToWrite($control)) {
+            $splitToSave->addControl($control);
+        }
+        $splitToSave->control_id = $control->id;
         /** @var Split $ret */
         $ret = $this->Splits->save($splitToSave);
         return $ret;
