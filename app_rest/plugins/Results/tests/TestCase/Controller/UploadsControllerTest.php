@@ -13,6 +13,8 @@ use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
 use Results\Lib\UploadConfigChecker;
 use Results\Model\Entity\ClassEntity;
+use Results\Model\Entity\Control;
+use Results\Model\Entity\ControlType;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Runner;
@@ -515,6 +517,8 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
             ['id' => ClassEntity::ME]);
 
+        $storedBeforeAnyRadio = $this->_storeControl('32', StagesFixture::STAGE_FEDO_2);
+
         $data = ['oreplay_data_transfer' => IntermediateExamples::intermediateResults()];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
 
@@ -554,6 +558,29 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(2, $splitB->order_number);
         $this->assertEquals(4, substr_count($splitA->class_id, '-'));
         $this->assertEquals(100, $splitB->control->station);
+        $this->assertEquals(['32', '100'], $this->_intermediateStations(StagesFixture::STAGE_FEDO_2),
+            'V1 flags the stations its radio punches came from, the same as V2');
+        $this->assertTrue(ControlsTable::load()->get($storedBeforeAnyRadio->id)->is_intermediate,
+            'a station stored by an earlier upload is promoted, not left behind for a new row');
+    }
+
+    private function _storeControl(string $station, string $stageId): Control
+    {
+        $controls = ControlsTable::load();
+        $control = $controls->fillNewWithStage(['station' => $station], Event::FIRST_EVENT, $stageId);
+        $control->control_type_id = ControlType::NORMAL;
+        $control->is_intermediate = false;
+        $controls->saveOrFail($control);
+        return $control;
+    }
+
+    private function _intermediateStations(string $stageId): array
+    {
+        $stations = ControlsTable::load()->find()
+            ->where(['stage_id' => $stageId, 'is_intermediate' => true])
+            ->all()->extract('station')->toList();
+        sort($stations);
+        return $stations;
     }
 
     public function testAddNew_shouldAddIntermediatesWithRadiosAndDuplicatedBibs()

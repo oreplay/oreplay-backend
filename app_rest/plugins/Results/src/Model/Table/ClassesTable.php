@@ -70,7 +70,7 @@ class ClassesTable extends AppTable
 
     // this is what GET /events/ID/stages/ID/classes returns, and the splits it contains are what the
     // frontend shows as radio controls. It is the read path courses phase 3 replaces with
-    // course_controls.is_radio; keep it unchanged until that lands.
+    // controls.is_intermediate and course_controls; keep it unchanged until that lands.
     public function getByStageWithRadios(string $eventId, string $stageId)
     {
         $stationsInClass = $this->Splits->getStationsFromLeaderInStage($eventId, $stageId);
