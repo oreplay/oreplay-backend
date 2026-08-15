@@ -34,14 +34,16 @@ class CourseImporter
         if (!($course instanceof Course) || !$course->id) {
             return;
         }
-        if ($this->_isUnorderedStage()) {
+        $isUnordered = $this->_isUnorderedStage();
+        if ($isUnordered) {
             $this->_markAsUnordered($course);
-            return;
         }
         if (!$this->_carriesTheWholeCourse()) {
             return;
         }
-        $stations = $this->_stationsMostRunnersPunched($class);
+        $stations = $isUnordered
+            ? $this->_everyStationPunchedInClass($class)
+            : $this->_stationsMostRunnersPunched($class);
         if (!$stations || $course->isSameUploadHash($stations)) {
             return;
         }
@@ -71,6 +73,26 @@ class CourseImporter
     {
         return !$this->_helper->getChecker()->isIntermediates()
             && !$this->_helper->getChecker()->isStartLists();
+    }
+
+    /**
+     * A score or raid class has no course order and its runners choose different controls, so the
+     * course is the union of what they punched, not the sequence most of them share. The stations
+     * are stored ascending: course_controls needs an order_number, is_ordered says it means nothing.
+     *
+     * @return string[]
+     */
+    private function _everyStationPunchedInClass(ClassEntity $class): array
+    {
+        $stations = [];
+        foreach ($this->_finishedResultsOf($class) as $result) {
+            foreach ($this->_stationsOf($result) as $station) {
+                $stations[$station] = $station;
+            }
+        }
+        $stations = array_values($stations);
+        sort($stations, SORT_NATURAL);
+        return $stations;
     }
 
     /**

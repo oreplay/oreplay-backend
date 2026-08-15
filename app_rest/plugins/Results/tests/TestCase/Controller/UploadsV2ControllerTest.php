@@ -783,7 +783,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         ], 'forcing reprocesses without duplicating anything');
     }
 
-    public function testAddNew_shouldNotInventAnOrderForAnUnorderedStage()
+    public function testAddNew_shouldStoreTheControlSetOfAnUnorderedStage()
     {
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         StagesTable::load()->updateAll(
@@ -800,9 +800,16 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $course = CoursesTable::load()->find()
             ->where(['Courses.stage_id' => StagesFixture::STAGE_FEDO_2])->firstOrFail();
         $this->assertFalse((bool)$course->is_ordered, 'a raid course has no order between its controls');
-        $this->assertEquals(0, CourseControlsTable::load()->find()
-            ->where(['CourseControls.stage_id' => StagesFixture::STAGE_FEDO_2])->all()->count(),
-            'no control sequence is derived when the controls have no order');
+        $this->assertEquals(['31', '33'], $this->_courseControlStations(StagesFixture::STAGE_FEDO_2),
+            'the control set is stored so the class does not need the punch-derived fallback');
+    }
+
+    private function _courseControlStations(string $stageId): array
+    {
+        return CourseControlsTable::load()->find()
+            ->where(['CourseControls.stage_id' => $stageId])
+            ->orderByAsc('CourseControls.order_number')
+            ->all()->extract('station')->toList();
     }
 
     public function testAddNew_shouldReplaceTeamSplitsInsteadOfAccumulatingThem()
@@ -1811,5 +1818,96 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
 
         $this->expectException(AssertionFailedError::class);
         $this->assertUploadOk();
+    }
+
+    public function testAddNew_shouldUnionTheControlsOfAnUnorderedStageIgnoringPunchOrder()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        StagesTable::load()->updateAll(
+            ['stage_type_id' => StageType::RAID],
+            ['id' => StagesFixture::STAGE_FEDO_2]);
+
+        // two runners of the same class visiting different controls, in orders that disagree
+        $data = ['oreplay_data_transfer' => $this->_raidUpload([
+            ['20', '10', '15'],
+            ['15', '30'],
+        ])];
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertUploadOk();
+
+        $this->assertEquals(['10', '15', '20', '30'], $this->_courseControlStations(StagesFixture::STAGE_FEDO_2),
+            'every control anyone visited, ascending — not the sequence either runner punched');
+    }
+
+    private function _raidUpload(array $stationsPerRunner): array
+    {
+        $runners = [];
+        foreach ($stationsPerRunner as $i => $stations) {
+            $splits = [];
+            foreach ($stations as $order => $station) {
+                $splits[] = [
+                    'id' => '',
+                    'station' => $station,
+                    'order_number' => $order + 1,
+                    'reading_time' => '2026-01-01T10:0' . $order . ':00.000+00:00',
+                ];
+            }
+            $runners[] = [
+                'id' => '',
+                'uuid' => '',
+                'sicard' => (string)(9000001 + $i),
+                'first_name' => 'Raid' . $i,
+                'last_name' => 'Runner' . $i,
+                'bib_number' => (string)(500 + $i),
+                'is_nc' => false,
+                'runner_results' => [[
+                    'id' => '',
+                    'start_time' => '2026-01-01T10:00:00.000+00:00',
+                    'finish_time' => '2026-01-01T11:00:00.000+00:00',
+                    'time_seconds' => 3600,
+                    'position' => $i + 1,
+                    'status_code' => StatusCode::OK,
+                    'leg_number' => 1,
+                    'splits' => $splits,
+                    'result_type' => ['id' => ResultType::STAGE, 'description' => 'Stage'],
+                ]],
+            ];
+        }
+        return [
+            'configuration' => [
+                'source_vendor' => 'oreplay',
+                'source' => 'IofXml',
+                'source_version' => '3.0',
+                'contents' => 'ResultList',
+                'results_type' => 'Breakdown',
+                'utf' => true,
+            ],
+            'event' => [
+                'id' => Event::FIRST_EVENT,
+                'description' => 'raid',
+                'stages' => [[
+                    'id' => StagesFixture::STAGE_FEDO_2,
+                    'order_number' => 1,
+                    'description' => 'raid',
+                    'classes' => [[
+                        'id' => '',
+                        'uuid' => '',
+                        'oe_key' => '1',
+                        'short_name' => 'RAID',
+                        'long_name' => 'Raid class',
+                        'course' => [
+                            'id' => '',
+                            'uuid' => '',
+                            'oe_key' => '77',
+                            'short_name' => 'R1',
+                            'distance' => '9000',
+                            'climb' => '',
+                            'controls' => 4,
+                        ],
+                        'runners' => $runners,
+                    ]],
+                ]],
+            ],
+        ];
     }
 }
