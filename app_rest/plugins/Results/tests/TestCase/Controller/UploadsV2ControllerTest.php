@@ -6,6 +6,7 @@ namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
+use App\Lib\Consts\CacheGrp;
 use Cake\Cache\Cache;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
@@ -1777,5 +1778,23 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         } else {
             $this->assertEquals($readingTime, $split->reading_time->toIso8601String());
         }
+    }
+
+    public function testAddNew_shouldForgetTheMemoisedRadioOrder()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        ClassesTable::load()->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+        $memoisedKey = 'getStationsFromLeaderInStage' . StagesFixture::STAGE_FEDO_2;
+        SplitsTable::load()->getStationsFromLeaderInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2);
+        $this->assertNotNull(Cache::read($memoisedKey, CacheGrp::SHORT), 'the radio order is memoised');
+
+        $data = ['oreplay_data_transfer' => IntermediateExamples::intermediateResults()];
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertJsonResponseOK();
+
+        $this->assertNull(Cache::read($memoisedKey, CacheGrp::SHORT),
+            'the upload rewrote the splits the memoised radio order was derived from');
     }
 }

@@ -157,13 +157,18 @@ class ClassesTable extends AppTable
         SplitsToReplace $splitsToReplace,
         RowsToInsert $rowsToInsert
     ) {
-        return $this->getConnection()->transactional(
+        $saved = $this->getConnection()->transactional(
             fn() => $this->_deleteReplacedSplitsAndSaveNeverRetrying(
                 $singleClassToSave,
                 $splitsToReplace,
                 $rowsToInsert
             )
         );
+        // the radio order is derived from the splits this class just replaced, and it is memoised
+        // in a cache group the upload controllers do not clear. Invalidated once the transaction
+        // has committed, so a concurrent reader cannot memoise the half-written stage
+        SplitsTable::load()->deleteStationsFromLeaderCache($singleClassToSave->stage_id);
+        return $saved;
     }
 
     // warning: never call this from a retry such as saveOrFailRetrying(). deleteAndForget() consumes
