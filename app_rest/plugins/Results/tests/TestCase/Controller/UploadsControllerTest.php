@@ -61,6 +61,8 @@ use Results\Test\TestCase\Controller\UploadExamples\TotalsExamples;
 
 class UploadsControllerTest extends ApiCommonErrorsTest
 {
+    use UploadResponseTrait;
+
     protected array $fixtures = [
         EventsFixture::LOAD,
         StagesFixture::LOAD,
@@ -227,7 +229,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => MixedExamples::importMixed()];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
@@ -259,7 +261,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => StartExamples::startImportSmall()];
         $this->post($this->_getEndpoint() . '?version=300', $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $decodedData = $jsonDecoded['data'];
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
@@ -335,7 +337,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => StartExamples::entriesImportWithoutStartTimes()];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $decodedData = $jsonDecoded['data'];
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
@@ -422,7 +424,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => StartExamples::startTimesWithOneRunnerAndOneTeam()];
         $this->post($this->_getEndpoint() . '?version=300', $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $decodedData = $jsonDecoded['data'];
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
@@ -523,7 +525,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => IntermediateExamples::intermediateResults()];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
@@ -595,7 +597,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => IntermediateExamples::itermediateWithDuplicatedBibs()];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
 
         $existingRunners = 2;
         $expectedNewRunners = 1;
@@ -699,7 +701,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
         $this->post($this->_getEndpoint() . '?version=300', $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $decodedData = $jsonDecoded['data'];
         $expectedRunnerAmount = 2;
         $human = $jsonDecoded['meta']['human'][0];
@@ -744,7 +746,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $this->post($this->_getEndpoint() . '?version=300', $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals([], $jsonDecoded['data'], json_encode($jsonDecoded));
         $this->assertEquals($expectedRunnerAmount, count($res), 'Runner count in db');
         $this->assertEquals($expectedControlAmount, ControlsTable::load()->find()->all()->count());
@@ -785,7 +787,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => $dns];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $decodedData = $jsonDecoded['data'];
         $expectedRunnerAmount = 2;
         $expectedSplits = 4;
@@ -845,7 +847,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             = $originalSplits;
         $this->post($this->_getEndpoint() . '?version=300', $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $decodedData = $jsonDecoded['data'];
         $this->assertEquals($expectedRunnerAmount, count($res), 'Runner count in db');
         $this->assertEquals(1, count($decodedData), json_encode($jsonDecoded));
@@ -989,13 +991,13 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => ResultExamples::resultImport2CategoriesStarts()];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->_assertStartsTimesFrom2Classes($jsonDecoded);
 
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => ResultExamples::resultImport2CategoriesSplits()];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->_assertSplitsTimesFrom2Classes($jsonDecoded);
     }
 
@@ -1187,7 +1189,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => RelayExamples::twoTeamsWith2Runners4LegsEach()];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 1 courses (', $jsonDecoded['meta']['human'][0]);
         $expected = [
             'classes' => 1,
@@ -1212,7 +1214,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => RelayExamples::oneTeamLeg2()];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 1 courses (', $jsonDecoded['meta']['human'][0]);
         $this->assertEquals(4, $RunnersTable->find()->all()->count() - $existingRunners);
         $expected = [
@@ -1259,7 +1261,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => RelayExamples::oneTeamLeg4()];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 1 courses (', $jsonDecoded['meta']['human'][0]);
         $this->assertEquals($expected, $jsonDecoded['meta']['updated']);
         $this->assertEquals(4, $RunnersTable->find()->all()->count() - $existingRunners);
@@ -1304,7 +1306,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => RelayExamples::simple3relay()];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->_assertSimple3relay($jsonDecoded);
 
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
@@ -1312,7 +1314,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $dataTransfer['event']['stages'][0]['classes'][0]['teams'][0]['team_results'][0]['time_seconds'] = 3601;
         $data = ['oreplay_data_transfer' => $dataTransfer];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->_assertSimple3relay($jsonDecoded);
     }
 
@@ -1389,14 +1391,14 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => TotalsExamples::simpleTotalPoints()];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->_assertTotals($jsonDecoded);
 
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $dataTransfer = TotalsExamples::simpleTotalPoints(2932);
         $data = ['oreplay_data_transfer' => $dataTransfer];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->_assertTotals($jsonDecoded);
     }
 
@@ -1451,7 +1453,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => TotalsExamples::stage1RealTotalPoints()];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
@@ -1496,7 +1498,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $dataTransfer = TotalsExamples::stage2RealTotalPoints();
         $data = ['oreplay_data_transfer' => $dataTransfer];
         $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
@@ -1599,7 +1601,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     private function _assert1stUploadPartialSplitsFromDownload(int $position, string $s1time, string $s2time): void
     {
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
@@ -1636,7 +1638,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     private function _assert2ndUploadPartialSplitsFromDownload(int $position, string $s1time, string $s2time): void
     {
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
@@ -1701,7 +1703,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $data = ['oreplay_data_transfer' => IntermediateExamples::intermediateResults()];
         $this->post($this->_getEndpoint(), $data);
-        $this->assertJsonResponseOK();
+        $this->assertUploadOk();
 
         $this->assertNull(Cache::read($memoisedKey, CacheGrp::SHORT),
             'the upload rewrote the splits the memoised radio order was derived from');

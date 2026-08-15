@@ -40,6 +40,8 @@ use Results\Test\TestCase\Controller\UploadExamples\BigEventExamples;
 
 class UploadsV2BigTest extends ApiCommonErrorsTest
 {
+    use UploadResponseTrait;
+
     protected array $fixtures = [
         EventsFixture::LOAD,
         StagesFixture::LOAD,
@@ -323,7 +325,7 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
     {
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $this->post($this->_getEndpoint(), ['oreplay_data_transfer' => $dataTransfer]);
-        return $this->assertJsonResponseOK()['meta'];
+        return $this->assertUploadOk()['meta'];
     }
 
     private function _assertUpdated(array $expected, array $meta, string $step): void

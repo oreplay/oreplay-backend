@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
+use PHPUnit\Framework\AssertionFailedError;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use App\Lib\Consts\CacheGrp;
 use Cake\Cache\Cache;
@@ -59,6 +60,8 @@ use Results\Test\TestCase\Controller\UploadExamples\TotalsExamples;
 
 class UploadsV2ControllerTest extends ApiCommonErrorsTest
 {
+    use UploadResponseTrait;
+
     protected array $fixtures = [
         EventsFixture::LOAD,
         StagesFixture::LOAD,
@@ -226,7 +229,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => MixedExamples::importMixed()];
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
@@ -260,7 +263,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => StartExamples::startImportSmall()];
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
@@ -342,7 +345,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => StartExamples::entriesImportWithoutStartTimes()];
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
@@ -426,7 +429,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => StartExamples::startTimesWithOneRunnerAndOneTeam()];
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
@@ -532,7 +535,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => IntermediateExamples::intermediateResults()];
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
@@ -582,7 +585,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => IntermediateExamples::itermediateWithDuplicatedBibs()];
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
 
         $existingRunners = 2;
         $expectedNewRunners = 1;
@@ -664,7 +667,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
         $expectedRunnerAmount = 2;
         $expectedSplits = 3;
@@ -714,7 +717,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals([], $jsonDecoded['data'], json_encode($jsonDecoded));
         $this->_assertRunnersWithFinishTimes();
         $this->assertEquals($expectedControlAmount, ControlsTable::load()->find()->all()->count());
@@ -743,7 +746,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
 
         $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
         $this->post($this->_getEndpoint(), $data);
-        $firstUpload = $this->assertJsonResponseOK()['meta']['updated'];
+        $firstUpload = $this->assertUploadOk()['meta']['updated'];
 
         $expectedDatabase = [
             'runners' => RunnersTable::load()->find()->all()->count(),
@@ -754,14 +757,14 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
 
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $this->post($this->_getEndpoint(), $data);
-        $skipped = $this->assertJsonResponseOK()['meta']['updated'];
+        $skipped = $this->assertUploadOk()['meta']['updated'];
         $this->assertEquals(0, $skipped['classes'], 'an unchanged class is skipped without force');
 
         $storedSplitIds = $this->_splitIdsInUploadedStage();
 
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $this->post($this->_getEndpoint() . '?reprocess_all=1', $data);
-        $reprocessed = $this->assertJsonResponseOK()['meta']['updated'];
+        $reprocessed = $this->assertUploadOk()['meta']['updated'];
         $this->assertEquals(1, $reprocessed['classes'], 'reprocess_all ignores the hash of an unchanged class');
         $this->assertEquals(1, $reprocessed['courses']);
         $this->assertEquals(2, $reprocessed['runners']);
@@ -792,7 +795,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
 
         $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
         $this->post($this->_getEndpoint(), $data);
-        $this->assertJsonResponseOK();
+        $this->assertUploadOk();
 
         $course = CoursesTable::load()->find()
             ->where(['Courses.stage_id' => StagesFixture::STAGE_FEDO_2])->firstOrFail();
@@ -807,14 +810,14 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => MixedExamples::teamResultWithSplitsAtStations([31, 32])];
         $this->post($this->_getEndpoint(), $data);
-        $this->assertJsonResponseOK();
+        $this->assertUploadOk();
 
         $this->assertEquals([31, 32], $this->_teamSplitStations());
 
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => MixedExamples::teamResultWithSplitsAtStations([31, 33])];
         $this->post($this->_getEndpoint(), $data);
-        $this->assertJsonResponseOK();
+        $this->assertUploadOk();
 
         $this->assertEquals([31, 33], $this->_teamSplitStations(),
             'the stored team splits are replaced, the old station 32 must be gone');
@@ -862,7 +865,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => $dns];
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
         $expectedRunnerAmount = 2;
         $expectedSplits = 4;
@@ -921,7 +924,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             = $originalSplits;
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals([], $jsonDecoded['data'], json_encode($jsonDecoded));
         $this->_assertRunnersWithFinishTimes(true, StatusCode::DNF);
         $this->assertEquals($expectedControlAmount, ControlsTable::load()->find()->all()->count());
@@ -1080,13 +1083,13 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => ResultExamples::resultImport2CategoriesStarts()];
         $this->post($this->_getEndpoint(), $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->_assertStartsTimesFrom2Classes($jsonDecoded);
 
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => ResultExamples::resultImport2CategoriesSplits()];
         $this->post($this->_getEndpoint(), $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->_assertSplitsTimesFrom2Classes($jsonDecoded);
     }
 
@@ -1275,7 +1278,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => RelayExamples::twoTeamsWith2Runners4LegsEach()];
         $this->post($this->_getEndpoint(), $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 1 courses (', $jsonDecoded['meta']['human'][0]);
         $expected = [
             'classes' => 1,
@@ -1301,7 +1304,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => RelayExamples::oneTeamLeg2()];
         $this->post($this->_getEndpoint(), $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 1 courses (', $jsonDecoded['meta']['human'][0]);
         $this->assertEquals(4, $RunnersTable->find()->all()->count() - $existingRunners);
         $expected = [
@@ -1348,7 +1351,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => RelayExamples::oneTeamLeg4()];
         $this->post($this->_getEndpoint(), $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 1 courses (', $jsonDecoded['meta']['human'][0]);
         $this->assertEquals($expected, $jsonDecoded['meta']['updated']);
         $this->assertEquals(4, $RunnersTable->find()->all()->count() - $existingRunners);
@@ -1394,7 +1397,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => RelayExamples::simple3relay()];
         $this->post($this->_getEndpoint(), $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->_assertSimple3relay($jsonDecoded);
 
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
@@ -1402,7 +1405,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $dataTransfer['event']['stages'][0]['classes'][0]['teams'][0]['team_results'][0]['time_seconds'] = 3601;
         $data = ['oreplay_data_transfer' => $dataTransfer];
         $this->post($this->_getEndpoint(), $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->_assertSimple3relay($jsonDecoded);
     }
 
@@ -1480,14 +1483,14 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => TotalsExamples::simpleTotalPoints()];
         $this->post($this->_getEndpoint(), $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->_assertTotals($jsonDecoded);
 
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $dataTransfer = TotalsExamples::simpleTotalPoints(2932);
         $data = ['oreplay_data_transfer' => $dataTransfer];
         $this->post($this->_getEndpoint(), $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $this->_assertTotals($jsonDecoded);
     }
 
@@ -1541,7 +1544,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $data = ['oreplay_data_transfer' => TotalsExamples::stage1RealTotalPoints()];
         $this->post($this->_getEndpoint(), $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
@@ -1586,7 +1589,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $dataTransfer = TotalsExamples::stage2RealTotalPoints();
         $data = ['oreplay_data_transfer' => $dataTransfer];
         $this->post($this->_getEndpoint(), $data);
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
@@ -1690,7 +1693,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
 
     private function _assert1stUploadPartialSplitsFromDownload(int $position, string $s1time, string $s2time): void
     {
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
@@ -1727,7 +1730,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
 
     private function _assert2ndUploadPartialSplitsFromDownload(int $position, string $s1time, string $s2time): void
     {
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadOk();
         $human = $jsonDecoded['meta']['human'][0];
         $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
@@ -1792,9 +1795,21 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
 
         $data = ['oreplay_data_transfer' => IntermediateExamples::intermediateResults()];
         $this->post($this->_getEndpoint(), $data);
-        $this->assertJsonResponseOK();
+        $this->assertUploadOk();
 
         $this->assertNull(Cache::read($memoisedKey, CacheGrp::SHORT),
             'the upload rewrote the splits the memoised radio order was derived from');
+    }
+
+    public function testAddNew_aRejectedUploadMustNotPassAsSuccessful()
+    {
+        // no event token: the controller catches the ForbiddenException and answers 202, which is
+        // inside the 200-204 range assertResponseOk() accepts
+        $data = ['oreplay_data_transfer' => IntermediateExamples::intermediateResults()];
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertJsonResponseOK('a failed upload still looks OK to assertJsonResponseOK');
+
+        $this->expectException(AssertionFailedError::class);
+        $this->assertUploadOk();
     }
 }
