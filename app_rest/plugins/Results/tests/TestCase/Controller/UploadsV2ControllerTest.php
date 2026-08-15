@@ -1952,8 +1952,28 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $stations = $this->_courseControlStations(StagesFixture::STAGE_FEDO_2);
         $this->assertNotEmpty($stations,
             'a relay keeps its runners inside teams, and the course importer has to reach them');
-        $this->assertContains(implode(',', $stations), ['32,60,100', '60,50,100', '54,60,50,100'],
-            'one variant wins for now; the common course of 8.2 replaces this');
+        $this->assertEquals(['60', '100'], $stations,
+            'the controls every leg passed, in the order all three variants agree on');
+    }
+
+    public function testAddNew_shouldKeepRepeatedControlsInTheCommonCourseOfARelay()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        StagesTable::load()->updateAll(
+            ['stage_type_id' => StageType::RELAY],
+            ['id' => StagesFixture::STAGE_FEDO_2]);
+
+        // 100 is the arena control, passed twice on every variant
+        $data = ['oreplay_data_transfer' => $this->_relayUpload([
+            [['32', '100', '60', '100'], ['50', '100', '60', '100'], ['54', '100', '60', '50', '100']],
+            [['54', '100', '60', '50', '100'], ['32', '100', '60', '100'], ['50', '100', '60', '100']],
+        ])];
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertUploadOk();
+
+        $this->assertEquals(['100', '60', '100'],
+            $this->_courseControlStations(StagesFixture::STAGE_FEDO_2),
+            'the arena control is common twice, so it is two columns and not one');
     }
 
     private function _relayUpload(array $legsPerTeam): array

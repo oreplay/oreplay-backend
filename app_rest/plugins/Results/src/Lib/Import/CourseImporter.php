@@ -44,7 +44,7 @@ class CourseImporter
         }
         $stations = $isUnordered
             ? $this->_everyStationPunchedInClass($class)
-            : $this->_stationsMostRunnersPunched($class);
+            : $this->_commonCourseOf($class);
         if (!$stations || $course->isSameUploadHash($stations)) {
             return;
         }
@@ -97,24 +97,67 @@ class CourseImporter
     }
 
     /**
-     * @return string[] station numbers in course order
+     * The controls every finisher of the class passed, in an order they all agree on.
+     *
+     * For an ordinary class every runner ran the same thing, so this is that course. Where a class
+     * forks — relay legs, butterflies, Motala — no single runner's sequence is the class's course,
+     * and the part they share is what can be compared and drawn as columns. Controls only some
+     * runners visited stay in `splits`, where the per-runner ticket needs them.
+     *
+     * It is a longest common subsequence rather than a set intersection, because the answer has to
+     * be an order and it has to keep repeats: an arena control passed twice by everyone is two
+     * columns, and a set would collapse it to one.
+     *
+     * @return string[]
      */
-    private function _stationsMostRunnersPunched(ClassEntity $class): array
+    private function _commonCourseOf(ClassEntity $class): array
     {
-        $votesBySequence = [];
+        $sequences = [];
         foreach ($this->_finishedResultsOf($class) as $result) {
-            $sequence = $this->_stationsOf($result);
-            if (!$sequence) {
-                continue;
+            $stations = $this->_stationsOf($result);
+            if ($stations) {
+                $sequences[implode('-', $stations)] = $stations;
             }
-            $key = implode('-', $sequence);
-            $votesBySequence[$key] = ($votesBySequence[$key] ?? 0) + 1;
         }
-        if (!$votesBySequence) {
-            return [];
+        $common = array_shift($sequences);
+        foreach ($sequences as $sequence) {
+            $common = $this->_longestCommonSubsequence($common, $sequence);
         }
-        arsort($votesBySequence);
-        return explode('-', (string)array_key_first($votesBySequence));
+        return $common ?: [];
+    }
+
+    /**
+     * @param string[] $first
+     * @param string[] $second
+     * @return string[]
+     */
+    private function _longestCommonSubsequence(array $first, array $second): array
+    {
+        $firstLength = count($first);
+        $secondLength = count($second);
+        $lengths = array_fill(0, $firstLength + 1, array_fill(0, $secondLength + 1, 0));
+        for ($i = 1; $i <= $firstLength; $i++) {
+            for ($j = 1; $j <= $secondLength; $j++) {
+                $lengths[$i][$j] = $first[$i - 1] === $second[$j - 1]
+                    ? $lengths[$i - 1][$j - 1] + 1
+                    : max($lengths[$i - 1][$j], $lengths[$i][$j - 1]);
+            }
+        }
+        $common = [];
+        $i = $firstLength;
+        $j = $secondLength;
+        while ($i > 0 && $j > 0) {
+            if ($first[$i - 1] === $second[$j - 1]) {
+                array_unshift($common, $first[$i - 1]);
+                $i--;
+                $j--;
+            } elseif ($lengths[$i - 1][$j] >= $lengths[$i][$j - 1]) {
+                $i--;
+            } else {
+                $j--;
+            }
+        }
+        return $common;
     }
 
     /**
