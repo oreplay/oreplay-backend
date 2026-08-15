@@ -1907,4 +1907,132 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             ],
         ];
     }
+
+    public function testAddNew_shouldKeepARadioThatTheCourseVisitsTwice()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        // an ordinary ordered stage: the control before the finish is passed on every relay leg
+        $data = ['oreplay_data_transfer' => $this->_raidUpload([
+            ['31', '100', '32', '100'],
+            ['31', '100', '32', '100'],
+        ])];
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertUploadOk();
+        ControlsTable::load()->markIntermediateStations(StagesFixture::STAGE_FEDO_2, ['100']);
+
+        $this->assertEquals(['31', '100', '32', '100'],
+            $this->_courseControlStations(StagesFixture::STAGE_FEDO_2),
+            'the course keeps both visits, order_number tells them apart');
+
+        $radios = [];
+        foreach (ClassesTable::load()->getByStageWithRadios(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2) as $c) {
+            foreach ($c->splits as $radio) {
+                $radios[] = (string)$radio->station;
+            }
+        }
+        $this->assertEquals(['100', '100'], $radios,
+            'a radio passed twice is listed twice, so the live splits table stays aligned');
+    }
+
+    public function testAddNew_shouldStoreTheCourseOfARelayClass()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        StagesTable::load()->updateAll(
+            ['stage_type_id' => StageType::RELAY],
+            ['id' => StagesFixture::STAGE_FEDO_2]);
+
+        // the three forking variants of upload-courses.md 8.2, run in a different leg order per team
+        $data = ['oreplay_data_transfer' => $this->_relayUpload([
+            [['32', '60', '100'], ['60', '50', '100'], ['54', '60', '50', '100']],
+            [['54', '60', '50', '100'], ['32', '60', '100'], ['60', '50', '100']],
+        ])];
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertUploadOk();
+
+        $stations = $this->_courseControlStations(StagesFixture::STAGE_FEDO_2);
+        $this->assertNotEmpty($stations,
+            'a relay keeps its runners inside teams, and the course importer has to reach them');
+        $this->assertContains(implode(',', $stations), ['32,60,100', '60,50,100', '54,60,50,100'],
+            'one variant wins for now; the common course of 8.2 replaces this');
+    }
+
+    private function _relayUpload(array $legsPerTeam): array
+    {
+        $teams = [];
+        foreach ($legsPerTeam as $t => $legs) {
+            $runners = [];
+            foreach ($legs as $leg => $stations) {
+                $splits = [];
+                foreach ($stations as $order => $station) {
+                    $splits[] = [
+                        'id' => '',
+                        'station' => $station,
+                        'order_number' => $order + 1,
+                        'reading_time' => '2026-01-01T10:0' . $order . ':00.000+00:00',
+                    ];
+                }
+                $runners[] = [
+                    'id' => '',
+                    'uuid' => '',
+                    'sicard' => (string)(7000000 + $t * 10 + $leg),
+                    'first_name' => 'Team' . $t,
+                    'last_name' => 'Leg' . ($leg + 1),
+                    'bib_number' => (string)(100 + $t) . '-' . ($leg + 1),
+                    'leg_number' => $leg + 1,
+                    'is_nc' => false,
+                    'runner_results' => [[
+                        'id' => '',
+                        'start_time' => '2026-01-01T10:00:00.000+00:00',
+                        'finish_time' => '2026-01-01T11:00:00.000+00:00',
+                        'time_seconds' => 3600,
+                        'position' => $t + 1,
+                        'status_code' => StatusCode::OK,
+                        'leg_number' => $leg + 1,
+                        'splits' => $splits,
+                        'result_type' => ['id' => ResultType::STAGE, 'description' => 'Stage'],
+                    ]],
+                ];
+            }
+            $teams[] = [
+                'id' => '',
+                'uuid' => '',
+                'legs' => (int)count($legs),
+                'bib_number' => (string)(100 + $t),
+                'team_name' => 'Team ' . $t,
+                'runners' => $runners,
+            ];
+        }
+        return [
+            'configuration' => [
+                'source_vendor' => 'oreplay',
+                'source' => 'IofXml',
+                'source_version' => '3.0',
+                'contents' => 'ResultList',
+                'results_type' => 'Breakdown',
+                'utf' => true,
+            ],
+            'event' => [
+                'id' => Event::FIRST_EVENT,
+                'description' => 'relay',
+                'stages' => [[
+                    'id' => StagesFixture::STAGE_FEDO_2,
+                    'order_number' => 1,
+                    'description' => 'relay',
+                    'classes' => [[
+                        'id' => '',
+                        'uuid' => '',
+                        'oe_key' => '1',
+                        'short_name' => 'RELEVO',
+                        'long_name' => 'Relevo',
+                        'course' => [
+                            'id' => '', 'uuid' => '', 'oe_key' => '55',
+                            'short_name' => 'R1', 'distance' => '2100', 'climb' => '', 'controls' => 3,
+                        ],
+                        'teams' => $teams,
+                        'runners' => [],
+                    ]],
+                ]],
+            ],
+        ];
+    }
 }

@@ -8,6 +8,7 @@ use Results\Lib\Consts\StatusCode;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Course;
+use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\StageType;
 use Results\Model\Table\CourseControlsTable;
@@ -117,12 +118,29 @@ class CourseImporter
     }
 
     /**
+     * A relay carries no runners on the class: they hang off each team, one per leg, and their
+     * runner_results are where the punches of that leg are. Reading only $class->runners left every
+     * relay class without a control list at all.
+     *
      * @return RunnerResult[]
      */
     private function _finishedResultsOf(ClassEntity $class): array
     {
+        $results = $this->_finishedResultsOfRunners($class->runners ?? []);
+        foreach ($class->teams ?? [] as $team) {
+            $results = array_merge($results, $this->_finishedResultsOfRunners($team->runners ?? []));
+        }
+        return $results;
+    }
+
+    /**
+     * @param Runner[] $runners
+     * @return RunnerResult[]
+     */
+    private function _finishedResultsOfRunners(array $runners): array
+    {
         $results = [];
-        foreach ($class->runners ?? [] as $runner) {
+        foreach ($runners as $runner) {
             foreach ($runner->runner_results ?? [] as $result) {
                 if ($result->status_code === StatusCode::OK) {
                     $results[] = $result;
