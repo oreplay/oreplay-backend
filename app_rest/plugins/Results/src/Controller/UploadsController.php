@@ -192,7 +192,9 @@ class UploadsController extends ApiController
                 // warning: two payload entries can match one runner (same bib, or same name in the class,
                 // see Runner::getMatchedRunner) so two real people silently become one row and one set of
                 // results. Dropping the duplicate here only avoids saving it twice; the merge still happens.
-                $metrics->setWarning('Duplicated runner ' . $runner->_getFullName() . ' ' . $runner->bib_number);
+                $metrics->setDataLossWarning(
+                    'Duplicated runner ' . $runner->_getFullName() . ' ' . $runner->bib_number
+                );
                 continue;
             }
             $existingRunnerIDs[] = $runner->id;

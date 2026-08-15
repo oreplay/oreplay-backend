@@ -50,7 +50,10 @@ class UploadMetrics
         self::PARTICIPANTS_IN_LOOP => 0.0,
     ];
     private array $_timersInProgress = [];
-    private string $_lastWarning = '';
+    private const MAX_WARNINGS_PER_TYPE = 10;
+
+    private array $_warnings = [];
+    private array $_dataLossWarnings = [];
 
     public function __construct()
     {
@@ -121,7 +124,7 @@ class UploadMetrics
             fn() => $classes->saveManyWithRelations($singleClassToSave, $splitsToReplace, $rowsToInsert)
         );
         if ($missing) {
-            $this->setWarning(
+            $this->setDataLossWarning(
                 'Not saved in database: ' . $missing . ' rows of class ' . $singleClassToSave->short_name
             );
         }
@@ -200,15 +203,45 @@ class UploadMetrics
 
     public function setWarning(string $string)
     {
-        $this->_lastWarning = $string;
+        $this->_warnings = $this->_appendCapped($this->_warnings, $string);
+    }
+
+    /**
+     * For warnings that mean rows or people were lost, which outrank everything else on the way out.
+     */
+    public function setDataLossWarning(string $string)
+    {
+        $this->_dataLossWarnings = $this->_appendCapped($this->_dataLossWarnings, $string);
+    }
+
+    // keeps the most recent so a flood of warnings cannot exhaust memory, and repeats are dropped:
+    // the too-long warning is re-set once per remaining class and would otherwise fill the list
+    private function _appendCapped(array $warnings, string $warning): array
+    {
+        if (end($warnings) === $warning) {
+            return $warnings;
+        }
+        $warnings[] = $warning;
+        return array_slice($warnings, -self::MAX_WARNINGS_PER_TYPE);
+    }
+
+    // losing data outranks the rest: report every such warning and drop the ordinary ones, so the
+    // lines that matter are not buried. With no data loss only the last ordinary warning is useful.
+    private function _warningsToShow(): array
+    {
+        if ($this->_dataLossWarnings) {
+            return $this->_dataLossWarnings;
+        }
+        return array_slice($this->_warnings, -1);
     }
 
     private function _formatExtraMessage(): string
     {
-        if (!$this->_lastWarning) {
+        $shown = $this->_warningsToShow();
+        if (!$shown) {
             return '';
         }
-        return ' (<b>' . $this->_lastWarning . '</b>)';
+        return ' (<b>' . implode('; ', $shown) . '</b>)';
     }
 
     public function toArray(string $type): array
