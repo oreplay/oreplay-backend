@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
+use PHPUnit\Framework\AssertionFailedError;
 use App\Lib\Consts\CacheGrp;
 use Cake\Cache\Cache;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
@@ -1707,5 +1708,20 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $this->assertNull(Cache::read($memoisedKey, CacheGrp::SHORT),
             'the upload rewrote the splits the memoised radio order was derived from');
+    }
+
+    public function testAddNew_aRejectedUploadStillAnswers202()
+    {
+        // v1's documented contract: every failure is a 202 carrying the error in meta.human. That is
+        // exactly why assertUploadOk() exists, because assertJsonResponseOK() cannot tell them apart.
+        // v2 answers a real status instead — see docs/uploads-v1-vs-v2.md
+        $data = ['oreplay_data_transfer' => IntermediateExamples::intermediateResults()];
+        $this->post($this->_getEndpoint(), $data);
+
+        $this->assertEquals(202, $this->_response->getStatusCode());
+        $this->assertJsonResponseOK('v1 reports a failed upload with a success status');
+
+        $this->expectException(AssertionFailedError::class);
+        $this->assertUploadOk();
     }
 }

@@ -21,4 +21,14 @@ trait UploadResponseTrait
         $this->assertStringNotContainsString('[ERROR - ', $human, trim($message . ' upload failed:'));
         return $json;
     }
+
+    /**
+     * v2 only. v1 answers 202 for every failure by contract, so there is no status to assert there.
+     */
+    protected function assertUploadRejected(int $expectedStatus): array
+    {
+        $body = (string)$this->_getBodyAsString();
+        $this->assertEquals($expectedStatus, $this->_response->getStatusCode(), $body);
+        return json_decode($body, true);
+    }
 }

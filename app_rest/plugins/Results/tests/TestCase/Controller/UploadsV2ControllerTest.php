@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
-use PHPUnit\Framework\AssertionFailedError;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use App\Lib\Consts\CacheGrp;
 use Cake\Cache\Cache;
@@ -126,7 +125,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         ];
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadRejected(400);
         $expected = [
             '_c' => 'Uploaded',
             'meta' => [
@@ -154,7 +153,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         ];
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadRejected(404);
         $this->assertStringContainsString('[ERROR', $jsonDecoded['meta']['human'][0]);
         $this->assertEquals(['classes' => 0, 'runners' => 0], $jsonDecoded['meta']['updated']);
     }
@@ -199,7 +198,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         ]);
         $this->post($this->_getEndpoint());
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadRejected(400);
         $expected = [
             '_c' => 'Uploaded',
             'meta' => [
@@ -638,7 +637,8 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => StartExamples::startImportSmall()];
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        // v2 answers a real error status; v1 keeps 202 for its documented contract
+        $this->assertEquals(403, $this->_response->getStatusCode(), $this->_getBodyAsString());
         $now = new FrozenTime();
         $expectedMeta = [
             '_c' => 'UploadedMeta',
@@ -651,8 +651,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
                 "\n    [ERROR - 403] ($now) ForbiddenException \n"
             ]
         ];
-        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-
+        $this->assertEquals($expectedMeta, json_decode((string)$this->_getBodyAsString(), true)['meta']);
     }
 
     public function testAddNew_shouldAddFinishTimesTwice()
@@ -966,7 +965,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => StartExamples::startImportSmall()];
         $this->post($this->_getEndpoint(), $data);
 
-        $jsonDecoded = $this->assertJsonResponseOK();
+        $jsonDecoded = $this->assertUploadRejected(400);
         $now = new FrozenTime();
         $expectedMeta = [
             '_c' => 'UploadedMeta',
@@ -1808,16 +1807,14 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             'the upload rewrote the splits the memoised radio order was derived from');
     }
 
-    public function testAddNew_aRejectedUploadMustNotPassAsSuccessful()
+    public function testAddNew_aRejectedUploadAnswersAnErrorStatus()
     {
-        // no event token: the controller catches the ForbiddenException and answers 202, which is
-        // inside the 200-204 range assertResponseOk() accepts
+        // no event token. v2 is not bound by v1's 202-for-every-failure contract, so a client can
+        // tell a rejected upload from an accepted one without reading meta.human
         $data = ['oreplay_data_transfer' => IntermediateExamples::intermediateResults()];
         $this->post($this->_getEndpoint(), $data);
-        $this->assertJsonResponseOK('a failed upload still looks OK to assertJsonResponseOK');
 
-        $this->expectException(AssertionFailedError::class);
-        $this->assertUploadOk();
+        $this->assertUploadRejected(403);
     }
 
     public function testAddNew_shouldUnionTheControlsOfAnUnorderedStageIgnoringPunchOrder()

@@ -269,11 +269,11 @@ class UploadsV2Controller extends ApiController
                 . " \n\n" . json_encode($data)
                 . " \n\n" . json_encode($this->return)
             );
-            $this->return = $this->respondError($e->getMessage(), $e->getCode());
+            $this->return = $this->respondError($e->getMessage(), $e);
         } catch (DetailedException $e) {
             $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . json_encode($data)
                 . " \n" . $e->getTraceAsString());
-            $this->return = $this->respondError($e->getMessage(), $e->getCode());
+            $this->return = $this->respondError($e->getMessage(), $e);
         } catch (\Throwable $e) {
             $this->log('Uploads GeneralException: ' . $e->getMessage() . " \n" . json_encode($data)
                 . " \n" . $e->getTraceAsString());
@@ -282,17 +282,32 @@ class UploadsV2Controller extends ApiController
             if (!$exceptionName) {
                 $exceptionName = array_pop($exploded);
             }
-            $this->return = $this->respondError($exceptionName, $e->getCode());
+            $this->return = $this->respondError($exceptionName, $e);
         } finally {
             $this->_clearUploadCache();
         }
     }
 
-    private function respondError(string $message, $code): array
+    // v1 answers 202 for every failure because its contract with the desktop client says so. v2 is
+    // free of that promise and answers a real status, so a client can tell a rejected upload from an
+    // accepted one without parsing meta.human. See docs/uploads-v1-vs-v2.md
+    private function respondError(string $message, \Throwable $e): array
     {
         $now = new FrozenTime();
-        $this->response = $this->response->withStatus(202);
+        $code = $e->getCode();
+        $this->response = $this->response->withStatus($this->_errorStatus($e));
         return $this->_metrics->toArrayError(["\n    [ERROR - $code] ($now) $message \n"]);
+    }
+
+    // the range is the filter, not the class: RecordNotFoundException is not an HttpException but
+    // carries a real 404, while a PDOException carries a SQLSTATE such as 23000 that must not escape
+    private function _errorStatus(\Throwable $e): int
+    {
+        $code = $e->getCode();
+        if (is_int($code) && $code >= 400 && $code <= 599) {
+            return $code;
+        }
+        return 500;
     }
 
     private function _getBearer(): ?string
