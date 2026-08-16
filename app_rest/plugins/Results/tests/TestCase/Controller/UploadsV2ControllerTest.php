@@ -572,6 +572,72 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(100, $splitB->control->station);
     }
 
+    /**
+     * @return string[] one entry per stored split, as station@order_number
+     */
+    private function _punchesInUploadedStage(): array
+    {
+        $punches = [];
+        $rows = SplitsTable::load()->find()
+            ->where([SplitsTable::field('stage_id') => StagesFixture::STAGE_FEDO_2])
+            ->contain(ControlsTable::name())
+            ->all();
+        /** @var Split $row */
+        foreach ($rows as $row) {
+            $punches[] = ($row->control->station ?? '?') . '@' . $row->order_number;
+        }
+        sort($punches);
+        return $punches;
+    }
+
+    private function _withExtraPunchAtStation55(array $payload): array
+    {
+        $classes =& $payload['event']['stages'][0]['classes'];
+        foreach ($classes as $classIndex => $class) {
+            foreach ($class['runners'] as $runnerIndex => $runner) {
+                foreach ($runner['runner_results'] as $resultIndex => $result) {
+                    $extraPunch = $result['splits'][0];
+                    $extraPunch['station'] = '55';
+                    $extraPunch['order_number'] = 3;
+                    $classes[$classIndex]['runners'][$runnerIndex]['runner_results'][$resultIndex]['splits'][]
+                        = $extraPunch;
+                }
+            }
+        }
+        unset($classes);
+        return $payload;
+    }
+
+    /**
+     * A radio upload resends every punch the runner has made so far, not only the new one, and it is
+     * the one upload type that does not replace the stored splits — deleting them would take the
+     * downloaded chip readings with it. Without a narrower replacement each batch stored the whole
+     * history again.
+     */
+    public function testAddNew_shouldNotDuplicateEarlierPunchesOnASecondRadioBatch()
+    {
+        Cache::clear();
+        ClassesTable::load()->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+        $firstBatch = IntermediateExamples::intermediateResults();
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), ['oreplay_data_transfer' => $firstBatch]);
+        $this->assertUploadOk();
+        $this->assertEquals(['100@2', '100@2', '32@1', '32@1'], $this->_punchesInUploadedStage());
+
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(),
+            ['oreplay_data_transfer' => $this->_withExtraPunchAtStation55($firstBatch)]);
+        $this->assertUploadOk();
+
+        $this->assertEquals(
+            ['100@2', '100@2', '32@1', '32@1', '55@3', '55@3'],
+            $this->_punchesInUploadedStage(),
+            'the two runners keep one punch per station, not a second copy of the earlier ones'
+        );
+    }
+
     public function testAddNew_shouldAddIntermediatesWithRadiosAndDuplicatedBibs()
     {
         Cache::clear();

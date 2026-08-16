@@ -93,6 +93,14 @@ class SplitsTable extends AppTable
         return $this->deleteAll([$foreignKey . ' IN' => $resultIds]);
     }
 
+    public function deleteAllIntermediateByResultIds(string $foreignKey, array $resultIds): int
+    {
+        if (!$resultIds) {
+            return 0;
+        }
+        return $this->deleteAll([$foreignKey . ' IN' => $resultIds, 'is_intermediate' => true]);
+    }
+
     /**
      * @param string[] $splitIds
      * @return int
@@ -104,5 +112,4 @@ class SplitsTable extends AppTable
         }
         return $this->updateAll(['deleted' => new FrozenTime()], ['id in' => $splitIds]);
     }
-
 }

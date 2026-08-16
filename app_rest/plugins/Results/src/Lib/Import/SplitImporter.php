@@ -53,6 +53,8 @@ class SplitImporter
         $resultToSave->setHash($splits);
         if ($this->_replacesEveryStoredSplit()) {
             $this->_helper->getSplitsToReplace()->add($resultToSave);
+        } else {
+            $this->_helper->getSplitsToReplace()->addIntermediatesOnly($resultToSave);
         }
         return $this->_addEachSplit($resultToSave, $splits);
     }
