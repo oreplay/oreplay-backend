@@ -61,7 +61,7 @@ class SplitImporter
 
     private function _isAlreadyStored(ParticipantResultsEntity $resultToSave, array $splits): bool
     {
-        if ($this->_helper->isReprocessingAll() && $this->_replacesEveryStoredSplit()) {
+        if ($this->_helper->isReprocessingAll()) {
             return false;
         }
         return $resultToSave->hasSameSplits($splits);

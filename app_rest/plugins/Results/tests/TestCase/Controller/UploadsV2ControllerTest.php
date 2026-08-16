@@ -638,6 +638,28 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         );
     }
 
+    public function testAddNew_shouldReprocessIntermediatesWhenReprocessAllIsRequested()
+    {
+        Cache::clear();
+        ClassesTable::load()->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+        $batch = IntermediateExamples::intermediateResults();
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), ['oreplay_data_transfer' => $batch]);
+        $this->assertUploadOk();
+        $storedSplitIds = $this->_splitIdsInUploadedStage();
+
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint() . '?reprocess_all=1', ['oreplay_data_transfer' => $batch]);
+        $this->assertUploadOk();
+
+        $this->assertEquals([], array_intersect($storedSplitIds, $this->_splitIdsInUploadedStage()),
+            'reprocess_all rewrites the stored punches instead of skipping them on an equal hash');
+        $this->assertEquals(['100@2', '100@2', '32@1', '32@1'], $this->_punchesInUploadedStage(),
+            'they are rewritten once, not appended to the ones already stored');
+    }
+
     public function testAddNew_shouldAddIntermediatesWithRadiosAndDuplicatedBibs()
     {
         Cache::clear();
