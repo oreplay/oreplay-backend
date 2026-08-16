@@ -82,6 +82,15 @@ class RunnersTable extends AppTable
 
     public function matchRunner(array $runnerData, ClassEntity $class): Runner
     {
+        // db_id identifies the runner in the client's own database, so it outranks a bib that a
+        // later upload may have reassigned. Matching is a scan, so it needs a pass of its own:
+        // inside the second loop the first runner holding that bib would answer first.
+        foreach ($this->_getStoredParticipantsInClass() as $runner) {
+            $matchedRunner = $runner->getMatchedRunnerByDbId($runnerData);
+            if ($matchedRunner) {
+                return $matchedRunner;
+            }
+        }
         foreach ($this->_getStoredParticipantsInClass() as $runner) {
             $matchedRunner = $runner->getMatchedRunner($runnerData, $class);
             if ($matchedRunner) {

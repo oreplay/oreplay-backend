@@ -39,6 +39,8 @@ class Runner extends AppEntity implements ParticipantInterface
     protected array $_accessible = [
         '*' => false,
         'id' => false,
+        'db_id' => true,
+        'iof_id' => true,
         'first_name' => true,
         'last_name' => true,
         'sicard' => true,
@@ -192,13 +194,27 @@ class Runner extends AppEntity implements ParticipantInterface
         return $isSameDbId || $isSameBib;
     }
 
+    public function getMatchedRunnerByDbId(array $runnerData): ?Runner
+    {
+        if ($this->_isAnotherLeg($runnerData)) {
+            return null;
+        }
+        return $this->isSameField('db_id', $runnerData) ? $this : null;
+    }
+
+    private function _isAnotherLeg(array $runnerData): bool
+    {
+        if (!$this->leg_number) {
+            return false;
+        }
+        $leg = $runnerData['runner_results'][0]['leg_number'] ?? null;
+        return $leg && $leg != $this->leg_number;
+    }
+
     public function getMatchedRunner(array $runnerData, ClassEntity $class = null): ?Runner
     {
-        if ($this->leg_number) {
-            $leg = $runnerData['runner_results'][0]['leg_number'] ?? null;
-            if ($leg && $leg != $this->leg_number) {
-                return null;
-            }
+        if ($this->_isAnotherLeg($runnerData)) {
+            return null;
         }
         if ($this->isSameField('db_id', $runnerData)) {
             return $this;

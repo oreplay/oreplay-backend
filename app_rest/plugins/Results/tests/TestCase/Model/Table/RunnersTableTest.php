@@ -207,6 +207,121 @@ class RunnersTableTest extends TestCase
         $this->assertEquals(RunnerResult::FIRST_RES, $res->_getStage()->id);
     }
 
+    public function testCreateRunnerIfNotExists_shouldKeepTheDbIdOfThePayload()
+    {
+        $class = new ClassEntity();
+        $class->id = ClassEntity::ME;
+        $data = ['db_id' => '6208', 'first_name' => 'Brand', 'last_name' => 'New'];
+
+        $runner = $this->Runners
+            ->createRunnerIfNotExists(Event::FIRST_EVENT, Stage::FIRST_STAGE, $data, $class);
+
+        $this->assertEquals('6208', $runner->db_id);
+    }
+
+    /**
+     * The desktop client sends iof_id empty on every runner, so nothing fills it today. It is
+     * accessible for the IOF XML import, whose Person/Id has nowhere else to go.
+     */
+    public function testCreateRunnerIfNotExists_shouldKeepTheIofIdOfThePayload()
+    {
+        $class = new ClassEntity();
+        $class->id = ClassEntity::ME;
+        $data = ['iof_id' => '1234567', 'first_name' => 'Brand', 'last_name' => 'New'];
+
+        $runner = $this->Runners
+            ->createRunnerIfNotExists(Event::FIRST_EVENT, Stage::FIRST_STAGE, $data, $class);
+
+        $this->assertEquals('1234567', $runner->iof_id);
+    }
+
+    /**
+     * The whole point of db_id: the client's own identifier survives a runner being renamed or
+     * given a different bib between two uploads, which neither of the other strategies can.
+     */
+    public function testMatchRunner_shouldFindARenamedRunnerUploadedWithTheSameDbId()
+    {
+        $class = new ClassEntity();
+        $class->id = ClassEntity::ME;
+        $firstUpload = ['db_id' => '6208', 'first_name' => 'Brand', 'last_name' => 'New'];
+        $created = $this->Runners
+            ->createRunnerIfNotExists(Event::FIRST_EVENT, Stage::FIRST_STAGE, $firstUpload, $class);
+        $created->class_id = $class->id;
+        $this->Runners->saveOrFail($created);
+        $this->Runners->emptyStoredList();
+        $this->Runners->getStoredAllParticipantsInClass(Event::FIRST_EVENT, Stage::FIRST_STAGE, $class->id);
+
+        $renamed = ['db_id' => '6208', 'first_name' => 'Renamed', 'last_name' => 'Person'];
+        $matched = $this->Runners->matchRunner($renamed, $class);
+
+        $this->assertEquals($created->id, $matched->id);
+    }
+
+    private function _emptyClassWithTwoRunners(): ClassEntity
+    {
+        $class = new ClassEntity();
+        $class->id = 'class-without-fixture-runners';
+        $this->Runners->getStoredAllParticipantsInClass(Event::FIRST_EVENT, Stage::FIRST_STAGE, $class->id);
+        $this->Runners->createRunnerIfNotExists(Event::FIRST_EVENT, Stage::FIRST_STAGE,
+            ['db_id' => 'AAA', 'bib_number' => '11', 'first_name' => 'Ann', 'last_name' => 'One'], $class);
+        $this->Runners->createRunnerIfNotExists(Event::FIRST_EVENT, Stage::FIRST_STAGE,
+            ['db_id' => 'BBB', 'bib_number' => '22', 'first_name' => 'Bob', 'last_name' => 'Two'], $class);
+        return $class;
+    }
+
+    /**
+     * db_id is the client's own identity for the runner, so it has to beat a bib that a later upload
+     * reassigned to somebody else. Matching walks the stored runners one by one, so without a pass of
+     * its own the first runner holding that bib answers first and the results land on the wrong person.
+     */
+    public function testMatchRunner_shouldPreferTheDbIdOverTheBibOfAnEarlierRunner()
+    {
+        $class = $this->_emptyClassWithTwoRunners();
+
+        $matched = $this->Runners->matchRunner(
+            ['db_id' => 'BBB', 'bib_number' => '11', 'first_name' => 'X', 'last_name' => 'Y'],
+            $class
+        );
+
+        $this->assertEquals('Bob', $matched->first_name);
+    }
+
+    public function testMatchRunner_shouldStillMatchByBibWhenNoDbIdMatches()
+    {
+        $class = $this->_emptyClassWithTwoRunners();
+
+        $matched = $this->Runners->matchRunner(
+            ['db_id' => 'unknown', 'bib_number' => '22', 'first_name' => 'X', 'last_name' => 'Y'],
+            $class
+        );
+
+        $this->assertEquals('Bob', $matched->first_name);
+    }
+
+    public function testMatchRunner_shouldNotLetTheDbIdPassCrossRelayLegs()
+    {
+        $class = new ClassEntity();
+        $class->id = 'class-without-fixture-runners';
+        $this->Runners->getStoredAllParticipantsInClass(Event::FIRST_EVENT, Stage::FIRST_STAGE, $class->id);
+        $this->Runners->createRunnerIfNotExists(Event::FIRST_EVENT, Stage::FIRST_STAGE,
+            ['db_id' => 'AAA', 'leg_number' => 1, 'first_name' => 'Ann', 'last_name' => 'One'], $class);
+
+        $otherLeg = [
+            'db_id' => 'AAA',
+            'first_name' => 'X',
+            'last_name' => 'Y',
+            'runner_results' => [['leg_number' => 2]],
+        ];
+        $exception = 'not raised';
+        try {
+            $this->Runners->matchRunner($otherLeg, $class);
+        } catch (NotFoundException $e) {
+            $exception = $e->getMessage();
+        }
+
+        $this->assertEquals('Not found runner by db_id', $exception);
+    }
+
     public function testMatchRunner()
     {
         $dbId = '984ur983u';
