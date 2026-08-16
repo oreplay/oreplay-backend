@@ -1789,24 +1789,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         }
     }
 
-    public function testAddNew_shouldForgetTheMemoisedRadioOrder()
-    {
-        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
-        ClassesTable::load()->updateAll(
-            ['stage_id' => StagesFixture::STAGE_FEDO_2],
-            ['id' => ClassEntity::ME]);
-        $memoisedKey = 'getStationsFromLeaderInStage' . StagesFixture::STAGE_FEDO_2;
-        SplitsTable::load()->getStationsFromLeaderInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2);
-        $this->assertNotNull(Cache::read($memoisedKey, CacheGrp::SHORT), 'the radio order is memoised');
-
-        $data = ['oreplay_data_transfer' => IntermediateExamples::intermediateResults()];
-        $this->post($this->_getEndpoint(), $data);
-        $this->assertUploadOk();
-
-        $this->assertNull(Cache::read($memoisedKey, CacheGrp::SHORT),
-            'the upload rewrote the splits the memoised radio order was derived from');
-    }
-
     public function testAddNew_aRejectedUploadAnswersAnErrorStatus()
     {
         // no event token. v2 is not bound by v1's 202-for-every-failure contract, so a client can

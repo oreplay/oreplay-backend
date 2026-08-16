@@ -102,7 +102,6 @@ class StagesController extends ApiController
     private function _forgetCachesOfTheDeletedStage(string $stageId): void
     {
         Cache::clearGroup(CacheGrp::UPLOAD_ENTITIES_GROUP, CacheGrp::UPLOAD);
-        SplitsTable::load()->deleteStationsFromLeaderCache($stageId);
         StageOrdersTable::load()->deleteCache($stageId);
     }
 

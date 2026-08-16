@@ -16,7 +16,6 @@ use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageType;
 use Results\Model\Entity\UploadLog;
 use Results\Model\Table\ClassesTable;
-use Results\Model\Table\SplitsTable;
 use Results\Model\Table\StageOrdersTable;
 use Results\Model\Table\StagesTable;
 use Results\Model\Table\UploadLogsTable;
@@ -265,22 +264,17 @@ class StagesControllerTest extends ApiCommonErrorsTest
             'the class is soft deleted, so the next upload must not resolve it from the cache');
     }
 
-    public function testDelete_shouldForgetTheMemoisedRadioOrderAndStageOrders()
+    public function testDelete_shouldForgetTheMemoisedStageOrders()
     {
         $this->flushMemcached();
-        // the keys these two memoise under, kept here so the test breaks if either one moves
-        $radioOrderKey = 'getStationsFromLeaderInStage' . Stage::FIRST_STAGE;
+        // the key it memoises under, kept here so the test breaks if it moves
         $stageOrdersKey = '_getAllInSt3age_' . Stage::FIRST_STAGE;
-        SplitsTable::load()->getStationsFromLeaderInStage(Event::FIRST_EVENT, Stage::FIRST_STAGE);
         StageOrdersTable::load()->getAllInStage(Stage::FIRST_STAGE);
-        $this->assertNotNull(Cache::read($radioOrderKey, CacheGrp::SHORT), 'radio order is memoised');
         $this->assertNotNull(Cache::read($stageOrdersKey, CacheGrp::DEFAULT), 'stage orders are memoised');
 
         $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE);
         $this->assertEquals(204, $this->_response->getStatusCode(), $this->_getBodyAsString());
 
-        $this->assertNull(Cache::read($radioOrderKey, CacheGrp::SHORT),
-            'the splits behind the radio order were deleted with the stage');
         $this->assertNull(Cache::read($stageOrdersKey, CacheGrp::DEFAULT),
             'the stage orders were deleted with the stage');
     }

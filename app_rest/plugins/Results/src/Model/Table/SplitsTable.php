@@ -4,9 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Model\Table;
 
-use App\Lib\Consts\CacheGrp;
 use App\Model\Table\AppTable;
-use Cake\Cache\Cache;
 use Cake\Datasource\EntityInterface;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
@@ -107,44 +105,4 @@ class SplitsTable extends AppTable
         return $this->updateAll(['deleted' => new FrozenTime()], ['id in' => $splitIds]);
     }
 
-    private function _cacheKeyStationsFromLeader(string $stageId): string
-    {
-        return 'getStationsFromLeaderInStage' . $stageId;
-    }
-
-    public function deleteStationsFromLeaderCache(string $stageId): void
-    {
-        Cache::delete($this->_cacheKeyStationsFromLeader($stageId), CacheGrp::SHORT);
-    }
-
-    public function getStationsFromLeaderInStage(string $eventId, string $stageId): array
-    {
-        $cacheKey = $this->_cacheKeyStationsFromLeader($stageId);
-        $res = Cache::read($cacheKey, CacheGrp::SHORT);
-        if ($res) {
-            return $res;
-        }
-        $splits = $this->find()
-            ->where([
-                SplitsTable::field('event_id') => $eventId,
-                SplitsTable::field('stage_id') => $stageId,
-                SplitsTable::field('is_intermediate') => 0,
-                ])
-            ->matching(RunnerResultsTable::name(), function ($q) use ($eventId, $stageId) {
-                return $q->where([
-                    RunnerResultsTable::field('event_id') => $eventId,
-                    RunnerResultsTable::field('stage_id') => $stageId,
-                    RunnerResultsTable::field('position') => 1,
-                ]);
-            })
-            ->orderBy(['reading_time' => 'ASC'])
-            ->all();
-        $stations = [];
-        /** @var Split $split */
-        foreach ($splits as $split) {
-            $stations[$split->class_id][] = $split->station;
-        }
-        Cache::write($cacheKey, $stations, CacheGrp::SHORT);
-        return $stations;
-    }
 }

@@ -49,15 +49,6 @@ class SplitsTableTest extends TestCase
         $this->assertEquals($expected, $array);
     }
 
-    public function testGetStationsFromLeaderInStage()
-    {
-        $res = $this->Splits->getStationsFromLeaderInStage(Event::FIRST_EVENT, Stage::FIRST_STAGE);
-        $expected = [
-            'd8a87faf-68a4-487b-8f28-6e0ead6c1a57' => ['31']
-        ];
-        $this->assertEquals($expected, $res);
-    }
-
     public function testDeleteAllByResultIdsRemovesRunnerSplitsInOneStatement()
     {
         $deleted = $this->Splits->deleteAllByResultIds('runner_result_id', [RunnerResult::FIRST_RES]);

@@ -8,7 +8,6 @@ use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
-use Results\Model\Entity\Split;
 use Results\Model\Entity\Stage;
 use Results\Model\Table\ClassesTable;
 use Results\Test\Fixture\ClassesFixture;
@@ -49,13 +48,8 @@ class StageClassesControllerTest extends ApiCommonErrorsTest
             'id' => ClassEntity::ME,
             'short_name' => 'ME',
             'long_name' => 'M Elite',
-            'splits' => [
-                [
-                    '_c' => Split::class,
-                    'id' => SplitsFixture::SPLIT_1_RADIO,
-                    'station' => 31,
-                ]
-            ],
+            // a punched radio no longer produces a list on its own: the class needs a stored course
+            'splits' => [],
         ];
         $this->assertEquals([$fe, $me], $bodyDecoded['data']);
 

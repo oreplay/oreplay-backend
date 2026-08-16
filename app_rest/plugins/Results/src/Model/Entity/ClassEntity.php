@@ -56,32 +56,4 @@ class ClassEntity extends AppEntity
     {
         return in_array($this->short_name, $classNames, true);
     }
-
-    public function setSplitsAsSimpleArray(array $courseStations)
-    {
-        if ($this->splits && is_array($this->splits)) {
-            usort($this->splits, function ($a, $b) use ($courseStations) {
-                if (in_array($a->station, $courseStations) && in_array($b->station, $courseStations)) {
-                    $posA = array_search($a->station, $courseStations);
-                    $posB = array_search($b->station, $courseStations);
-                    return $posA <=> $posB;
-                }
-                if ($a->reading_time === null && $b->reading_time === null) {
-                    return 0;
-                }
-                if ($a->reading_time === null) {
-                    return 1; // null goes after non-null
-                }
-                if ($b->reading_time === null) {
-                    return -1; // non-null goes before null
-                }
-                return $a->reading_time <=> $b->reading_time; // Ascending order
-            });
-            /** @var Split $s */
-            foreach ($this->splits as $s) {
-                $s->setStationVisible();
-                $s->setHidden(['reading_time'], true);
-            }
-        }
-    }
 }

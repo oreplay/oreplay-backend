@@ -84,17 +84,11 @@ class ClassesTable extends AppTable
         $classes = $this->getAllInStage($eventId, $stageId);
         $stationsByCourse = CourseControlsTable::load()->stationsByCourseInStage($stageId);
         $radios = ControlsTable::load()->intermediateInStage($stageId);
-        $withoutAStoredCourse = [];
         /** @var ClassEntity $class */
         foreach ($classes as $class) {
             $courseStations = $stationsByCourse[$class->course_id ?? ''] ?? [];
-            if ($courseStations) {
-                $class->splits = $this->_radiosInCourseOrder($courseStations, $radios);
-            } else {
-                $withoutAStoredCourse[] = $class;
-            }
+            $class->splits = $this->_radiosInCourseOrder($courseStations, $radios);
         }
-        $this->_addRadiosFromPunches($withoutAStoredCourse, $eventId, $stageId);
         return $classes;
     }
 
@@ -114,44 +108,6 @@ class ClassesTable extends AppTable
         return $inOrder;
     }
 
-    /**
-     * Stations are only discovered here once somebody punches them, and the download that replaces
-     * the punch hides them again, so a re-synced stage reports no radios at all. Kept for the
-     * classes whose course has no stored control list yet: score and raid stages, which have no
-     * course order to report, and anything uploaded before course_controls existed.
-     *
-     * @param ClassEntity[] $classes
-     */
-    private function _addRadiosFromPunches(array $classes, string $eventId, string $stageId): void
-    {
-        if (!$classes) {
-            return;
-        }
-        $stationsInClass = $this->Splits->getStationsFromLeaderInStage($eventId, $stageId);
-        $punched = $this->find()
-            ->where(['id IN' => array_map(fn(ClassEntity $class) => $class->id, $classes)])
-            ->contain(SplitsTable::name(), function (Query $q) {
-                $select = [
-                    'class_id',
-                    'station',
-                    'reading_time'  => $q->func()->min(SplitsTable::field('reading_time'), ['string']),
-                    'id' => $q->func()->max(SplitsTable::field('id'), ['string']),
-                ];
-                return $q
-                    ->select($select)
-                    ->where([SplitsTable::field('is_intermediate') => true])
-                    ->groupBy(['station', 'class_id'])
-                    ->orderBy(['station' => 'DESC'], true);
-            })
-            ->all()
-            ->indexBy('id')
-            ->toArray();
-        foreach ($classes as $class) {
-            $class->splits = $punched[$class->id]->splits ?? [];
-            $class->setSplitsAsSimpleArray($stationsInClass[$class->id] ?? []);
-        }
-    }
-
     public function saveManyWithRelations(
         ClassEntity $singleClassToSave,
         SplitsToReplace $splitsToReplace,
@@ -164,10 +120,6 @@ class ClassesTable extends AppTable
                 $rowsToInsert
             )
         );
-        // the radio order is derived from the splits this class just replaced, and it is memoised
-        // in a cache group the upload controllers do not clear. Invalidated once the transaction
-        // has committed, so a concurrent reader cannot memoise the half-written stage
-        SplitsTable::load()->deleteStationsFromLeaderCache($singleClassToSave->stage_id);
         return $saved;
     }
 
