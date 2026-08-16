@@ -32,11 +32,11 @@ class RunnerResultImporter
         $this->_helper = $helper;
     }
 
-    public function importInto(Runner $participant, array $resultData): Runner
+    public function importInto(Runner $participant, array $resultData, ?string $courseId = null): Runner
     {
         [$participant, $resultToSave] = $this->_helper->getMetrics()->measure(
             UploadMetrics::PARTICIPANT_RESULTS,
-            fn() => $this->_reconcileWithExistingResults($participant, $resultData)
+            fn() => $this->_reconcileWithExistingResults($participant, $resultData, $courseId)
         );
 
         $splits = $resultData['splits'] ?? [];
@@ -51,13 +51,16 @@ class RunnerResultImporter
         return $participant->addRunnerResult($this->_newResultWithType($resultData));
     }
 
-    private function _reconcileWithExistingResults(Runner $participant, array $resultData): array
-    {
-        $resultToSave = $this->_newResultWithType($resultData);
+    private function _reconcileWithExistingResults(
+        Runner $participant,
+        array $resultData,
+        ?string $courseId = null
+    ): array {
+        $resultToSave = $this->_newResultWithType($resultData, $courseId);
         return [$this->_helper->processRunnerResults($resultToSave, $participant), $resultToSave];
     }
 
-    private function _newResultWithType(array $resultData): RunnerResult
+    private function _newResultWithType(array $resultData, ?string $courseId = null): RunnerResult
     {
         $checker = $this->_helper->getChecker();
         $context = $this->_helper->getContext();
@@ -69,7 +72,7 @@ class RunnerResultImporter
         // a team member is saved under its team and keeps runners.class_id null, so this is
         // the only place its class is recorded and what getClassesStats() joins on
         $resultToSave->class_id = $context->getClassId();
-        $resultToSave->course_id = $context->getCourseId() ?: null;
+        $resultToSave->course_id = $courseId ?: ($context->getCourseId() ?: null);
         $resultToSave->upload_type = $checker->preCheckType();
         $resultToSave->result_type = $this->_resultTypes
             ->getCachedWithDefault($checker, $resultData['result_type']['id'] ?? null);

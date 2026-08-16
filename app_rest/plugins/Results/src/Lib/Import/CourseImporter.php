@@ -42,15 +42,12 @@ class CourseImporter
         if (!$this->_carriesTheWholeCourse()) {
             return;
         }
-        $stations = $isUnordered
-            ? $this->_everyStationPunchedInClass($class)
-            : $this->_commonCourseOf($class);
-        if (!$stations || $course->isSameUploadHash($stations)) {
-            return;
+        if (!$isUnordered) {
+            $this->_storeDeclaredVariants($class);
         }
-        $course->setHash($stations);
-        $this->_courseControls->replaceForCourse($course, $stations);
-        $this->_courses->saveOrFail($course);
+        $this->_storeCourse($course, $isUnordered
+            ? $this->_everyStationPunchedInClass($class)
+            : $this->_commonCourseOf($class));
     }
 
     private function _isUnorderedStage(): bool
@@ -112,18 +109,67 @@ class CourseImporter
      */
     private function _commonCourseOf(ClassEntity $class): array
     {
+        return $this->_commonOf($this->_distinctSequencesOf($this->_finishedResultsOf($class)));
+    }
+
+    /**
+     * @param RunnerResult[] $results
+     * @return array<string, string[]>
+     */
+    private function _distinctSequencesOf(array $results): array
+    {
         $sequences = [];
-        foreach ($this->_finishedResultsOf($class) as $result) {
+        foreach ($results as $result) {
             $stations = $this->_stationsOf($result);
             if ($stations) {
                 $sequences[implode('-', $stations)] = $stations;
             }
         }
+        return $sequences;
+    }
+
+    /**
+     * @param string[][] $sequences
+     * @return string[]
+     */
+    private function _commonOf(array $sequences): array
+    {
+        $sequences = array_values($sequences);
         $common = array_shift($sequences);
         foreach ($sequences as $sequence) {
             $common = $this->_longestCommonSubsequence($common, $sequence);
         }
         return $common ?: [];
+    }
+
+    /**
+     * Each variant the runners declared gets its own control list, so a runner can be measured
+     * against the course actually assigned to them. The class keeps the common course, which is what
+     * the classes endpoint draws its table from.
+     */
+    private function _storeDeclaredVariants(ClassEntity $class): void
+    {
+        $resultsByCourse = [];
+        foreach ($this->_finishedResultsOf($class) as $result) {
+            if ($result->course_id && $result->course_id !== ($class->course->id ?? null)) {
+                $resultsByCourse[$result->course_id][] = $result;
+            }
+        }
+        foreach ($resultsByCourse as $courseId => $results) {
+            $this->_storeCourse($this->_courses->get($courseId), $this->_commonOf(
+                $this->_distinctSequencesOf($results)
+            ));
+        }
+    }
+
+    private function _storeCourse(Course $course, array $stations): void
+    {
+        if (!$stations || $course->isSameUploadHash($stations)) {
+            return;
+        }
+        $course->setHash($stations);
+        $this->_courseControls->replaceForCourse($course, $stations);
+        $this->_courses->saveOrFail($course);
     }
 
     /**

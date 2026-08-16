@@ -126,19 +126,18 @@ class UploadsController extends ApiController
 
     private function _addCourseToClass(array $classArray, ClassEntity $class, UploadHelper $helper): ClassEntity
     {
-        $courseArray = $classArray['course'] ?? [];
-        if (!$courseArray) {
-            return $class;
-        }
         $metrics = $helper->getMetrics();
         $course = $metrics->measure(
             UploadMetrics::COURSES,
-            fn() => $this->Classes->Courses->createIfNotExists(
+            fn() => $this->Classes->Courses->createForClassIfNotExists(
                 $helper->getEventId(),
                 $helper->getStageId(),
-                $courseArray
+                $classArray
             )
         );
+        if (!$course) {
+            return $class;
+        }
         $class->course = $course;
         $metrics->addCourse($course);
         return $class;

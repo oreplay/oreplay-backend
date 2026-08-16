@@ -4,11 +4,13 @@ declare(strict_types = 1);
 
 namespace Results\Lib\Import;
 
+use Results\Lib\UploadContext;
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Runner;
 use Results\Model\Table\ClubsTable;
+use Results\Model\Table\CoursesTable;
 use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\RunnersTable;
 
@@ -31,6 +33,25 @@ class RunnerImporter
         $this->_helper = $helper;
     }
 
+    /**
+     * A forked class declares each runner's variant on the runner rather than on the class, as
+     * '#14 aBaB'. Those courses reach the database only through here: runner_results carries the id
+     * as a plain column, with no association to cascade the save. See upload-courses.md 8.2.
+     */
+    private function _declaredCourseIdOf(array $runnerData, UploadContext $context): ?string
+    {
+        $courseArray = $runnerData['course'] ?? [];
+        if (!$courseArray) {
+            return null;
+        }
+        $courses = CoursesTable::load();
+        $course = $courses->createIfNotExists($context->getEventId(), $context->getStageId(), $courseArray);
+        if ($course->isNew()) {
+            $courses->saveOrFail($course);
+        }
+        return $course->id;
+    }
+
     public function import(array $runnerData, ClassEntity $class): Runner
     {
         $runnerData = $this->_withLegNumberFromFirstResult($runnerData);
@@ -44,9 +65,10 @@ class RunnerImporter
         if (!$results) {
             $metrics->setWarning('Runner without runner_results');
         }
+        $variantCourseId = $this->_declaredCourseIdOf($runnerData, $context);
         foreach ($results as $resultData) {
             $metrics->addOneRunnerResultToCounter();
-            $runner = $this->_results->importInto($runner, $resultData);
+            $runner = $this->_results->importInto($runner, $resultData, $variantCourseId);
         }
 
         $runner = $metrics->measure(

@@ -1976,7 +1976,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             'the arena control is common twice, so it is two columns and not one');
     }
 
-    private function _relayUpload(array $legsPerTeam): array
+    private function _relayUpload(array $legsPerTeam, array $variants = []): array
     {
         $teams = [];
         foreach ($legsPerTeam as $t => $legs) {
@@ -1991,7 +1991,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
                         'reading_time' => '2026-01-01T10:0' . $order . ':00.000+00:00',
                     ];
                 }
-                $runners[] = [
+                $runner = [
                     'id' => '',
                     'uuid' => '',
                     'sicard' => (string)(7000000 + $t * 10 + $leg),
@@ -2012,6 +2012,14 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
                         'result_type' => ['id' => ResultType::STAGE, 'description' => 'Stage'],
                     ]],
                 ];
+                if ($variants[$t][$leg] ?? null) {
+                    $runner['course'] = [
+                        'id' => '', 'uuid' => '', 'oe_key' => '9004',
+                        'short_name' => $variants[$t][$leg], 'distance' => '2100', 'climb' => '',
+                        'controls' => count($stations),
+                    ];
+                }
+                $runners[] = $runner;
             }
             $teams[] = [
                 'id' => '',
@@ -2054,5 +2062,49 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
                 ]],
             ],
         ];
+    }
+
+    public function testAddNew_shouldStoreOneCourseForEachVariantTheRunnersDeclare()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        StagesTable::load()->updateAll(
+            ['stage_type_id' => StageType::RELAY],
+            ['id' => StagesFixture::STAGE_FEDO_2]);
+
+        $legs = [
+            [['32', '60', '100'], ['60', '50', '100'], ['54', '60', '50', '100']],
+            [['54', '60', '50', '100'], ['32', '60', '100'], ['60', '50', '100']],
+        ];
+        $variants = [['V1', 'V2', 'V3'], ['V3', 'V1', 'V2']];
+        $this->post($this->_getEndpoint(), ['oreplay_data_transfer' => $this->_relayUpload($legs, $variants)]);
+        $this->assertUploadOk();
+
+        $this->assertEquals(['RELEVO', 'V1', 'V2', 'V3'], $this->_courseShortNamesInStage(),
+            'one row per variant, plus the common course the class table is drawn from');
+        $this->assertEquals(['32', '60', '100'], $this->_stationsOfCourseNamed('V1'));
+        $this->assertEquals(['60', '50', '100'], $this->_stationsOfCourseNamed('V2'));
+        $this->assertEquals(['54', '60', '50', '100'], $this->_stationsOfCourseNamed('V3'));
+        $this->assertEquals(['60', '100'], $this->_stationsOfCourseNamed('RELEVO'),
+            'the class keeps the common course, so the radio list is unchanged');
+    }
+
+    private function _courseShortNamesInStage(): array
+    {
+        $names = CoursesTable::load()->find()
+            ->where(['Courses.stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->all()->extract('short_name')->toList();
+        sort($names);
+        return $names;
+    }
+
+    private function _stationsOfCourseNamed(string $shortName): array
+    {
+        $course = CoursesTable::load()->find()
+            ->where(['Courses.stage_id' => StagesFixture::STAGE_FEDO_2, 'Courses.short_name' => $shortName])
+            ->firstOrFail();
+        return CourseControlsTable::load()->find()
+            ->where(['CourseControls.course_id' => $course->id])
+            ->orderByAsc('CourseControls.order_number')
+            ->all()->extract('station')->toList();
     }
 }
