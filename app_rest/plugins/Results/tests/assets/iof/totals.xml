@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+ <ResultList xmlns="http://www.orienteering.org/datastandard/3.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ iofVersion="3.0"
+ createTime="2024-01-16T11:11:16.774"
+ creator="SportSoftware OE12 (M) V.12.1">
+<Event>
+<Name>Prueba simple para OReplay</Name>
+<StartTime>
+<Date>2024-01-16</Date>
+<Time>10:30:00.000</Time>
+</StartTime>
+</Event>
+<ClassResult>
+<Class resultListMode="Default" sex="M">
+<Id>1</Id>
+<Name>E</Name>
+<ShortName>E</ShortName>
+<Fee>
+<Name>Default</Name>
+<Amount>0.00</Amount>
+</Fee>
+</Class>
+<Course>
+<Id>1</Id>
+<Name>R1</Name>
+<Length>5000</Length>
+<Climb>120</Climb>
+<NumberOfControls>4</NumberOfControls>
+</Course>
+<PersonResult>
+<Person sex="M">
+<Name>
+<Family>nertr lmsssiiti</Family>
+<Given>otnieir</Given>
+</Name>
+<BirthDate>1974-01-01</BirthDate>
+</Person>
+<Organisation>
+<Id>1</Id>
+<Name>A Coruña LICEO</Name>
+<ShortName>A Coruña LICEO</ShortName>
+</Organisation>
+<Result raceNumber="1">
+<BibNumber>2</BibNumber>
+<StartTime>2024-01-16T10:40:00.000</StartTime>
+<FinishTime>2024-01-16T11:08:48.000</FinishTime>
+<Time>1728</Time>
+<TimeBehind>0</TimeBehind>
+<Position>1</Position>
+<Status>OK</Status>
+<ControlCard>9000002</ControlCard>
+<AssignedFee>
+<Fee type="Normal">
+<Name>Actual</Name>
+<Amount>0.00</Amount>
+</Fee>
+</AssignedFee>
+</Result>
+</PersonResult>
+<PersonResult>
+<Person sex="M">
+<Name>
+<Family>srora emereo</Family>
+<Given>mailtt</Given>
+</Name>
+<BirthDate>1971-01-01</BirthDate>
+</Person>
+<Organisation>
+<Id>1</Id>
+<Name>A Coruña LICEO</Name>
+<ShortName>A Coruña LICEO</ShortName>
+</Organisation>
+<Result raceNumber="1">
+<BibNumber>1</BibNumber>
+<StartTime>2024-01-16T10:30:00.000</StartTime>
+<FinishTime>2024-01-16T11:07:46.000</FinishTime>
+<Time>2266</Time>
+<TimeBehind>538</TimeBehind>
+<Position>2</Position>
+<Status>OK</Status>
+<ControlCard>9000001</ControlCard>
+<AssignedFee>
+<Fee type="Normal">
+<Name>Actual</Name>
+<Amount>0.00</Amount>
+</Fee>
+</AssignedFee>
+</Result>
+</PersonResult>
+</ClassResult>
+</ResultList>

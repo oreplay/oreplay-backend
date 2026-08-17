@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+ <StartList xmlns="http://www.orienteering.org/datastandard/3.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ iofVersion="3.0"
+ createTime="2025-03-26T10:32:44.918"
+ creator="SportSoftware OE12 (M) V.12.1">
+<Event>
+<Name>Test Radiocontroles</Name>
+<StartTime>
+<Date>2025-03-26</Date>
+<Time>08:00:00.000</Time>
+</StartTime>
+</Event>
+<ClassStart>
+<Class resultListMode="Default" sex="M">
+<Id>1</Id>
+<Name>E</Name>
+<ShortName>E</ShortName>
+<Fee>
+<Name>Default</Name>
+<Amount>0.00</Amount>
+</Fee>
+</Class>
+<Course>
+<Id>1</Id>
+<Name>R1</Name>
+<Length>2000</Length>
+<Climb>50</Climb>
+<NumberOfControls>5</NumberOfControls>
+</Course>
+<PersonStart>
+<Person sex="M">
+<Name>
+<Family>srmos srmos</Family>
+<Given>mailtt</Given>
+</Name>
+</Person>
+<Organisation>
+<Id>1</Id>
+<Name>A Coruña Liceo</Name>
+<ShortName>A Coruña Liceo</ShortName>
+</Organisation>
+<Start raceNumber="1">
+<BibNumber>1</BibNumber>
+<StartTime>2025-03-26T08:00:00.000</StartTime>
+<ControlCard>9000001</ControlCard>
+<AssignedFee>
+<Fee type="Normal">
+<Name>Actual</Name>
+<Amount>0.00</Amount>
+</Fee>
+</AssignedFee>
+</Start>
+</PersonStart>
+<PersonStart>
+<Person sex="M">
+<Name>
+<Family>stni stni</Family>
+<Given>otnieir</Given>
+</Name>
+</Person>
+<Organisation>
+<Id>2</Id>
+<Name>Pontevedra Aromon</Name>
+<ShortName>Pontevedra Aromon</ShortName>
+</Organisation>
+<Start raceNumber="1">
+<BibNumber>2</BibNumber>
+<StartTime>2025-03-26T08:02:00.000</StartTime>
+<ControlCard>9000002</ControlCard>
+<AssignedFee>
+<Fee type="Normal">
+<Name>Actual</Name>
+<Amount>0.00</Amount>
+</Fee>
+</AssignedFee>
+</Start>
+</PersonStart>
+<PersonStart>
+<Person sex="M">
+<Name>
+<Family>rnrss rnrss</Family>
+<Given>maoli</Given>
+</Name>
+</Person>
+<Organisation>
+<Id>3</Id>
+<Name>Lugo Fluvial</Name>
+<ShortName>Lugo Fluvial</ShortName>
+</Organisation>
+<Start raceNumber="1">
+<BibNumber>3</BibNumber>
+<StartTime>2025-03-26T08:04:00.000</StartTime>
+<ControlCard>9000003</ControlCard>
+<AssignedFee>
+<Fee type="Normal">
+<Name>Actual</Name>
+<Amount>0.00</Amount>
+</Fee>
+</AssignedFee>
+</Start>
+</PersonStart>
+</ClassStart>
+</StartList>

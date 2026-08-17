@@ -1,0 +1,179 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+ <ResultList xmlns="http://www.orienteering.org/datastandard/3.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ iofVersion="3.0"
+ createTime="2025-03-26T09:27:36.389"
+ creator="SportSoftware OE12 (M) V.12.1">
+<Event>
+<Name>Test Radiocontroles</Name>
+<StartTime>
+<Date>2025-03-26</Date>
+<Time>08:00:00.000</Time>
+</StartTime>
+</Event>
+<ClassResult>
+<Class resultListMode="Default" sex="M">
+<Id>1</Id>
+<Name>E</Name>
+<ShortName>E</ShortName>
+<Fee>
+<Name>Default</Name>
+<Amount>0.00</Amount>
+</Fee>
+</Class>
+<Course>
+<Id>1</Id>
+<Name>R1</Name>
+<Length>2000</Length>
+<Climb>50</Climb>
+<NumberOfControls>5</NumberOfControls>
+</Course>
+<PersonResult>
+<Person sex="M">
+<Name>
+<Family>rnrss rnrss</Family>
+<Given>maoli</Given>
+</Name>
+</Person>
+<Organisation>
+<Id>3</Id>
+<Name>Lugo Fluvial</Name>
+<ShortName>Lugo Fluvial</ShortName>
+</Organisation>
+<Result raceNumber="1">
+<BibNumber>3</BibNumber>
+<StartTime>2025-03-26T08:04:00.000</StartTime>
+<FinishTime>2025-03-26T09:09:10.000</FinishTime>
+<Time>3910</Time>
+<TimeBehind>0</TimeBehind>
+<Position>1</Position>
+<Status>OK</Status>
+<SplitTime>
+<ControlCode>31</ControlCode>
+<Time>1452</Time>
+</SplitTime>
+<SplitTime>
+<ControlCode>32</ControlCode>
+<Time>2175</Time>
+</SplitTime>
+<SplitTime>
+<ControlCode>33</ControlCode>
+<Time>2740</Time>
+</SplitTime>
+<SplitTime>
+<ControlCode>34</ControlCode>
+<Time>3175</Time>
+</SplitTime>
+<SplitTime>
+<ControlCode>100</ControlCode>
+<Time>3510</Time>
+</SplitTime>
+<ControlCard>9000003</ControlCard>
+<AssignedFee>
+<Fee type="Normal">
+<Name>Actual</Name>
+<Amount>0.00</Amount>
+</Fee>
+</AssignedFee>
+</Result>
+</PersonResult>
+<PersonResult>
+<Person sex="M">
+<Name>
+<Family>srmos srmos</Family>
+<Given>mailtt</Given>
+</Name>
+</Person>
+<Organisation>
+<Id>1</Id>
+<Name>A Coruña Liceo</Name>
+<ShortName>A Coruña Liceo</ShortName>
+</Organisation>
+<Result raceNumber="1">
+<BibNumber>1</BibNumber>
+<StartTime>2025-03-26T08:00:00.000</StartTime>
+<FinishTime>2025-03-26T09:05:40.000</FinishTime>
+<Time>3940</Time>
+<TimeBehind>30</TimeBehind>
+<Position>2</Position>
+<Status>OK</Status>
+<SplitTime>
+<ControlCode>31</ControlCode>
+<Time>1434</Time>
+</SplitTime>
+<SplitTime>
+<ControlCode>32</ControlCode>
+<Time>2160</Time>
+</SplitTime>
+<SplitTime>
+<ControlCode>33</ControlCode>
+<Time>2720</Time>
+</SplitTime>
+<SplitTime>
+<ControlCode>34</ControlCode>
+<Time>3160</Time>
+</SplitTime>
+<SplitTime>
+<ControlCode>100</ControlCode>
+<Time>3495</Time>
+</SplitTime>
+<ControlCard>9000001</ControlCard>
+<AssignedFee>
+<Fee type="Normal">
+<Name>Actual</Name>
+<Amount>0.00</Amount>
+</Fee>
+</AssignedFee>
+</Result>
+</PersonResult>
+<PersonResult>
+<Person sex="M">
+<Name>
+<Family>stni stni</Family>
+<Given>otnieir</Given>
+</Name>
+</Person>
+<Organisation>
+<Id>2</Id>
+<Name>Pontevedra Aromon</Name>
+<ShortName>Pontevedra Aromon</ShortName>
+</Organisation>
+<Result raceNumber="1">
+<BibNumber>2</BibNumber>
+<StartTime>2025-03-26T08:02:00.000</StartTime>
+<FinishTime>2025-03-26T09:07:52.000</FinishTime>
+<Time>3952</Time>
+<TimeBehind>42</TimeBehind>
+<Position>3</Position>
+<Status>OK</Status>
+<SplitTime>
+<ControlCode>31</ControlCode>
+<Time>1420</Time>
+</SplitTime>
+<SplitTime>
+<ControlCode>32</ControlCode>
+<Time>2150</Time>
+</SplitTime>
+<SplitTime>
+<ControlCode>33</ControlCode>
+<Time>2722</Time>
+</SplitTime>
+<SplitTime>
+<ControlCode>34</ControlCode>
+<Time>3150</Time>
+</SplitTime>
+<SplitTime>
+<ControlCode>100</ControlCode>
+<Time>3530</Time>
+</SplitTime>
+<ControlCard>9000002</ControlCard>
+<AssignedFee>
+<Fee type="Normal">
+<Name>Actual</Name>
+<Amount>0.00</Amount>
+</Fee>
+</AssignedFee>
+</Result>
+</PersonResult>
+</ClassResult>
+</ResultList>
