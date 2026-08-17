@@ -45,10 +45,6 @@ class UploadHelper
         }
         $this->_data = $data;
         $this->_eventId = $eventID;
-        $uploadLogId = '';
-        if ($uploadLogId) {
-            $this->_data = $this->_loadFromRawUploads($uploadLogId);
-        }
         $this->_metrics = $metrics;
         $this->_existingResults = new ExistingResultsIndex();
         $this->_splitsToReplace = new SplitsToReplace();
@@ -61,21 +57,6 @@ class UploadHelper
     {
         RunnersTable::load()->emptyStoredList();
         TeamsTable::load()->emptyStoredList();
-    }
-
-    private function _loadFromRawUploads(string $uploadLogId): array
-    {
-        if (!$uploadLogId) {
-            return $this->_data;
-        }
-        $oldChecker = UploadConfigChecker::fromPayload($this->_data);
-        $newStageId = $oldChecker->validateStructure($this->_eventId)->getStageId();
-
-        $raw = RawUploadsTable::load()->getByUploadLogId($uploadLogId);
-        $this->_data = json_decode($raw->file_data, true);
-        $this->_data[UploadConfigChecker::ENVELOPE_KEY]['event']['id'] = $this->_eventId;
-        $this->_data[UploadConfigChecker::ENVELOPE_KEY]['event']['stages'][0]['id'] = $newStageId;
-        return $this->_data;
     }
 
     public function isArrayWithoutValues(array $data): bool
