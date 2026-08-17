@@ -35,12 +35,8 @@ class Stage extends AppEntity
 
     protected array $_hidden = [
         'event_id',
-        'base_date',
-        'base_time',
         'order_number',
         'stage_type_id',
-        'server_offset',
-        'utc_value',
         'upload_logs',
         'created',
         'modified',
