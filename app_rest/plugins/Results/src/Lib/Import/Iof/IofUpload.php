@@ -89,8 +89,15 @@ class IofUpload
 
     private function _classes(): Generator
     {
-        $mapper = new ResultListMapper($this->_header, $this->timeZone);
-        foreach ((new IofXmlReader($this->_filePath))->classes() as $classResult) {
+        $isStartList = $this->_header->getRootElement() === 'StartList';
+        if ($isStartList) {
+            $mapper = new StartListMapper($this->_header, $this->timeZone);
+            $classElement = 'ClassStart';
+        } else {
+            $mapper = new ResultListMapper($this->_header, $this->timeZone);
+            $classElement = 'ClassResult';
+        }
+        foreach ((new IofXmlReader($this->_filePath, $classElement))->classes() as $classResult) {
             yield $mapper->classOf($classResult);
         }
     }

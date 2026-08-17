@@ -17,11 +17,15 @@ use XMLReader;
  */
 class IofXmlReader
 {
-    private const CLASS_ELEMENT = 'ClassResult';
     private const RADIO_MARKER = 'SplitTimeControls:';
 
-    public function __construct(private readonly string $filePath)
-    {
+    /**
+     * @param string $classElement ClassResult for a result list, ClassStart for a start list
+     */
+    public function __construct(
+        private readonly string $filePath,
+        private readonly string $classElement = 'ClassResult'
+    ) {
     }
 
     /**
@@ -37,14 +41,14 @@ class IofXmlReader
         }
         try {
             $scratch = new DOMDocument();
-            while ($reader->read() && $reader->localName !== self::CLASS_ELEMENT) {
+            while ($reader->read() && $reader->localName !== $this->classElement) {
                 continue;
             }
             // not `while ($reader->read())`: expand() does not advance the reader and next() already
             // moves to the following sibling, so reading as well would skip every other class
-            while ($reader->nodeType === XMLReader::ELEMENT && $reader->localName === self::CLASS_ELEMENT) {
+            while ($reader->nodeType === XMLReader::ELEMENT && $reader->localName === $this->classElement) {
                 yield $this->_classResultOf($reader->expand($scratch), $scratch);
-                if (!$reader->next(self::CLASS_ELEMENT)) {
+                if (!$reader->next($this->classElement)) {
                     break;
                 }
             }
@@ -57,7 +61,7 @@ class IofXmlReader
     {
         $data = Xml::toArray(simplexml_import_dom($node));
         return new IofClassResult(
-            $data[self::CLASS_ELEMENT] ?? [],
+            $data[$this->classElement] ?? [],
             $this->_radioStationsIn($node, $scratch)
         );
     }

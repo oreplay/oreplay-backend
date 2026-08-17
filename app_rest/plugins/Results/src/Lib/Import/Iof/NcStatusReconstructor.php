@@ -31,8 +31,13 @@ class NcStatusReconstructor
         bool $hasFinishTime,
         bool $hasMissingSplit
     ): string {
+        // a result with no Status at all is not invalid input, only incomplete: infer it the same way,
+        // rather than crashing a whole upload over one row or calling it OK as the desktop client does
+        if ($iofStatus === null || $iofStatus === '') {
+            return self::_inferredCode($position, $hasStartTime, $hasFinishTime);
+        }
         if (!self::isNotCompeting($iofStatus)) {
-            return IofStatusMap::codeOf((string)$iofStatus);
+            return IofStatusMap::codeOf($iofStatus);
         }
         $code = self::_inferredCode($position, $hasStartTime, $hasFinishTime);
         if ($code === StatusCode::OK && $hasMissingSplit) {

@@ -143,6 +143,20 @@ class EventsTable extends AppTable
             ]);
     }
 
+    /**
+     * The event's own time zone, which is where an IOF XML upload gets its offset from: the standard
+     * carries local times with no offset at all (docs/upload-xml-input.md 2B).
+     */
+    public function getTimezone(string $eventId): ?string
+    {
+        $row = $this->find()
+            ->select(['timezone'])
+            ->where(['id' => $eventId])
+            ->disableHydration()
+            ->first();
+        return ($row['timezone'] ?? '') ?: null;
+    }
+
     public function getEventWithRelations(string $id): Event
     {
         $query = $this->find()

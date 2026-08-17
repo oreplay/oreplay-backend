@@ -9,6 +9,7 @@ use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Cake\Cache\Cache;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\Event;
+use Results\Model\Table\EventsTable;
 use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\SplitsTable;
@@ -99,6 +100,22 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
     {
         $query = '?stage_id=' . StagesFixture::STAGE_FEDO_2 . '&tz=' . urlencode(self::EVENT_TIME_ZONE);
         return $extra ? $query . '&' . $extra : $query;
+    }
+
+    private function _postXmlWithoutTimeZone(string $asset): array
+    {
+        $this->_configureXmlRequest();
+        $this->post($this->_getEndpoint() . '?stage_id=' . StagesFixture::STAGE_FEDO_2,
+            file_get_contents($this->_asset($asset)));
+        return json_decode((string)$this->_getBodyAsString(), true) ?? [];
+    }
+
+    private function _firstStoredStartTime(): string
+    {
+        $result = RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'start_time IS NOT' => null])
+            ->orderByAsc('start_time')->first();
+        return $result->start_time->setTimezone('UTC')->format('Y-m-d H:i:s');
     }
 
     /**
@@ -239,5 +256,78 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
 
         $this->assertUploadRejected(400);
         $this->assertStringContainsString('Split the export by class', (string)$this->_getBodyAsString());
+    }
+
+    public function testAddNew_shouldImportAStartListWithStartTimesAndNoSplits()
+    {
+        $response = $this->_postXml('iof/starts.xml');
+        $this->assertUploadOk();
+
+        $this->assertEquals(1, $response['meta']['updated']['classes']);
+        $this->assertEquals(3, $response['meta']['updated']['runners']);
+        $this->assertEquals(0, $response['meta']['updated']['splits'] ?? 0);
+        $results = RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all()->toList();
+        $this->assertCount(3, $results);
+        foreach ($results as $result) {
+            $this->assertNotNull($result->start_time);
+            $this->assertNull($result->finish_time);
+            $this->assertEquals(UploadTypes::START_LIST, $result->upload_type);
+        }
+    }
+
+    /**
+     * UploadsV2Controller refuses a start list once the stage has finish times, so a late start-list
+     * export cannot wipe results that are already in. That guard applies to XML unchanged.
+     */
+    public function testAddNew_shouldRefuseAStartListOnceFinishTimesExist()
+    {
+        $this->_postXml('iof/splits.xml');
+        $this->assertUploadOk('splits first');
+
+        $this->_postXml('iof/starts.xml');
+
+        $this->assertUploadRejected(400);
+        $this->assertStringContainsString('finish times', (string)$this->_getBodyAsString());
+    }
+
+    /**
+     * IOF carries "2025-03-26T08:00:00.000" with no offset, so the event's own time zone decides which
+     * instant that is. Europe/Madrid was still on +01:00 on that date, so 08:00 local is 07:00 UTC.
+     */
+    public function testAddNew_shouldReadNaiveTimesInTheEventsOwnTimeZone()
+    {
+        $this->assertEquals('Europe/Madrid', EventsTable::load()->getTimezone(Event::FIRST_EVENT));
+
+        $response = $this->_postXmlWithoutTimeZone('iof/starts.xml');
+        $this->assertUploadOk();
+
+        $this->assertEquals('2025-03-26 07:00:00', $this->_firstStoredStartTime());
+        $this->assertStringNotContainsString('no time zone', implode(' ', $response['meta']['human'] ?? []));
+    }
+
+    public function testAddNew_shouldLetTheQueryStringOverrideTheEventsTimeZone()
+    {
+        $this->_configureXmlRequest();
+        $this->post($this->_getEndpoint() . '?stage_id=' . StagesFixture::STAGE_FEDO_2 . '&tz=UTC',
+            file_get_contents($this->_asset('iof/starts.xml')));
+        $this->assertUploadOk();
+
+        $this->assertEquals('2025-03-26 08:00:00', $this->_firstStoredStartTime());
+    }
+
+    /**
+     * Reading local times as UTC silently shifts the whole event, so an event with no zone has to say so
+     * rather than guess quietly.
+     */
+    public function testAddNew_shouldWarnWhenTheEventHasNoTimeZone()
+    {
+        EventsTable::load()->updateAll(['timezone' => ''], ['id' => Event::FIRST_EVENT]);
+
+        $response = $this->_postXmlWithoutTimeZone('iof/starts.xml');
+        $this->assertUploadOk();
+
+        $this->assertStringContainsString('no time zone', implode(' ', $response['meta']['human'] ?? []));
+        $this->assertEquals('2025-03-26 08:00:00', $this->_firstStoredStartTime());
     }
 }

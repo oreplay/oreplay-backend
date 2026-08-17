@@ -12,9 +12,9 @@ use Cake\Core\Configure;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
-use DateTimeZone;
 use Results\Lib\Import\CourseImporter;
-use Results\Lib\Import\Iof\IofUpload;
+use Results\Lib\Import\Iof\IofUploadFactory;
+use Results\Lib\Import\Iof\IofUploadOptions;
 use Results\Lib\Import\RunnerImporter;
 use Results\Lib\Import\TeamImporter;
 use Results\Lib\UploadConfigChecker;
@@ -39,8 +39,8 @@ class UploadsV2Controller extends ApiController
 {
     private UploadMetrics $_metrics;
     private ClassesTable $Classes;
-    // held for the lifetime of the request: the class generator streams from its temp file
-    private ?IofUpload $_iofUpload = null;
+    // held for the lifetime of the request: the classes stream lazily from the buffered document
+    private ?IofUploadFactory $_iofUploads = null;
 
     public function isPublicController(): bool
     {
@@ -256,58 +256,25 @@ class UploadsV2Controller extends ApiController
     }
 
     /**
-     * IOF XML reaches us as a raw string: no body parser is registered for it (see
-     * docs/upload-xml-input.md 1.1), which is the branch that was always missing rather than plumbing.
+     * IOF XML reaches us as a raw string: no body parser is registered for it, which is the branch that
+     * was always missing rather than plumbing. See docs/upload-xml-input.md 1.1.
      *
      * v2 only. v1 keeps its contract, see docs/uploads-v1-vs-v2.md.
      */
     private function _iofXmlHelper(string $body): UploadHelper
     {
-        $upload = IofUpload::fromBody(
-            $body,
+        $this->_iofUploads = new IofUploadFactory($this->_metrics);
+        return $this->_iofUploads->helperFor($body, $this->_iofUploadOptions());
+    }
+
+    private function _iofUploadOptions(): IofUploadOptions
+    {
+        return new IofUploadOptions(
             $this->request->getParam('eventID'),
             (string)$this->request->getQuery('stage_id'),
-            $this->_eventTimeZone(),
-            $this->_requestedUploadType()
+            (string)$this->request->getQuery('tz') ?: null,
+            (string)$this->request->getQuery('upload_type') ?: null
         );
-        $this->_iofUpload = $upload;
-        $warning = $upload->getHeader()->getWarning();
-        if ($warning) {
-            $this->_metrics->setWarning($warning);
-        }
-        $transfer = $upload->toTransfer();
-        $helper = new UploadHelper($transfer, $this->request->getParam('eventID'), $this->_metrics);
-        $helper->setConfigChecker(UploadConfigChecker::fromTransfer($transfer));
-        $helper->setRawBody($upload->getRawBody());
-        return $helper;
-    }
-
-    /**
-     * IOF carries local times with no offset, so something has to say which zone they are in. Getting it
-     * wrong shifts every split of the event, and it also changes the upload hash, so the same event
-     * uploaded as XML and as JSON would stop matching.
-     */
-    private function _eventTimeZone(): DateTimeZone
-    {
-        $requested = (string)$this->request->getQuery('tz');
-        if (!$requested) {
-            return new DateTimeZone(date_default_timezone_get());
-        }
-        try {
-            return new DateTimeZone($requested);
-        } catch (\Throwable $e) {
-            throw new InvalidPayloadException('Unknown time zone ' . $requested);
-        }
-    }
-
-    /**
-     * The escape hatch of docs/upload-xml-input.md 2C: MeOS, SiTiming and OE2010 never write the comment
-     * that identifies a radiocontrol export, so they have to say so.
-     */
-    private function _requestedUploadType(): ?string
-    {
-        $requested = (string)$this->request->getQuery('upload_type');
-        return $requested ?: null;
     }
 
     protected function addNew($data)

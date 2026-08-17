@@ -65,4 +65,22 @@ class NcStatusReconstructorTest extends TestCase
         $this->assertFalse(NcStatusReconstructor::isNotCompeting(ResultStatus::OK));
         $this->assertFalse(NcStatusReconstructor::isNotCompeting(null));
     }
+
+    /**
+     * None of the 54 250 Result elements in the sampled corpus lacks a Status, but a malformed or
+     * third-party file could, and one such row must not take a whole upload down with it.
+     */
+    public function testCodeOf_shouldInferAMissingStatusInsteadOfFailing()
+    {
+        $this->assertEquals(StatusCode::OK, NcStatusReconstructor::codeOf(null, null, true, true, false));
+        $this->assertEquals(StatusCode::DNS, NcStatusReconstructor::codeOf('', null, false, false, false));
+        $this->assertEquals(StatusCode::DNF, NcStatusReconstructor::codeOf(null, null, true, false, false));
+    }
+
+    public function testCodeOf_shouldStillRejectAStatusThatIsNotInTheStandard()
+    {
+        $this->expectException(\RestApi\Lib\Exception\DetailedException::class);
+
+        NcStatusReconstructor::codeOf('Sleeping', 1, true, true, false);
+    }
 }
