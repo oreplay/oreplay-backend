@@ -129,6 +129,31 @@ class UploadConfigChecker
         return $classes;
     }
 
+    /**
+     * The inverse of preCheckType(): given one of our upload types, the vendor words a transfer node has
+     * to carry for the truth table below to recognise it again. It lives here so those words stay in one
+     * class — a source with no `configuration` block of its own, such as IOF XML, still speaks through
+     * this vocabulary rather than copying it.
+     */
+    public static function configurationFor(string $uploadType): array
+    {
+        $contents = [
+            UploadTypes::START_LIST => [self::LIST_START, self::TYPE_START],
+            UploadTypes::ENTRY_LIST => [self::ENTRY_LIST, self::TYPE_START],
+            UploadTypes::INTERMEDIATES => [self::LIST_RESULT, self::TYPE_INTERMEDIATES],
+            UploadTypes::SPLITS => [self::LIST_RESULT, self::TYPE_SPLITS],
+            UploadTypes::FINISH_TIMES => [self::LIST_RESULT, self::TYPE_FINISH_TIMES],
+        ][$uploadType] ?? null;
+        if (!$contents) {
+            throw new InvalidPayloadException('No upload configuration for ' . $uploadType);
+        }
+        return [
+            'contents' => $contents[0],
+            'results_type' => $contents[1],
+            'totalization' => self::TYPE_START,
+        ];
+    }
+
     public function preCheckType(): string
     {
         $contents = $this->_transfer['configuration']['contents'] ?? null;

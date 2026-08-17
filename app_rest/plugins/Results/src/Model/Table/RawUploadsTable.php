@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Model\Table;
 
+use App\Lib\Exception\InvalidPayloadException;
 use App\Model\Table\AppTable;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
@@ -34,12 +35,29 @@ class RawUploadsTable extends AppTable
         $raw->id = Text::uuid();
         $raw->event_id = $helper->getEventId();
         $raw->stage_id = $helper->getStageId();
-        $raw->file_data = json_encode($helper->getData());
+        $raw->file_data = $this->_storableBody($helper);
         $raw->upload_log_id = $log->id;
 
         /** @var RawUpload $saved */
         $saved = $this->saveOrFail($raw);
         return $saved;
+    }
+
+    /**
+     * `file_data` is a utf8 column, and a SportSoftware XML export is often windows-1252 — MySQL rejects
+     * those bytes outright ("Incorrect string value: '\xED'"). Such a body is stored base64 so nothing is
+     * lost or silently mangled; a reader tells them apart by the leading '<'.
+     *
+     * A stopgap: docs/upload-xml-input.md 12 still has to decide what raw_uploads should hold for XML,
+     * and gzip is worth weighing there given how large this table already is.
+     */
+    private function _storableBody(UploadHelper $helper): string
+    {
+        $body = $helper->getRawBody();
+        if ($body === null) {
+            return (string)json_encode($helper->getData());
+        }
+        return mb_check_encoding($body, 'UTF-8') ? $body : base64_encode($body);
     }
 
     public function hardDeleteOld(int $limit = 900): int
@@ -98,6 +116,10 @@ class RawUploadsTable extends AppTable
             ->firstOrFail();
 
         $toRet = json_decode($res->file_data, true);
+        if (!is_array($toRet)) {
+            // an XML upload is stored as the original bytes, which have no ids to overwrite here
+            throw new InvalidPayloadException('Re-uploading a stored XML upload is not supported yet');
+        }
         $envelope = UploadConfigChecker::ENVELOPE_KEY;
         $toRet[$envelope]['event']['id'] = $eventId;
         $stages = $toRet[$envelope]['event']['stages'] ?? [];

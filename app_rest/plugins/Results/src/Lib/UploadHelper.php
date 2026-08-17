@@ -34,6 +34,7 @@ class UploadHelper
     private RowsToInsert $_rowsToInsert;
     private IntermediateStations $_intermediateStations;
     private bool $_reprocessAll = false;
+    private ?string $_rawBody = null;
 
     public function __construct(array $data, string $eventID, UploadMetrics $metrics)
     {
@@ -124,6 +125,20 @@ class UploadHelper
         return $this->_data;
     }
 
+    /**
+     * The bytes exactly as they arrived, when the upload was not JSON. raw_uploads stores this instead of
+     * the mapped array so a replay repeats the original document rather than our reading of it.
+     */
+    public function setRawBody(string $rawBody): void
+    {
+        $this->_rawBody = $rawBody;
+    }
+
+    public function getRawBody(): ?string
+    {
+        return $this->_rawBody;
+    }
+
     public function getEventId(): string
     {
         return $this->_eventId;
@@ -179,7 +194,11 @@ class UploadHelper
 
     public function validateConfigChecker(): UploadConfigChecker
     {
-        $this->setConfigChecker(UploadConfigChecker::fromPayload($this->_data));
+        // a source that built its own checker keeps it: an XML upload has no envelope for fromPayload()
+        // to unwrap, and rebuilding would also discard the class generator mid-import
+        if (!isset($this->_checker)) {
+            $this->setConfigChecker(UploadConfigChecker::fromPayload($this->_data));
+        }
         if ($this->_checker->isTotals()) {
             $Stages = StagesTable::load();
             if (!$this->_checker->isStageTotals($Stages)) {
