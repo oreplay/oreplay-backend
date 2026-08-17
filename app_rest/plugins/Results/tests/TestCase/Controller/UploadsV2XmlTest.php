@@ -12,7 +12,12 @@ use Results\Model\Entity\Event;
 use Results\Model\Table\EventsTable;
 use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\RunnerResultsTable;
+use Results\Model\Table\ClassesTable;
+use Results\Model\Table\CourseControlsTable;
+use Results\Model\Table\CoursesTable;
+use Results\Model\Table\RunnersTable;
 use Results\Model\Table\SplitsTable;
+use Results\Model\Table\TeamsTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\ControlsFixture;
@@ -329,5 +334,51 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
 
         $this->assertStringContainsString('no time zone', implode(' ', $response['meta']['human'] ?? []));
         $this->assertEquals('2025-03-26 08:00:00', $this->_firstStoredStartTime());
+    }
+
+    /**
+     * A relay class carries no individual results: the runners hang off each team, one per leg, which is
+     * the shape CourseImporter walks to build the class course (upload-courses.md 8.2).
+     */
+    public function testAddNew_shouldImportARelayAsTeamsWithOneRunnerPerLeg()
+    {
+        $response = $this->_postXml('iof/relay.xml');
+        $this->assertUploadOk();
+
+        $this->assertEquals(1, $response['meta']['updated']['classes']);
+        // meta.updated.runners counts participants: runnerCount + teamCount, so 12 legs and 3 teams
+        $this->assertEquals(15, $response['meta']['updated']['runners']);
+        $teams = TeamsTable::load()->find()->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all();
+        $this->assertEquals(3, $teams->count());
+        $runners = RunnersTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'team_id IS NOT' => null])->all();
+        $this->assertEquals(12, $runners->count());
+        $legs = RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->all()->extract('leg_number')->toList();
+        sort($legs);
+        $this->assertEquals([1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4], $legs);
+    }
+
+    /**
+     * Each leg declares its own variant, so the class gets a course of its own carrying what the legs
+     * share, and every result points at the variant that leg ran.
+     */
+    public function testAddNew_shouldStoreACourseForTheClassAndOneForEachLegVariant()
+    {
+        $this->_postXml('iof/relay.xml');
+        $this->assertUploadOk();
+
+        $courses = CoursesTable::load()->find()->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all();
+        $this->assertGreaterThan(1, $courses->count(), 'the class course plus one per declared variant');
+        $withVariant = RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'course_id IS NOT' => null])->all()->count();
+        $this->assertEquals(12, $withVariant);
+        $classCourse = ClassesTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'course_id IS NOT' => null])->first();
+        $this->assertNotNull($classCourse);
+        $controls = CourseControlsTable::load()->find()
+            ->where(['course_id' => $classCourse->course_id])->all()->count();
+        $this->assertGreaterThan(0, $controls, 'the common course of the legs has to be stored');
     }
 }

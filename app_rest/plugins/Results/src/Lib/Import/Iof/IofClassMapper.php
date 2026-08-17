@@ -37,23 +37,32 @@ abstract class IofClassMapper
 
     abstract protected function resultOf(array $result, array $runner): array;
 
+    /**
+     * A relay class carries teams instead of individual entries. Only a result list has them.
+     */
+    protected function teamsOf(array $data): array
+    {
+        return [];
+    }
+
     public function classOf(IofClassResult $classResult): array
     {
         $data = $classResult->getData();
         $class = $data['Class'] ?? [];
+        $teams = $this->teamsOf($data);
         return [
             'id' => '',
             'uuid' => '',
             'oe_key' => (string)($class['Id'] ?? ''),
             'short_name' => (string)($class['ShortName'] ?? ''),
             'long_name' => (string)($class['Name'] ?? ''),
-            'teams' => [],
-            'course' => $this->_course($data['Course'] ?? []),
+            'teams' => $teams,
+            'course' => $this->courseOf($data['Course'] ?? []) ?: $this->_courseOfFirstLeg($teams),
             'runners' => $this->_runners($data[$this->personElement()] ?? []),
         ];
     }
 
-    private function _course(array $course): array
+    protected function courseOf(mixed $course): array
     {
         $course = IofNode::firstOf($course);
         if (!$course) {
@@ -70,16 +79,34 @@ abstract class IofClassMapper
         ];
     }
 
+    /**
+     * A relay declares no course on the class, only one per leg, and a class with no course at all gets no
+     * common course stored either. The first leg's stands in, as the desktop client does; once the runners
+     * turn out to declare more than one, CoursesTable::createForClassIfNotExists() replaces it with a
+     * course of the class's own (upload-courses.md 8.2).
+     */
+    private function _courseOfFirstLeg(array $teams): array
+    {
+        foreach ($teams as $team) {
+            foreach ($team['runners'] as $runner) {
+                if ($runner['course'] ?? []) {
+                    return $runner['course'];
+                }
+            }
+        }
+        return [];
+    }
+
     private function _runners(array $entries): array
     {
         $runners = [];
         foreach (IofNode::listOf($entries) as $entry) {
-            $runners[] = $this->_runner($entry);
+            $runners[] = $this->runnerOf($entry);
         }
         return $runners;
     }
 
-    private function _runner(array $entry): array
+    protected function runnerOf(array $entry): array
     {
         $person = $entry['Person'] ?? [];
         $name = $person['Name'] ?? [];
@@ -103,7 +130,7 @@ abstract class IofClassMapper
             $runner['db_id'] = $dbId;
         }
         $runner['runner_results'] = $this->_results($results, $runner);
-        $club = $this->_club($entry['Organisation'] ?? []);
+        $club = $this->clubOf($entry['Organisation'] ?? []);
         if ($club) {
             $runner['club'] = $club;
         }
@@ -123,7 +150,7 @@ abstract class IofClassMapper
         return IofNode::repeatedTextOf($person['Id'] ?? null, 0);
     }
 
-    private function _club(array $organisation): array
+    protected function clubOf(mixed $organisation): array
     {
         $organisation = IofNode::firstOf($organisation);
         if (!$organisation) {

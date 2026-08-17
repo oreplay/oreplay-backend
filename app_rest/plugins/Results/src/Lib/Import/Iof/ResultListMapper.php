@@ -44,12 +44,91 @@ class ResultListMapper extends IofClassMapper
         return 'Result';
     }
 
+    /**
+     * The same team may be split across several TeamResult tags — one per leg in some exports — so they
+     * are merged on the first identifier that is present. A team member's Result is shaped exactly like
+     * an individual PersonResult, so the entry mapping is reused unchanged.
+     */
+    protected function teamsOf(array $data): array
+    {
+        $teams = [];
+        foreach (IofNode::listOf($data['TeamResult'] ?? []) as $teamResult) {
+            $key = $this->_teamKeyOf($teamResult);
+            $team = $teams[$key] ?? $this->_newTeam($teamResult);
+            foreach (IofNode::listOf($teamResult['TeamMemberResult'] ?? []) as $member) {
+                $team['runners'][] = $this->_teamMemberOf($member);
+                $team['team_results'][] = $this->_teamResultOf($member);
+            }
+            $teams[$key] = $team;
+        }
+        return array_values($teams);
+    }
+
+    private function _teamKeyOf(array $teamResult): string
+    {
+        $bib = (string)($teamResult['BibNumber'] ?? '');
+        $entryId = IofNode::repeatedTextOf($teamResult['EntryId'] ?? null, 0);
+        $name = (string)($teamResult['Name'] ?? '');
+        return $bib ?: ($entryId ?: $name);
+    }
+
+    private function _newTeam(array $teamResult): array
+    {
+        $team = [
+            'id' => '',
+            'uuid' => '',
+            'bib_number' => (string)($teamResult['BibNumber'] ?? ''),
+            'team_name' => (string)($teamResult['Name'] ?? ''),
+            'runners' => [],
+            'team_results' => [],
+        ];
+        $club = $this->clubOf($teamResult['Organisation'] ?? []);
+        if ($club) {
+            $team['club'] = $club;
+        }
+        return $team;
+    }
+
+    /**
+     * Each leg declares the variant that leg ran, and this is the only place those courses reach the
+     * database: runner_results.course_id, which the forked-class handling consumes.
+     */
+    private function _teamMemberOf(array $member): array
+    {
+        $runner = $this->runnerOf($member);
+        $course = $this->courseOf(IofNode::listOf($member['Result'] ?? [])[0]['Course'] ?? []);
+        if ($course) {
+            $runner['course'] = $course;
+        }
+        return $runner;
+    }
+
+    /**
+     * OverallResult is the team's cumulative standing after that leg, so it gives one team_result per leg.
+     * Where it is absent the leg's own result stands in, as the desktop client does.
+     */
+    private function _teamResultOf(array $member): array
+    {
+        $legResult = IofNode::listOf($member['Result'] ?? [])[0] ?? [];
+        $overall = IofNode::firstOf($legResult['OverallResult'] ?? []);
+        $legNumber = (int)($legResult['Leg'] ?? 1);
+        if (!$overall) {
+            $overall = $legResult;
+        }
+        $overall['Leg'] = $legNumber;
+        $overall['@raceNumber'] = self::stageOrderOf($legResult);
+        $teamResult = $this->resultOf($overall, ['sicard' => '', 'bib_number' => '']);
+        unset($teamResult['splits']);
+        return $teamResult;
+    }
+
     protected function resultOf(array $result, array $runner): array
     {
         $stageOrder = self::stageOrderOf($result);
         $startTime = $this->dateOf($result['StartTime'] ?? null);
         $finishTime = $this->dateOf($result['FinishTime'] ?? null);
-        $position = isset($result['Position']) ? (int)$result['Position'] : null;
+        $positionText = IofNode::repeatedTextOf($result['Position'] ?? null, 0);
+        $position = $positionText === '' ? null : (int)$positionText;
         $splits = $this->_splits($result, $runner, $stageOrder, $startTime);
         $mapped = [
             'id' => '',
@@ -81,8 +160,11 @@ class ResultListMapper extends IofClassMapper
         if (isset($result['Time'])) {
             $mapped['time_seconds'] = ClientNumberFormat::number($result['Time']);
         }
-        if (isset($result['TimeBehind'])) {
-            $mapped['time_behind'] = ClientNumberFormat::number($result['TimeBehind']);
+        // in a team member's result TimeBehind carries @type="Leg", so it arrives as an array where the
+        // individual path gets a plain string; read as a number unwrapped it would be 1 for everyone
+        $timeBehind = IofNode::repeatedTextOf($result['TimeBehind'] ?? null, 0);
+        if ($timeBehind !== '') {
+            $mapped['time_behind'] = ClientNumberFormat::number($timeBehind);
             // OE only computes TimeBehind for a result it means to include in totalizations
             $mapped['contributory'] = true;
         }
