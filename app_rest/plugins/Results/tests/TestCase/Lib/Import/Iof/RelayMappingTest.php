@@ -20,10 +20,10 @@ class RelayMappingTest extends TestCase
         return dirname(__DIR__, 4) . '/assets/iof/' . $name;
     }
 
-    private function _relayClass(): array
+    private function _relayClass(string $timeZone = self::EVENT_TIME_ZONE): array
     {
         $path = $this->_asset('relay.xml');
-        $mapper = new ResultListMapper(IofUploadTypeDetector::detect($path), new DateTimeZone(self::EVENT_TIME_ZONE));
+        $mapper = new ResultListMapper(IofUploadTypeDetector::detect($path), new DateTimeZone($timeZone));
         foreach ((new IofXmlReader($path))->classes() as $class) {
             return $mapper->classOf($class);
         }
@@ -105,15 +105,20 @@ class RelayMappingTest extends TestCase
     }
 
     /**
-     * QuickEvent writes offsets where SportSoftware writes none, so the offset in the document has to
-     * win over the event's time zone rather than being reinterpreted in it.
+     * QuickEvent writes offsets where SportSoftware writes none, so an offset already in the document has
+     * to win over the event's time zone rather than being reinterpreted in it.
+     *
+     * The event zone here is deliberately one that disagrees: Europe/Prague is +02:00 in May, so asserting
+     * against it would pass even if the offset were being ignored.
      */
-    public function testClassOf_shouldKeepAnOffsetTheDocumentAlreadyCarries()
+    public function testClassOf_shouldPreferAnOffsetTheDocumentCarriesOverTheEventTimeZone()
     {
-        $result = $this->_relayClass()['teams'][0]['runners'][0]['runner_results'][0];
+        $result = $this->_relayClass('America/New_York')['teams'][0]['runners'][0]['runner_results'][0];
 
         $this->assertEquals('2025-05-18T10:00:00.000+02:00', $result['start_time']);
         $this->assertEquals('2025-05-18T10:16:00.000+02:00', $result['finish_time']);
+        $this->assertEquals('2025-05-18T10:02:30.000+02:00', $result['splits'][0]['reading_time'],
+            'a punch is reconstructed from the start, so it inherits the same offset');
     }
 
     /**
