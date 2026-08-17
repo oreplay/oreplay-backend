@@ -1305,7 +1305,9 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('"2024-10-18T10:09:40.000+00:00"', json_encode($res->finish_time));
         $this->assertEquals(0, $res->time_behind);
         $this->assertEquals(820, $res->time_seconds);
-        $this->assertEquals('bab8412b5a99d7b26e7a645c7caa9244', $res->upload_hash);
+        // changes whenever UploadHelper::md5Encode() changes shape, as it did when it began
+        // canonicalising so XML and JSON of one class hash alike
+        $this->assertEquals('c1c712406348d53ff0529d351917f2c5', $res->upload_hash);
     }
 
     private function _assertNewOptionalTables($teams, $teamsResults, $answers): void

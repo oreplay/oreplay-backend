@@ -6,6 +6,7 @@ namespace Results\Test\TestCase\Controller\UploadExamples;
 
 use Cake\I18n\FrozenTime;
 use Results\Lib\Consts\StatusCode;
+use Results\Lib\Import\Iof\IofStatusMap;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Split;
@@ -19,14 +20,6 @@ class BigEventExamples
     private const RADIO_CONTROLS = 'Radiocontrols';
     private const DOWNLOADED_CARDS = 'Breakdown';
     private const READING_TIME_FORMAT = 'Y-m-d\TH:i:s.v';
-    private const STATUS_CODE_OF_IOF_STATUS = [
-        'OK' => StatusCode::OK,
-        'DidNotStart' => StatusCode::DNS,
-        'DidNotFinish' => StatusCode::DNF,
-        'MissingPunch' => StatusCode::MP,
-        'Disqualified' => StatusCode::DQF,
-        'OverTime' => StatusCode::OT,
-    ];
 
     private static ?array $_classes = null;
 
@@ -232,7 +225,7 @@ class BigEventExamples
             'time_seconds' => (int)($result['Time'] ?? 0),
             'time_behind' => (int)($result['TimeBehind'] ?? 0),
             'position' => (int)($result['Position'] ?? 0),
-            'status_code' => self::STATUS_CODE_OF_IOF_STATUS[$result['Status']],
+            'status_code' => IofStatusMap::codeOf($result['Status']),
             'leg_number' => 1,
             'splits' => self::_convertSplits($result),
             'result_type' => [

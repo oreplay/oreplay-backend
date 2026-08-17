@@ -153,9 +153,42 @@ class UploadHelper
         return $this->_checker->getStageId();
     }
 
+    /**
+     * The same data reaching us from different sources has to produce the same hash. Key order,
+     * numbers written as strings, and empty-versus-absent all differ between the JSON client and IOF
+     * XML for an identical event, and this hash is the resume mechanism rather than a cache: when it
+     * mismatches, every class looks changed, so two feeds pointed at one stage keep invalidating each
+     * other's work and a large event may never converge.
+     */
     public static function md5Encode(array $array): string
     {
-        return md5(json_encode($array)); // NOSONAR
+        return md5(json_encode(self::_canonical($array))); // NOSONAR
+    }
+
+    private static function _canonical(array $array): array
+    {
+        $isList = array_is_list($array);
+        $canonical = [];
+        foreach ($array as $key => $value) {
+            $value = is_array($value) ? self::_canonical($value) : self::_comparableScalar($value);
+            if ($value === null || $value === []) {
+                continue;
+            }
+            $canonical[$key] = $value;
+        }
+        if ($isList) {
+            return array_values($canonical);
+        }
+        ksort($canonical);
+        return $canonical;
+    }
+
+    private static function _comparableScalar(mixed $value): ?string
+    {
+        if ($value === null || $value === '' || $value === false) {
+            return null;
+        }
+        return $value === true ? '1' : (string)$value;
     }
 
     public function setConfigChecker(UploadConfigChecker $checker): void
