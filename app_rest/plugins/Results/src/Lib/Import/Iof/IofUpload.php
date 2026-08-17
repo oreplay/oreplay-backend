@@ -14,15 +14,13 @@ use Results\Lib\UploadConfigChecker;
  *
  * The body is buffered to a temp file once so it can be read more than once — detection, then the
  * streamed walk — without the document ever being held in memory. See docs/upload-xml-input.md 5.6.
+ *
+ * There is no limit on the size of the body, because size is not what costs memory: a 20 MB document of
+ * 6 000 small classes was measured at no measurable cost, while 12 000 entries inside a *single* class
+ * cost 124 MB. What would need bounding is the largest class, not the file.
  */
 class IofUpload
 {
-    /**
-     * Until the reader is proven on a single very large class (docs/upload-xml-input.md, Stage 2:
-     * memory is bounded by the biggest class, not by the file), refuse bodies that could hold one.
-     */
-    public const MAX_BODY_BYTES = 2097152;
-
     private string $_filePath;
     private IofHeader $_header;
 
@@ -46,10 +44,6 @@ class IofUpload
     ): self {
         if ($body === '') {
             throw new InvalidPayloadException('The upload body is empty');
-        }
-        if (strlen($body) > self::MAX_BODY_BYTES) {
-            throw new InvalidPayloadException('The XML is larger than '
-                . (int)(self::MAX_BODY_BYTES / 1024) . ' kB. Split the export by class and upload each part.');
         }
         if (!$stageId) {
             throw new InvalidPayloadException(

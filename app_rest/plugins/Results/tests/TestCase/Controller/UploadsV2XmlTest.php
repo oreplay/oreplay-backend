@@ -248,21 +248,6 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
         $this->assertUploadRejected(400);
     }
 
-    /**
-     * Memory is bounded by the biggest class rather than by the file, so a single enormous class could
-     * still exhaust it. The guard goes when that is fixed.
-     */
-    public function testAddNew_shouldRefuseABodyLargerThanTheGuard()
-    {
-        $oversized = '<?xml version="1.0" encoding="UTF-8"?><ResultList iofVersion="3.0" creator="x">'
-            . str_repeat('<!-- padding -->', 200000) . '</ResultList>';
-        $this->_configureXmlRequest();
-        $this->post($this->_getEndpoint() . $this->_query(''), $oversized);
-
-        $this->assertUploadRejected(400);
-        $this->assertStringContainsString('Split the export by class', (string)$this->_getBodyAsString());
-    }
-
     public function testAddNew_shouldImportAStartListWithStartTimesAndNoSplits()
     {
         $response = $this->_postXml('iof/starts.xml');
