@@ -11,6 +11,7 @@ use Cake\Utility\Text;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\RawUpload;
 use Results\Model\Entity\UploadLog;
+use Results\Lib\UploadConfigChecker;
 
 class RawUploadsTable extends AppTable
 {
@@ -97,10 +98,11 @@ class RawUploadsTable extends AppTable
             ->firstOrFail();
 
         $toRet = json_decode($res->file_data, true);
-        $toRet['oreplay_data_transfer']['event']['id'] = $eventId;
-        $stages = $toRet['oreplay_data_transfer']['event']['stages'] ?? [];
+        $envelope = UploadConfigChecker::ENVELOPE_KEY;
+        $toRet[$envelope]['event']['id'] = $eventId;
+        $stages = $toRet[$envelope]['event']['stages'] ?? [];
         foreach ($stages as $i => $stage) {
-            $toRet['oreplay_data_transfer']['event']['stages'][$i]['id'] = $data['stage_id'];
+            $toRet[$envelope]['event']['stages'][$i]['id'] = $data['stage_id'];
         }
         return $toRet;
     }

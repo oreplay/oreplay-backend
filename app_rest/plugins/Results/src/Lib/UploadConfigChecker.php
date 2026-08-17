@@ -24,12 +24,36 @@ class UploadConfigChecker
     private const TYPE_TOTAL_TIMES = 'TotalizationTime';
     public const TYPE_MIXED = 'Mixed';
 
-    private array $_data;
-    private array $_firstStage;
+    public const ENVELOPE_KEY = 'oreplay_data_transfer';
 
-    public function __construct(array $data)
+    private array $_transfer = [];
+    private array $_firstStage = [];
+
+    /**
+     * For a JSON upload, whose transfer node is wrapped in the envelope the desktop client sends.
+     */
+    public static function fromPayload(array $payload): self
     {
-        $this->_data = $data;
+        $transfer = $payload[self::ENVELOPE_KEY] ?? null;
+        if (!$transfer) {
+            throw new InvalidPayloadException(
+                'Invalid payload structure ' . self::ENVELOPE_KEY . ' must be root element');
+        }
+        return new self($transfer);
+    }
+
+    /**
+     * For a source with no envelope to unwrap — an IOF XML document is a ResultList, not an
+     * oreplay_data_transfer. Keeping the key out of everything below this line is the point.
+     */
+    public static function fromTransfer(array $transfer): self
+    {
+        return new self($transfer);
+    }
+
+    private function __construct(array $transfer)
+    {
+        $this->_transfer = $transfer;
     }
 
     public function isStartLists(): bool
@@ -49,7 +73,7 @@ class UploadConfigChecker
 
     public function isStageTotals(StagesTable $table)
     {
-        $currentStageId = $this->_getDataTransferred()['event']['stages'][0]['id'] ?? null;
+        $currentStageId = $this->_transfer['event']['stages'][0]['id'] ?? null;
         if (!$currentStageId) {
             throw new BadRequestException('Stage id not defined in event.stages.0.id');
         }
@@ -58,15 +82,15 @@ class UploadConfigChecker
 
     public function overwriteStageId(string $id): UploadConfigChecker
     {
-        if (isset($this->_getDataTransferred()['event']['stages'][0]['id'])) {
-            $this->_data['oreplay_data_transfer']['event']['stages'][0]['id'] = $id;
+        if (isset($this->_transfer['event']['stages'][0]['id'])) {
+            $this->_transfer['event']['stages'][0]['id'] = $id;
         }
         return $this;
     }
 
     public function validateStructure(string $eventId): self
     {
-        $data = $this->_getDataTransferred();
+        $data = $this->_transfer;
         if (!isset($data['event']['id'])) {
             throw new InvalidPayloadException('Invalid payload structure event.id');
         }
@@ -92,29 +116,24 @@ class UploadConfigChecker
         return $stageId;
     }
 
-    public function getClasses(): array
+    /**
+     * iterable, not array, so an XML source can hand back a generator and hold one class in memory at
+     * a time. is_iterable() keeps the structural check alive for both shapes.
+     */
+    public function getClasses(): iterable
     {
         $classes = $this->_firstStage['classes'] ?? null;
-        if (!is_array($classes)) {
+        if (!is_iterable($classes)) {
             throw new InvalidPayloadException('Invalid payload structure event.stages.0.classes');
         }
         return $classes;
     }
 
-    private function _getDataTransferred()
-    {
-        $data = $this->_data['oreplay_data_transfer'] ?? null;
-        if (!$data) {
-            throw new InvalidPayloadException('Invalid payload structure oreplay_data_transfer must be root element');
-        }
-        return $data;
-    }
-
     public function preCheckType(): string
     {
-        $contents = $this->_getDataTransferred()['configuration']['contents'] ?? null;
-        $resultsType = $this->_getDataTransferred()['configuration']['results_type'] ?? null;
-        $totalization = $this->_getDataTransferred()['configuration']['totalization'] ?? null;
+        $contents = $this->_transfer['configuration']['contents'] ?? null;
+        $resultsType = $this->_transfer['configuration']['results_type'] ?? null;
+        $totalization = $this->_transfer['configuration']['totalization'] ?? null;
         $toRet = null;
         if ($contents === self::LIST_START && in_array($resultsType, [self::TYPE_START, self::TYPE_MIXED])) {
             $toRet = UploadTypes::START_LIST;

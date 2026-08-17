@@ -29,6 +29,7 @@ use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\RunnersTable;
 use Results\Model\Table\StageOrdersTable;
 use Results\Model\Table\StagesTable;
+use Results\Lib\UploadConfigChecker;
 
 /**
  * @property StagesTable $Stages
@@ -248,7 +249,7 @@ class RankingsTable extends AppTable
     {
         $data['event']['stages'][0]['id'] = $rk->getEventId();
         $uploadHelper = new UploadHelper([
-            'oreplay_data_transfer' => $data
+            UploadConfigChecker::ENVELOPE_KEY => $data
         ], $rk->getEventId(), new UploadMetrics());
         $checker = new RankingUploadConfigChecker($rk);
         $uploadHelper->setConfigChecker($checker);

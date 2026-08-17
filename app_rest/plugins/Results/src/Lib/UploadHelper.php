@@ -68,13 +68,13 @@ class UploadHelper
         if (!$uploadLogId) {
             return $this->_data;
         }
-        $oldChecker = new UploadConfigChecker($this->_data);
+        $oldChecker = UploadConfigChecker::fromPayload($this->_data);
         $newStageId = $oldChecker->validateStructure($this->_eventId)->getStageId();
 
         $raw = RawUploadsTable::load()->getByUploadLogId($uploadLogId);
         $this->_data = json_decode($raw->file_data, true);
-        $this->_data['oreplay_data_transfer']['event']['id'] = $this->_eventId;
-        $this->_data['oreplay_data_transfer']['event']['stages'][0]['id'] = $newStageId;
+        $this->_data[UploadConfigChecker::ENVELOPE_KEY]['event']['id'] = $this->_eventId;
+        $this->_data[UploadConfigChecker::ENVELOPE_KEY]['event']['stages'][0]['id'] = $newStageId;
         return $this->_data;
     }
 
@@ -198,7 +198,7 @@ class UploadHelper
 
     public function validateConfigChecker(): UploadConfigChecker
     {
-        $this->setConfigChecker(new UploadConfigChecker($this->_data));
+        $this->setConfigChecker(UploadConfigChecker::fromPayload($this->_data));
         if ($this->_checker->isTotals()) {
             $Stages = StagesTable::load();
             if (!$this->_checker->isStageTotals($Stages)) {

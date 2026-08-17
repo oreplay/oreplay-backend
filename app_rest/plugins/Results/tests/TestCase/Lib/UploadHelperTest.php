@@ -20,7 +20,7 @@ class UploadHelperTest extends TestCase
             'event' => ['id' => $eventId, 'stages' => [['id' => 'fake_stage_id', 'classes' => []]]],
         ]];
         $helper = new UploadHelper($data, $eventId, new UploadMetrics());
-        $helper->setConfigChecker((new UploadConfigChecker($data))->validateStructure($eventId));
+        $helper->setConfigChecker(UploadConfigChecker::fromPayload($data)->validateStructure($eventId));
         return $helper;
     }
 
