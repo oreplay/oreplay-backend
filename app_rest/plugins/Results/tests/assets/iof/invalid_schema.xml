@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ResultList xmlns="http://www.orienteering.org/datastandard/3.0" iofVersion="3.0"
+ creator="SportSoftware OE12 V.12.1">
+<Event><Name>schema violation</Name></Event>
+<ClassResult>
+<Class><Id>1</Id><Name>E</Name><ShortName>E</ShortName></Class>
+<NotInTheStandard>this element does not exist in IOF 3.0</NotInTheStandard>
+<PersonResult>
+<Person><Name><Given>a</Given><Family>b</Family></Name></Person>
+<Result><BibNumber>1</BibNumber><Status>OK</Status>
+<SplitTime><ControlCode>31</ControlCode><Time>60</Time></SplitTime>
+</Result>
+</PersonResult>
+</ClassResult>
+</ResultList>

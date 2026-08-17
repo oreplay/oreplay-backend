@@ -33,7 +33,8 @@ class IofUploadFactory
             $options->eventId,
             $options->stageId,
             $this->_timeZoneOf($options),
-            $options->uploadType
+            $options->uploadType,
+            $options->validateAgainstSchema
         );
         $this->_warnAbout($this->_upload->getHeader());
         $transfer = $this->_upload->toTransfer();

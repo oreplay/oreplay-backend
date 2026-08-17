@@ -15,7 +15,8 @@ class IofUploadOptions
         public readonly string $eventId,
         public readonly string $stageId,
         public readonly ?string $timeZoneName = null,
-        public readonly ?string $uploadType = null
+        public readonly ?string $uploadType = null,
+        public readonly bool $validateAgainstSchema = true
     ) {
     }
 }

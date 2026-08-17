@@ -366,4 +366,42 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
             ->where(['course_id' => $classCourse->course_id])->all()->count();
         $this->assertGreaterThan(0, $controls, 'the common course of the legs has to be stored');
     }
+
+    public function testAddNew_shouldRefuseADocumentThatBreaksTheSchemaByDefault()
+    {
+        $this->_postXml('iof/invalid_schema.xml');
+
+        $this->assertUploadRejected(400);
+        $body = (string)$this->_getBodyAsString();
+        $this->assertStringContainsString('NotInTheStandard', $body);
+        $this->assertStringContainsString('does not match the IOF', $body);
+    }
+
+    public function testAddNew_shouldAlsoRefuseItWhenValidationIsAskedForExplicitly()
+    {
+        $this->_postXml('iof/invalid_schema.xml', 'validate=1');
+
+        $this->assertUploadRejected(400);
+    }
+
+    public function testAddNew_shouldImportAValidDocumentWithValidationOn()
+    {
+        $response = $this->_postXml('iof/splits.xml', 'validate=1');
+        $this->assertUploadOk();
+
+        $this->assertEquals(1, $response['meta']['updated']['classes']);
+        $this->assertEquals(15, $response['meta']['updated']['splits']);
+    }
+
+    /**
+     * The escape for a file that fails the schema over something that does not stop it importing — a
+     * producer writing `Creator` for `creator`, say (docs/upload-xml-input.md 9).
+     */
+    public function testAddNew_shouldSkipValidationOnValidateZeroAndStillImport()
+    {
+        $response = $this->_postXml('iof/invalid_schema.xml', 'validate=0');
+
+        $this->assertUploadOk();
+        $this->assertEquals(1, $response['meta']['updated']['classes']);
+    }
 }

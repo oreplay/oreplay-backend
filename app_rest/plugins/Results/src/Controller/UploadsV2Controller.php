@@ -273,8 +273,18 @@ class UploadsV2Controller extends ApiController
             $this->request->getParam('eventID'),
             (string)$this->request->getQuery('stage_id'),
             (string)$this->request->getQuery('tz') ?: null,
-            (string)$this->request->getQuery('upload_type') ?: null
+            (string)$this->request->getQuery('upload_type') ?: null,
+            $this->_isSchemaValidationRequested()
         );
+    }
+
+    private function _isSchemaValidationRequested(): bool
+    {
+        $requested = $this->request->getQuery('validate');
+        if ($requested === null || $requested === '') {
+            return true;
+        }
+        return filter_var($requested, FILTER_VALIDATE_BOOLEAN);
     }
 
     protected function addNew($data)
