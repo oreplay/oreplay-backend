@@ -2,7 +2,7 @@ version: '3.9'
 
 services:
   nginx:
-    image: oreplay/backend:0.4.18
+    image: oreplay/backend:0.5.0-nchan-local
     build:
       context: .
       dockerfile: docker/Dockerfile
@@ -13,7 +13,7 @@ services:
       - '443:443'
     volumes:
       - .:/var/www/cplatform/public
-      #- ./docker/sites/nginx-site-dev.conf:/etc/nginx/sites-available/courseticket
+      #- ./docker/sites:/etc/nginx/sites-enabled
     depends_on:
       - mysql
       - memcached
