@@ -8,6 +8,8 @@ author does not have to diff two controllers to find it.
 |---|---|---|
 | Route | `POST /api/v1/events/{eventID}/uploads/` | `POST /api/v1/events/{eventID}/uploads/v2/` |
 | Controller | `UploadsController` | `UploadsV2Controller` |
+| Import itself | its own copy of the class loop, inside the controller, **deliberately untouched** | `UploadProcessor` + `ClassImporter`, which is where new work happens |
+| `upload_logs` row | written **once the upload is over**, as it always has been | written **before the loop and updated after every class** (`UploadProgressPublisher`), so an interrupted upload keeps the progress it reached |
 | Status on failure | **always `202`** | **the real status** — `400`, `403`, `404`, `500` |
 | `data` in the response | the whole saved entity graph | **always `[]`** |
 | `?version=` query parameter | supported; below `402` the response is reshaped | **ignored** — always the modern shape |

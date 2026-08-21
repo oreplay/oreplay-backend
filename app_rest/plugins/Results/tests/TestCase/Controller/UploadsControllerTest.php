@@ -36,6 +36,7 @@ use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\RunnersTable;
 use Results\Model\Table\SplitsTable;
 use Results\Model\Table\StagesTable;
+use Results\Model\Table\UploadLogsTable;
 use Results\Model\Table\TeamResultsTable;
 use Results\Model\Table\TeamsTable;
 use Results\Test\Fixture\ClassesFixture;
@@ -1707,5 +1708,21 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
         $this->expectException(AssertionFailedError::class);
         $this->assertUploadOk();
+    }
+
+    public function testAddNewWritesOneUploadLogWithoutProgress()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        ClassesTable::load()->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+        $this->post($this->_getEndpoint(), $data);
+
+        // v1 keeps the contract the deployed desktop clients hold: one row, written once the upload is over
+        $logs = UploadLogsTable::load()->find()->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all();
+        $this->assertCount(1, $logs);
+        $this->assertSame('', $logs->first()->info);
     }
 }
