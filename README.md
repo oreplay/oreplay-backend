@@ -251,3 +251,29 @@ docker run -d --name sonarqube -e SONAR_ES_BOOTSTRAP_CHECKS_DISABLE=true -p 9000
 # O Replay upload integration for results
 
 Docs about uploads: https://github.com/oreplay/oreplay-backend/blob/main/docs/upload-results.md
+
+## Size limits when uploading a big event
+
+The server runs in a **200 MB container**, and an upload is refused rather than allowed to run it out of
+memory. Two limits apply, both to IOF XML uploads:
+
+| Limit | Value | What happens |
+|---|---|---|
+| File size | 20 MB | The upload is rejected |
+| Competitors in one class (average) | 2 000 | The upload is rejected, naming the class size |
+
+**The number of competitors in the event is not the problem — the number in a single class is.** A race of
+20 000 people spread over 300 classes imports fine. One relay class of 6 000 does not, because the import
+holds a whole class in memory at once: roughly **18 kB per runner plus 4 kB per split time**, so 6 000
+runners with six splits each needs about 209 MB, more than the container has.
+
+For scale: a 2 000-runner class peaks at about 81 MB and imports in around 12 seconds.
+
+If your event hits the class limit, the message says so and asks you to split the largest class or upload
+classes separately. Nothing is lost and nothing crashes — the upload simply does not happen. **Relays are
+the usual cause**, because every team is in one class; ordinary individual races rarely exceed a few hundred
+runners in a class.
+
+Raising the limit is not the fix, and neither is more memory: the work is to save a class in batches instead
+of all at once, which would bring a 6 000-runner class to about 60 MB. It is written up as `late7` in
+[docs/upload-summary.md](docs/upload-summary.md), and it is worth doing when a real event needs it.
