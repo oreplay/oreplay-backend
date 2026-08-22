@@ -388,6 +388,22 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals([], $this->assertJsonResponseOK()['last_logs']);
     }
 
+    public function testADeletedNewerLogDoesNotHideTheSurvivingOne()
+    {
+        $this->_addLogInFirstStage(UploadLog::STATE_START, '2024-01-02 12:00:00');
+        UploadLogsTable::load()->updateAll(
+            ['deleted' => new \Cake\I18n\FrozenTime()],
+            ['created >' => new \Cake\I18n\FrozenTime('2024-01-02 11:00:00')]);
+
+        $this->get($this->_getEndpoint());
+
+        $this->assertEquals([[
+            '_c' => UploadLog::class,
+            'state' => UploadLog::STATE_START,
+            'created' => '2024-01-02T10:00:05.000+00:00',
+        ]], $this->assertJsonResponseOK()['last_logs']);
+    }
+
     public function testACsvDownloadIsNotWrappedInAnEnvelope()
     {
         $this->skipNextRequestInSwagger();

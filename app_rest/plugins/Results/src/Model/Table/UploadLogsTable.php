@@ -6,6 +6,7 @@ namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
 use Cake\I18n\FrozenTime;
+use Cake\Database\Expression\IdentifierExpression;
 use Cake\ORM\Query;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\Utility\Text;
@@ -39,23 +40,24 @@ class UploadLogsTable extends AppTable
 
     public function getLastLogsInStage(string $eventId, string $stageId): array
     {
-        $logs = [];
-        foreach ($this->_statesUsedInStage($eventId, $stageId) as $state) {
-            $newest = $this->_inStage($eventId, $stageId)
-                ->where(['state IS' => $state])
-                ->orderByDesc('created')->first();
-            if ($newest) {
-                $logs[] = $newest;
-            }
+        $newestPerState = $this->_inStage($eventId, $stageId)
+            ->select([
+                'newest_state' => $this->aliasField('state'),
+                'newest_created' => $this->find()->func()->max('created'),
+            ])
+            ->groupBy('state');
+        $logs = $this->_inStage($eventId, $stageId)
+            ->innerJoin(['newest' => $newestPerState], [
+                'newest.newest_state IS' => new IdentifierExpression($this->aliasField('state')),
+                'newest.newest_created' => new IdentifierExpression($this->aliasField('created')),
+            ])
+            ->orderByAsc($this->aliasField('state'))
+            ->all();
+        $byState = [];
+        foreach ($logs as $log) {
+            $byState[$log->state] = $log;
         }
-        return $logs;
-    }
-
-    private function _statesUsedInStage(string $eventId, string $stageId): array
-    {
-        return $this->_inStage($eventId, $stageId)
-            ->select(['state'])->distinct(['state'])
-            ->orderByAsc('state')->all()->extract('state')->toList();
+        return array_values($byState);
     }
 
     private function _inStage(string $eventId, string $stageId): Query
