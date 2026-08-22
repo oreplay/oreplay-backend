@@ -418,6 +418,19 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('2024-01-02T11:00:00.000+00:00', $logs[0]['created']);
     }
 
+    public function testLogsComeOldestFirstWhateverTheirState()
+    {
+        // the order the event endpoint has always used, kept so a client reading last_logs from either
+        // endpoint sees the same sequence
+        $this->_addLogInFirstStage(2, '2024-01-02 09:00:00');
+        $this->_addLogInFirstStage(UploadLog::STATE_START, '2024-01-02 12:00:00');
+
+        $this->get($this->_getEndpoint());
+
+        $logs = $this->assertJsonResponseOK()['last_logs'];
+        $this->assertEquals([2, UploadLog::STATE_START], array_column($logs, 'state'));
+    }
+
     public function testACsvDownloadIsNotWrappedInAnEnvelope()
     {
         $this->skipNextRequestInSwagger();

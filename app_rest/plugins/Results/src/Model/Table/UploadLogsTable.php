@@ -55,7 +55,7 @@ class UploadLogsTable extends AppTable
                 'newest.newest_state IS' => new IdentifierExpression($this->aliasField('state')),
                 'newest.newest_created' => new IdentifierExpression($this->aliasField('created')),
             ])
-            ->orderByAsc($this->aliasField('state'));
+            ->orderByAsc($this->aliasField('created'));
     }
 
     public function getLastLogsInStage(string $eventId, string $stageId): array
