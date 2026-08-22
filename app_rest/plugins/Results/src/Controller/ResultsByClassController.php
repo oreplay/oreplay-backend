@@ -20,6 +20,7 @@ class ResultsByClassController extends ResultsController
             $filters['class_id'] = $class->id;
             $toRet[$class->short_name] = $this->_getResults($eventId, $stageId, $filters);
         }
-        $this->return = $this->_parseOutput($toRet, $filters);
+        $results = $this->_parseOutput($toRet, $filters);
+        $this->return = $this->_withLastLogs($results, $eventId, $stageId);
     }
 }

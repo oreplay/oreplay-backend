@@ -20,9 +20,11 @@ use Results\Model\Entity\Runner;
 use Results\Model\Entity\RunnerResult;
 use Results\Model\Entity\Split;
 use Results\Model\Entity\Stage;
+use Results\Model\Entity\UploadLog;
 use Results\Model\Entity\Team;
 use Results\Model\Entity\TeamResult;
 use Results\Model\Table\SplitsTable;
+use Results\Model\Table\UploadLogsTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\ControlsFixture;
@@ -32,6 +34,7 @@ use Results\Test\Fixture\RunnerResultsFixture;
 use Results\Test\Fixture\RunnersFixture;
 use Results\Test\Fixture\SplitsFixture;
 use Results\Test\Fixture\TeamResultsFixture;
+use Results\Test\Fixture\UploadLogsFixture;
 use Results\Test\Fixture\TeamsFixture;
 
 class ResultsControllerTest extends ApiCommonErrorsTest
@@ -47,6 +50,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         ControlTypesFixture::LOAD,
         TeamsFixture::LOAD,
         TeamResultsFixture::LOAD,
+        UploadLogsFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -322,5 +326,75 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             'stage' => $overall,
             'created' => $year . '-01-02T10:00:05.000+00:00',
         ];
+    }
+
+    private function _addLogInFirstStage(int $state, string $created): void
+    {
+        $log = UploadLogsTable::load()->newEmptyEntity();
+        $log->id = \Cake\Utility\Text::uuid();
+        $log->event_id = Event::FIRST_EVENT;
+        $log->stage_id = Stage::FIRST_STAGE;
+        $log->state = $state;
+        $log->created = new \Cake\I18n\FrozenTime($created);
+        UploadLogsTable::load()->saveOrFail($log);
+    }
+
+    public function testGetListSaysHowFreshTheResultsAre()
+    {
+        $this->get($this->_getEndpoint());
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        // the freshness travels with the rows it describes, so a viewer cannot be shown a time these
+        // results do not have, which two separate requests cannot guarantee
+        $this->assertEquals([[
+            '_c' => UploadLog::class,
+            'state' => UploadLog::STATE_START,
+            'created' => '2024-01-02T10:00:05.000+00:00',
+        ]], $bodyDecoded['last_logs']);
+    }
+
+    public function testLastLogsKeepsOnlyTheNewestOfEachState()
+    {
+        $this->_addLogInFirstStage(UploadLog::STATE_START, '2024-01-02 11:00:00');
+        $this->_addLogInFirstStage(2, '2024-01-02 12:00:00');
+        $this->_addLogInFirstStage(2, '2024-01-02 13:00:00');
+
+        $this->get($this->_getEndpoint());
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals([
+            [
+                '_c' => UploadLog::class,
+                'state' => UploadLog::STATE_START,
+                'created' => '2024-01-02T11:00:00.000+00:00',
+            ],
+            [
+                '_c' => UploadLog::class,
+                'state' => 2,
+                'created' => '2024-01-02T13:00:00.000+00:00',
+            ],
+        ], $bodyDecoded['last_logs']);
+    }
+
+    public function testASoftDeletedLogIsNotReported()
+    {
+        // clearing a stage soft deletes its logs, and a cleared stage must stop claiming it has results
+        UploadLogsTable::load()->updateAll(
+            ['deleted' => new \Cake\I18n\FrozenTime()],
+            ['id' => UploadLogsFixture::FIRST]);
+
+        $this->get($this->_getEndpoint());
+
+        $this->assertEquals([], $this->assertJsonResponseOK()['last_logs']);
+    }
+
+    public function testACsvDownloadIsNotWrappedInAnEnvelope()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->get($this->_getEndpoint() . '?output=ReadablePointsCsv');
+
+        $body = $this->_getBodyAsString();
+        $this->assertStringNotContainsString('last_logs', $body);
+        $this->assertStringNotContainsString('"data"', $body);
     }
 }

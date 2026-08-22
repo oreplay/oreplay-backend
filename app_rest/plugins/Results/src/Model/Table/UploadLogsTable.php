@@ -6,6 +6,7 @@ namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
 use Cake\I18n\FrozenTime;
+use Cake\ORM\Query;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\Utility\Text;
 use Results\Lib\UploadHelper;
@@ -34,6 +35,32 @@ class UploadLogsTable extends AppTable
             $q->where(['stage_id' => $stageId]);
         }
         return $q->orderByDesc('created')->all();
+    }
+
+    public function getLastLogsInStage(string $eventId, string $stageId): array
+    {
+        $logs = [];
+        foreach ($this->_statesUsedInStage($eventId, $stageId) as $state) {
+            $newest = $this->_inStage($eventId, $stageId)
+                ->where(['state IS' => $state])
+                ->orderByDesc('created')->first();
+            if ($newest) {
+                $logs[] = $newest;
+            }
+        }
+        return $logs;
+    }
+
+    private function _statesUsedInStage(string $eventId, string $stageId): array
+    {
+        return $this->_inStage($eventId, $stageId)
+            ->select(['state'])->distinct(['state'])
+            ->orderByAsc('state')->all()->extract('state')->toList();
+    }
+
+    private function _inStage(string $eventId, string $stageId): Query
+    {
+        return $this->find()->where(['event_id' => $eventId, 'stage_id' => $stageId]);
     }
 
     public function saveClearLog(string $eventId, string $stageId): UploadLog

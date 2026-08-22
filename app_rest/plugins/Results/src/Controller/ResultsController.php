@@ -11,6 +11,7 @@ use Results\Lib\Output\ReadablePointsCsv;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Team;
 use Results\Model\Table\RunnersTable;
+use Results\Model\Table\UploadLogsTable;
 use Results\Model\Table\TeamsTable;
 
 class ResultsController extends ApiController
@@ -36,7 +37,20 @@ class ResultsController extends ApiController
         $stageId = $this->request->getParam('stageID');
         $filters = $this->request->getQueryParams();
         $toRet = $this->_getResults($eventId, $stageId, $filters);
-        $this->return = $this->_parseOutput($toRet, $filters);
+        $results = $this->_parseOutput($toRet, $filters);
+        $this->return = $this->_withLastLogs($results, $eventId, $stageId);
+    }
+
+    protected function _withLastLogs(array|RestRenderer $results, mixed $eventId, mixed $stageId): array|RestRenderer
+    {
+        if ($results instanceof RestRenderer) {
+            return $results;
+        }
+        $this->flatResponse = true;
+        return [
+            'data' => $results,
+            'last_logs' => UploadLogsTable::load()->getLastLogsInStage($eventId, $stageId),
+        ];
     }
 
     protected function _getResults(mixed $eventId, mixed $stageId, array $filters): RestRenderer|array
