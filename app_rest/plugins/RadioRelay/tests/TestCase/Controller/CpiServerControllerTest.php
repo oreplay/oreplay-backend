@@ -125,12 +125,12 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
             'the row an earlier upload stored is the one the read path will find, so it must be flagged');
     }
 
-    public function testAddNew_shouldStoreUnknownSiCard()
+    public function testAddNew_shouldDiscardAPunchFromAnUnknownSiCard()
     {
-        // should process new radio punch
         $username = Stage::FIRST_STAGE;
         $password = Event::FIRST_EVENT . TokensFixture::FIRST_TOKEN;
         $timezone = '+01:00';
+        $storedBefore = SplitsTable::load()->find()->all()->count();
         $data = [
             'order' => 'ProcessPunches',
             'data' => [$username, $password, $timezone],
@@ -150,25 +150,13 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
 
         $this->post($this->_getEndpoint(), $data);
 
+        // the device is still told its punch arrived: it cannot do anything about an unknown chip, and
+        // failing the request would make it retry the same punch for ever
         $res = $this->assertJsonResponseOK();
-        $punchAmount = 1;
-        $expected = ['data' => ['OK', $punchAmount . '', '1']];
-        $this->assertEquals($expected, $res);
+        $this->assertEquals(['data' => ['OK', '1', '1']], $res);
 
-        /** @var Split $last */
-        $last = SplitsTable::load()->find()->orderByDesc('created')->first();
-        $expected = [
-            'is_intermediate' => true,
-            'reading_time' => new FrozenTime('2025-03-08 11:50:00.000000+00:00'),
-            'points' => null,
-            'order_number' => null
-        ];
-        $split = $last->toArray();
-        unset($split['created']);
-        $this->assertEqualsNoId($expected, $split);
-        $this->assertNull($last->class_id);
-        $this->assertNull($last->runner_id);
-        $this->assertNull($last->runner_result_id);
+        // a split with no runner, class or result belongs to nobody and nothing ever reconnects it
+        $this->assertEquals($storedBefore, SplitsTable::load()->find()->all()->count());
     }
 
     public function testAddNew_shouldCheckMinimumEvent()
@@ -295,5 +283,4 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
             ->where(['stage_id' => Stage::FIRST_STAGE, 'is_intermediate' => true])
             ->all()->extract('station')->toList();
     }
-
 }

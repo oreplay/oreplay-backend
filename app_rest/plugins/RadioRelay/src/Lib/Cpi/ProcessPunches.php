@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace RadioRelay\Lib\Cpi;
 
 use Cake\Log\LogTrait;
+use Psr\Log\LogLevel;
 use Results\Lib\ExistingResultsIndex;
 use Results\Lib\UploadContext;
 use Results\Model\Entity\Runner;
@@ -69,6 +70,15 @@ class ProcessPunches
         $siCard = $punch['sicard'] ?? null;
         /** @var Runner $runner */
         $runner = $this->Runners->findByCard($siCard, $eventId, $stageId)->first();
+        if (!$runner) {
+            $this->log(
+                'CpiServerController: [32] no_runner in event ' . $eventId . ' ' . $stageId
+                . ' discarded punch sicard ' . $siCard . ' station ' . ($punch['station'] ?? '')
+                . ' reading ' . ($punch['reading'] ?? ''),
+                LogLevel::WARNING
+            );
+            return null;
+        }
         $split = [
             'sicard' => $siCard,
             'is_intermediate' => true,
@@ -79,25 +89,9 @@ class ProcessPunches
             'raw_value' => $punch['raw'] ?? null,
         ];
         $splitToSave = $this->Splits->fillNewWithStage($split, $eventId, $stageId);
-        if ($runner) {
-            $splitToSave->class_id = $runner->class_id;
-            $splitToSave->runner_id = $runner->id;
-            $splitToSave->runner_result_id = $runner->_getStage()->id;
-        } else {
-            $this->log('CpiServerController: [32] no_runner in event '.$eventId.' '.$stageId);
-            $splitToSave->class_id = null;
-            $splitToSave->runner_id = null;
-            $splitToSave->runner_result_id = null;
-        }
-        /*
-        $this->log('CpiServerController: [31] ' . json_encode($split)
-            . ' -  ' . $splitToSave->class_id
-            . ' -  ' . $splitToSave->runner_id
-            . ' -  ' . $splitToSave->runner_result_id
-        );
-        //*/
-        // maybe add $splitToSave->bib_runner = $punch['bib_runner'] ?? null;
-        // maybe add $splitToSave->runner_result_id = $runner->_getStage()->id;
+        $splitToSave->class_id = $runner->class_id;
+        $splitToSave->runner_id = $runner->id;
+        $splitToSave->runner_result_id = $runner->_getStage()->id;
         $splitToSave->battery_perc = $punch['battery'] ?? null;
         $splitToSave->battery_time = $punch['reading'] ?? null;
         $context = new UploadContext($eventId, $stageId);
