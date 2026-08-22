@@ -48,15 +48,7 @@ class Stage extends AppEntity
      */
     public function _getLastLogs(): array
     {
-        $toRet = [];
-        if (!$this->upload_logs) {
-            return [];
-        }
-        /** @var UploadLog $log */
-        foreach ($this->upload_logs as $log) {
-            $toRet[$log->state] = $log;
-        }
-        return array_values($toRet);
+        return UploadLog::onePerState($this->upload_logs);
     }
 
     public function _get_links(): array

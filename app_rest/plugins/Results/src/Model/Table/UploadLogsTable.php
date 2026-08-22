@@ -61,11 +61,7 @@ class UploadLogsTable extends AppTable
     public function getLastLogsInStage(string $eventId, string $stageId): array
     {
         $logs = $this->keepOnlyNewestPerState($this->_inStage($eventId, $stageId), $eventId)->all();
-        $byState = [];
-        foreach ($logs as $log) {
-            $byState[$log->state] = $log;
-        }
-        return array_values($byState);
+        return UploadLog::onePerState($logs);
     }
 
     private function _inStage(string $eventId, string $stageId): Query

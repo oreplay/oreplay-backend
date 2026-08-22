@@ -39,6 +39,19 @@ class UploadLog extends AppEntity
         'deleted',
     ];
 
+    /**
+     * @param iterable<UploadLog>|null $logs
+     * @return UploadLog[]
+     */
+    public static function onePerState(?iterable $logs): array
+    {
+        $byState = [];
+        foreach ($logs ?? [] as $log) {
+            $byState[$log->state] = $log;
+        }
+        return array_values($byState);
+    }
+
     public function setClearState(): int
     {
         $this->state = self::STATE_CLEAR;

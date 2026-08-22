@@ -404,6 +404,20 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         ]], $this->assertJsonResponseOK()['last_logs']);
     }
 
+    public function testTwoLogsOfTheSameSecondCountOnce()
+    {
+        // created has no sub-second precision, so two uploads of one state can tie and both match the
+        // newest; the query cannot break the tie, UploadLog::onePerState() is what collapses it
+        $this->_addLogInFirstStage(UploadLog::STATE_START, '2024-01-02 11:00:00');
+        $this->_addLogInFirstStage(UploadLog::STATE_START, '2024-01-02 11:00:00');
+
+        $this->get($this->_getEndpoint());
+
+        $logs = $this->assertJsonResponseOK()['last_logs'];
+        $this->assertCount(1, $logs);
+        $this->assertEquals('2024-01-02T11:00:00.000+00:00', $logs[0]['created']);
+    }
+
     public function testACsvDownloadIsNotWrappedInAnEnvelope()
     {
         $this->skipNextRequestInSwagger();
