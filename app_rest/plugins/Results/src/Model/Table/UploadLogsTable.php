@@ -8,6 +8,7 @@ use App\Model\Table\AppTable;
 use Cake\I18n\FrozenTime;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\Utility\Text;
 use Results\Lib\UploadHelper;
@@ -38,21 +39,28 @@ class UploadLogsTable extends AppTable
         return $q->orderByDesc('created')->all();
     }
 
-    public function getLastLogsInStage(string $eventId, string $stageId): array
+    public function keepOnlyNewestPerState(SelectQuery $query, string $eventId): SelectQuery
     {
-        $newestPerState = $this->_inStage($eventId, $stageId)
+        $newestPerState = $this->find()
             ->select([
+                'newest_stage' => $this->aliasField('stage_id'),
                 'newest_state' => $this->aliasField('state'),
                 'newest_created' => $this->find()->func()->max('created'),
             ])
-            ->groupBy('state');
-        $logs = $this->_inStage($eventId, $stageId)
+            ->where([$this->aliasField('event_id') => $eventId])
+            ->groupBy([$this->aliasField('stage_id'), $this->aliasField('state')]);
+        return $query
             ->innerJoin(['newest' => $newestPerState], [
+                'newest.newest_stage' => new IdentifierExpression($this->aliasField('stage_id')),
                 'newest.newest_state IS' => new IdentifierExpression($this->aliasField('state')),
                 'newest.newest_created' => new IdentifierExpression($this->aliasField('created')),
             ])
-            ->orderByAsc($this->aliasField('state'))
-            ->all();
+            ->orderByAsc($this->aliasField('state'));
+    }
+
+    public function getLastLogsInStage(string $eventId, string $stageId): array
+    {
+        $logs = $this->keepOnlyNewestPerState($this->_inStage($eventId, $stageId), $eventId)->all();
         $byState = [];
         foreach ($logs as $log) {
             $byState[$log->state] = $log;

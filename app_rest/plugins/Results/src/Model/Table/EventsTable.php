@@ -10,6 +10,7 @@ use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\Validation\Validator;
 use DateTime;
 use RestApi\Lib\Exception\DetailedException;
@@ -162,9 +163,10 @@ class EventsTable extends AppTable
         $query = $this->find()
             ->contain(FederationsTable::name())
             ->contain(OrganizersTable::name())
-            ->contain(StagesTable::name(), function (Query $q) {
-                return $q->contain(UploadLogsTable::name())
-                    ->contain(StageTypesTable::name());
+            ->contain(StagesTable::name(), function (Query $q) use ($id) {
+                return $q->contain(UploadLogsTable::name(), function (SelectQuery $logs) use ($id) {
+                    return UploadLogsTable::load()->keepOnlyNewestPerState($logs, $id);
+                })->contain(StageTypesTable::name());
             })
             ->where(['Events.id' => $id]);
         /** @var Event $res */

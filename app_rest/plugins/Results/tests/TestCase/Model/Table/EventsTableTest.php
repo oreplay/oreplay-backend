@@ -11,6 +11,7 @@ use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageType;
 use Results\Model\Entity\UploadLog;
 use Results\Model\Table\EventsTable;
+use Results\Model\Table\UploadLogsTable;
 use Results\Model\Table\RunnersTable;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
@@ -70,6 +71,41 @@ class EventsTableTest extends TestCase
         $this->assertEquals(StageType::CLASSIC, $stage->stage_type_id);
         $this->assertEquals(StageType::CLASSIC, $stage->stage_type->id);
         $this->assertEquals('Foot-O, MTBO, Ski-O', $stage->stage_type->description);
+    }
+
+    private function _addLog(string $stageId, int $state, string $created): void
+    {
+        $logs = UploadLogsTable::load();
+        $log = $logs->newEmptyEntity();
+        $log->id = \Cake\Utility\Text::uuid();
+        $log->event_id = Event::FIRST_EVENT;
+        $log->stage_id = $stageId;
+        $log->state = $state;
+        $log->created = new \Cake\I18n\FrozenTime($created);
+        $logs->saveOrFail($log);
+    }
+
+    public function testGetEventWithRelationsKeepsOnlyTheNewestLogOfEachState()
+    {
+        $this->_addLog(Stage::FIRST_STAGE, UploadLog::STATE_START, '2024-01-02 11:00:00');
+        $this->_addLog(Stage::FIRST_STAGE, 2, '2024-01-02 12:00:00');
+        $this->_addLog(Stage::FIRST_STAGE, 2, '2024-01-02 13:00:00');
+        $this->_addLog(StagesFixture::STAGE_FEDO_2, 2, '2024-01-02 09:00:00');
+
+        $res = $this->Events->getEventWithRelations(Event::FIRST_EVENT);
+
+        $stage = $res->stages[0];
+        $this->assertEquals(Stage::FIRST_STAGE, $stage->id);
+        $logs = $stage->_getLastLogs();
+        $this->assertCount(2, $logs);
+        $this->assertEquals(UploadLog::STATE_START, $logs[0]->state);
+        $this->assertEquals('2024-01-02 11:00:00', $logs[0]->created->format('Y-m-d H:i:s'));
+        $this->assertEquals(2, $logs[1]->state);
+        $this->assertEquals('2024-01-02 13:00:00', $logs[1]->created->format('Y-m-d H:i:s'));
+        // the newest of one stage must not leak into another
+        $other = array_values(array_filter($res->stages, fn($s) => $s->id === StagesFixture::STAGE_FEDO_2))[0];
+        $this->assertCount(1, $other->_getLastLogs());
+        $this->assertEquals('2024-01-02 09:00:00', $other->_getLastLogs()[0]->created->format('Y-m-d H:i:s'));
     }
 
     public function testFindPaginatedEvents(): void
