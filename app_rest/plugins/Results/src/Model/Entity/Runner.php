@@ -183,6 +183,39 @@ class Runner extends AppEntity implements ParticipantInterface
         return implode(' ', $res);
     }
 
+    /**
+     * A row with no db_id, no bib and no name matches nobody and would silently become a new runner every
+     * upload. It used to be caught inside the scan, which meant it depended on the class already holding
+     * someone; asking it of the payload says the same thing without that accident.
+     */
+    public static function assertEnoughToMatch(array $runnerData): void
+    {
+        $stName = $runnerData['first_name'] ?? null;
+        $lastName = $runnerData['last_name'] ?? null;
+        if (($runnerData['db_id'] ?? null) || ($runnerData['bib_number'] ?? null) || $stName || $lastName) {
+            return;
+        }
+        $copied = unserialize(serialize($runnerData));
+        unset($copied['club']);
+        unset($copied['stage']);
+        unset($copied['runner_results']);
+        unset($copied['team_results']);
+        unset($copied['overalls']);
+        $msg = "Fields first_name [$stName] and last_name [$lastName] cannot be empty "
+            . 'when bib_number and db_id is also empty '
+            . json_encode($copied);
+        throw new DetailedException($msg);
+    }
+
+    public function matchingKeys(): array
+    {
+        return [
+            'db_id' => $this->db_id,
+            'bib' => $this->bib_number,
+            'name' => trim(implode(' ', [$this->first_name, $this->last_name])),
+        ];
+    }
+
     public function isSameDbIdOrBib(Runner $tmpRunner): bool
     {
         $tmpRunnerArray = [
@@ -243,16 +276,8 @@ class Runner extends AppEntity implements ParticipantInterface
                 return null;
             }
             //*/
-            $copied = unserialize(serialize($runnerData));
-            unset($copied['club']);
-            unset($copied['stage']);
-            unset($copied['runner_results']);
-            unset($copied['team_results']);
-            unset($copied['overalls']);
-            $msg = "Fields first_name [$stName] and last_name [$lastName] cannot be empty "
-                . 'when bib_number and db_id is also empty '
-                . json_encode($copied);
-            throw new DetailedException($msg);
+            self::assertEnoughToMatch($runnerData);
+            return null;
         }
     }
 

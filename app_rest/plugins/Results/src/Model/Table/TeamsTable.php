@@ -63,7 +63,11 @@ class TeamsTable extends AppTable
 
     public function matchTeam(array $teamData, ClassEntity $class): Team
     {
-        foreach ($this->_getStoredParticipantsInClass() as $team) {
+        $candidates = array_merge(
+            $this->_candidatesFor('bib', $teamData['bib_number'] ?? null),
+            $this->_candidatesFor('name', $teamData['team_name'] ?? null)
+        );
+        foreach ($candidates as $team) {
             $matchedTeam = $team->getMatchedTeam($teamData, $class);
             if ($matchedTeam) {
                 return $matchedTeam;

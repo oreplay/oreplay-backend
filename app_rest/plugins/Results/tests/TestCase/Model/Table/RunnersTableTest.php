@@ -286,6 +286,22 @@ class RunnersTableTest extends TestCase
         $this->assertEquals('Bob', $matched->first_name);
     }
 
+    /**
+     * Matching compares with ==, so a bib sent as '011' is the same bib as 11. Candidates are now found
+     * through a key rather than by walking every runner, and the key has to keep that equivalence.
+     */
+    public function testMatchRunner_shouldMatchABibWrittenWithLeadingZeros()
+    {
+        $class = $this->_emptyClassWithTwoRunners();
+
+        $matched = $this->Runners->matchRunner(
+            ['bib_number' => '011', 'first_name' => 'X', 'last_name' => 'Y'],
+            $class
+        );
+
+        $this->assertEquals('Ann', $matched->first_name);
+    }
+
     public function testMatchRunner_shouldStillMatchByBibWhenNoDbIdMatches()
     {
         $class = $this->_emptyClassWithTwoRunners();

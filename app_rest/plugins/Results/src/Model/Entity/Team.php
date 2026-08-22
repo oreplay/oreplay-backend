@@ -150,6 +150,14 @@ class Team extends AppEntity implements ParticipantInterface
         return $this->team_name;
     }
 
+    public function matchingKeys(): array
+    {
+        return [
+            'bib' => $this->bib_number,
+            'name' => $this->team_name,
+        ];
+    }
+
     public function getMatchedTeam(array $runnerData, ClassEntity $class = null): ?Team
     {
         if ($this->isSameField('bib_number', $runnerData)) {

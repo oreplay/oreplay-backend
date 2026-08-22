@@ -85,13 +85,14 @@ class RunnersTable extends AppTable
         // db_id identifies the runner in the client's own database, so it outranks a bib that a
         // later upload may have reassigned. Matching is a scan, so it needs a pass of its own:
         // inside the second loop the first runner holding that bib would answer first.
-        foreach ($this->_getStoredParticipantsInClass() as $runner) {
+        Runner::assertEnoughToMatch($runnerData);
+        foreach ($this->_candidatesFor('db_id', $runnerData['db_id'] ?? null) as $runner) {
             $matchedRunner = $runner->getMatchedRunnerByDbId($runnerData);
             if ($matchedRunner) {
                 return $matchedRunner;
             }
         }
-        foreach ($this->_getStoredParticipantsInClass() as $runner) {
+        foreach ($this->_matchableCandidates($runnerData) as $runner) {
             $matchedRunner = $runner->getMatchedRunner($runnerData, $class);
             if ($matchedRunner) {
                 return $matchedRunner;
@@ -104,6 +105,19 @@ class RunnersTable extends AppTable
             throw new NotFoundException('Not found runner by bib_number');
         }
         throw new NotFoundException('Not found runner by name');
+    }
+
+    /**
+     * @return Runner[]
+     */
+    private function _matchableCandidates(array $runnerData): array
+    {
+        $fullName = trim(implode(' ', [$runnerData['first_name'] ?? '', $runnerData['last_name'] ?? '']));
+        return array_merge(
+            $this->_candidatesFor('db_id', $runnerData['db_id'] ?? null),
+            $this->_candidatesFor('bib', $runnerData['bib_number'] ?? null),
+            $this->_candidatesFor('name', $fullName)
+        );
     }
 
     public function createRunnerIfNotExists(
