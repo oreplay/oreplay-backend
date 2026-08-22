@@ -69,7 +69,7 @@ class TeamImporter
 
         $results = $teamData['team_results'] ?? [];
         if (!$results) {
-            $metrics->setWarning('Team without team_results');
+            $metrics->setWarning('Team without team_results', UploadMetrics::CODE_TEAM_WITHOUT_RESULTS);
         }
         $runners = $teamData['runners'] ?? [];
         $missingLegs = self::getMissingLegs($runners, $results);
@@ -80,7 +80,8 @@ class TeamImporter
         }
 
         if (!$runners) {
-            $metrics->setWarning('Team without runners ' . ($teamData['team_name'] ?? ''));
+            $metrics->setWarning('Team without runners ' . ($teamData['team_name'] ?? ''),
+                UploadMetrics::CODE_TEAM_WITHOUT_RUNNERS, ['team' => $teamData['team_name'] ?? '']);
         }
         foreach ($runners as $runnerData) {
             $team->addRunner($this->_runners->import($runnerData, $this->_classOfTeamRunners()));

@@ -12,6 +12,7 @@ author does not have to diff two controllers to find it.
 | `upload_logs` row | written **once the upload is over**, as it always has been | written **before the loop and updated after every class** (`UploadProgressPublisher`), so an interrupted upload keeps the progress it reached |
 | Status on failure | **always `202`** | **the real status** — `400`, `403`, `404`, `500` |
 | `data` in the response | the whole saved entity graph | **always `[]`** |
+| Response `meta` | `human` (rendered text with `<br>` and `<b>`) + `humanColor` (a hex colour) | `level` + `messages[]`, and `uploadType`. `human` and `humanColor` are **gone** |
 | `?version=` query parameter | supported; below `402` the response is reshaped | **ignored** — always the modern shape |
 | `?reprocess_all=` | supported | supported |
 | Published in the OpenAPI spec | yes | **no** |
@@ -97,3 +98,44 @@ normally applied to the other in the same commit, and the exceptions are the fou
 Two tests pin the difference itself:
 `UploadsControllerTest::testAddNew_aRejectedUploadStillAnswers202` and
 `UploadsV2ControllerTest::testAddNew_aRejectedUploadAnswersAnErrorStatus`.
+
+## The v2 message format
+
+Decided 2026-08-22. One envelope for every answer, success or failure:
+
+```json
+{ "meta": {
+    "level": "warning",
+    "uploadType": "res_splits",
+    "updated": { "classes": 3, "courses": 2, "runners": 45, "splits": 320, "runnerResults": 45 },
+    "timings": { "processing": { ... }, "saving": { ... }, "total": 4.2 },
+    "messages": [
+      { "level": "warning", "code": "team_without_runners", "text": "Team without runners Ann's team",
+        "context": { "team": "Ann's team" } }
+    ]
+  }, "data": [] }
+```
+
+**`code` is what a client acts on**; `text` is for a person and may be reworded at any time. Anything the
+text names is repeated in `context`, so nothing has to be parsed back out of a sentence. RFC 9457
+(`application/problem+json`) was considered and **rejected**: it describes a failed request, and most of what
+an upload has to report — a duplicated runner, rows not saved, results without splits — arrives with 200, so
+it would have covered the smaller half of the problem at the cost of a second shape.
+
+**The two questions are separate.** The HTTP status says whether the request worked. `meta.level` says how
+good the outcome was, and the interesting case is `200` with `level: error`: everything was stored, but two
+entries merged into one runner and somebody's results are gone. A client that only reads the status will
+miss that, which is exactly what `humanColor` red meant before.
+
+`meta.uploadType` is null when the upload never got as far as reading the payload, which is the honest test
+for "this answer came from the error path".
+
+| level | when |
+|---|---|
+| `info` | nothing to report, including "no class needed importing" |
+| `warning` | something is odd but nothing was lost |
+| `error` | the request failed, **or** it succeeded and lost data |
+
+**Every message survives.** v1 shows data-loss warnings *instead of* the ordinary ones, so a real warning
+can vanish behind another; v2 returns the lot, capped at ten of each kind, and `meta.level` is the highest
+level present.

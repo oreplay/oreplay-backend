@@ -48,7 +48,7 @@ class IofUploadFactory
     {
         $warning = $header->getWarning();
         if ($warning) {
-            $this->metrics->setWarning($warning);
+            $this->metrics->setWarning($warning, UploadMetrics::CODE_UPLOAD_TYPE_GUESSED);
         }
     }
 
@@ -76,7 +76,8 @@ class IofUploadFactory
     {
         $fallback = date_default_timezone_get();
         $this->metrics->setWarning('The event has no time zone, so the times in the XML were read as '
-            . $fallback . '. Set the event time zone, or send tz in the query string.');
+            . $fallback . '. Set the event time zone, or send tz in the query string.',
+            UploadMetrics::CODE_EVENT_WITHOUT_TIME_ZONE, ['timeZone' => $fallback]);
         return new DateTimeZone($fallback);
     }
 

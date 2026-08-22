@@ -330,7 +330,7 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
 
     private function _assertUpdated(array $expected, array $meta, string $step): void
     {
-        $this->assertEquals($expected, $meta['updated'], $step . ' ' . implode(' ', $meta['human']));
+        $this->assertEquals($expected, $meta['updated'], $step . ' ' . json_encode($meta['messages']));
     }
 
     private function _assertDatabase(array $expected, string $step): void

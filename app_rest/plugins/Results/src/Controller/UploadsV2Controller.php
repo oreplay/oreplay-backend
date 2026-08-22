@@ -9,13 +9,14 @@ use App\Lib\FullBaseUrl;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Http\Exception\ForbiddenException;
-use Cake\I18n\FrozenTime;
+use Cake\Http\Exception\HttpException;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\Import\Iof\IofUploadFactory;
 use Results\Lib\Import\Iof\IofUploadOptions;
 use Results\Lib\Import\UploadProcessor;
 use Results\Lib\Publish\UploadProgressPublisher;
 use Results\Lib\UploadHelper;
+use Results\Lib\UploadMessage;
 use Results\Lib\UploadMetrics;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\RawUploadsTable;
@@ -73,7 +74,7 @@ class UploadsV2Controller extends ApiController
 
         $metrics = $helper->getMetrics();
         $metrics->endTotalTimer();
-        return $metrics->toArray($type);
+        return $metrics->toRestArray($type);
     }
 
     private function _assertDesktopClientAuthenticated(UploadHelper $helper): void
@@ -151,12 +152,15 @@ class UploadsV2Controller extends ApiController
         } catch (\Throwable $e) {
             $this->log('Uploads GeneralException: ' . $e->getMessage() . " \n" . json_encode($data)
                 . " \n" . $e->getTraceAsString());
+            // an HttpException carries a message meant for the client, such as the reason a token was
+            // refused; anything else is unexpected, and only its type is safe to report
             $exploded = explode('\\', get_class($e));
             $exceptionName = array_pop($exploded);
             if (!$exceptionName) {
                 $exceptionName = array_pop($exploded);
             }
-            $this->return = $this->respondError($exceptionName, $e);
+            $clientSafe = $e instanceof HttpException ? $e->getMessage() : '';
+            $this->return = $this->respondError($clientSafe ?: $exceptionName, $e);
         } finally {
             $this->_clearUploadCache();
         }
@@ -167,10 +171,19 @@ class UploadsV2Controller extends ApiController
     // accepted one without parsing meta.human. See docs/uploads-v1-vs-v2.md
     private function respondError(string $message, \Throwable $e): array
     {
-        $now = new FrozenTime();
-        $code = $e->getCode();
         $this->response = $this->response->withStatus($this->_errorStatus($e));
-        return $this->_metrics->toArrayError(["\n    [ERROR - $code] ($now) $message \n"]);
+        return $this->_metrics->toRestArrayError(UploadMessage::error($this->_errorCode($e), $message));
+    }
+
+    private function _errorCode(\Throwable $e): string
+    {
+        $exploded = explode('\\', get_class($e));
+        $name = (string)array_pop($exploded);
+        $name = (string)preg_replace('/Exception$/', '', $name) ?: $name;
+        if (strtoupper($name) === $name) {
+            return strtolower($name);
+        }
+        return strtolower((string)preg_replace('/(?<!^)[A-Z]/', '_$0', $name));
     }
 
     // the range is the filter, not the class: RecordNotFoundException is not an HttpException but

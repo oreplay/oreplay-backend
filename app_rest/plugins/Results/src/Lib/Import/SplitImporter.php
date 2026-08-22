@@ -38,7 +38,8 @@ class SplitImporter
             fn() => $this->_replaceSplitsWhenChanged($resultToSave, $splits)
         );
         if ($resultToSave->hasInvalidFinishTime()) {
-            $metrics->setWarning('Runner results has finish_times without time_seconds' . $warningMessage);
+            $metrics->setWarning('Runner results has finish_times without time_seconds' . $warningMessage,
+                UploadMetrics::CODE_FINISH_WITHOUT_SECONDS);
         }
         return $resultToSave;
     }

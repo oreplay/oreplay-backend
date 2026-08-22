@@ -84,7 +84,8 @@ class RunnerResultImporter
         if (($resultData['result_type']['id'] ?? null) !== ResultType::STAGE) {
             return $resultData;
         }
-        $this->_helper->getMetrics()->setWarning('Result type STAGE converted to PARTIAL_OVERALL');
+        $this->_helper->getMetrics()->setWarning('Result type STAGE converted to PARTIAL_OVERALL',
+            UploadMetrics::CODE_RESULT_TYPE_CONVERTED);
         $resultData['result_type'] = ['id' => ResultType::PARTIAL_OVERALL];
         return $resultData;
     }

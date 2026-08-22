@@ -8,6 +8,7 @@ use Cake\Http\Exception\InternalErrorException;
 use Cake\I18n\FrozenTime;
 use RestApi\Model\Entity\RestApiEntity;
 use Results\Lib\Consts\Color;
+use Results\Lib\Consts\MessageLevel;
 use Results\Lib\Consts\UploadTypes;
 use Results\Lib\Import\RowsToInsert;
 use Results\Lib\Import\SavedRowsCheck;
@@ -51,6 +52,19 @@ class UploadMetrics
     ];
     private array $_timersInProgress = [];
     private const MAX_WARNINGS_PER_TYPE = 10;
+    public const CODE_UNCLASSIFIED = 'unclassified';
+    public const CODE_ROWS_NOT_SAVED = 'rows_not_saved';
+    public const CODE_DUPLICATED_RUNNER = 'duplicated_runner';
+    public const CODE_TAKING_TOO_LONG = 'taking_too_long';
+    public const CODE_RUNNER_WITHOUT_RESULTS = 'runner_without_results';
+    public const CODE_TEAM_WITHOUT_RESULTS = 'team_without_results';
+    public const CODE_TEAM_WITHOUT_RUNNERS = 'team_without_runners';
+    public const CODE_RESULT_TYPE_CONVERTED = 'result_type_converted';
+    public const CODE_FINISH_WITHOUT_SECONDS = 'finish_time_without_seconds';
+    public const CODE_EVENT_WITHOUT_TIME_ZONE = 'event_without_time_zone';
+    public const CODE_UPLOAD_TYPE_GUESSED = 'upload_type_guessed';
+    public const CODE_NOTHING_CHANGED = 'nothing_changed';
+    public const CODE_RESULTS_WITHOUT_SPLITS = 'results_without_splits';
 
     private array $_warnings = [];
     private array $_dataLossWarnings = [];
@@ -96,6 +110,7 @@ class UploadMetrics
     {
         $this->_startTimeTotal = microtime(true);
     }
+
     private function startProcessing()
     {
         $this->_startTimeProcessing = microtime(true);
@@ -125,13 +140,16 @@ class UploadMetrics
         );
         if ($missing) {
             $this->setDataLossWarning(
-                'Not saved in database: ' . $missing . ' rows of class ' . $singleClassToSave->short_name
+                'Not saved in database: ' . $missing . ' rows of class ' . $singleClassToSave->short_name,
+                self::CODE_ROWS_NOT_SAVED,
+                ['class' => $singleClassToSave->short_name, 'rows' => $missing]
             );
         }
         $end = microtime(true);
         $this->_savingDuration += $end - $startTimeSaving;
         $this->startProcessing();
     }
+
     public function endTotalTimer()
     {
         $this->_totalDuration = $this->getTotalTime();
@@ -201,24 +219,31 @@ class UploadMetrics
         ];
     }
 
-    public function setWarning(string $string)
+    public function setWarning(string $string, string $code = self::CODE_UNCLASSIFIED, array $context = [])
     {
-        $this->_warnings = $this->_appendCapped($this->_warnings, $string);
+        $this->_warnings = $this->_appendCapped(
+            $this->_warnings,
+            UploadMessage::warning($code, $string, $context)
+        );
     }
 
     /**
      * For warnings that mean rows or people were lost, which outrank everything else on the way out.
      */
-    public function setDataLossWarning(string $string)
+    public function setDataLossWarning(string $string, string $code = self::CODE_UNCLASSIFIED, array $context = [])
     {
-        $this->_dataLossWarnings = $this->_appendCapped($this->_dataLossWarnings, $string);
+        $this->_dataLossWarnings = $this->_appendCapped(
+            $this->_dataLossWarnings,
+            UploadMessage::error($code, $string, $context)
+        );
     }
 
     // keeps the most recent so a flood of warnings cannot exhaust memory, and repeats are dropped:
     // the too-long warning is re-set once per remaining class and would otherwise fill the list
-    private function _appendCapped(array $warnings, string $warning): array
+    private function _appendCapped(array $warnings, UploadMessage $warning): array
     {
-        if (end($warnings) === $warning) {
+        $last = end($warnings);
+        if ($last && $last->getText() === $warning->getText()) {
             return $warnings;
         }
         $warnings[] = $warning;
@@ -229,10 +254,8 @@ class UploadMetrics
     // lines that matter are not buried. With no data loss only the last ordinary warning is useful.
     private function _warningsToShow(): array
     {
-        if ($this->_dataLossWarnings) {
-            return $this->_dataLossWarnings;
-        }
-        return array_slice($this->_warnings, -1);
+        $shown = $this->_dataLossWarnings ?: array_slice($this->_warnings, -1);
+        return array_map(fn(UploadMessage $message) => $message->getText(), $shown);
     }
 
     private function _formatExtraMessage(): string
@@ -242,6 +265,112 @@ class UploadMetrics
             return '';
         }
         return ' (<b>' . implode('; ', $shown) . '</b>)';
+    }
+
+    private function _warnIfResultsWithoutSplits(string $type): bool
+    {
+        $withSplits = [UploadTypes::FINISH_TIMES, UploadTypes::INTERMEDIATES, UploadTypes::SPLITS];
+        if (!($this->runnerCount + $this->teamCount) || $this->splitCount) {
+            return false;
+        }
+        if (!in_array($type, $withSplits) || $this->_formatExtraMessage() || $this->teamCount <= 0) {
+            return false;
+        }
+        $this->setWarning('Uploading results without splits', self::CODE_RESULTS_WITHOUT_SPLITS);
+        return true;
+    }
+
+    /**
+     * v2 only. One envelope for every answer: the HTTP status says whether the request worked, meta.level
+     * says how good the outcome was, and every message survives instead of the worst kind hiding the rest.
+     * See docs/uploads-v1-vs-v2.md.
+     */
+    public function toRestArray(string $type): array
+    {
+        $this->_warnIfResultsWithoutSplits($type);
+        if (!$this->classCount) {
+            $this->setWarning('No class needed importing, every upload hash already matched',
+                self::CODE_NOTHING_CHANGED);
+        }
+        return [
+            'meta' => [
+                'level' => $this->_level(),
+                'uploadType' => $type,
+                'updated' => $this->_updated(),
+                'timings' => $this->_timings(),
+                'messages' => $this->_messagesToArray(),
+            ],
+            'data' => $this->_classesToSave,
+        ];
+    }
+
+    public function toRestArrayError(UploadMessage $message): array
+    {
+        return [
+            'meta' => [
+                'level' => MessageLevel::ERROR,
+                'uploadType' => null,
+                'updated' => $this->_updated(),
+                'timings' => $this->_timings(),
+                'messages' => array_merge($this->_messagesToArray(), [$message->toArray()]),
+            ],
+            'data' => [],
+        ];
+    }
+
+    private function _level(): string
+    {
+        foreach ($this->_allMessages() as $message) {
+            if ($message->getLevel() === MessageLevel::ERROR) {
+                return MessageLevel::ERROR;
+            }
+        }
+        return $this->_warnings ? MessageLevel::WARNING : MessageLevel::INFO;
+    }
+
+    /**
+     * @return UploadMessage[]
+     */
+    private function _allMessages(): array
+    {
+        return array_merge($this->_dataLossWarnings, $this->_warnings);
+    }
+
+    private function _messagesToArray(): array
+    {
+        return array_map(fn(UploadMessage $message) => $message->toArray(), $this->_allMessages());
+    }
+
+    private function _updated(): array
+    {
+        return [
+            'classes' => $this->classCount,
+            'courses' => $this->_courseCount(),
+            'runners' => $this->runnerCount + $this->teamCount,
+            'splits' => $this->splitCount,
+            'runnerResults' => $this->runnerResultsCount + $this->teamResultsCount,
+        ];
+    }
+
+    private function _timings(): array
+    {
+        $runnersInLoop = $this->_duration(self::PARTICIPANTS_IN_LOOP);
+        return [
+            'processing' => [
+                'courses' => $this->_duration(self::COURSES),
+                'runners' => [
+                    'runnerLoop' => $this->_duration(self::PARTICIPANTS_LOOP) - $runnersInLoop,
+                    'runnersInLoop' => $runnersInLoop,
+                    'clubs' => $this->_duration(self::CLUBS),
+                    'runnerResults' => $this->_duration(self::PARTICIPANT_RESULTS),
+                    'splits' => $this->_duration(self::SPLITS),
+                    'total' => round($this->_duration(self::PARTICIPANTS_LOOP), 2),
+                ],
+                'total' => round($this->_processingDuration, 2),
+            ],
+            'saving' => ['total' => round($this->_savingDuration, 2)],
+            'total' => round($this->_totalDuration, 2),
+        ];
     }
 
     public function toArray(string $type): array
@@ -265,15 +394,8 @@ class UploadMetrics
         if (!$this->classCount) {
             $humanColor = Color::BLUE;
         }
-        if ($participantCount && !$this->splitCount) {
-            if (in_array($type, [UploadTypes::FINISH_TIMES, UploadTypes::INTERMEDIATES, UploadTypes::SPLITS])) {
-                if (!$this->_formatExtraMessage()) {
-                    if ($this->teamCount > 0) {
-                        $humanColor = Color::ORANGE;
-                        $this->setWarning('Uploading results without splits');
-                    }
-                }
-            }
+        if ($this->_warnIfResultsWithoutSplits($type)) {
+            $humanColor = Color::ORANGE;
         }
         $extraMessage = $this->_formatExtraMessage();
         if ($extraMessage) {

@@ -128,20 +128,26 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
 
         $jsonDecoded = $this->assertUploadRejected(400);
         $expected = [
-            '_c' => 'Uploaded',
             'meta' => [
-                '_c' => 'UploadedMeta',
                 'updated' => [
                     'classes' => 0,
+                    'courses' => 0,
                     'runners' => 0,
+                    'splits' => 0,
+                    'runnerResults' => 0,
                 ],
-                'humanColor' => '#FF0000',
-                'human' => []
+                'level' => 'error',
+                'messages' => [[
+                    'level' => 'error',
+                    'code' => 'invalid_payload',
+                    'text' => 'Invalid payload structure configuration.contents StartList | ResultList'
+                        . ' and configuration.results_type Mixed',
+                ]],
             ],
             'data' => []
         ];
-        $jsonDecoded['meta']['human'] = [];
-        $this->assertEquals($expected, $jsonDecoded);
+        $this->assertUploadMeta($expected['meta'], $jsonDecoded);
+        $this->assertEquals($expected['data'], $jsonDecoded['data']);
     }
 
     public function testAddNew_shouldRespondErrorWhenTheRawUploadIsNotFound()
@@ -155,8 +161,9 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->post($this->_getEndpoint(), $data);
 
         $jsonDecoded = $this->assertUploadRejected(404);
-        $this->assertStringContainsString('[ERROR', $jsonDecoded['meta']['human'][0]);
-        $this->assertEquals(['classes' => 0, 'runners' => 0], $jsonDecoded['meta']['updated']);
+        $this->assertEquals('error', $jsonDecoded['meta']['level']);
+        $this->assertEquals(['classes' => 0, 'courses' => 0, 'runners' => 0, 'splits' => 0,
+            'runnerResults' => 0], $jsonDecoded['meta']['updated']);
     }
 
     public function testAddNew_shouldDecodeGzip()
@@ -201,20 +208,26 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
 
         $jsonDecoded = $this->assertUploadRejected(400);
         $expected = [
-            '_c' => 'Uploaded',
             'meta' => [
-                '_c' => 'UploadedMeta',
                 'updated' => [
                     'classes' => 0,
+                    'courses' => 0,
                     'runners' => 0,
+                    'splits' => 0,
+                    'runnerResults' => 0,
                 ],
-                'humanColor' => '#FF0000',
-                'human' => []
+                'level' => 'error',
+                'messages' => [[
+                    'level' => 'error',
+                    'code' => 'invalid_payload',
+                    'text' => 'Invalid payload structure configuration.contents StartList | ResultList'
+                        . ' and configuration.results_type Mixed',
+                ]],
             ],
             'data' => []
         ];
-        $jsonDecoded['meta']['human'] = [];
-        $this->assertEquals($expected, $jsonDecoded);
+        $this->assertUploadMeta($expected['meta'], $jsonDecoded);
+        $this->assertEquals($expected['data'], $jsonDecoded['data']);
     }
 
     public function testAddNew_shouldAddMixedContent()
@@ -231,8 +244,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
 
         $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
-        $human = $jsonDecoded['meta']['human'][0];
-        $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
             'updated' => [
                 'classes' => 2,
@@ -241,14 +252,10 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
                 'splits' => 3,
                 'runnerResults' => 6,
             ],
-            'humanColor' => '#075210',
-            'human' => [''],
-            'timings' => [],
+            'level' => 'info',
+            'messages' => [],
         ];
-        $jsonDecoded['meta']['timings'] = [];
-        unset($jsonDecoded['meta']['human'][1]);
-        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-        $this->assertStringStartsWith('Updated 2 classes, 2 courses (', $human);
+        $this->assertUploadMeta($expectedMeta, $jsonDecoded);
     }
 
     public function testAddNew_shouldAddStartTimes()
@@ -265,10 +272,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
 
         $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
-        $human = $jsonDecoded['meta']['human'][0];
-        $jsonDecoded['meta']['human'][0] = '';
-        unset($jsonDecoded['meta']['human'][1]);
-        $jsonDecoded['meta']['timings'] = [];
         $expectedMeta = [
             'updated' => [
                 'classes' => 2,
@@ -277,12 +280,10 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
                 'splits' => 0,
                 'runnerResults' => 4,
             ],
-            'humanColor' => '#075210',
-            'human' => [''],
-            'timings' => [],
+            'level' => 'info',
+            'messages' => [],
         ];
-        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-        $this->assertStringStartsWith('Updated 2 classes, 2 courses (', $human);
+        $this->assertUploadMeta($expectedMeta, $jsonDecoded);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -347,10 +348,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
 
         $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
-        $human = $jsonDecoded['meta']['human'][0];
-        $jsonDecoded['meta']['human'][0] = '';
-        $jsonDecoded['meta']['human'][1] = '';
-        $jsonDecoded['meta']['timings'] = [];
         $expectedMeta = [
             'updated' => [
                 'classes' => 2,
@@ -359,12 +356,14 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
                 'splits' => 0,
                 'runnerResults' => 1,
             ],
-            'humanColor' => '#FF0000',
-            'human' => ['', ''],
-            'timings' => []
+            'level' => 'warning',
+            'messages' => [[
+                'level' => 'warning',
+                'code' => 'runner_without_results',
+                'text' => 'Runner without runner_results',
+            ]],
         ];
-        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-        $this->assertStringStartsWith('Updated (<b>Runner without runner_results</b>) 2 classes, 2 courses', $human);
+        $this->assertUploadMeta($expectedMeta, $jsonDecoded);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -431,10 +430,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
 
         $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
-        $human = $jsonDecoded['meta']['human'][0];
-        $jsonDecoded['meta']['human'][0] = '';
-        unset($jsonDecoded['meta']['human'][1]);
-        $jsonDecoded['meta']['timings'] = [];
         $expectedMeta = [
             'updated' => [
                 'classes' => 2,
@@ -443,12 +438,10 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
                 'splits' => 0,
                 'runnerResults' => 4,
             ],
-            'humanColor' => '#075210',
-            'human' => [''],
-            'timings' => [],
+            'level' => 'info',
+            'messages' => [],
         ];
-        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-        $this->assertStringStartsWith('Updated 2 classes, 1 courses (', $human);
+        $this->assertUploadMeta($expectedMeta, $jsonDecoded);
 
         $dbTeams = TeamsTable::load()->find()
             ->where(['created >' => new FrozenTime('-1 minute')])
@@ -536,8 +529,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->post($this->_getEndpoint(), $data);
 
         $jsonDecoded = $this->assertUploadOk();
-        $human = $jsonDecoded['meta']['human'][0];
-        $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
             'updated' => [
                 'classes' => 1,
@@ -546,12 +537,11 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
                 'splits' => 4,
                 'runnerResults' => 2,
             ],
-            'humanColor' => '#075210',
+            'level' => 'info',
+            'messages' => [],
         ];
-        unset($jsonDecoded['meta']['human']);
         unset($jsonDecoded['meta']['timings']);
-        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-        $this->assertStringContainsString('Updated 1 classes, 1 courses', $human);
+        $this->assertUploadMeta($expectedMeta, $jsonDecoded);
 
         $dbSplits = SplitsTable::load()->find()
             ->where(['Splits.created >' => new FrozenTime('-1 minute')])
@@ -679,8 +669,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $expectedNewRunners = 1;
         $this->assertEquals($existingRunners + $expectedNewRunners, RunnersTable::load()->find()->all()->count());
 
-        $human = $jsonDecoded['meta']['human'][0];
-        $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
             'updated' => [
                 'classes' => 1,
@@ -689,12 +677,16 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
                 'splits' => 6,
                 'runnerResults' => 3,
             ],
-            'humanColor' => '#FF0000',
+            'level' => 'error',
+            'messages' => [[
+                'level' => 'error',
+                'code' => 'duplicated_runner',
+                'text' => 'Duplicated runner Sara Alonso 1',
+                'context' => ['class' => 'INF FEM', 'bib' => '1'],
+            ]],
         ];
-        unset($jsonDecoded['meta']['human']);
         unset($jsonDecoded['meta']['timings']);
-        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-        $this->assertStringContainsString('Updated (<b>Duplicated runner Sara Alonso 1</b>) 1 classes, 1 courses', $human);
+        $this->assertUploadMeta($expectedMeta, $jsonDecoded);
 
         $dbSplits = SplitsTable::load()->find()
             ->where(['Splits.created >' => new FrozenTime('-1 minute')])
@@ -730,17 +722,21 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(403, $this->_response->getStatusCode(), $this->_getBodyAsString());
         $now = new FrozenTime();
         $expectedMeta = [
-            '_c' => 'UploadedMeta',
             'updated' => [
                 'classes' => 0,
+                'courses' => 0,
                 'runners' => 0,
+                'splits' => 0,
+                'runnerResults' => 0,
             ],
-            'humanColor' => '#FF0000',
-            'human' => [
-                "\n    [ERROR - 403] ($now) ForbiddenException \n"
-            ]
+            'level' => 'error',
+            'messages' => [[
+                'level' => 'error',
+                'code' => 'forbidden',
+                'text' => 'Invalid Bearer token',
+            ]],
         ];
-        $this->assertEquals($expectedMeta, json_decode((string)$this->_getBodyAsString(), true)['meta']);
+        $this->assertUploadMeta($expectedMeta, json_decode((string)$this->_getBodyAsString(), true));
     }
 
     public function testAddNew_shouldAddFinishTimesTwice()
@@ -759,10 +755,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
         $expectedRunnerAmount = 2;
         $expectedSplits = 3;
-        $human = $jsonDecoded['meta']['human'][0];
-        $jsonDecoded['meta']['human'][0] = '';
-        unset($jsonDecoded['meta']['human'][1]);
-        $jsonDecoded['meta']['timings'] = [];
         $expectedMeta = [
             'updated' => [
                 'classes' => 1,
@@ -771,12 +763,10 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
                 'splits' => $expectedSplits,
                 'runnerResults' => $expectedRunnerAmount,
             ],
-            'humanColor' => '#075210',
-            'human' => [''],
-            'timings' => [],
+            'level' => 'info',
+            'messages' => [],
         ];
-        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-        $this->assertStringStartsWith('Updated 1 classes, 1 courses (', $human);
+        $this->assertUploadMeta($expectedMeta, $jsonDecoded);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -964,8 +954,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
         $expectedRunnerAmount = 2;
         $expectedSplits = 4;
-        $human = $jsonDecoded['meta']['human'][0];
-        $jsonDecoded['meta']['human'] = [''];
         unset($jsonDecoded['meta']['timings']);
         $expectedMeta = [
             'updated' => [
@@ -975,11 +963,10 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
                 'splits' => $expectedSplits,
                 'runnerResults' => 2,
             ],
-            'humanColor' => '#075210',
-            'human' => ['']
+            'level' => 'info',
+            'messages' => [],
         ];
-        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-        $this->assertStringStartsWith('Updated 1 classes, 1 courses (', $human);
+        $this->assertUploadMeta($expectedMeta, $jsonDecoded);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -1057,17 +1044,21 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $jsonDecoded = $this->assertUploadRejected(400);
         $now = new FrozenTime();
         $expectedMeta = [
-            '_c' => 'UploadedMeta',
             'updated' => [
                 'classes' => 0,
+                'courses' => 0,
                 'runners' => 0,
+                'splits' => 0,
+                'runnerResults' => 0,
             ],
-            'humanColor' => '#FF0000',
-            'human' => [
-                "\n    [ERROR - 400] ($now) Cannot add start times when there are already finish times \n"
-            ]
+            'level' => 'error',
+            'messages' => [[
+                'level' => 'error',
+                'code' => 'invalid_payload',
+                'text' => 'Cannot add start times when there are already finish times',
+            ]],
         ];
-        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
+        $this->assertUploadMeta($expectedMeta, $jsonDecoded);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -1192,7 +1183,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
     {
         $ClassesTable = ClassesTable::load();
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
-        $human = $jsonDecoded['meta']['human'][0];
         $expectedMeta = [
             'classes' => 2,
             'runners' => 2,
@@ -1201,7 +1191,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             'runnerResults' => 2,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        $this->assertStringContainsString('Updated 2 classes, 2 courses (', $human);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -1376,7 +1365,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => RelayExamples::twoTeamsWith2Runners4LegsEach()];
         $this->post($this->_getEndpoint(), $data);
         $jsonDecoded = $this->assertUploadOk();
-        $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 1 courses (', $jsonDecoded['meta']['human'][0]);
+        $this->assertEquals('Uploading results without splits', $jsonDecoded['meta']['messages'][0]['text']);
         $expected = [
             'classes' => 1,
             'courses' => 1,
@@ -1402,7 +1391,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => RelayExamples::oneTeamLeg2()];
         $this->post($this->_getEndpoint(), $data);
         $jsonDecoded = $this->assertUploadOk();
-        $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 1 courses (', $jsonDecoded['meta']['human'][0]);
+        $this->assertEquals('Uploading results without splits', $jsonDecoded['meta']['messages'][0]['text']);
         $this->assertEquals(4, $RunnersTable->find()->all()->count() - $existingRunners);
         $expected = [
             'classes' => 1,
@@ -1449,7 +1438,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => RelayExamples::oneTeamLeg4()];
         $this->post($this->_getEndpoint(), $data);
         $jsonDecoded = $this->assertUploadOk();
-        $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 1 courses (', $jsonDecoded['meta']['human'][0]);
+        $this->assertEquals('Uploading results without splits', $jsonDecoded['meta']['messages'][0]['text']);
         $this->assertEquals($expected, $jsonDecoded['meta']['updated']);
         $this->assertEquals(4, $RunnersTable->find()->all()->count() - $existingRunners);
         /** @var Team $team */
@@ -1510,7 +1499,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
     {
         $ClassesTable = ClassesTable::load();
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
-        $human = $jsonDecoded['meta']['human'][0];
         $expectedMeta = [
             'classes' => 1,
             'runners' => 4,
@@ -1519,7 +1507,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             'runnerResults' => 5,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        $this->assertStringContainsString('Updated (<b>Uploading results without splits</b>) 1 classes, 0 courses (', $human);
+        $this->assertEquals('Uploading results without splits', $jsonDecoded['meta']['messages'][0]['text']);
 
         $addedClasses = $ClassesTable->find()
             ->where(['Classes.stage_id' => StagesFixture::STAGE_FEDO_2])
@@ -1595,7 +1583,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
     {
         $ClassesTable = ClassesTable::load();
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
-        $human = $jsonDecoded['meta']['human'][0];
         $expectedMeta = [
             'classes' => 1,
             'runners' => 2,
@@ -1604,7 +1591,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             'runnerResults' => 6,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 0 courses (0', $human);
+        $this->assertEquals('Result type STAGE converted to PARTIAL_OVERALL', $jsonDecoded['meta']['messages'][0]['text']);
 
         $newStage = StagesTable::load()->find()->orderByDesc('created')->firstOrFail();
         $this->assertEquals(StageType::TOTALS, $newStage->stage_type_id);
@@ -1642,8 +1629,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => TotalsExamples::stage1RealTotalPoints()];
         $this->post($this->_getEndpoint(), $data);
         $jsonDecoded = $this->assertUploadOk();
-        $human = $jsonDecoded['meta']['human'][0];
-        $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
             'classes' => 1,
             'runners' => 1,
@@ -1652,7 +1637,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             'runnerResults' => 2,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 0 courses (0', $human);
+        $this->assertEquals('Result type STAGE converted to PARTIAL_OVERALL', $jsonDecoded['meta']['messages'][0]['text']);
         /** @var Stage $stage */
         $stage = StagesTable::load()->find()
             ->where(['stage_type_id' => StageType::TOTALS])->orderByDesc('created')->first();
@@ -1687,8 +1672,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $data = ['oreplay_data_transfer' => $dataTransfer];
         $this->post($this->_getEndpoint(), $data);
         $jsonDecoded = $this->assertUploadOk();
-        $human = $jsonDecoded['meta']['human'][0];
-        $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
             'classes' => 1,
             'runners' => 1,
@@ -1697,7 +1680,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             'runnerResults' => 3,
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']['updated']);
-        $this->assertStringContainsString('Updated (<b>Result type STAGE converted to PARTIAL_OVERALL</b>) 1 classes, 0 courses (0', $human);
+        $this->assertEquals('Result type STAGE converted to PARTIAL_OVERALL', $jsonDecoded['meta']['messages'][0]['text']);
         /** @var Stage $stage */
         $stage = StagesTable::load()->find()
             ->where(['stage_type_id' => StageType::TOTALS])->orderByDesc('created')->first();
@@ -1791,8 +1774,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
     private function _assert1stUploadPartialSplitsFromDownload(int $position, string $s1time, string $s2time): void
     {
         $jsonDecoded = $this->assertUploadOk();
-        $human = $jsonDecoded['meta']['human'][0];
-        $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
             'updated' => [
                 'classes' => 1,
@@ -1801,14 +1782,10 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
                 'splits' => 2,
                 'runnerResults' => 2,
             ],
-            'humanColor' => '#075210',
-            'human' => [''],
-            'timings' => [],
+            'level' => 'info',
+            'messages' => [],
         ];
-        $jsonDecoded['meta']['timings'] = [];
-        unset($jsonDecoded['meta']['human'][1]);
-        $this->assertEquals($expectedMeta, $jsonDecoded['meta'], $human);
-        $this->assertStringStartsWith('Updated 1 classes, 1 courses (', $human);
+        $this->assertUploadMeta($expectedMeta, $jsonDecoded);
         $results = RunnerResultsTable::load()->find()
             ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])
             ->contain(SplitsTable::name())
@@ -1828,8 +1805,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
     private function _assert2ndUploadPartialSplitsFromDownload(int $position, string $s1time, string $s2time): void
     {
         $jsonDecoded = $this->assertUploadOk();
-        $human = $jsonDecoded['meta']['human'][0];
-        $jsonDecoded['meta']['human'][0] = '';
         $expectedMeta = [
             'updated' => [
                 'classes' => 1,
@@ -1838,14 +1813,10 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
                 'splits' => 4,
                 'runnerResults' => 2,
             ],
-            'humanColor' => '#075210',
-            'human' => [''],
-            'timings' => [],
+            'level' => 'info',
+            'messages' => [],
         ];
-        $jsonDecoded['meta']['timings'] = [];
-        unset($jsonDecoded['meta']['human'][1]);
-        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
-        $this->assertStringStartsWith('Updated 1 classes, 1 courses (', $human);
+        $this->assertUploadMeta($expectedMeta, $jsonDecoded);
         $results = RunnerResultsTable::load()->find()
             ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])
             ->contain(SplitsTable::name(), function (Query $q) {

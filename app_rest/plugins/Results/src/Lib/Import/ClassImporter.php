@@ -105,7 +105,9 @@ class ClassImporter
                 // see Runner::getMatchedRunner) so two real people silently become one row and one set of
                 // results. Dropping the duplicate here only avoids saving it twice; the merge still happens.
                 $metrics->setDataLossWarning(
-                    'Duplicated runner ' . $runner->_getFullName() . ' ' . $runner->bib_number
+                    'Duplicated runner ' . $runner->_getFullName() . ' ' . $runner->bib_number,
+                    UploadMetrics::CODE_DUPLICATED_RUNNER,
+                    ['class' => $class->short_name, 'bib' => $runner->bib_number]
                 );
                 continue;
             }

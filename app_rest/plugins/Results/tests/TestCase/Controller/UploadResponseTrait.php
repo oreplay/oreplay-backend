@@ -13,13 +13,34 @@ trait UploadResponseTrait
      * and 202 is inside the 200-204 range that assertResponseOk() accepts, so a rejected upload —
      * a bad token, a PDOException, anything — passes assertJsonResponseOK() unchanged. A test that
      * asserts nothing about the body then reports success while nothing was uploaded at all.
+     *
+     * v1 still says so in meta.human. In v2 the marker is meta.uploadType, which only an answer that got
+     * as far as reading the payload can carry — and not meta.level, which says how good the outcome was:
+     * an upload that stored everything but merged two runners answers 200 and level error, on purpose.
      */
     protected function assertUploadOk(string $message = ''): array
     {
         $json = $this->assertJsonResponseOK($message);
+        $failed = trim($message . ' upload failed:');
+        if (array_key_exists('uploadType', $json['meta'] ?? [])) {
+            $this->assertNotNull($json['meta']['uploadType'],
+                $failed . ' ' . json_encode($json['meta']['messages'] ?? []));
+            return $json;
+        }
         $human = implode(' ', $json['meta']['human'] ?? []);
-        $this->assertStringNotContainsString('[ERROR - ', $human, trim($message . ' upload failed:'));
+        $this->assertStringNotContainsString('[ERROR - ', $human, $failed);
         return $json;
+    }
+
+    /**
+     * v2 only. Compares meta without the parts a test cannot pin: timings vary per run, and uploadType
+     * only restates what the payload asked for.
+     */
+    protected function assertUploadMeta(array $expected, array $json): void
+    {
+        $meta = $json['meta'];
+        unset($meta['timings'], $meta['uploadType']);
+        $this->assertEquals($expected, $meta);
     }
 
     /**

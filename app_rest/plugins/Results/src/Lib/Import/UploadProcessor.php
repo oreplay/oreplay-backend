@@ -76,7 +76,7 @@ class UploadProcessor
             $msg1 = 'It is taking too long, ';
             $msg2 = $importedSoFar ? 'some data was already processed, but ' : '';
             $msg3 = 'you need to upload again to finish processing';
-            $metrics->setWarning($msg1 . $msg2 . $msg3);
+            $metrics->setWarning($msg1 . $msg2 . $msg3, UploadMetrics::CODE_TAKING_TOO_LONG);
         }
         return $isTakingTooLong;
     }

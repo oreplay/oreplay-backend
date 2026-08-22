@@ -293,7 +293,7 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
         $this->assertUploadOk();
 
         $this->assertEquals('2025-03-26 07:00:00', $this->_firstStoredStartTime());
-        $this->assertStringNotContainsString('no time zone', implode(' ', $response['meta']['human'] ?? []));
+        $this->assertStringNotContainsString('no time zone', json_encode($response['meta']['messages']));
     }
 
     public function testAddNew_shouldLetTheQueryStringOverrideTheEventsTimeZone()
@@ -317,7 +317,7 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
         $response = $this->_postXmlWithoutTimeZone('iof/starts.xml');
         $this->assertUploadOk();
 
-        $this->assertStringContainsString('no time zone', implode(' ', $response['meta']['human'] ?? []));
+        $this->assertStringContainsString('no time zone', json_encode($response['meta']['messages']));
         $this->assertEquals('2025-03-26 08:00:00', $this->_firstStoredStartTime());
     }
 

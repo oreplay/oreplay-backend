@@ -63,7 +63,8 @@ class RunnerImporter
 
         $results = $runnerData['runner_results'] ?? [];
         if (!$results) {
-            $metrics->setWarning('Runner without runner_results');
+            $metrics->setWarning('Runner without runner_results',
+                UploadMetrics::CODE_RUNNER_WITHOUT_RESULTS);
         }
         $variantCourseId = $this->_declaredCourseIdOf($runnerData, $context);
         foreach ($results as $resultData) {
