@@ -14,7 +14,6 @@ use Results\Lib\SplitCompareReason;
  * @property mixed $is_intermediate
  * @property mixed $order_number
  * @property mixed $station
- * @property mixed $sicard
  * @property mixed $class_id
  * @property FrozenTime $created
  * @property mixed|null $battery_perc
@@ -31,7 +30,6 @@ class Split extends AppEntity
     protected array $_accessible = [
         '*' => false,
         'id' => false,
-        'sicard' => true,
         'station' => true,
         'points' => true,
         'reading_time' => true,
@@ -47,7 +45,6 @@ class Split extends AppEntity
         'event_id',
         'stage_id',
         'stage_order',
-        'sicard',
         'station',
         'reading_milli',
         'runner_result_id',

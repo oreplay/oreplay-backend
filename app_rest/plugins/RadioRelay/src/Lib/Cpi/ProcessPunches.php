@@ -80,7 +80,6 @@ class ProcessPunches
             return null;
         }
         $split = [
-            'sicard' => $siCard,
             'is_intermediate' => true,
             'station' => $punch['station'] ?? null,
             'reading_time' => PayloadParser::getReadingTime($punch, $timezone),

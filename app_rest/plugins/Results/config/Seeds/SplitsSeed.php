@@ -29,7 +29,6 @@ class SplitsSeed extends BaseSeed
                 'event_id' => Event::FIRST_EVENT,
                 'stage_id' => Stage::FIRST_STAGE,
                 'stage_order' => null,
-                'sicard' => null,
                 'is_intermediate' => false,
                 'station' => null,
                 'reading_time' => '2024-01-02 10:00:10',

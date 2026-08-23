@@ -780,7 +780,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $dns['event']['stages'][0]['classes'][0]['runners'][0]['runner_results'][0]['status_code'] = StatusCode::DNS;
         $originalSplits = $dns['event']['stages'][0]['classes'][0]['runners'][0]['runner_results'][0]['splits'];
         foreach ($dns['event']['stages'][0]['classes'][0]['runners'][0]['runner_results'][0]['splits'] as $i => &$split) {
-            $split['sicard'] = '';
             $split['status'] = Split::STATUS_MISSING;
             unset($split['reading_time']);
             unset($split['reading_milli']);
@@ -1685,7 +1684,6 @@ class UploadsControllerTest extends ApiCommonErrorsTest
 
     private function _assertSplit(mixed $split, string $station, bool $isRadio, ?string $readingTime): void
     {
-        $this->assertEquals('8000001', $split->sicard);
         $this->assertEquals($station, $split->station);
         $this->assertEquals($isRadio, $split->is_intermediate);
         if ($readingTime === null) {
