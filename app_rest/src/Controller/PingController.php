@@ -76,7 +76,7 @@ class PingController extends ApiController
     private function _phpRuntime(): array
     {
         return [
-            'xd' => extension_loaded('xdebug') ? (string)ini_get('xdebug.mode') : 'off',
+            'xd' => extension_loaded('xdebug') ? ((string)ini_get('xdebug.mode') ?: 'off') : 'nl',
             'ml' => (string)ini_get('memory_limit'),
         ];
     }
