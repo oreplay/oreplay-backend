@@ -16,8 +16,18 @@ class ClassImportReport
         public readonly string $classId,
         public readonly string $shortName,
         public readonly int $runnerCount,
-        public readonly int $teamCount
+        public readonly int $teamCount,
+        private readonly ?ClassEntity $class = null
     ) {
+    }
+
+    /**
+     * The class as it was committed. Held only for as long as the report is: it is read by whoever is
+     * publishing, inside the loop, and both are gone before the next class is read.
+     */
+    public function getClass(): ?ClassEntity
+    {
+        return $this->class;
     }
 
     public static function of(ClassEntity $class): self
@@ -26,7 +36,8 @@ class ClassImportReport
             (string)$class->id,
             (string)$class->short_name,
             count($class->runners ?? []),
-            count($class->teams ?? [])
+            count($class->teams ?? []),
+            $class
         );
     }
 

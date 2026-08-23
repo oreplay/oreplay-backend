@@ -34,6 +34,7 @@ $_SERVER['PHP_SELF'] = '/';
 
 if (empty($_SERVER['HTTP_HOST'])) {
     Configure::write('App.fullBaseUrl', 'http://localhost');
+    Configure::write('Nchan.publishUrl', null); // no result push while testing
 }
 
 // DebugKit skips settings these connection config if PHP SAPI is CLI / PHPDBG.

@@ -15,6 +15,8 @@ use Results\Lib\UploadHelper;
 use Results\Lib\UploadMetrics;
 use Results\Model\Entity\Event;
 use Results\Model\Table\ClassesTable;
+use Results\Model\Table\RunnerResultsTable;
+use Results\Model\Table\RunnersTable;
 use Results\Model\Table\UploadLogsTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;

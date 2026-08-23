@@ -14,13 +14,18 @@ use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\Import\Iof\IofUploadFactory;
 use Results\Lib\Import\Iof\IofUploadOptions;
 use Results\Lib\Import\UploadProcessor;
+use Results\Lib\Publish\ClassResultsPublisher;
+use Results\Lib\Publish\NchanChannel;
 use Results\Lib\Publish\UploadProgressPublisher;
+use Results\Lib\Publish\UploadPublisher;
+use Results\Lib\Publish\UploadPublishers;
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMessage;
 use Results\Lib\UploadMetrics;
 use Results\Model\Table\ClassesTable;
 use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\TokensTable;
+use Results\Model\Entity\UploadLog;
 use Results\Model\Table\UploadLogsTable;
 
 class UploadsV2Controller extends ApiController
@@ -68,13 +73,22 @@ class UploadsV2Controller extends ApiController
         $type = $helper->validateConfigChecker()->preCheckType();
         $log = UploadLogsTable::load()->saveUploadLog($helper);
 
-        $processor = new UploadProcessor($this->Classes, new UploadProgressPublisher($log));
+        $processor = new UploadProcessor($this->Classes, $this->_publishers($log));
         $processor->process($helper);
         RawUploadsTable::load()->saveFile($log, $helper);
 
         $metrics = $helper->getMetrics();
         $metrics->endTotalTimer();
         return $metrics->toRestArray($type);
+    }
+
+    private function _publishers(UploadLog $log): UploadPublisher
+    {
+        $publishers = [new UploadProgressPublisher($log)];
+        if (NchanChannel::isConfigured()) {
+            $publishers[] = new ClassResultsPublisher(new NchanChannel());
+        }
+        return new UploadPublishers($publishers);
     }
 
     private function _assertDesktopClientAuthenticated(UploadHelper $helper): void
