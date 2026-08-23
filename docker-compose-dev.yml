@@ -17,6 +17,8 @@ services:
     depends_on:
       - mysql
       - memcached
+    environment:
+      XDEBUG_MODE: develop,debug
     env_file:
       - nginx-dev.env
       #- .env.production # TODO do not commit

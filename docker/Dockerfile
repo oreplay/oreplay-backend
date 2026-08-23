@@ -10,6 +10,14 @@ RUN apt-get update -qq \
     && apt-get install -y --no-install-recommends libnginx-mod-nchan \
     && ls /etc/nginx/modules-enabled/ | grep -q nchan
 
+## The base image is a dev one and ships xdebug enabled: the ping endpoint reported mode=develop on
+## production, which the original profiling measured at 1.9x on a whole request. Turned off for php-fpm,
+## measured here at 0.58 s against 0.78 s on the same workload.
+## Off rather than uninstalled, because the pool runs with clear_env = no: a development container turns it
+## back on with XDEBUG_MODE in its environment, and one image serves both. The cli is untouched, since that
+## is where phpunit would ask for coverage.
+RUN echo 'xdebug.mode=off' > /etc/php/8.3/fpm/conf.d/99-xdebug-off.ini
+
 ADD ./app_rest /var/www/cplatform/public/app_rest
 ADD ./docker/sites/nginx-site-dev.conf /etc/nginx/sites-available/courseticket
 ADD ./docker/sites/nchan-dev.conf /etc/nginx/sites-enabled/nchan.conf
