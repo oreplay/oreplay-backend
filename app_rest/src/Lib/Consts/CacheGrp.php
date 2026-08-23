@@ -12,6 +12,7 @@ class CacheGrp
     const ACL = 'acl';
     const UPLOAD = 'upload';
     const UPLOAD_ENTITIES_GROUP = 'uploadEntities';
+    const UPLOAD_LOCK = 'uploadLock';
     const SHORT = 'short';
     const EXTRALONG = 'extralong';
     const CORE = '_cake_translations_'; // before cakephp 5.1.0 _cake_core_

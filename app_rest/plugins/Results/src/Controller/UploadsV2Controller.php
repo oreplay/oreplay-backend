@@ -8,11 +8,13 @@ use App\Lib\Consts\CacheGrp;
 use App\Lib\FullBaseUrl;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
+use Cake\Http\Exception\ConflictException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\HttpException;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\Import\Iof\IofUploadFactory;
 use Results\Lib\Import\Iof\IofUploadOptions;
+use Results\Lib\Import\StageUploadLock;
 use Results\Lib\Import\UploadProcessor;
 use Results\Lib\Publish\ClassResultsPublisher;
 use Results\Lib\Publish\NchanChannel;
@@ -71,11 +73,19 @@ class UploadsV2Controller extends ApiController
 
         // the log row describes the upload, so the payload has to be understood before it can be written
         $type = $helper->validateConfigChecker()->preCheckType();
-        $log = UploadLogsTable::load()->saveUploadLog($helper);
+        $lock = new StageUploadLock();
+        if (!$lock->acquire($helper->getEventId(), $helper->getStageId())) {
+            throw new ConflictException('An upload for this stage is still being processed');
+        }
+        try {
+            $log = UploadLogsTable::load()->saveUploadLog($helper);
 
-        $processor = new UploadProcessor($this->Classes, $this->_publishers($log));
-        $processor->process($helper);
-        RawUploadsTable::load()->saveFile($log, $helper);
+            $processor = new UploadProcessor($this->Classes, $this->_publishers($log));
+            $processor->process($helper);
+            RawUploadsTable::load()->saveFile($log, $helper);
+        } finally {
+            $lock->release();
+        }
 
         $metrics = $helper->getMetrics();
         $metrics->endTotalTimer();

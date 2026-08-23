@@ -97,6 +97,73 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         parent::setUp();
     }
 
+    private function _lockTheStage(): \Results\Lib\Import\StageUploadLock
+    {
+        $lock = new \Results\Lib\Import\StageUploadLock();
+        $lock->acquire(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2);
+        return $lock;
+    }
+
+    /**
+     * A client that uploads every few seconds posts again while the previous file is still importing.
+     * Two imports on one stage create the same runner twice, and the older one can finish last and write
+     * its stale results over the newer ones, so the second is refused rather than queued: the client's
+     * next file is seconds away and carries fresher data than anything a queue would hold.
+     */
+    public function testAddNew_shouldRefuseASecondUploadWhileTheStageIsStillImporting()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $lock = $this->_lockTheStage();
+
+        $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+        $this->post($this->_getEndpoint(), $data);
+
+        $jsonDecoded = $this->assertUploadRejected(409);
+        $this->assertEquals('error', $jsonDecoded['meta']['level']);
+        $this->assertEquals([
+            'level' => 'error',
+            'code' => 'conflict',
+            'text' => 'An upload for this stage is still being processed',
+        ], $jsonDecoded['meta']['messages'][0]);
+        $this->assertEquals(0, RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all()->count(),
+            'a refused upload must not import anything');
+        $lock->release();
+    }
+
+    public function testAddNew_shouldReleaseTheLockSoTheNextUploadGoesThrough()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertUploadOk('first upload');
+        Cache::clearGroup(CacheGrp::UPLOAD_ENTITIES_GROUP, CacheGrp::UPLOAD);
+        // posting again replaces every header, so the token has to be set again
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), $data);
+
+        $this->assertUploadOk('the stage must not stay locked after an upload finishes');
+    }
+
+    /**
+     * The lock is released in a finally: a rejected payload that left it held would block the stage until
+     * the entry expired, which is minutes of an event with no results.
+     */
+    public function testAddNew_shouldReleaseTheLockWhenTheUploadFails()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $broken = ResultExamples::resultSimpleFinishTime();
+        $broken['event']['stages'][0]['classes'][0]['runners'][0]['runner_results'][0]['result_type'] = [];
+        $this->post($this->_getEndpoint(), ['oreplay_data_transfer' => $broken]);
+        $this->assertNotEquals(200, $this->_response->getStatusCode());
+
+        $lock = new \Results\Lib\Import\StageUploadLock();
+        $this->assertTrue($lock->acquire(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2),
+            'the stage is still locked after a failed upload');
+        $lock->release();
+    }
+
     public function testAddNew_onError()
     {
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);

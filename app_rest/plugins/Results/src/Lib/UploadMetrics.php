@@ -19,6 +19,8 @@ use Results\Model\Table\ClassesTable;
 
 class UploadMetrics
 {
+    public const MAX_PROCESSING_SECONDS = 45;
+
     public const COURSES = 'courses';
     // covers participant matching as well as club creation, both importers measure
     // createRunnerIfNotExists() and createTeamIfNotExists() with it
@@ -163,8 +165,7 @@ class UploadMetrics
 
     public function isTakingTooLong(): bool
     {
-        $maxProcessingSeconds = 45;
-        return $this->getTotalTime() > $maxProcessingSeconds;
+        return $this->getTotalTime() > self::MAX_PROCESSING_SECONDS;
     }
 
     public function addToRunnerCounter(int $toAdd)

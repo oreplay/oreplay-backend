@@ -10,7 +10,7 @@ author does not have to diff two controllers to find it.
 | Controller | `UploadsController` | `UploadsV2Controller` |
 | Import itself | its own copy of the class loop, inside the controller, **deliberately untouched** | `UploadProcessor` + `ClassImporter`, which is where new work happens |
 | `upload_logs` row | written **once the upload is over**, as it always has been | written **before the loop and updated after every class** (`UploadProgressPublisher`), so an interrupted upload keeps the progress it reached |
-| Status on failure | **always `202`** | **the real status** — `400`, `403`, `404`, `500` |
+| Status on failure | **always `202`** | **the real status** — `400`, `403`, `404`, `409`, `500` |
 | `data` in the response | the whole saved entity graph | **always `[]`** |
 | Response `meta` | `human` (rendered text with `<br>` and `<b>`) + `humanColor` (a hex colour) | `level` + `messages[]`, and `uploadType`. `human` and `humanColor` are **gone** |
 | `?version=` query parameter | supported; below `402` the response is reshaped | **ignored** — always the modern shape |
@@ -43,6 +43,7 @@ Observed today:
 | Start times uploaded when finish times exist | 202 | **400** |
 | `raw_upload_id` that does not exist | 202 | **404** |
 | Anything unexpected, including `PDOException` | 202 | **500** |
+| An upload for the same stage is still importing | 202, and both imports run | **409**, and the second is refused |
 
 **The body is unchanged.** `meta.updated`, `meta.human` and `meta.humanColor` are exactly as before
 in both versions, so a client that already reads `meta.human` keeps working — it simply no longer
@@ -139,3 +140,20 @@ for "this answer came from the error path".
 **Every message survives.** v1 shows data-loss warnings *instead of* the ordinary ones, so a real warning
 can vanish behind another; v2 returns the lot, capped at ten of each kind, and `meta.level` is the highest
 level present.
+
+## One import at a time per stage (v2 only)
+
+A client that uploads every few seconds posts again before the previous file has finished importing, and
+nothing serialised them: two imports load the same stored participants, neither sees the other's uncommitted
+rows, and both create the same runner. The older one can also finish last and write its stale results over
+the newer ones, so a leaderboard goes backwards.
+
+v2 refuses the second with **409** rather than queueing it, because the client's next file is seconds away
+and carries fresher data than anything a queue would hold. **v1 is unchanged**, deliberately: its contract
+says every failure is a 202, and the deployed desktop clients hold that contract.
+
+The lock lives in the cache, not in a column: `Cache::add()` is atomic on both the memcached and the redis
+engines, and the entry expires by itself, so a request killed mid-import cannot block a stage for ever. Its
+lifetime is **twice `UploadMetrics::MAX_PROCESSING_SECONDS`**, derived in `config/app.php` rather than
+copied, so an upload can never outlive its own lock however that guard changes. It is released in a
+`finally`, so the expiry is a backstop rather than the mechanism.

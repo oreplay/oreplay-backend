@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 use App\Lib\Consts\CacheGrp;
 use Cake\Cache\Engine\MemcachedEngine;
+use Results\Lib\UploadMetrics;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
 use Cake\Log\Engine\FileLog;
@@ -189,6 +190,15 @@ return [
             'prefix' => env('TAG_VERSION', ''). '_' . CacheGrp::UPLOAD . '_',
             'groups' => [CacheGrp::UPLOAD_ENTITIES_GROUP],
             'duration' => '+10 seconds',
+            'path' => CACHE,
+            'url' => env('CACHE_DEFAULT_URL', null),
+        ],
+        CacheGrp::UPLOAD_LOCK => [
+            'className' => MemcachedEngine::class,
+            'prefix' => env('TAG_VERSION', ''). '_' . CacheGrp::UPLOAD_LOCK . '_',
+            // twice the span after which an import gives up, so a legitimate upload can never outlive its
+            // own lock, and a request killed mid-import stops blocking the stage on its own
+            'duration' => '+' . (UploadMetrics::MAX_PROCESSING_SECONDS * 2) . ' seconds',
             'path' => CACHE,
             'url' => env('CACHE_DEFAULT_URL', null),
         ],
