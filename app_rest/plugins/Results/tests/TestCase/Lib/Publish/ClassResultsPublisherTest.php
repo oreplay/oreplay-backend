@@ -123,11 +123,20 @@ class ClassResultsPublisherTest extends TestCase
         };
     }
 
-    private function _upload(array $payload, ChannelPublisher $channel): void
+    private function _upload(array $payload, ChannelPublisher $channel, string $uploadId = null): void
     {
         $helper = new UploadHelper($payload, Event::FIRST_EVENT, new UploadMetrics());
-        $processor = new UploadProcessor(ClassesTable::load(), new ClassResultsPublisher($channel));
-        $processor->process($helper);
+        $publisher = new ClassResultsPublisher($channel, $uploadId);
+        (new UploadProcessor(ClassesTable::load(), $publisher))->process($helper);
+    }
+
+    public function testEveryPushSaysWhichUploadCausedIt()
+    {
+        $channel = $this->_spyChannel();
+
+        $this->_upload($this->_twoRunnersWithSplits(2), $channel, 'upload-abc');
+
+        $this->assertEquals('upload-abc', $channel->payloads[0]['uploadId']);
     }
 
     public function testPushesEveryRunnerButOnlyTheSplitsThatChanged()

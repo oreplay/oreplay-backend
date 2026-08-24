@@ -286,7 +286,7 @@ class UploadMetrics
      * says how good the outcome was, and every message survives instead of the worst kind hiding the rest.
      * See docs/uploads-v1-vs-v2.md.
      */
-    public function toRestArray(string $type): array
+    public function toRestArray(string $type, ?string $uploadId = null): array
     {
         $this->_warnIfResultsWithoutSplits($type);
         if (!$this->classCount) {
@@ -296,6 +296,7 @@ class UploadMetrics
         return [
             'meta' => [
                 'level' => $this->_level(),
+                'uploadId' => $uploadId,
                 'uploadType' => $type,
                 'updated' => $this->_updated(),
                 'timings' => $this->_timings(),

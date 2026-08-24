@@ -164,6 +164,28 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $lock->release();
     }
 
+    /**
+     * The push carries the id of the upload that caused it, and the response carries the same id, so a
+     * client can tell which of its files produced a class it was pushed. The response arrives after the
+     * pushes, so the match is made afterwards.
+     */
+    public function testAddNew_shouldReportTheUploadIdThatTheClassPushesCarry()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        ClassesTable::load()->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+        $this->post($this->_getEndpoint(), $data);
+
+        $jsonDecoded = $this->assertUploadOk();
+        $log = UploadLogsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->orderByDesc('created')->firstOrFail();
+        $this->assertEquals($log->id, $jsonDecoded['meta']['uploadId']);
+        $this->assertNotEmpty($jsonDecoded['meta']['uploadId']);
+    }
+
     public function testAddNew_onError()
     {
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);

@@ -33,13 +33,13 @@ trait UploadResponseTrait
     }
 
     /**
-     * v2 only. Compares meta without the parts a test cannot pin: timings vary per run, and uploadType
-     * only restates what the payload asked for.
+     * v2 only. Compares meta without the parts a test cannot pin: timings vary per run, uploadId is a
+     * fresh uuid each time, and uploadType only restates what the payload asked for.
      */
     protected function assertUploadMeta(array $expected, array $json): void
     {
         $meta = $json['meta'];
-        unset($meta['timings'], $meta['uploadType']);
+        unset($meta['timings'], $meta['uploadType'], $meta['uploadId']);
         $this->assertEquals($expected, $meta);
     }
 

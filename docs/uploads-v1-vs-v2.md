@@ -107,6 +107,7 @@ Decided 2026-08-22. One envelope for every answer, success or failure:
 ```json
 { "meta": {
     "level": "warning",
+    "uploadId": "f3414e0b-e605-494d-89f0-85d0bfbab2a0",
     "uploadType": "res_splits",
     "updated": { "classes": 3, "courses": 2, "runners": 45, "splits": 320, "runnerResults": 45 },
     "timings": { "processing": { ... }, "saving": { ... }, "total": 4.2 },
@@ -130,6 +131,12 @@ miss that, which is exactly what `humanColor` red meant before.
 
 `meta.uploadType` is null when the upload never got as far as reading the payload, which is the honest test
 for "this answer came from the error path".
+
+**`meta.uploadId` is the `upload_logs` row for this upload**, and every class pushed while it ran carries the
+same id. A client can therefore tell which of its files produced a class it was pushed — retrospectively,
+since the pushes arrive before the response does. There is deliberately no client-supplied idempotency key:
+repeated uploads are already cheap because unchanged classes are skipped by hash, and overlapping ones are
+refused by the stage lock, so a key would have bought only the ability to correlate live.
 
 | level | when |
 |---|---|

@@ -18,8 +18,10 @@ use Results\Lib\Import\ClassImportReport;
  */
 class ClassResultsPublisher implements UploadPublisher
 {
-    public function __construct(private readonly ChannelPublisher $channel)
-    {
+    public function __construct(
+        private readonly ChannelPublisher $channel,
+        private readonly ?string $uploadId = null
+    ) {
     }
 
     public function classImported(string $stageId, ClassImportReport $report): void
@@ -31,6 +33,7 @@ class ClassResultsPublisher implements UploadPublisher
         $this->channel->publish(
             'stage/' . $stageId . '/class/' . $report->classId,
             [
+                'uploadId' => $this->uploadId,
                 'class' => ['id' => $report->classId, 'short_name' => $report->shortName],
                 'runners' => $this->_participants($class->runners ?? []),
                 'teams' => $this->_participants($class->teams ?? []),

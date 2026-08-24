@@ -89,14 +89,14 @@ class UploadsV2Controller extends ApiController
 
         $metrics = $helper->getMetrics();
         $metrics->endTotalTimer();
-        return $metrics->toRestArray($type);
+        return $metrics->toRestArray($type, $log->id);
     }
 
     private function _publishers(UploadLog $log): UploadPublisher
     {
         $publishers = [new UploadProgressPublisher($log)];
         if (NchanChannel::isConfigured()) {
-            $publishers[] = new ClassResultsPublisher(new NchanChannel());
+            $publishers[] = new ClassResultsPublisher(new NchanChannel(), $log->id);
         }
         return new UploadPublishers($publishers);
     }
