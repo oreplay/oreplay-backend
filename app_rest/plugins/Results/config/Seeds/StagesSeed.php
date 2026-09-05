@@ -31,6 +31,7 @@ class StagesSeed extends BaseSeed
                 'base_time' => null,
                 'order_number' => 1,
                 'stage_type_id' => StageType::CLASSIC,
+                'start' => '2024-01-02 10:00:00',
                 'server_offset' => 0,
                 'utc_value' => '',
                 'created' => $now,

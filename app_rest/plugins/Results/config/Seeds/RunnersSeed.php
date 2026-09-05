@@ -35,6 +35,8 @@ class RunnersSeed extends BaseSeed
                 'iof_id' => null,
                 'bib_number' => 4444,
                 'bib_alt' => null,
+                'is_nc' => false,
+                'eligibility' => '',
                 'sicard' => null,
                 'sicard_alt' => null,
                 'license' => null,
