@@ -35,7 +35,7 @@ services:
       - oreplay_network
 
   mysql:
-    image: mysql:8.0.28-debian
+    image: mysql:8.0.36
     ports:
       - '13307:3306'
     volumes:
