@@ -5,8 +5,8 @@ declare(strict_types = 1);
 namespace App\Controller;
 
 use App\Lib\Consts\CacheGrp;
+use App\Lib\Database\DatabaseCreator;
 use App\Lib\I18n\LegacyI18n;
-use App\Model\Table\UsersTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\ConnectionManager;
 use Cake\Http\Exception\BadRequestException;
@@ -56,12 +56,9 @@ class PingController extends ApiController
 
         $migrationList = migrationList();
         if ($this->request->getQuery('migrations') !== 'false') {
+            DatabaseCreator::createIfMissing();
             try {
                 RestMigrator::runMigrations($migrationList, $toRet);
-            } catch (\InvalidArgumentException $e) {
-                // if db conexion does not exist a new db will be created or tested
-                $this->_rollbackAbandonedTransaction();
-                UsersTable::load()->find()->all();
             } catch (\Throwable $e) {
                 $this->_rollbackAbandonedTransaction();
                 throw $e;
