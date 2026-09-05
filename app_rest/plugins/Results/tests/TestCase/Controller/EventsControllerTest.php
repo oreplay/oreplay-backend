@@ -437,6 +437,15 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->assertException('Unauthorized', 401, 'Verify authorization error: The access token provided is invalid');
     }
 
+    public function testGetData_expiredDesktopClientToken()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(TokensFixture::EXPIRED_TOKEN);
+        $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
+
+        $this->assertException('Unauthorized', 401, 'Verify authorization error: The access token provided is invalid');
+    }
+
     public function testAddNew()
     {
         $data = [

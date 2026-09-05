@@ -6,10 +6,10 @@ namespace Results\Controller;
 
 use App\Lib\Consts\CacheGrp;
 use App\Lib\Exception\InvalidPayloadException;
+use App\Lib\Exception\InvalidTokenException;
 use App\Lib\FullBaseUrl;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
-use Cake\Http\Exception\ForbiddenException;
 use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\UploadHelper;
@@ -63,7 +63,8 @@ class UploadsController extends ApiController
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($helper->getEventId(), $token);
         if (!$isDesktopClientAuthenticated) {
-            throw new ForbiddenException('Invalid Bearer token');
+            throw new InvalidTokenException(
+                'There is a problem with the token, create a new one and set it in the client');
         }
 
         $configChecker = $helper->validateConfigChecker();

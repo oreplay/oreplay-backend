@@ -613,11 +613,34 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             ],
             'humanColor' => '#FF0000',
             'human' => [
-                "\n    [ERROR - 403] ($now) ForbiddenException \n"
+                "\n    [ERROR - 403] ($now) There is a problem with the token, create a new one and set it in the client \n"
             ]
         ];
         $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
 
+    }
+
+    public function testAddNew_shouldRejectExpiredToken()
+    {
+        $this->loadAuthToken(TokensFixture::EXPIRED_TOKEN);
+
+        $data = ['oreplay_data_transfer' => StartExamples::startImportSmall()];
+        $this->post($this->_getEndpoint() . '?version=300', $data);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $now = new FrozenTime();
+        $expectedMeta = [
+            '_c' => 'UploadedMeta',
+            'updated' => [
+                'classes' => 0,
+                'runners' => 0,
+            ],
+            'humanColor' => '#FF0000',
+            'human' => [
+                "\n    [ERROR - 403] ($now) There is a problem with the token, create a new one and set it in the client \n"
+            ]
+        ];
+        $this->assertEquals($expectedMeta, $jsonDecoded['meta']);
     }
 
     public function testAddNew_shouldAddFinishTimesTwice()
