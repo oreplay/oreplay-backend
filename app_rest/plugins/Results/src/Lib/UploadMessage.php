@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Lib;
 
+use RestApi\Model\Entity\RestApiEntity;
 use Results\Lib\Consts\MessageLevel;
 
 /**
@@ -51,6 +52,7 @@ class UploadMessage
     public function toArray(): array
     {
         $asArray = [
+            RestApiEntity::CLASS_NAME => 'UploadMessage',
             'level' => $this->level,
             'code' => $this->code,
             'text' => $this->text,

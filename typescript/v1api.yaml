@@ -7,7 +7,7 @@ info:
   contact:
     email: support@oreplay.es
 servers:
-  - url: https://host.docker.internal
+  - url: https://127.0.0.1
 tags: []
 paths:
   /api/v1/events/{eventID}/tokens/:
@@ -1659,6 +1659,41 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UploadPostData'
+  /api/v1/events/{eventID}/uploads/v2/:
+    post:
+      operationId: postListUploadsV2
+      summary: ''
+      description: Add new should add mixed content
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        - description: ''
+          in: query
+          name: reprocess_all
+          example: '0'
+          required: false
+          schema:
+            type: string
+      tags:
+        - UploadsV2
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResUploadedV2'
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadPostData'
   /api/v1/users/:
     post:
       operationId: postListUsers
@@ -3135,3 +3170,120 @@ components:
       description: Data wrapper for ResUploaded
       required:
         - data
+    UploadedV2Meta:
+      type: object
+      properties:
+        level:
+          type: string
+          example: info
+        uploadId:
+          type: string
+          example: 9ad926ca-5d0d-492c-9db7-13ec0f977d34
+        uploadType:
+          type: string
+          example: res_finish
+        updated:
+          type: object
+          properties:
+            classes:
+              type: number
+              example: 2
+            courses:
+              type: number
+              example: 2
+            runners:
+              type: number
+              example: 6
+            splits:
+              type: number
+              example: 3
+            runnerResults:
+              type: number
+              example: 6
+          description: Generic object.
+        timings:
+          type: object
+          properties:
+            processing:
+              type: object
+              properties:
+                courses:
+                  type: number
+                  example: 0.01
+                runners:
+                  type: object
+                  properties:
+                    runnerLoop:
+                      type: number
+                      example: 0
+                    runnersInLoop:
+                      type: number
+                      example: 0.03
+                    clubs:
+                      type: number
+                      example: 0.02
+                    runnerResults:
+                      type: number
+                      example: 0.01
+                    splits:
+                      type: number
+                      example: 0
+                    total:
+                      type: number
+                      example: 0.03
+                  description: objectInArray
+                total:
+                  type: number
+                  example: 0.08
+              description: objectInArray
+            saving:
+              type: object
+              properties:
+                total:
+                  type: number
+                  example: 0.03
+              description: objectInArray
+            total:
+              type: number
+              example: 0.12
+          description: Generic object.
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/UploadMessage'
+      description: Entity UploadedV2Meta
+    ResUploadedV2:
+      type: object
+      properties:
+        meta:
+          $ref: '#/components/schemas/UploadedV2Meta'
+        data:
+          type: object
+          description: Any object
+          additionalProperties: true
+      description: Data wrapper for ResUploadedV2
+      required:
+        - data
+    UploadMessage:
+      type: object
+      properties:
+        level:
+          type: string
+          example: error
+        code:
+          type: string
+          example: duplicated_runner
+        text:
+          type: string
+          example: Duplicated runner Sara Alonso 1
+        context:
+          type: object
+          properties:
+            class:
+              type: string
+              example: INF FEM
+            bib:
+              type: number
+              example: 1
+          description: Generic object.
+      description: Entity UploadMessage

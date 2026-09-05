@@ -294,7 +294,9 @@ class UploadMetrics
                 self::CODE_NOTHING_CHANGED);
         }
         return [
+            RestApiEntity::CLASS_NAME => 'UploadedV2',
             'meta' => [
+                RestApiEntity::CLASS_NAME => 'UploadedV2Meta',
                 'level' => $this->_level(),
                 'uploadId' => $uploadId,
                 'uploadType' => $type,
@@ -309,8 +311,11 @@ class UploadMetrics
     public function toRestArrayError(UploadMessage $message): array
     {
         return [
+            RestApiEntity::CLASS_NAME => 'UploadedV2',
             'meta' => [
+                RestApiEntity::CLASS_NAME => 'UploadedV2Meta',
                 'level' => MessageLevel::ERROR,
+                'uploadId' => null,
                 'uploadType' => null,
                 'updated' => $this->_updated(),
                 'timings' => $this->_timings(),

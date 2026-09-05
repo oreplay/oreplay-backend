@@ -400,6 +400,38 @@ Example request body. This is example is a draft to give a general illustration 
 ```
 It is important to notice the `event.id` MUST be the event ID on the url (in our example `79bad6e6-7c42-4317-958d-5c83c905b0ad`) and `event.stages.id` MUST be the **stage ID** selected in the stage selector (for example `995cdc24-66f9-4a64-bba6-90d6584475ac` )
 
+## Uploading IOF XML v3 instead
+
+The **v2** endpoint, `POST /api/v1/events/<Event ID>/uploads/v2/`, accepts an IOF XML v3 `ResultList` or
+`StartList` as the raw request body with `Content-Type: application/xml`, and answers the same JSON as a v2
+upload of the equivalent payload. The same event uploaded either way imports identically — that is the
+acceptance criterion the importer is tested against.
+
+XML carries no `oreplay_data_transfer` envelope, so what the JSON body would have said comes from the query
+string:
+
+| parameter | |
+|---|---|
+| `stage_id` | **required**, since the document names no stage |
+| `tz` | time zone for naive times; defaults to the event's own |
+| `validate` | `false` skips XSD validation, on by default |
+| `reprocess_all` | ignore stored hashes and re-import every class |
+
+```
+POST /api/v1/events/79bad6e6-.../uploads/v2/?stage_id=995cdc24-...&tz=Europe/Madrid
+Content-Type: application/xml
+Authorization: Bearer <token>
+
+<?xml version="1.0"?><ResultList xmlns="http://www.orienteering.org/datastandard/3.0" ...>
+```
+
+The kind of upload — full splits, radio intermediates or finish times only — is detected from the document
+itself, including the `<!-- SplitTimeControls: … -->` comment SportSoftware writes into radio exports, so
+nothing has to declare it.
+
+Differences between v1 and v2 that a client author needs, including the response shape and the `409` a
+second concurrent upload receives, are in `uploads-v1-vs-v2.md`.
+
 ## Useful links
 
 - Check Oreplay server version https://www.oreplay.es/api/v1/ping/pong/

@@ -34,13 +34,25 @@ trait UploadResponseTrait
 
     /**
      * v2 only. Compares meta without the parts a test cannot pin: timings vary per run, uploadId is a
-     * fresh uuid each time, and uploadType only restates what the payload asked for.
+     * fresh uuid each time, uploadType only restates what the payload asked for, and `_c` is the schema
+     * marker the OpenAPI capture reads, pinned once in its own test rather than in every expectation.
      */
     protected function assertUploadMeta(array $expected, array $json): void
     {
-        $meta = $json['meta'];
+        $meta = $this->_withoutSchemaMarkers($json['meta']);
         unset($meta['timings'], $meta['uploadType'], $meta['uploadId']);
         $this->assertEquals($expected, $meta);
+    }
+
+    private function _withoutSchemaMarkers(array $data): array
+    {
+        unset($data['_c']);
+        foreach ($data as $key => $value) {
+            if (is_array($value)) {
+                $data[$key] = $this->_withoutSchemaMarkers($value);
+            }
+        }
+        return $data;
     }
 
     /**

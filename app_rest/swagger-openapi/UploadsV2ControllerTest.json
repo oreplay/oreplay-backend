@@ -1,0 +1,56 @@
+{
+    "/api/v1/events/{eventID}/uploads/v2/": {
+        "post": {
+            "operationId": "postListUploadsV2",
+            "summary": "",
+            "description": "Add new should add mixed content",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "reprocess_all",
+                    "example": "0",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "UploadsV2"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResUploadedV2"
+                            }
+                        }
+                    }
+                }
+            },
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/UploadPostData"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

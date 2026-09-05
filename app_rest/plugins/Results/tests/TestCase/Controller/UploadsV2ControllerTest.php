@@ -97,6 +97,19 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         parent::setUp();
     }
 
+    /**
+     * The `_c` markers name the request schema for the OpenAPI capture, reusing v1's names because the body
+     * really is the same type. Every captured request has to carry them: an unnamed one contributes its own
+     * inline schema and the endpoint's body generates as a `oneOf` of however many were captured.
+     */
+    private function _bodyNamedForSwagger(array $dataTransfer): array
+    {
+        return [
+            '_c' => 'UploadPostData',
+            'oreplay_data_transfer' => ['_c' => 'UploadDataTransfer'] + $dataTransfer,
+        ];
+    }
+
     private function _lockTheStage(): \Results\Lib\Import\StageUploadLock
     {
         $lock = new \Results\Lib\Import\StageUploadLock();
@@ -121,6 +134,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $jsonDecoded = $this->assertUploadRejected(409);
         $this->assertEquals('error', $jsonDecoded['meta']['level']);
         $this->assertEquals([
+            '_c' => 'UploadMessage',
             'level' => 'error',
             'code' => 'conflict',
             'text' => 'An upload for this stage is still being processed',
@@ -328,8 +342,8 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
             ['id' => ClassEntity::ME]);
 
-        $data = ['oreplay_data_transfer' => MixedExamples::importMixed()];
-        $this->post($this->_getEndpoint(), $data);
+        $data = $this->_bodyNamedForSwagger(MixedExamples::importMixed());
+        $this->post($this->_getEndpointAddingToSwagger() . '?reprocess_all=0', $data);
 
         $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals([], $jsonDecoded['data'], 'V2 never returns the saved entity graph');
@@ -749,8 +763,10 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
             ['id' => ClassEntity::ME]);
 
-        $data = ['oreplay_data_transfer' => IntermediateExamples::itermediateWithDuplicatedBibs()];
-        $this->post($this->_getEndpoint(), $data);
+        // also captured: its warning is the one that carries `context`, so the generated UploadMessage
+        // type has the field a client reads instead of parsing the sentence
+        $data = $this->_bodyNamedForSwagger(IntermediateExamples::itermediateWithDuplicatedBibs());
+        $this->post($this->_getEndpointAddingToSwagger(), $data);
 
         $jsonDecoded = $this->assertUploadOk();
 
@@ -1450,8 +1466,10 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             ['id' => ClassEntity::ME]);
 
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
-        $data = ['oreplay_data_transfer' => RelayExamples::twoTeamsWith2Runners4LegsEach()];
-        $this->post($this->_getEndpoint(), $data);
+        // captured for the OpenAPI spec as well: this response carries a warning, and a message object has
+        // to appear in some captured response or `messages` generates as an array of nothing
+        $data = $this->_bodyNamedForSwagger(RelayExamples::twoTeamsWith2Runners4LegsEach());
+        $this->post($this->_getEndpointAddingToSwagger(), $data);
         $jsonDecoded = $this->assertUploadOk();
         $this->assertEquals('Uploading results without splits', $jsonDecoded['meta']['messages'][0]['text']);
         $expected = [
