@@ -47,9 +47,21 @@ trait ResultTraitMatcher
     public function setIDsToUpdate(TeamResult | RunnerResult $oldResult): static
     {
         $this->id = $oldResult->id;
+        if ($this->_keepsTheStoredCourse($oldResult)) {
+            $this->_carryOverSplitsHash($oldResult);
+        }
+        return $this;
+    }
+
+    private function _keepsTheStoredCourse(TeamResult | RunnerResult $oldResult): bool
+    {
+        return ($this->course_id ?? null) === ($oldResult->course_id ?? null);
+    }
+
+    private function _carryOverSplitsHash(TeamResult | RunnerResult $oldResult): void
+    {
         $this->upload_hash = $oldResult->upload_hash;
         $this->setDirty('upload_hash');
-        return $this;
     }
 
     public function setHash(array $resultData)

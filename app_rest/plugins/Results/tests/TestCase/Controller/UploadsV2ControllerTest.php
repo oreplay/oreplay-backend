@@ -2237,6 +2237,31 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             'the class keeps the common course, so the radio list is unchanged');
     }
 
+    public function testAddNew_shouldStoreTheControlsOfTheVariantARunnerIsMovedTo()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        StagesTable::load()->updateAll(
+            ['stage_type_id' => StageType::RELAY],
+            ['id' => StagesFixture::STAGE_FEDO_2]);
+        $legs = [
+            [['32', '60', '100'], ['60', '50', '100'], ['54', '60', '50', '100']],
+            [['54', '60', '50', '100'], ['32', '60', '100'], ['60', '50', '100']],
+        ];
+        $this->post($this->_getEndpoint(), ['oreplay_data_transfer' =>
+            $this->_relayUpload($legs, [['V1', 'V2', 'V3'], ['V3', 'V8', 'V2']])]);
+        $this->assertUploadOk('downloaded on V1');
+
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), ['oreplay_data_transfer' =>
+            $this->_relayUpload($legs, [['V9', 'V2', 'V3'], ['V3', 'V8', 'V2']])]);
+        $this->assertUploadOk('re-downloaded after the operator moved her to V9');
+
+        $this->assertEquals(['32', '60', '100'], $this->_stationsOfCourseNamed('V9'),
+            'the punches did not change, so the splits hash still matched and the importer attached no '
+            . 'splits to the result; CourseControls are built from the splits an upload writes, so without '
+            . 'forcing that re-import the variant she was moved to is stored with no controls at all');
+    }
+
     private function _courseShortNamesInStage(): array
     {
         $names = CoursesTable::load()->find()
