@@ -79,7 +79,6 @@ class Runner extends AppEntity implements ParticipantInterface
         'club_id',
         'team_id',
         'runner_results',
-        'upload_hash',
         'results',
         'modified',
         'deleted',
