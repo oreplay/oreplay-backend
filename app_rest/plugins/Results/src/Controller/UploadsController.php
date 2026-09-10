@@ -12,9 +12,12 @@ use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
+use Results\Lib\Import\ClassImportReport;
 use Results\Lib\Import\CourseImporter;
 use Results\Lib\Import\RunnerImporter;
 use Results\Lib\Import\TeamImporter;
+use Results\Lib\Publish\ClassResultsPublisher;
+use Results\Lib\Publish\NchanChannel;
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
@@ -89,6 +92,7 @@ class UploadsController extends ApiController
         }
 
         $counter = 0;
+        $publisher = $this->_classResultsPublisher();
         foreach ($configChecker->getClasses() as $classObj) {
             $class = $this->Classes->createIfNotExists($helper->getEventId(), $stageId, $classObj);
             $isTakingTooLong = $this->_setIsTakingTooLongWarning($metrics, $counter);
@@ -106,6 +110,7 @@ class UploadsController extends ApiController
                     $helper->getRowsToInsert()
                 );
                 $this->_storeCourseOf($class, $helper);
+                $publisher?->classImported($stageId, ClassImportReport::of($class));
                 $counter++;
             }
         }
@@ -310,6 +315,14 @@ class UploadsController extends ApiController
             return null;
         }
         return substr($auth, strlen('Bearer '));
+    }
+
+    private function _classResultsPublisher(): ?ClassResultsPublisher
+    {
+        if (!NchanChannel::isConfigured()) {
+            return null;
+        }
+        return new ClassResultsPublisher(new NchanChannel());
     }
 
     private function _needsProcessing(ClassEntity $class, array $classObj, UploadHelper $helper): bool

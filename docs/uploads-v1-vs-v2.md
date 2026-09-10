@@ -186,6 +186,11 @@ level present.
 
 ## The pushed class payload
 
+**Both versions push.** v1 publishes too, since the desktop clients in the field upload through it and the feature
+would otherwise never fire in production. The only difference a subscriber sees is `uploadId`: v1 sends **null**,
+because it writes its `upload_logs` row after the import loop rather than before it, and moving that row is a change
+to a frozen contract for a field only a client watching its own upload can use.
+
 Each class is published to `stage/{stageId}/class/{classId}` as soon as it commits, so a stage of 20 classes
 produces 20 messages during one upload. The participant objects are **the same shape `resultsByClass`
 returns** — a client parses them with what it already has:

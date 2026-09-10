@@ -8,6 +8,7 @@ use App\Controller\ApiController;
 use PHPUnit\Framework\AssertionFailedError;
 use App\Lib\Consts\CacheGrp;
 use Cake\Cache\Cache;
+use Cake\Core\Configure;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Query;
@@ -218,6 +219,25 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         ];
         $jsonDecoded['meta']['human'] = [];
         $this->assertEquals($expected, $jsonDecoded);
+    }
+
+    public function testAddNew_shouldStillImportWhenTheResultPushCannotBeDelivered()
+    {
+        Configure::write('Nchan.publishUrl', 'http://127.0.0.1:1/unreachable/');
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(
+            ['stage_id' => StagesFixture::STAGE_FEDO_2],
+            ['id' => ClassEntity::ME]);
+
+        $data = ['oreplay_data_transfer' => MixedExamples::importMixed()];
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION, $data);
+
+        $jsonDecoded = $this->assertUploadOk(
+            'the class is already committed when the push is attempted, so a hub that cannot be reached is '
+            . 'logged and ignored rather than failing an upload that has already stored its results');
+        $this->assertEquals(2, $jsonDecoded['meta']['updated']['classes']);
+        Configure::delete('Nchan.publishUrl');
     }
 
     public function testAddNew_shouldAddMixedContent()
