@@ -72,14 +72,43 @@ returns a reduced shape through `UploadMetrics::toArrayLegacy()`:
 
 v2 has no such branch and always returns the full shape. Sending `?version=` to v2 does nothing.
 
-## 4. v2 is not in the OpenAPI spec
+## 4. v2 is in the OpenAPI spec, with three gaps to know
 
-Every v2 test uses the capture-skipping `_getEndpoint()`, so nothing about v2 reaches
-`typescript/v1api.yaml` and the generated orval client has no v2 operation. A practical consequence:
-`reprocess_all` is documented on v1 only, though both accept it. Publishing v2 is a contract
-decision and is deliberately left until the rest of the upload work is finished.
+Published 2026-08-24. `POST /api/v1/events/{eventID}/uploads/v2/` carries `operationId postListUploadsV2`,
+the `reprocess_all` query parameter, a request body of `UploadPostData` and a `200` of `ResUploadedV2`. The
+generated TypeScript is `ResUploadedV2`, `UploadedV2Meta` — whose `messages` is a real `UploadMessage[]` —
+and `UploadMessageContext`. **The contract is therefore frozen from here**: changing the v2 envelope now
+changes a published type.
 
----
+The spec is generated from what the controller tests actually send and receive, so it inherits three limits
+of that tooling. Each is covered below rather than in the spec:
+
+1. **Only 2xx responses are recorded.** `409` and `403` are real and tested, and neither appears in the
+   spec. See *One import at a time per stage* and §1.
+2. **One operation per path**, because the reader merges files with a PHP array union and the first wins.
+   The endpoint accepts `application/json` **and** `application/xml`, and the spec can only show one.
+   The XML variant is §4a.
+3. **`_c` markers are what name a schema.** Every captured request body sends `UploadPostData` /
+   `UploadDataTransfer`, and the response carries `UploadedV2`, `UploadedV2Meta` and `UploadMessage`. These
+   are generation metadata, not payload: a client ignores them, and the test helpers strip them before
+   comparing. A captured request *without* them contributes its own inline schema and the body degenerates
+   into a `oneOf`.
+
+## 4a. The XML variant, not in the spec
+
+The same URL accepts an IOF XML v3 document with `Content-Type: application/xml`, and answers the same
+`ResUploadedV2` body. What differs is that XML carries no envelope, so what the JSON payload states must
+come from the query string:
+
+| parameter | meaning |
+|---|---|
+| `stage_id` | **required** — XML names no stage |
+| `tz` | the time zone to read naive times in; otherwise `events.timezone` |
+| `validate` | `false` skips XSD validation, which is on by default |
+| `reprocess_all` | as for JSON: ignore stored hashes and re-import every class |
+
+The upload type is detected from the document, including the `<!-- SplitTimeControls: … -->` comment
+SportSoftware writes in radio exports.
 
 ## What is identical
 
@@ -138,6 +167,13 @@ since the pushes arrive before the response does. There is deliberately no clien
 repeated uploads are already cheap because unchanged classes are skipped by hash, and overlapping ones are
 refused by the stage lock, so a key would have bought only the ability to correlate live.
 
+Alongside these, every object in the response carries a **`_c`** key naming its schema — `UploadedV2` on the
+envelope, `UploadedV2Meta` on the meta, `UploadMessage` on each message. It is what the OpenAPI generator
+reads to emit one named type instead of an anonymous shape, exactly as v1 does with `Uploaded`. A client
+ignores it.
+
+**Nothing is keyed on it and no client action depends on it.** A client that never learns the id — its POST timed out, the connection died — has lost only a label: the classes were still imported and still pushed, and the next GET or push carries the same truth.
+
 | level | when |
 |---|---|
 | `info` | nothing to report, including "no class needed importing" |
@@ -147,6 +183,64 @@ refused by the stage lock, so a key would have bought only the ability to correl
 **Every message survives.** v1 shows data-loss warnings *instead of* the ordinary ones, so a real warning
 can vanish behind another; v2 returns the lot, capped at ten of each kind, and `meta.level` is the highest
 level present.
+
+## The pushed class payload
+
+Each class is published to `stage/{stageId}/class/{classId}` as soon as it commits, so a stage of 20 classes
+produces 20 messages during one upload. The participant objects are **the same shape `resultsByClass`
+returns** — a client parses them with what it already has:
+
+```json
+{
+  "uploadId": "f3414e0b-e605-494d-89f0-85d0bfbab2a0",
+  "class": {"id": "9a2…", "short_name": "H21"},
+  "runners": [
+    {"id": "42", "full_name": "…", "bib": 101,
+     "stage": {"position": 1, "time_seconds": 2841, "status_code": "0",
+               "splits": [{"control": "31", "reading_time": 412}]}}
+  ],
+  "teams": []
+}
+```
+
+**Every participant is sent, every time, but splits only for those whose punches this upload rewrote.**
+One finisher crossing the line moves everybody's position, so a partial list would leave stale positions on
+screen; splits are 84 % of a participant's bytes, so omitting the unchanged ones is what turns 147 kB into
+about 27 kB before compression. It needs no filtering: the importer attaches splits to a result only when it
+replaces them.
+
+That makes the message a **patch, not a snapshot**, and a client has to read it as one:
+
+| in `stage` | means |
+|---|---|
+| no `splits` key | this upload did not touch them — **keep the splits already held** |
+| `"splits": []` | they were cleared, and the reader must clear them too |
+| `"splits": […]` | authoritative, replacing whatever was held |
+
+Absent and empty are one keystroke apart and mean opposite things, so a client reading `splits ?? []`
+silently erases punches it was never told to erase. The distinction cannot be dropped: a radio upload that
+legitimately removes punches would otherwise be indistinguishable from a participant nobody touched.
+
+**A push is only ever applied on top of a full GET.** The API side of that is an invariant worth stating:
+`resultsByClass` always returns whole objects, never a patch, so it is always a valid baseline. The client
+side is a rule: fetch the class, then apply the stream to what came back.
+
+**And re-seed on every reconnect**, because that is the one way a client loses messages. A subscriber is
+served `nchan_subscriber_first_message newest`, so one that joins or rejoins mid-race receives the next
+class and nothing earlier. A client that reconnects and simply resumes ends up showing the positions it
+last saw with newer splits patched over them — internally consistent, plausible, and possibly minutes
+stale, which is why nobody notices.
+
+Detecting that needs nothing clever: websocket runs over TCP, so while a connection is up its messages
+arrive in order and none goes missing quietly — the connection delivers or it breaks. **The client already
+knows it disconnected**, and that is the trigger. One GET per reconnect is not the stampede per-class
+push exists to prevent; that was every viewer polling, this is one client recovering.
+
+The per-class version counter in `realtime-and-async-uploads.md` §5 would narrow this further — if a client
+resumes with `Last-Event-ID` and nchan's buffer has already rolled past what it missed (10 messages, 1 h),
+a version jumping 2 to 13 proves the replay was incomplete. That is an optimisation over re-seeding every
+time, and **deliberately not built**: re-seeding is already correct, so the counter is worth adding only if
+reconnects turn out to be frequent enough to measure.
 
 ## One import at a time per stage (v2 only)
 
