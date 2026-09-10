@@ -77,11 +77,7 @@ class CreateCourseControlsTable extends BaseMigration
                 'unique' => true,
             ])
             ->addIndex(['course_id', 'order_number', 'deleted'], ['name' => 'idx_course_controls_course'])
-            ->addIndex(['stage_id', 'station', 'deleted'], ['name' => 'idx_course_controls_station'])
-            ->addForeignKey('event_id', 'events', 'id', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
-            ->addForeignKey('stage_id', 'stages', 'id', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
-            ->addForeignKey('course_id', 'courses', 'id', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
-            ->addForeignKey('control_id', 'controls', 'id', ['delete' => 'SET_NULL', 'update' => 'NO_ACTION']);
+            ->addIndex(['stage_id', 'station', 'deleted'], ['name' => 'idx_course_controls_station']);
         $table->create();
     }
 }
