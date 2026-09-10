@@ -5,7 +5,7 @@ declare(strict_types = 1);
 namespace App\Controller;
 
 use App\Lib\Emails\ResetPassword;
-use App\Lib\Emails\VeEer;
+use App\Lib\ResetPasswordCode;
 use App\Model\Table\UsersTable;
 use Cake\Http\Exception\BadRequestException;
 
@@ -53,8 +53,10 @@ class ResetPasswordController extends ApiController
         if (!$user) {
             throw new BadRequestException('Email address does not exist');
         }
+        ResetPasswordCode::assertValidFor($user, $code);
         $user->password = $password;
         $this->Users->saveOrFail($user);
+        ResetPasswordCode::invalidateFor($user);
 
         $this->return = $user;
     }

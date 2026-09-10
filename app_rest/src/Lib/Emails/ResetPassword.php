@@ -4,17 +4,14 @@ declare(strict_types = 1);
 
 namespace App\Lib\Emails;
 
-use App\Lib\Consts\CacheGrp;
 use App\Lib\Consts\Languages;
 use App\Lib\Consts\NotificationTypes;
-use Cake\Cache\Cache;
+use App\Lib\ResetPasswordCode;
 use function Cake\I18n\__ as __;
 use function Cake\I18n\__d as __d;
 
 class ResetPassword extends EmailBase
 {
-    public const string CACHE_KEY = '_codeResetPassword_';
-
     private string $_code = '';
 
     protected function getName(): string
@@ -80,14 +77,8 @@ class ResetPassword extends EmailBase
     public function getCode(): string
     {
         if (!$this->_code) {
-            $this->_code = str_pad((string) random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+            $this->_code = ResetPasswordCode::generateFor($this->dearUser);
         }
-        Cache::write(ResetPassword::CACHE_KEY . $this->dearUser->id, $this->_code, CacheGrp::SHORT);
         return $this->_code;
-    }
-
-    public static function getCodeForUser(string $uid): string|false
-    {
-        return Cache::read(ResetPassword::CACHE_KEY . $uid, CacheGrp::SHORT);
     }
 }
