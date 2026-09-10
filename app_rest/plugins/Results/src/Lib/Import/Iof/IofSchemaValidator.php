@@ -13,9 +13,9 @@ use XMLReader;
  * undoing the reason IofXmlReader streams at all: measured at no growth in memory for a 13 MB document,
  * against roughly 50 ms per MB.
  *
- * It is off unless asked for, because real files fail it for reasons that do not stop a correct import:
- * of the 141 sampled exports, 132 validate and 4 of the 9 failures are nothing but a producer writing
- * `Creator` where the standard says `creator`. See docs/upload-xml-input.md 9.
+ * On unless `?validate=false` asks otherwise. The escape hatch exists because real files fail for reasons
+ * that do not stop a correct import: of the 141 sampled exports, 132 validate and 4 of the 9 failures are
+ * nothing but a producer writing `Creator` where the standard says `creator`. See docs/upload-xml-input.md 9.
  */
 class IofSchemaValidator
 {
