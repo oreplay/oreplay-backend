@@ -2552,8 +2552,9 @@ components:
           example: 0
           nullable: true
         points_behind:
-          type: number
-          example: 0
+          type: string
+          nullable: true
+          example: null
       description: Entity Result
       required:
         - id
@@ -2866,6 +2867,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Participant'
+        last_logs:
+          type: array
+          items:
+            $ref: '#/components/schemas/UploadLog'
       description: Data wrapper for Participant
       required:
         - data

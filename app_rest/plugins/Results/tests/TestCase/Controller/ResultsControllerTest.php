@@ -341,6 +341,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
 
     public function testGetListSaysHowFreshTheResultsAre()
     {
+        $this->skipNextRequestInSwagger();
         $this->get($this->_getEndpoint());
 
         $bodyDecoded = $this->assertJsonResponseOK();
@@ -359,6 +360,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         $this->_addLogInFirstStage(2, '2024-01-02 12:00:00');
         $this->_addLogInFirstStage(2, '2024-01-02 13:00:00');
 
+        $this->skipNextRequestInSwagger();
         $this->get($this->_getEndpoint());
 
         $bodyDecoded = $this->assertJsonResponseOK();
@@ -383,6 +385,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             ['deleted' => new \Cake\I18n\FrozenTime()],
             ['id' => UploadLogsFixture::FIRST]);
 
+        $this->skipNextRequestInSwagger();
         $this->get($this->_getEndpoint());
 
         $this->assertEquals([], $this->assertJsonResponseOK()['last_logs']);
@@ -395,6 +398,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
             ['deleted' => new \Cake\I18n\FrozenTime()],
             ['created >' => new \Cake\I18n\FrozenTime('2024-01-02 11:00:00')]);
 
+        $this->skipNextRequestInSwagger();
         $this->get($this->_getEndpoint());
 
         $this->assertEquals([[
@@ -411,6 +415,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         $this->_addLogInFirstStage(UploadLog::STATE_START, '2024-01-02 11:00:00');
         $this->_addLogInFirstStage(UploadLog::STATE_START, '2024-01-02 11:00:00');
 
+        $this->skipNextRequestInSwagger();
         $this->get($this->_getEndpoint());
 
         $logs = $this->assertJsonResponseOK()['last_logs'];
@@ -425,6 +430,7 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         $this->_addLogInFirstStage(2, '2024-01-02 09:00:00');
         $this->_addLogInFirstStage(UploadLog::STATE_START, '2024-01-02 12:00:00');
 
+        $this->skipNextRequestInSwagger();
         $this->get($this->_getEndpoint());
 
         $logs = $this->assertJsonResponseOK()['last_logs'];

@@ -3,10 +3,12 @@
  * O-replay - OpenAPI 3.0
  */
 import type { Participant } from './participant'
+import type { UploadLog } from './uploadLog'
 
 /**
  * Data wrapper for Participant
  */
 export interface ArrayParticipant {
   data: Participant[]
+  last_logs?: UploadLog[]
 }

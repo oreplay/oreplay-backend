@@ -13,6 +13,7 @@ use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\RunnersFixture;
 use Results\Test\Fixture\TeamsFixture;
+use Results\Test\Fixture\UploadLogsFixture;
 
 class ResultsByClassControllerTest extends ApiCommonErrorsTest
 {
@@ -22,12 +23,25 @@ class ResultsByClassControllerTest extends ApiCommonErrorsTest
         ClassesFixture::LOAD,
         RunnersFixture::LOAD,
         TeamsFixture::LOAD,
+        UploadLogsFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
     {
         return ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/stages/'
             . Stage::FIRST_STAGE . '/resultsByClass/';
+    }
+
+    public function testGetListReturnsEachClassWithTheStagesLastLogs()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->get($this->_getEndpoint()
+            . '?club_id=&station=&text=&output=&contrib_text=&forceSameDay=');
+
+        $json = $this->assertJsonResponseOK();
+        $this->assertArrayHasKey('ME', $json['data']);
+        $this->assertNotEmpty($json['last_logs'],
+            'the captured schema needs a real UploadLog here or last_logs generates as an untyped array');
     }
 
     public function testGetList()

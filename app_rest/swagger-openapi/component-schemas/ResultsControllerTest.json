@@ -1036,8 +1036,9 @@
             ],
             "points_behind": [
                 {
-                    "type": "number",
-                    "example": 0
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
                 }
             ]
         },
@@ -1365,11 +1366,79 @@
                         "$ref": "#/components/schemas/Participant"
                     }
                 }
+            ],
+            "last_logs": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/UploadLog"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/UploadLog"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/UploadLog"
+                    }
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/UploadLog"
+                    }
+                }
             ]
         },
         "description": "Data wrapper for Participant",
         "required": [
             "data"
         ]
+    },
+    "UploadLog": {
+        "type": "object",
+        "properties": {
+            "state": [
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                }
+            ],
+            "created": [
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                }
+            ]
+        },
+        "description": "Entity UploadLog"
     }
 }
