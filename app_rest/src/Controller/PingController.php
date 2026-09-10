@@ -63,7 +63,7 @@ class PingController extends ApiController
                 $this->_rollbackAbandonedTransaction();
                 throw $e;
             }
-            if ($this->request->getQuery('seeds') !== 'false') {
+            if ($this->request->getQuery('seeds') === 'true') {
                 $this->_runMainSeed($migrationList);
             }
         }

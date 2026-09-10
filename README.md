@@ -50,8 +50,13 @@ composer install
 
 After running composer install, the application should be served in http://localhost as root json page.
 
-In order to get the database populated, the ping-check endpoint (a link is available in the root json page) should be called twice
-(the first time will create the database and the second time will populate the database)
+In order to get the database populated, the ping-check endpoint (a link is available in the root json page) should be called
+twice **with `?seeds=true`**, as [api/v1/ping/pong?seeds=true](http://localhost/api/v1/ping/pong?seeds=true)
+(the first call creates the database and runs the migrations, the second populates it with the seeds)
+
+Seeds only ever fill a table that is **empty**, so the parameter is safe to repeat, but it has to be asked for: without it
+the endpoint runs migrations only. That is deliberate — the endpoint is reachable in every environment, and nothing that
+writes data should happen by merely visiting a URL.
 
 From the root json page, the events list endpoint is also referenced.
 In similar way navigation within the endpoints should be possible using the `_links` property provided in each object
@@ -235,6 +240,9 @@ Docs about plugins: [plugins.md](./docs/plugins.md)
 We are working on two different databases:
 - `phputesting` for unit testing (it will be created automatically when running tests)
 - `app_rest` for local development (it will be created automatically when browsing [api/v1/ping/pong](http://localhost/api/v1/ping/pong))
+
+Browsing that endpoint also **runs the pending migrations**, which is how a deploy applies them. Seeds are opt-in and need
+`?seeds=true`; see the setup section above.
 
 Migrations should be the only way to perform changes in the database schema.
 
