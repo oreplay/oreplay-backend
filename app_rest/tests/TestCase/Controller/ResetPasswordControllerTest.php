@@ -22,6 +22,7 @@ class ResetPasswordControllerTest extends ApiCommonErrorsTest
     {
         $this->_writeCacheAdminCode('');
         parent::setUp();
+        $this->clearUserCache();
     }
 
     private function _writeCacheAdminCode(string $secret): void
@@ -40,6 +41,12 @@ class ResetPasswordControllerTest extends ApiCommonErrorsTest
         $UsersTable->updateAll(['email' => EmailBase::SKIP_SEND_EMAIL_ADDRESS], ['id' => UsersFixture::USER_ADMIN_ID]);
         $this->_writeCacheAdminCode($code);
         return $UsersTable->get(UsersFixture::USER_ADMIN_ID)->password;
+    }
+
+    private function _postResetPassword(): void
+    {
+        $this->skipNextRequestInSwagger();
+        $this->post($this->_getEndpoint(), ['email' => EmailBase::SKIP_SEND_EMAIL_ADDRESS]);
     }
 
     private function _patchPassword(string $code): void
@@ -113,7 +120,7 @@ class ResetPasswordControllerTest extends ApiCommonErrorsTest
 
         $this->_patchPassword($passwordCode);
 
-        $this->assertException('Bad Request', 400, 'Invalid code');
+        $this->assertException('Bad Request', 400, 'Code not found');
     }
 
     public function testEditWithTooManyWrongCodesInvalidatesTheCode()
@@ -127,7 +134,27 @@ class ResetPasswordControllerTest extends ApiCommonErrorsTest
 
         $this->_patchPassword($passwordCode);
 
-        $this->assertException('Bad Request', 400, 'Invalid code');
+        $this->assertException('Bad Request', 400, 'Code not found');
         $this->assertEquals($originalPassword, UsersTable::load()->get(UsersFixture::USER_ADMIN_ID)->password);
+    }
+
+    public function testAddNewStopsSendingAfterEmailLimit()
+    {
+        UsersTable::load()->updateAll(['email' => EmailBase::SKIP_SEND_EMAIL_ADDRESS], ['id' => UsersFixture::USER_ADMIN_ID]);
+        for ($sent = 0; $sent < ResetPasswordCode::MAX_EMAILS_PER_WINDOW - 1; $sent++) {
+            $this->_postResetPassword();
+        }
+        $codeBeforeLastAllowed = $this->_readCacheAdminCode();
+
+        $this->_postResetPassword();
+
+        $lastCode = $this->_readCacheAdminCode();
+        $this->assertEquals(6, strlen($lastCode));
+        $this->assertNotEquals($codeBeforeLastAllowed, $lastCode);
+
+        $this->_postResetPassword();
+
+        $this->assertResponse204NoContent();
+        $this->assertEquals($lastCode, $this->_readCacheAdminCode());
     }
 }

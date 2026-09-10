@@ -31,7 +31,7 @@ class ResetPasswordController extends ApiController
             throw new BadRequestException('Email is required');
         }
         $user = $this->Users->getUserByEmail($emailAddress);
-        if ($user) {
+        if ($user && ResetPasswordCode::canGenerateFor($user)) {
             $email = new ResetPassword($user);
             $email->sendOrFail();
         }
