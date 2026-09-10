@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class ConvertPointsToDecimals extends AbstractMigration
+class ConvertPointsToDecimals extends BaseMigration
 {
     public function change(): void
     {

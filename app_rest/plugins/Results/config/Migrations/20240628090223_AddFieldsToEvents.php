@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddFieldsToEvents extends AbstractMigration
+class AddFieldsToEvents extends BaseMigration
 {
     public function change(): void
     {

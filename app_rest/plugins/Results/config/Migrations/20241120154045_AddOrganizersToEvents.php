@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddOrganizersToEvents extends AbstractMigration
+class AddOrganizersToEvents extends BaseMigration
 {
     public function change(): void
     {

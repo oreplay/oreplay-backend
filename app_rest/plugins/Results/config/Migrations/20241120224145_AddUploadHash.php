@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class AddUploadHash extends AbstractMigration
+class AddUploadHash extends BaseMigration
 {
     public function change(): void
     {

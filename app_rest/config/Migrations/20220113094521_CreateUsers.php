@@ -1,10 +1,11 @@
 <?php
-declare(strict_types=1);
+
+declare(strict_types = 1);
 
 use App\Model\Table\AppTable;
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 
-class CreateUsers extends AbstractMigration
+class CreateUsers extends BaseMigration
 {
     public function change()
     {

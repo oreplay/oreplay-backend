@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-use Migrations\AbstractMigration;
+use Migrations\BaseMigration;
 use Phinx\Db\Adapter\MysqlAdapter;
 
-class CreateRawUploadsTable extends AbstractMigration
+class CreateRawUploadsTable extends BaseMigration
 {
     public function change(): void
     {

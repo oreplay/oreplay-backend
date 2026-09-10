@@ -1,9 +1,10 @@
 <?php
-declare(strict_types=1);
 
-use Migrations\AbstractMigration;
+declare(strict_types = 1);
 
-class CreateOauthAccessTokens extends AbstractMigration
+use Migrations\BaseMigration;
+
+class CreateOauthAccessTokens extends BaseMigration
 {
     public function change()
     {
