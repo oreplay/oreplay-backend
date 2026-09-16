@@ -20,10 +20,9 @@ class StageOrdersController extends ApiController
         $stageId = $this->request->getParam('stageID');
         $this->_isUserAllowedInStage($eventId, $stageId);
 
-        $this->return = $this->StageOrders->find()
-            ->where(['event_id' => $eventId, 'stage_id' => $stageId])
-            ->orderByAsc('stage_order')
-            ->all()
+        $this->StageOrders->deleteCache($stageId);
+        $this->return = $this->StageOrders->getAllInStage($stageId)
+            ->sortBy('stage_order', SORT_ASC)
             ->map(function (StageOrder $stageOrder) {
                 return $stageOrder->toArrayManagement();
             })
