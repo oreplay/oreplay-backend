@@ -21,8 +21,14 @@ class ResetPasswordControllerTest extends ApiCommonErrorsTest
     public function setUp(): void
     {
         $this->_writeCacheAdminCode('');
+        $this->_forgetAdminEmailsSent();
         parent::setUp();
         $this->clearUserCache();
+    }
+
+    private function _forgetAdminEmailsSent(): void
+    {
+        Cache::delete(ResetPasswordCode::EMAILS_SENT_CACHE_KEY . UsersFixture::USER_ADMIN_ID, CacheGrp::EXTRALONG);
     }
 
     private function _writeCacheAdminCode(string $secret): void

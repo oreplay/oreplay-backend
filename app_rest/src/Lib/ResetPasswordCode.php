@@ -13,7 +13,7 @@ class ResetPasswordCode
 {
     public const string CACHE_KEY = '_codeResetPassword_';
     private const string ATTEMPTS_CACHE_KEY = '_attemptsResetPassword_';
-    private const string EMAILS_SENT_CACHE_KEY = '_emailsResetPassword_';
+    public const string EMAILS_SENT_CACHE_KEY = '_emailsResetPassword_';
     private const int MAX_ATTEMPTS = 5;
     public const int MAX_EMAILS_PER_WINDOW = 10;
     private const int EMAILS_WINDOW_SECONDS = 3 * 3600;
