@@ -6,6 +6,7 @@ namespace Results\Model\Entity;
 
 use Cake\I18n\FrozenTime;
 use Results\Lib\Consts\StatusCode;
+use Results\Lib\TimedControls;
 
 trait ResultTrait
 {
@@ -38,6 +39,7 @@ trait ResultTrait
     public function getSplitsWithoutRadios(): array
     {
         $this->_splitsToRemove = [];
+        $timedControls = new TimedControls($this->getSplits());
         $countRadios = 0;
         $splitsToRet = [];
         /** @var Split $lastSplit */
@@ -51,8 +53,7 @@ trait ResultTrait
             if ($lastSplit) {
                 $reason = $split->compareWithoutDay($this->_compareWithoutDay)->shouldDisplayCurrent($lastSplit);
                 $split->setReason($reason);
-                if ($reason->shouldDisplay() && !$this->_hasPositionButNoTime($split)) {
-                    // skip split if it has position (all controls ok) and no reading_time
+                if ($reason->shouldDisplay() && !$this->_isTimelessDuplicate($split, $timedControls)) {
                     $lastSplit = $split;
                     $splitsToRet[] = $lastSplit;
                     if ($lastSplit->isRadio()) {
@@ -62,7 +63,7 @@ trait ResultTrait
                     $this->_splitsToRemove[] = $split->id;
                 }
             } else {
-                if (!$this->_hasPositionButNoTime($split)) {
+                if (!$this->_isTimelessDuplicate($split, $timedControls)) {
                     $lastSplit = $split;
                     $splitsToRet[] = $lastSplit;
                     if ($lastSplit->isRadio()) {
@@ -90,10 +91,9 @@ trait ResultTrait
         return $this->_splitsToRemove;
     }
 
-    private function _hasPositionButNoTime(Split $s): bool
+    private function _isTimelessDuplicate(Split $split, TimedControls $timedControls): bool
     {
-        // has position (all controls ok) and no reading_time (one control is not ok)
-        return $this->position && !$s->reading_time;
+        return $this->position && $timedControls->hasTimedCopyOf($split);
     }
 
     /**

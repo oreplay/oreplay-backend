@@ -84,6 +84,50 @@ class RunnerResultTest extends TestCase
 
     }
 
+    public function testGetSplitsWithoutRadios_shouldKeepAMissingControlOfAHandValidatedRunner()
+    {
+        $runnerResult = new RunnerResult();
+        $runnerResult->id = 'handValidated';
+        $runnerResult->position = 1;
+        $runnerResult->addSplit($this->_normalSplit('before', '32', 9, '2026-09-06 16:40:01'));
+        $runnerResult->addSplit($this->_normalSplit('missing', '68', 10, null));
+        $runnerResult->addSplit($this->_normalSplit('after', '38', 11, '2026-09-06 16:41:25'));
+
+        $kept = array_map(fn(Split $split) => $split->id, $runnerResult->getSplitsWithoutRadios());
+
+        $this->assertContains('missing', $kept,
+            'an organiser validating a runner by hand gives him a position while a control stays genuinely '
+            . 'missing, so a timeless split on a positioned result is not necessarily a duplicate');
+        $this->assertNotContains('missing', $runnerResult->getSplitsToRemove(),
+            'the results endpoints soft-delete whatever this hides, so hiding a real control loses it');
+    }
+
+    public function testGetSplitsWithoutRadios_shouldStillHideATimelessCopyOfATimedControl()
+    {
+        $runnerResult = new RunnerResult();
+        $runnerResult->id = 'storedTwice';
+        $runnerResult->position = 1;
+        $runnerResult->addSplit($this->_normalSplit('timed', '68', 10, '2026-09-06 16:40:30'));
+        $runnerResult->addSplit($this->_normalSplit('copy', '68', 10, null));
+
+        $kept = array_map(fn(Split $split) => $split->id, $runnerResult->getSplitsWithoutRadios());
+
+        $this->assertSame(['timed'], $kept,
+            'issue 45 is the same control stored twice by separate uploads, one of them without its time: '
+            . 'the control is still shown with its time, so the timeless copy adds nothing but a broken split');
+    }
+
+    private function _normalSplit(string $id, string $station, int $orderNumber, ?string $readingTime): Split
+    {
+        $split = new Split();
+        $split->id = $id;
+        $split->is_intermediate = false;
+        $split->station = $station;
+        $split->order_number = $orderNumber;
+        $split->reading_time = $readingTime ? new FrozenTime($readingTime) : null;
+        return $split;
+    }
+
     private function _getSplitsWithoutRadios(RunnerResult $runnerResult)
     {
         return json_decode(json_encode($runnerResult->getSplitsWithoutRadios()), true);
