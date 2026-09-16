@@ -57,6 +57,20 @@ class StageOrdersController extends ApiController
         $this->return = $this->StageOrders->get($saved->id)->toArrayManagement();
     }
 
+    protected function delete($id)
+    {
+        $eventId = $this->request->getParam('eventID');
+        $stageId = $this->request->getParam('stageID');
+        $this->_isUserAllowedInStage($eventId, $stageId);
+
+        /** @var StageOrder $stageOrder */
+        $stageOrder = $this->StageOrders->find()
+            ->where(['id' => $id, 'stage_id' => $stageId])
+            ->firstOrFail();
+        $this->StageOrders->softDeleteWithComputedResults($stageOrder);
+        $this->return = false;
+    }
+
     private function _editableOriginalIds(StageOrder $stageOrder): array
     {
         return [

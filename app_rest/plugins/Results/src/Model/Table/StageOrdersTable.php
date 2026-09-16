@@ -12,6 +12,8 @@ use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\Utility\Text;
 use Cake\Validation\Validator;
+use Rankings\Model\Table\RankingOrganizersTable;
+use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageOrder;
 
@@ -61,6 +63,25 @@ class StageOrdersTable extends AppTable
     public function deleteCache(string $stageId)
     {
         Cache::delete($this->_cacheKeyGetAllInStage($stageId), CacheGrp::DEFAULT);
+    }
+
+    public function softDeleteWithComputedResults(StageOrder $stageOrder): void
+    {
+        $this->getConnection()->transactional(function () use ($stageOrder) {
+            RunnerResultsTable::load()->softDeleteAll([
+                'event_id' => $stageOrder->event_id,
+                'stage_id' => $stageOrder->stage_id,
+                'stage_order' => $stageOrder->stage_order,
+                'result_type_id' => ResultType::PARTIAL_OVERALL,
+                'deleted IS' => null,
+            ]);
+            RankingOrganizersTable::load()->softDeleteAll([
+                'stage_order_id' => $stageOrder->id,
+                'deleted IS' => null,
+            ]);
+            $this->softDelete($stageOrder->id);
+        });
+        $this->deleteCache($stageOrder->stage_id);
     }
 
     public function getDescriptionByOrder(int $stageOrder, string $stageId): ?StageOrder

@@ -8,11 +8,22 @@ use App\Controller\ApiController;
 use App\Test\Fixture\OauthAccessTokensFixture;
 use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
+use Rankings\Model\Table\RankingOrganizersTable;
+use Rankings\Test\Fixture\RankingOrganizersFixture;
+use Results\Lib\Consts\UploadTypes;
+use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
+use Results\Model\Entity\ResultType;
+use Results\Model\Entity\Runner;
 use Results\Model\Entity\Stage;
+use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\StageOrdersTable;
+use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
+use Results\Test\Fixture\ResultTypesFixture;
+use Results\Test\Fixture\RunnerResultsFixture;
+use Results\Test\Fixture\RunnersFixture;
 use Results\Test\Fixture\StageOrdersFixture;
 use Results\Test\Fixture\StagesFixture;
 use Results\Test\Fixture\StageTypesFixture;
@@ -28,6 +39,11 @@ class StageOrdersControllerTest extends ApiCommonErrorsTest
         StagesFixture::LOAD,
         StageTypesFixture::LOAD,
         StageOrdersFixture::LOAD,
+        ClassesFixture::LOAD,
+        RunnersFixture::LOAD,
+        ResultTypesFixture::LOAD,
+        RunnerResultsFixture::LOAD,
+        RankingOrganizersFixture::LOAD,
         OauthAccessTokensFixture::LOAD,
     ];
 
@@ -211,6 +227,89 @@ class StageOrdersControllerTest extends ApiCommonErrorsTest
         $this->assertNotEquals(200, $this->_response->getStatusCode(), $this->_getBodyAsString());
         $db = StageOrdersTable::load()->get(StageOrdersFixture::STAGE_1);
         $this->assertEquals('Long stage', $db->description); // untouched
+    }
+
+    public function testDeleteRemovesStageOrderWithItsComputedResults()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $computed = $this->_saveRunnerResult(1, ResultType::PARTIAL_OVERALL, UploadTypes::TOTAL_POINTS);
+        $organizer = $this->_saveRunnerResult(1, ResultType::PARTIAL_OVERALL, UploadTypes::COMPUTABLE_ORGANIZER);
+        $otherStageOrder = $this->_saveRunnerResult(2, ResultType::PARTIAL_OVERALL, UploadTypes::TOTAL_POINTS);
+        $notPartial = $this->_saveRunnerResult(1, ResultType::OVERALL, UploadTypes::TOTAL_POINTS);
+        $rankingOrganizer = $this->_saveRankingOrganizer(StageOrdersFixture::STAGE_1);
+
+        $this->delete($this->_getEndpoint() . StageOrdersFixture::STAGE_1);
+
+        $this->assertResponseCode(204, $this->_getBodyAsString());
+        $this->assertNull(StageOrdersTable::load()->find()->where(['id' => StageOrdersFixture::STAGE_1])->first());
+        $RunnerResults = RunnerResultsTable::load();
+        $this->assertNull($RunnerResults->find()->where(['id' => $computed])->first());
+        $this->assertNull($RunnerResults->find()->where(['id' => $organizer])->first());
+        $this->assertNotNull($RunnerResults->find()->where(['id' => $otherStageOrder])->first());
+        $this->assertNotNull($RunnerResults->find()->where(['id' => $notPartial])->first());
+        $this->assertNull(RankingOrganizersTable::load()->find()->where(['id' => $rankingOrganizer])->first());
+    }
+
+    public function testDeleteForgetsCachedStageOrders()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $StageOrders = StageOrdersTable::load();
+        $StageOrders->deleteCache(Stage::FIRST_STAGE);
+        $this->assertCount(1, $StageOrders->getAllInStage(Stage::FIRST_STAGE));
+
+        $this->delete($this->_getEndpoint() . StageOrdersFixture::STAGE_1);
+
+        $this->assertResponseCode(204, $this->_getBodyAsString());
+        $this->assertCount(0, $StageOrders->getAllInStage(Stage::FIRST_STAGE));
+    }
+
+    public function testDeleteForbiddenForNonOwner()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+        $computed = $this->_saveRunnerResult(1, ResultType::PARTIAL_OVERALL, UploadTypes::TOTAL_POINTS);
+
+        $this->delete($this->_getEndpoint() . StageOrdersFixture::STAGE_1);
+
+        $this->assertResponseCode(403);
+        $this->assertNotNull(StageOrdersTable::load()->find()->where(['id' => StageOrdersFixture::STAGE_1])->first());
+        $this->assertNotNull(RunnerResultsTable::load()->find()->where(['id' => $computed])->first());
+    }
+
+    public function testDeleteStageOrderFromAnotherStageIsNotFound()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $endpoint = ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT
+            . '/stages/' . StagesFixture::STAGE_FEDO_2 . '/stageOrders/' . StageOrdersFixture::STAGE_1;
+
+        $this->delete($endpoint);
+
+        $this->assertResponseCode(404);
+        $this->assertNotNull(StageOrdersTable::load()->find()->where(['id' => StageOrdersFixture::STAGE_1])->first());
+    }
+
+    private function _saveRunnerResult(int $stageOrder, string $resultTypeId, string $uploadType): string
+    {
+        $RunnerResults = RunnerResultsTable::load();
+        $result = $RunnerResults->fillNewWithStage([], Event::FIRST_EVENT, Stage::FIRST_STAGE);
+        $result->runner_id = Runner::FIRST_RUNNER;
+        $result->class_id = ClassEntity::ME;
+        $result->stage_order = $stageOrder;
+        $result->result_type_id = $resultTypeId;
+        $result->upload_type = $uploadType;
+        return $RunnerResults->saveOrFail($result)->id;
+    }
+
+    private function _saveRankingOrganizer(string $stageOrderId): string
+    {
+        $RankingOrganizers = RankingOrganizersTable::load();
+        $organizer = $RankingOrganizers->fillNewWithUuid([]);
+        $organizer->first_name = 'Org';
+        $organizer->last_name = 'Anizer';
+        $organizer->stage_order_id = $stageOrderId;
+        return $RankingOrganizers->saveOrFail($organizer)->id;
     }
 
     public function testEditStageOrderFromAnotherStageIsNotFound()
