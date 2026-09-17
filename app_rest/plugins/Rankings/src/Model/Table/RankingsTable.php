@@ -205,7 +205,7 @@ class RankingsTable extends AppTable
 
         $classesTable = ClassesTable::load();
         $class = $classesTable->duplicateIfNotExists($classId, $rk->getEventId(), $rk->getStageId());
-        $stages = StageOrdersTable::load()->getAllCreatingOne($srcStageId, $rk->getEventId(), $rk->getStageId());
+        $stageOrder = StageOrdersTable::load()->getCreatingOne($srcStageId, $rk->getEventId(), $rk->getStageId());
         $runners = [];
 
         $clubTable = ClubsTable::load();
@@ -217,7 +217,7 @@ class RankingsTable extends AppTable
 
             $resultData = [
                 'id' => '',
-                'stage_order' => $stages->count(),
+                'stage_order' => $stageOrder->stage_order,
                 'position' => $participant->_getStage()->position,
                 'points_final' => $participant->_getRankingPoints(),
                 'time_seconds' => null,

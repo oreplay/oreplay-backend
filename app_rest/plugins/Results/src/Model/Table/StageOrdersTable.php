@@ -96,6 +96,17 @@ class StageOrdersTable extends AppTable
         return $res;
     }
 
+    public function getCreatingOne(string $srcStageId, string $eventId, string $stageId): StageOrder
+    {
+        /** @var StageOrder $stageOrder */
+        $stageOrder = $this->getAllCreatingOne($srcStageId, $eventId, $stageId)
+            ->filter(function (StageOrder $entity) use ($srcStageId) {
+                return $entity->original_stage_id === $srcStageId;
+            })
+            ->first();
+        return $stageOrder;
+    }
+
     public function getAllCreatingOne(string $srcStageId, string $eventId, string $stageId): ResultSetInterface
     {
         $stages = $this->getAllInStage($stageId);
@@ -119,7 +130,7 @@ class StageOrdersTable extends AppTable
             $new->start = $srcStage->start;
             $new->computed = FrozenTime::now();
             $new->is_official = true;
-            $new->stage_order = $stages->count() + 1;
+            $new->stage_order = (int)$stages->max('stage_order')?->stage_order + 1;
             $this->saveOrFail($new);
 
             $this->deleteCache($stageId);

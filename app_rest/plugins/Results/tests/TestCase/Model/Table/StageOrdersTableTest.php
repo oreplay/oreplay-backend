@@ -93,6 +93,29 @@ class StageOrdersTableTest extends TestCase
         $this->assertEquals('2023-11-01 10:02:00', $created->start->format('Y-m-d H:i:s'));
     }
 
+    public function testGetCreatingOneReturnsTheStageOrderOfTheSourceStage(): void
+    {
+        $this->StageOrders->getAllCreatingOne(StagesFixture::STAGE_RAID, Event::FIRST_EVENT, Stage::FIRST_STAGE);
+
+        $stageOrder = $this->StageOrders->getCreatingOne(Stage::FIRST_STAGE, Event::FIRST_EVENT, Stage::FIRST_STAGE);
+
+        $this->assertEquals(StageOrdersFixture::STAGE_1, $stageOrder->id);
+        $this->assertEquals(1, $stageOrder->stage_order);
+    }
+
+    public function testGetCreatingOneNumbersAfterTheHighestStageOrderWhenThereAreGaps(): void
+    {
+        $gapped = $this->StageOrders->getCreatingOne(StagesFixture::STAGE_RAID, Event::FIRST_EVENT, Stage::FIRST_STAGE);
+        $gapped->stage_order = 3;
+        $this->StageOrders->saveOrFail($gapped);
+        $this->StageOrders->deleteCache(Stage::FIRST_STAGE);
+
+        $created = $this->StageOrders->getCreatingOne(StagesFixture::STAGE_FEDO_2, Event::FIRST_EVENT, Stage::FIRST_STAGE);
+
+        $this->assertEquals(StagesFixture::STAGE_FEDO_2, $created->original_stage_id);
+        $this->assertEquals(4, $created->stage_order);
+    }
+
     public function testTruncateDescriptionClipsMultibyteToColumnLength(): void
     {
         $maxLen = StageOrdersTable::DESCRIPTION_MAX_LENGTH;

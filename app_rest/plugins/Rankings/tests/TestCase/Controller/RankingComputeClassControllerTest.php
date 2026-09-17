@@ -14,8 +14,10 @@ use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
+use Results\Model\Entity\ResultType;
 use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageOrder;
+use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\StageOrdersTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;
@@ -107,5 +109,47 @@ class RankingComputeClassControllerTest extends ApiCommonErrorsTest
             ],
         ];
         $this->assertEquals($expectedOveralls, $overalls);
+    }
+
+    public function testAddNewStoresTheStageOrderOfTheComputedStage()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->_saveRankingStageOrder(1, StagesFixture::STAGE_FEDO_2);
+        $this->_saveRankingStageOrder(2, Stage::FIRST_STAGE);
+        $this->_saveRankingStageOrder(3, StagesFixture::STAGE_RAID);
+
+        $this->post($this->_getEndpoint(), ['secret' => RankingComputeClassController::getSecret()]);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $parts = $bodyDecoded['data']['runners'][0]['overalls']['parts'];
+        $this->assertEquals([2], array_column($parts, 'stage_order'));
+        $this->assertEquals([2], $this->_storedComputedStageOrders());
+    }
+
+    private function _saveRankingStageOrder(int $stageOrder, string $originalStageId): void
+    {
+        $StageOrders = StageOrdersTable::load();
+        /** @var StageOrder $entity */
+        $entity = $StageOrders->fillNewWithUuid([]);
+        $entity->event_id = EventsFixture::EVENT_TOMORROW_RANKING;
+        $entity->stage_id = StagesFixture::STAGE_RANKING;
+        $entity->original_stage_id = $originalStageId;
+        $entity->description = 'Stage ' . $stageOrder;
+        $entity->stage_order = $stageOrder;
+        $StageOrders->saveOrFail($entity);
+        $StageOrders->deleteCache(StagesFixture::STAGE_RANKING);
+    }
+
+    private function _storedComputedStageOrders(): array
+    {
+        return RunnerResultsTable::load()->find()
+            ->where([
+                'stage_id' => StagesFixture::STAGE_RANKING,
+                'result_type_id' => ResultType::PARTIAL_OVERALL,
+                'upload_type' => UploadTypes::TOTAL_POINTS,
+            ])
+            ->all()
+            ->extract('stage_order')
+            ->toList();
     }
 }
