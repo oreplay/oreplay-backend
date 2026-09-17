@@ -105,12 +105,13 @@ class StageOrdersTableTest extends TestCase
 
     public function testGetCreatingOneNumbersAfterTheHighestStageOrderWhenThereAreGaps(): void
     {
-        $gapped = $this->StageOrders->getCreatingOne(StagesFixture::STAGE_RAID, Event::FIRST_EVENT, Stage::FIRST_STAGE);
+        $stage = Stage::FIRST_STAGE;
+        $gapped = $this->StageOrders->getCreatingOne(StagesFixture::STAGE_RAID, Event::FIRST_EVENT, $stage);
         $gapped->stage_order = 3;
         $this->StageOrders->saveOrFail($gapped);
-        $this->StageOrders->deleteCache(Stage::FIRST_STAGE);
+        $this->StageOrders->deleteCache($stage);
 
-        $created = $this->StageOrders->getCreatingOne(StagesFixture::STAGE_FEDO_2, Event::FIRST_EVENT, Stage::FIRST_STAGE);
+        $created = $this->StageOrders->getCreatingOne(StagesFixture::STAGE_FEDO_2, Event::FIRST_EVENT, $stage);
 
         $this->assertEquals(StagesFixture::STAGE_FEDO_2, $created->original_stage_id);
         $this->assertEquals(4, $created->stage_order);
