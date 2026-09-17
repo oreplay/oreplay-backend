@@ -152,6 +152,27 @@ class RankingOrganizersControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('Ada', $json['data'][0]['first_name']);
     }
 
+    public function testGetListIsOrderedByCreation()
+    {
+        $this->skipNextRequestInSwagger();
+        $ids = [
+            $this->_seedOrganizer('Ada', 'Lovelace'),
+            $this->_seedOrganizer('Grace', 'Hopper'),
+            $this->_seedOrganizer('Alan', 'Turing'),
+        ];
+        sort($ids);
+        $newestFirst = ['2026-07-12 10:00:03', '2026-07-12 10:00:02', '2026-07-12 10:00:01'];
+        foreach ($ids as $i => $id) {
+            RankingOrganizersTable::load()->updateAll(['created' => $newestFirst[$i]], ['id' => $id]);
+        }
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+
+        $this->get($this->_getEndpoint());
+
+        $json = $this->assertJsonResponseOK();
+        $this->assertEquals(array_reverse($ids), array_column($json['data'], 'id'));
+    }
+
     public function testGetListExcludesDeleted()
     {
         $this->_seedOrganizer('Ada', 'Lovelace');

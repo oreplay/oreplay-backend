@@ -35,6 +35,7 @@ class RankingOrganizersController extends ApiController
         $stageOrder = $this->_authorizeAndGetStageOrder();
         $this->return = $this->RankingOrganizers->find()
             ->where([RankingOrganizersTable::field('stage_order_id') => $stageOrder->id])
+            ->orderByAsc(RankingOrganizersTable::field('created'))
             ->all()
             ->toList();
     }
