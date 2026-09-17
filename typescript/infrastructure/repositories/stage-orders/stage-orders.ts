@@ -277,3 +277,81 @@ export const usePatchStageOrders = <TError = unknown, TContext = unknown>(option
 
   return useMutation(mutationOptions)
 }
+/**
+ * Delete removes stage order with its computed results
+ */
+export const deleteStageOrders = (
+  eventID: string,
+  stageID: string,
+  stageOrderID: string,
+  options?: SecondParameter<typeof orvalAxiosInstance>
+) => {
+  return orvalAxiosInstance<void>(
+    {
+      url: `/api/v1/events/${eventID}/stages/${stageID}/stageOrders/${stageOrderID}`,
+      method: 'DELETE'
+    },
+    options
+  )
+}
+
+export const getDeleteStageOrdersMutationOptions = <
+  TError = unknown,
+  TContext = unknown
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteStageOrders>>,
+    TError,
+    { eventID: string; stageID: string; stageOrderID: string },
+    TContext
+  >
+  request?: SecondParameter<typeof orvalAxiosInstance>
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof deleteStageOrders>>,
+  TError,
+  { eventID: string; stageID: string; stageOrderID: string },
+  TContext
+> => {
+  const mutationKey = ['deleteStageOrders']
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined }
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof deleteStageOrders>>,
+    { eventID: string; stageID: string; stageOrderID: string }
+  > = (props) => {
+    const { eventID, stageID, stageOrderID } = props ?? {}
+
+    return deleteStageOrders(eventID, stageID, stageOrderID, requestOptions)
+  }
+
+  return { mutationFn, ...mutationOptions }
+}
+
+export type DeleteStageOrdersMutationResult = NonNullable<
+  Awaited<ReturnType<typeof deleteStageOrders>>
+>
+
+export type DeleteStageOrdersMutationError = unknown
+
+export const useDeleteStageOrders = <TError = unknown, TContext = unknown>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof deleteStageOrders>>,
+    TError,
+    { eventID: string; stageID: string; stageOrderID: string },
+    TContext
+  >
+  request?: SecondParameter<typeof orvalAxiosInstance>
+}): UseMutationResult<
+  Awaited<ReturnType<typeof deleteStageOrders>>,
+  TError,
+  { eventID: string; stageID: string; stageOrderID: string },
+  TContext
+> => {
+  const mutationOptions = getDeleteStageOrdersMutationOptions(options)
+
+  return useMutation(mutationOptions)
+}
