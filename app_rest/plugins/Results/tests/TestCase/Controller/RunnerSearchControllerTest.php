@@ -75,6 +75,33 @@ class RunnerSearchControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(RunnersFixture::RUNNER_RAID_ID, $json['data'][0]['id']);
     }
 
+    public function testSearchByFirstNameSpaceLastName()
+    {
+        $this->skipNextRequestInSwagger();
+        $id = $this->_seedRunner('Mª José', 'Naya López', Event::FIRST_EVENT, Stage::FIRST_STAGE);
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+
+        $this->get($this->_search(['text' => 'Mª José Naya']));
+
+        $json = $this->assertJsonResponseOK();
+        $this->assertEquals([$id], array_column($json['data'], 'id'));
+    }
+
+    public function testSearchByFullNameWithoutFirstName()
+    {
+        $this->skipNextRequestInSwagger();
+        $Runners = RunnersTable::load();
+        $runner = $Runners->fillNewWithStage([], Event::FIRST_EVENT, Stage::FIRST_STAGE);
+        $runner->last_name = 'Onlylast Name';
+        $Runners->saveOrFail($runner);
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+
+        $this->get($this->_search(['text' => 'Onlylast Na']));
+
+        $json = $this->assertJsonResponseOK();
+        $this->assertEquals([$runner->id], array_column($json['data'], 'id'));
+    }
+
     public function testTeamMemberHasNoClass()
     {
         $this->skipNextRequestInSwagger();

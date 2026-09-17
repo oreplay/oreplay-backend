@@ -6,6 +6,7 @@ namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
 use App\Model\Table\UsersTable;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Http\Exception\NotFoundException;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
@@ -153,12 +154,9 @@ class RunnersTable extends AppTable
     public function searchByName(string $text, ?string $eventId = null, ?string $stageId = null): array
     {
         $query = $this->find()
-            ->where([
-                'OR' => [
-                    self::field('first_name') . ' LIKE' => '%' . $text . '%',
-                    self::field('last_name') . ' LIKE' => '%' . $text . '%',
-                ],
-            ])
+            ->where(function (QueryExpression $exp, RestApiSelectQuery $query) use ($text) {
+                return $this->_nameMatches($exp, $query, $text);
+            })
             ->where([self::field('created') . ' >=' => new FrozenTime('-1 year')])
             ->contain([ClassesTable::name() => ['fields' => ['id', 'short_name', 'long_name']]]);
         if ($eventId) {
@@ -168,6 +166,28 @@ class RunnersTable extends AppTable
             $query->where([self::field('stage_id') => $stageId]);
         }
         return $query->orderByDesc(self::field('created'))->limit(20)->all()->toList();
+    }
+
+    private function _nameMatches(QueryExpression $exp, RestApiSelectQuery $query, string $text): QueryExpression
+    {
+        $pattern = '%' . $text . '%';
+        if (!self::_spansFirstAndLastName($text)) {
+            return $exp->or([
+                self::field('first_name') . ' LIKE' => $pattern,
+                self::field('last_name') . ' LIKE' => $pattern,
+            ]);
+        }
+        $fullName = $query->func()->concat_ws([
+            ' ',
+            self::field('first_name') => 'identifier',
+            self::field('last_name') => 'identifier',
+        ]);
+        return $exp->like($fullName, $pattern);
+    }
+
+    private static function _spansFirstAndLastName(string $text): bool
+    {
+        return str_contains($text, ' ');
     }
 
     private function _findRunnersInStage(string $eventId, string $stageId): RestApiSelectQuery
