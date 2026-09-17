@@ -21,7 +21,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "351c8ab5-8ee1-4a34-bd58-3181ea452cdc"
+                    "example": "a2acbe77-96eb-4d87-9141-8177a900e386"
                 }
             ],
             "first_name": [
@@ -67,9 +67,68 @@
                     "type": "string",
                     "example": "Bulk"
                 }
+            ],
+            "class": [
+                {
+                    "$ref": "#/components/schemas/ClassEntity"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "$ref": "#/components/schemas/ClassEntity"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
             ]
         },
         "description": "Entity RunnerSearch"
+    },
+    "ClassEntity": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
+                },
+                {
+                    "type": "string",
+                    "example": "d8a87faf-68a4-487b-8f28-6e0ead6c1a57"
+                }
+            ],
+            "short_name": [
+                {
+                    "type": "string",
+                    "example": "ME"
+                },
+                {
+                    "type": "string",
+                    "example": "ME"
+                }
+            ],
+            "long_name": [
+                {
+                    "type": "string",
+                    "example": "M Elite"
+                },
+                {
+                    "type": "string",
+                    "example": "M Elite"
+                }
+            ]
+        },
+        "description": "Entity ClassEntity"
     },
     "ArrayRunnerSearch": {
         "type": "object",

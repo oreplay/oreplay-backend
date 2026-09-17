@@ -8,6 +8,7 @@ use App\Controller\ApiController;
 use App\Test\Fixture\OauthAccessTokensFixture;
 use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
+use Results\Model\Entity\ClassEntity;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Stage;
@@ -57,8 +58,11 @@ class RunnerSearchControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(Runner::FIRST_RUNNER, $row['id']);
         $this->assertEquals('First', $row['first_name']);
         $this->assertEquals('Runner', $row['last_name']);
-        $this->assertEquals(['id', 'first_name', 'last_name', '_c'], array_keys($row));
+        $this->assertEquals(['id', 'first_name', 'last_name', 'class', '_c'], array_keys($row));
         $this->assertEquals('RunnerSearch', $row['_c']);
+        $this->assertEquals(ClassEntity::ME, $row['class']['id']);
+        $this->assertEquals('ME', $row['class']['short_name']);
+        $this->assertEquals('M Elite', $row['class']['long_name']);
     }
 
     public function testSearchByLastName()
@@ -69,6 +73,16 @@ class RunnerSearchControllerTest extends ApiCommonErrorsTest
         $json = $this->assertJsonResponseOK();
         $this->assertCount(1, $json['data']);
         $this->assertEquals(RunnersFixture::RUNNER_RAID_ID, $json['data'][0]['id']);
+    }
+
+    public function testTeamMemberHasNoClass()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $this->get($this->_search(['text' => 'Raider']));
+
+        $json = $this->assertJsonResponseOK();
+        $this->assertNull($json['data'][0]['class']);
     }
 
     public function testEventIdNarrowsResults()

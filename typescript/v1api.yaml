@@ -2926,6 +2926,9 @@ components:
         last_name:
           type: string
           example: Runner
+        class:
+          $ref: '#/components/schemas/ClassEntity'
+          nullable: true
       description: Entity RunnerSearch
       required:
         - id

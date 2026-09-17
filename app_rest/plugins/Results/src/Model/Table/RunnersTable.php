@@ -159,7 +159,8 @@ class RunnersTable extends AppTable
                     self::field('last_name') . ' LIKE' => '%' . $text . '%',
                 ],
             ])
-            ->where([self::field('created') . ' >=' => new FrozenTime('-1 year')]);
+            ->where([self::field('created') . ' >=' => new FrozenTime('-1 year')])
+            ->contain([ClassesTable::name() => ['fields' => ['id', 'short_name', 'long_name']]]);
         if ($eventId) {
             $query->where([self::field('event_id') => $eventId]);
         }
