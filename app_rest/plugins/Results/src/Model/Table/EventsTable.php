@@ -4,8 +4,10 @@ declare(strict_types = 1);
 
 namespace Results\Model\Table;
 
+use App\Lib\Consts\CacheGrp;
 use App\Model\Table\AppTable;
 use App\Model\Table\UsersTable;
+use Cake\Cache\Cache;
 use Cake\Http\Exception\BadRequestException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\ORM\Behavior\TimestampBehavior;
@@ -41,6 +43,24 @@ class EventsTable extends AppTable
         /** @var EventsTable $table */
         $table = parent::load();
         return $table;
+    }
+
+    public function getRecentEvents(): array
+    {
+        return Cache::remember('_recentEvents', function () {
+            return $this->find('list', keyField: 'id', valueField: function (Event $event) {
+                return [
+                    'description' => $event->description,
+                    'initial_date' => $event->initial_date?->format('Y-m-d'),
+                ];
+            })
+                ->where([
+                    'initial_date <=' => (new DateTime('+2 days'))->format('Y-m-d'),
+                    'final_date >=' => (new DateTime('-7 days'))->format('Y-m-d'),
+                    'is_hidden' => false,
+                ])
+                ->toArray();
+        }, CacheGrp::EXTRALONG);
     }
 
     public function patchFromNewValidatingFederation(array $data): Event

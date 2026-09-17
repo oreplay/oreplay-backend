@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Lib\ProxyFront\FrontUtil;
 use Cake\Http\Exception\NotFoundException;
+use Results\Model\Table\EventsTable;
 
 class ProxyFrontendController extends ApiController
 {
@@ -37,12 +38,24 @@ class ProxyFrontendController extends ApiController
         $lang = $this->_getSimpleLang();
 
         $html = '';
-        $description = $this->_getDescription($lang);
+        $description = $this->_getEventDateAndTitle($path) ?? $this->_getDescription($lang);
         $stringBody = $this->_getFallbackHtml($description, $html);
 
         $this->autoRender = false;
         $this->response = $this->response->withStringBody($stringBody);
         return $this->response;
+    }
+
+    private function _getEventDateAndTitle(string $path): ?string
+    {
+        if (!preg_match('#^/competitions/([0-9a-f-]{36})#', $path, $matches)) {
+            return null;
+        }
+        $event = EventsTable::load()->getRecentEvents()[$matches[1]] ?? null;
+        if (!$event) {
+            return null;
+        }
+        return $event['initial_date'] . ' ' . $event['description'];
     }
 
     private function _getFrontDomain()
@@ -59,6 +72,7 @@ class ProxyFrontendController extends ApiController
         $version = SwaggerJsonController::version();
         $url = $this->_getFrontDomain();
         $index = FrontUtil::getIndexJson($url);
+        $description = htmlspecialchars($description);
         $og = FrontUtil::getOgImage(FrontUtil::addBreakLine($description));
         $lang = $this->_getSimpleLang();
         if (strlen($lang) != 2) {
