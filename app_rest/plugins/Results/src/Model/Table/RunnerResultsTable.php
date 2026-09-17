@@ -11,7 +11,9 @@ use Cake\ORM\Behavior\TimestampBehavior;
 use RestApi\Model\Entity\RestApiEntity;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\UploadContext;
+use Results\Model\Entity\ResultType;
 use Results\Model\Entity\RunnerResult;
+use Results\Model\Entity\StageOrder;
 use Results\Model\Traits\TimingTrait;
 
 /**
@@ -37,6 +39,17 @@ class RunnerResultsTable extends AppTable
         /** @var RunnerResultsTable $table */
         $table = parent::load();
         return $table;
+    }
+
+    public function softDeletePartialOveralls(StageOrder $stageOrder, array $narrowingConditions = []): int
+    {
+        return $this->softDeleteAll([
+            'event_id' => $stageOrder->event_id,
+            'stage_id' => $stageOrder->stage_id,
+            'stage_order' => $stageOrder->stage_order,
+            'result_type_id' => ResultType::PARTIAL_OVERALL,
+            'deleted IS' => null,
+        ] + $narrowingConditions);
     }
 
     public function getNotClassesStats(string $eventId, string $stageId, array $classNames, string $sex): array

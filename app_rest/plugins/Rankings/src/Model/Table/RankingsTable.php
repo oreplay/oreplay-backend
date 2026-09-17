@@ -242,6 +242,10 @@ class RankingsTable extends AppTable
             $runners[] = $runner;
         }
         $class->addRunners($runners);
+        RunnerResultsTable::load()->softDeletePartialOveralls($stageOrder, [
+            'class_id' => $class->id,
+            'upload_type' => UploadTypes::TOTAL_POINTS,
+        ]);
         return $classesTable->saveOrFailRetrying($class);
     }
 

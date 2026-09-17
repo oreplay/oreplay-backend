@@ -126,6 +126,21 @@ class RankingComputeClassControllerTest extends ApiCommonErrorsTest
         $this->assertEquals([2], $this->_storedComputedStageOrders());
     }
 
+    public function testAddNewTwiceReplacesTheComputedResults()
+    {
+        $this->skipNextRequestInSwagger();
+        StageOrdersTable::load()->deleteCache(StagesFixture::STAGE_RANKING);
+        $params = ['secret' => RankingComputeClassController::getSecret()];
+        $this->post($this->_getEndpoint(), $params);
+        $this->assertJsonResponseOK();
+
+        $this->skipNextRequestInSwagger();
+        $this->post($this->_getEndpoint(), $params);
+
+        $this->assertJsonResponseOK();
+        $this->assertEquals([1], $this->_storedComputedStageOrders());
+    }
+
     private function _saveRankingStageOrder(int $stageOrder, string $originalStageId): void
     {
         $StageOrders = StageOrdersTable::load();
