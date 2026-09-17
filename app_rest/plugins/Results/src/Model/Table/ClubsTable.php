@@ -71,6 +71,13 @@ class ClubsTable extends AppTable
         return $club;
     }
 
+    public function existsInEvent(string $eventId, string $shortName): bool
+    {
+        return $this->find()
+            ->where(['event_id' => $eventId, 'short_name' => $shortName])
+            ->count() > 0;
+    }
+
     public function findByStage(string $eventId, string $stageId)
     {
         return $this->find()->where([

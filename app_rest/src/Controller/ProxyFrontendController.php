@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Lib\ProxyFront\FrontUtil;
 use Cake\Http\Exception\NotFoundException;
+use Results\Model\Table\ClubsTable;
 use Results\Model\Table\EventsTable;
 
 class ProxyFrontendController extends ApiController
@@ -51,11 +52,17 @@ class ProxyFrontendController extends ApiController
         if (!preg_match('#^/competitions/([0-9a-f-]{36})#', $path, $matches)) {
             return null;
         }
-        $event = EventsTable::load()->getRecentEvents()[$matches[1]] ?? null;
+        $eventId = $matches[1];
+        $event = EventsTable::load()->getRecentEvents()[$eventId] ?? null;
         if (!$event) {
             return null;
         }
-        return $event['initial_date'] . ' ' . $event['description'];
+        $dateAndTitle = $event['initial_date'] . ' ' . $event['description'];
+        $club = $this->getRequest()->getQuery('club');
+        if (is_string($club) && ClubsTable::load()->existsInEvent($eventId, $club)) {
+            return $dateAndTitle . ' - ' . $club;
+        }
+        return $dateAndTitle;
     }
 
     private function _getFrontDomain()
