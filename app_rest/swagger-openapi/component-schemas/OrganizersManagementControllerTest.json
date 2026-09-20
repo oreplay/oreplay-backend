@@ -1,0 +1,98 @@
+{
+    "Organizer": {
+        "type": "object",
+        "properties": {
+            "id": [
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "type": "string",
+                    "example": "b3bdd975-0d0e-4de5-8490-560e22e86b0f"
+                },
+                {
+                    "type": "string",
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                }
+            ],
+            "name": [
+                {
+                    "type": "string",
+                    "example": "ADCON"
+                },
+                {
+                    "type": "string",
+                    "example": "NAVARRA-O"
+                },
+                {
+                    "type": "string",
+                    "example": "ADCON"
+                }
+            ],
+            "country": [
+                {
+                    "type": "string",
+                    "example": "ES"
+                },
+                {
+                    "type": "string",
+                    "example": "ES"
+                },
+                {
+                    "type": "string",
+                    "example": "ES"
+                }
+            ],
+            "region": [
+                {
+                    "type": "string",
+                    "example": "ES-VC"
+                },
+                {
+                    "type": "string",
+                    "example": "ES-NC"
+                },
+                {
+                    "type": "string",
+                    "example": "ES-MD"
+                }
+            ]
+        },
+        "description": "Entity Organizer"
+    },
+    "ArrayOrganizer": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Organizer"
+                    }
+                }
+            ]
+        },
+        "description": "Data wrapper for Organizer",
+        "required": [
+            "data"
+        ]
+    },
+    "ResOrganizer": {
+        "type": "object",
+        "properties": {
+            "data": [
+                {
+                    "$ref": "#/components/schemas/Organizer"
+                },
+                {
+                    "$ref": "#/components/schemas/Organizer"
+                }
+            ]
+        },
+        "description": "Data wrapper for Organizer",
+        "required": [
+            "data"
+        ]
+    }
+}

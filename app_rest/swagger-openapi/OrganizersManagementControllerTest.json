@@ -1,0 +1,213 @@
+{
+    "/api/v1/organizersManagement/": {
+        "get": {
+            "operationId": "getListOrganizersManagement",
+            "summary": "",
+            "description": "Get list returns organizers ordered by name",
+            "parameters": [
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "OrganizersManagement"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArrayOrganizer"
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ]
+        },
+        "post": {
+            "operationId": "postListOrganizersManagement",
+            "summary": "",
+            "description": "Add new generates uuid server side",
+            "parameters": [
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "OrganizersManagement"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResOrganizer"
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "example": "NAVARRA-O"
+                                },
+                                "country": {
+                                    "type": "string",
+                                    "example": "ES"
+                                },
+                                "region": {
+                                    "type": "string",
+                                    "example": "ES-NC"
+                                }
+                            },
+                            "description": "Generic object when: Add new generates uuid server side"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "/api/v1/organizersManagement/{organizersManagementID}": {
+        "patch": {
+            "operationId": "patchOrganizersManagement",
+            "summary": "",
+            "description": "Edit updates organizer",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "organizersManagementID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "OrganizersManagement"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ResOrganizer"
+                            }
+                        }
+                    }
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ],
+            "requestBody": {
+                "description": "",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "region": {
+                                    "type": "string",
+                                    "example": "ES-MD"
+                                },
+                                "country": {
+                                    "type": "string",
+                                    "example": "ES"
+                                }
+                            },
+                            "description": "Generic object when: Edit updates organizer"
+                        }
+                    }
+                }
+            }
+        },
+        "delete": {
+            "operationId": "deleteOrganizersManagement",
+            "summary": "",
+            "description": "Delete soft deletes organizer",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "organizersManagementID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "description": "Auth token",
+                    "in": "header",
+                    "name": "Authorization",
+                    "example": "Bearer ****************",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "OrganizersManagement"
+            ],
+            "responses": {
+                "204": {
+                    "description": "No content. Successfully deleted."
+                }
+            },
+            "security": [
+                {
+                    "bearerAuth": []
+                }
+            ]
+        }
+    }
+}
