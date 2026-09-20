@@ -13,7 +13,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "eb2b5e6f-c6b4-4bad-8882-6ff2aa151a7f"
+                    "example": "15c16076-a7e5-4ab9-b899-0c5c06ddc196"
                 },
                 {
                     "type": "string",
@@ -325,32 +325,46 @@
             ],
             "included_class_names": [
                 {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": "M-12"
+                    }
                 },
                 {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": "ME"
+                    }
                 },
                 {
-                    "type": "string",
-                    "example": "[\"ME\",\"FE\"]"
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": "ME"
+                    }
                 },
                 {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": "M-12"
+                    }
                 },
                 {
-                    "type": "string",
-                    "example": "[\"ME\",\"FE\"]"
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": "ME"
+                    }
                 },
                 {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": "M-12"
+                    }
                 }
             ],
             "created": [
@@ -386,11 +400,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-08-06T08:36:40.565+00:00"
+                    "example": "2026-09-20T07:16:13.050+00:00"
                 },
                 {
                     "type": "string",
-                    "example": "2026-08-06T08:36:40.622+00:00"
+                    "example": "2026-09-20T07:16:13.202+00:00"
                 },
                 {
                     "type": "string",
@@ -398,11 +412,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-08-06T08:36:40.667+00:00"
+                    "example": "2026-09-20T07:16:13.251+00:00"
                 },
                 {
                     "type": "string",
-                    "example": "2026-08-06T08:36:40.682+00:00"
+                    "example": "2026-09-20T07:16:13.266+00:00"
                 }
             ],
             "_links": [
@@ -450,7 +464,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/rankings/eb2b5e6f-c6b4-4bad-8882-6ff2aa151a7f"
+                    "example": "http://dev.example.com/api/v1/rankings/15c16076-a7e5-4ab9-b899-0c5c06ddc196"
                 },
                 {
                     "type": "string",
@@ -716,8 +730,11 @@
             ],
             "included_class_names": [
                 {
-                    "type": "string",
-                    "example": "[\"ME\",\"FE\"]"
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": "ME"
+                    }
                 }
             ],
             "overall_settings": [

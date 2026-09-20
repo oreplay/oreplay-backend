@@ -41,12 +41,20 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         ];
     }
 
-    private function _insertRankingCreatedAt(string $id, string $created): void
+    private function _storedIncludedClassNames(string $id): string|false
+    {
+        return RankingsTable::load()->getConnection()
+            ->execute('SELECT included_class_names FROM rankings WHERE id = ?', [$id])
+            ->fetchColumn(0);
+    }
+
+    private function _insertRankingCreatedAt(string $id, string $created, array $data = []): void
     {
         $Rankings = RankingsTable::load();
         $ranking = $Rankings->newEmptyEntity();
         $ranking->id = $id;
-        $ranking = $Rankings->patchEntity($ranking, $this->_validCreateData());
+        $withClassNames = ['included_class_names' => ['ME', 'FE']] + $this->_validCreateData();
+        $ranking = $Rankings->patchEntity($ranking, $data + $withClassNames);
         $Rankings->saveOrFail($ranking);
         $Rankings->updateAll(['created' => $created], ['id' => $id]);
     }
@@ -103,6 +111,96 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         );
     }
 
+    public function testGetDataReturnsIncludedClassNamesAsArray()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->get($this->_getEndpoint() . RankingsTable::FIRST_RANKING);
+
+        $json = $this->assertJsonResponseOK();
+        $included = $json['data']['included_class_names'];
+        $this->assertIsArray($included, 'the api exposes class names as an array of strings');
+        $this->assertContains('M-12', $included);
+        $this->assertContains('Absoluta parellas', $included);
+        $this->assertCount(38, $included);
+    }
+
+    public function testGetListReturnsEmptyArrayWhenNoClassNamesAreConfigured()
+    {
+        $this->_insertRankingCreatedAt('withoutClassNames', '2030-01-01 00:00:00', [
+            'included_class_names' => null,
+        ]);
+
+        $this->skipNextRequestInSwagger();
+        $this->get($this->_getEndpoint());
+
+        $json = $this->assertJsonResponseOK();
+        $this->assertSame('withoutClassNames', $json['data'][0]['id']);
+        $this->assertSame(
+            [],
+            $json['data'][0]['included_class_names'],
+            'an unconfigured whitelist is an empty array, never null'
+        );
+    }
+
+    public function testAddNewWithoutIncludedClassNamesStoresAnEmptyList()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->post($this->_getEndpoint(), $this->_validCreateData());
+
+        $json = $this->assertJsonResponseOK();
+        $this->assertSame(
+            [],
+            $json['data']['included_class_names'],
+            'the whitelist is always present, even when the request omits it'
+        );
+        $this->assertSame('[]', $this->_storedIncludedClassNames($json['data']['id']));
+    }
+
+    public function testAddNewWithNullIncludedClassNamesStoresAnEmptyList()
+    {
+        $data = $this->_validCreateData();
+        $data['included_class_names'] = null;
+
+        $this->skipNextRequestInSwagger();
+        $this->post($this->_getEndpoint(), $data);
+
+        $json = $this->assertJsonResponseOK();
+        $this->assertSame([], $json['data']['included_class_names']);
+        $this->assertSame(
+            '[]',
+            $this->_storedIncludedClassNames($json['data']['id']),
+            'an explicit null is normalised to an empty list'
+        );
+    }
+
+    public function testEditWithoutIncludedClassNamesKeepsTheStoredList()
+    {
+        $data = ['title' => 'Only the title changes'];
+
+        $this->skipNextRequestInSwagger();
+        $this->patch($this->_getEndpoint() . RankingsTable::FIRST_RANKING, $data);
+
+        $json = $this->assertJsonResponseOK();
+        $this->assertContains('M-12', $json['data']['included_class_names']);
+        $this->assertStringStartsWith(
+            '["M-12"',
+            $this->_storedIncludedClassNames(RankingsTable::FIRST_RANKING),
+            'an untouched whitelist is rewritten as the same json string'
+        );
+    }
+
+    public function testEditWithNullIncludedClassNamesClearsTheStoredList()
+    {
+        $data = ['included_class_names' => null];
+
+        $this->skipNextRequestInSwagger();
+        $this->patch($this->_getEndpoint() . RankingsTable::FIRST_RANKING, $data);
+
+        $json = $this->assertJsonResponseOK();
+        $this->assertSame([], $json['data']['included_class_names']);
+        $this->assertSame('[]', $this->_storedIncludedClassNames(RankingsTable::FIRST_RANKING));
+    }
+
     public function testGetDataNotFoundReturns404()
     {
         $this->get($this->_getEndpoint() . 'doesNotExist');
@@ -118,7 +216,7 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         $data['nc_false'] = 10;
         $data['status_scores'] = '[null,1,2,3,4,5]';
         $data['excluded_class_names'] = '["ELITE"]';
-        $data['included_class_names'] = '["ME","FE"]';
+        $data['included_class_names'] = ['ME', 'FE'];
         $data['overall_settings'] =
             '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}';
         $this->post($this->_getEndpoint(), $data);
@@ -136,7 +234,8 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(10, $saved->nc_false);
         $this->assertEquals('[null,1,2,3,4,5]', $saved->status_scores);
         $this->assertEquals('["ELITE"]', $saved->excluded_class_names);
-        $this->assertEquals('["ME","FE"]', $saved->included_class_names);
+        $this->assertEquals(['ME', 'FE'], $saved->included_class_names);
+        $this->assertEquals('["ME","FE"]', $this->_storedIncludedClassNames($newId));
         $this->assertEquals(
             '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}',
             $saved->overall_settings
@@ -183,7 +282,7 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
             'nc_false' => 10,
             'status_scores' => '[null,1,2,3,4,5]',
             'excluded_class_names' => '["ELITE"]',
-            'included_class_names' => '["ME","FE"]',
+            'included_class_names' => ['ME', 'FE'],
             'overall_settings' => '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}',
         ];
         $this->patch($this->_getEndpoint() . RankingsTable::FIRST_RANKING, $data);
@@ -202,7 +301,12 @@ class RankingSettingsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(10, $saved->nc_false);
         $this->assertEquals('[null,1,2,3,4,5]', $saved->status_scores);
         $this->assertEquals('["ELITE"]', $saved->excluded_class_names);
-        $this->assertEquals('["ME","FE"]', $saved->included_class_names);
+        $this->assertEquals(['ME', 'FE'], $saved->included_class_names);
+        $this->assertEquals(
+            '["ME","FE"]',
+            $this->_storedIncludedClassNames(RankingsTable::FIRST_RANKING),
+            'the database column keeps a json string'
+        );
         $this->assertEquals(
             '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}',
             $saved->overall_settings

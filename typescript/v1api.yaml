@@ -914,8 +914,10 @@ paths:
                   type: string
                   example: '["ELITE"]'
                 included_class_names:
-                  type: string
-                  example: '["ME","FE"]'
+                  type: array
+                  items:
+                    type: string
+                    example: ME
                 overall_settings:
                   type: string
                   example: '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}'
@@ -2653,9 +2655,10 @@ components:
           example: '["O NEGRO F","PROM"]'
           nullable: true
         included_class_names:
-          type: string
-          example: '["ME","FE"]'
-          nullable: true
+          type: array
+          items:
+            type: string
+            example: M-12
         created:
           type: string
           example: '****-**-*****:**:**.***+**:**'
@@ -2672,6 +2675,7 @@ components:
         - stage_id
         - max_points
         - round_precision
+        - included_class_names
         - created
         - modified
         - _links
@@ -2746,8 +2750,10 @@ components:
           type: string
           example: '["ELITE"]'
         included_class_names:
-          type: string
-          example: '["ME","FE"]'
+          type: array
+          items:
+            type: string
+            example: ME
         overall_settings:
           type: string
           example: '{"totalCircuitRaces":3,"maxRacesCounted":2,"organizerScoringFraction":0.5,"minPointsAsOrg":20}'

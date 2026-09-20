@@ -7,6 +7,7 @@ namespace Rankings\Model\Table;
 use App\Model\Table\AppTable;
 use Cake\Cache\Cache;
 use Cake\Datasource\EntityInterface;
+use Cake\Event\EventInterface;
 use Cake\Http\Exception\InternalErrorException;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\Validation\Validator;
@@ -37,11 +38,20 @@ use Results\Lib\UploadConfigChecker;
 class RankingsTable extends AppTable
 {
     public const FIRST_RANKING = 'regional100pts';
+    private const CLASS_NAMES_COLUMN_LENGTH = 510;
 
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
         StagesTable::addBelongsToMany($this);
+        $this->getSchema()->setColumnType('included_class_names', 'json');
+    }
+
+    public function beforeSave(EventInterface $event, Ranking $ranking): void
+    {
+        if ($ranking->isNew()) {
+            $ranking->set('included_class_names', $ranking->getIncludedClassNames());
+        }
     }
 
     public function validationDefault(Validator $validator): Validator
@@ -69,10 +79,22 @@ class RankingsTable extends AppTable
             ->allowEmptyString('status_scores')
             ->allowEmptyString('excluded_class_names')
             ->maxLength('excluded_class_names', 510)
-            ->allowEmptyString('included_class_names')
-            ->maxLength('included_class_names', 510)
+            ->allowEmptyArray('included_class_names')
+            ->add('included_class_names', 'isArray', [
+                'rule' => 'isArray',
+                'message' => 'The provided value must be a list of class names',
+            ])
+            ->add('included_class_names', 'maxLength', [
+                'rule' => fn ($classNames) => $this->_fitsInClassNamesColumn($classNames),
+                'message' => 'The provided value is too long',
+            ])
             ->allowEmptyString('overall_settings');
         return $validator;
+    }
+
+    private function _fitsInClassNamesColumn(mixed $classNames): bool
+    {
+        return strlen((string)json_encode($classNames)) <= self::CLASS_NAMES_COLUMN_LENGTH;
     }
 
     public static function load(): self

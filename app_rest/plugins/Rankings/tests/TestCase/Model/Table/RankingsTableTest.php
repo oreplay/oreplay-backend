@@ -155,7 +155,7 @@ class RankingsTableTest extends TestCase
             'stage_id' => Stage::FIRST_STAGE,
             'max_points' => 100,
             'round_precision' => Ranking::USE_FLOOR_INSTEAD_OF_ROUND,
-            'included_class_names' => $included === null ? null : json_encode($included),
+            'included_class_names' => $included,
             'excluded_class_names' => $excluded === null ? null : json_encode($excluded),
         ]);
         $this->Rankings->saveOrFail($ranking);

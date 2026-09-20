@@ -14,8 +14,7 @@ export interface Ranking {
   /** @nullable */
   excluded_class_names?: string | null
   id: string
-  /** @nullable */
-  included_class_names?: string | null
+  included_class_names: string[]
   max_points: number
   modified: string
   /** @nullable */

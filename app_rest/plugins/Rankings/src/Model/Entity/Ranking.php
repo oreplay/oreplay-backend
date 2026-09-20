@@ -19,7 +19,7 @@ use Results\Model\Entity\AppEntity;
  * @property mixed $nc_false
  * @property string|null $status_scores
  * @property string|null $excluded_class_names
- * @property string|null $included_class_names
+ * @property array $included_class_names
  * @property string $scoring_algorithm
  */
 class Ranking extends AppEntity
@@ -118,7 +118,12 @@ class Ranking extends AppEntity
 
     public function getIncludedClassNames(): array
     {
-        return $this->_decodeClassNames($this->included_class_names);
+        return $this->included_class_names;
+    }
+
+    public function _getIncludedClassNames(): array
+    {
+        return $this->_fields['included_class_names'] ?? [];
     }
 
     private function _decodeClassNames(?string $json): array
