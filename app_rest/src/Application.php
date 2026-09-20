@@ -12,6 +12,7 @@ use Cake\Http\Middleware\BodyParserMiddleware;
 use Cake\Http\MiddlewareQueue;
 use Cake\Routing\Middleware\AssetMiddleware;
 use Cake\Routing\Middleware\RoutingMiddleware;
+use App\Lib\ExpectedDatabaseMiddleware;
 use RestApi\Lib\GzipRequestMiddleware;
 
 /**
@@ -47,6 +48,7 @@ class Application extends BaseApplication
         $middlewareQueue
             // Catch any exceptions in the lower layers and render error page/response
             ->add(new ErrorHandlerMiddleware(Configure::read('Error')))
+            ->add(new ExpectedDatabaseMiddleware())
             // Handle plugin/theme assets like CakePHP normally does.
             ->add(new AssetMiddleware([
                 'cacheTime' => Configure::read('Asset.cacheTime')
