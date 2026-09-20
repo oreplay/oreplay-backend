@@ -4,10 +4,12 @@ declare(strict_types = 1);
 
 namespace App\Controller;
 
+use App\Lib\ConnectedDatabase;
 use App\Lib\Consts\CacheGrp;
 use App\Lib\Database\DatabaseCreator;
 use App\Lib\I18n\LegacyI18n;
 use Cake\Cache\Cache;
+use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
 use Cake\Http\Exception\BadRequestException;
 use Cake\I18n\FrozenTime;
@@ -73,8 +75,10 @@ class PingController extends ApiController
     private function _phpRuntime(): array
     {
         return [
+            'dg' => Configure::read('debug') ? 'on' : 'off',
             'xd' => extension_loaded('xdebug') ? ((string)ini_get('xdebug.mode') ?: 'off') : 'nl',
             'ml' => (string)ini_get('memory_limit'),
+            'db' => (new ConnectedDatabase())->label(),
         ];
     }
 

@@ -31,7 +31,11 @@ class PingControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($lang, $bodyDecoded['data'][0]);
         $this->assertEquals('dev.example.com', $bodyDecoded['data'][1]);
         $this->assertEquals('use cache', $bodyDecoded['data'][3]);
-        $this->assertEquals(['xd', 'ml'], array_keys($bodyDecoded['data'][8]));
+        $this->assertEquals(['dg', 'xd', 'ml', 'db'], array_keys($bodyDecoded['data'][8]));
+        $this->assertEquals('local', $bodyDecoded['data'][8]['db'],
+            'the tests run against the development database, and the endpoint says which one is behind it');
+        $this->assertEquals('on', $bodyDecoded['data'][8]['dg'],
+            'a deploy that still runs with debug on is worth seeing from the outside');
     }
 
     public function testGetData_withoutSecret()
