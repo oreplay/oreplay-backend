@@ -181,6 +181,29 @@ class Team extends AppEntity implements ParticipantInterface
         $participant = $this->jsonSerialize();
         $participant['id'] = '';
         $participant['team_name'] = $this->team_name;
+        $participant['first_name'] = $this->team_name;
+        $participant['last_name'] = $this->_membersBetweenBrackets();
+        unset($participant['bib_number']);
         return $participant;
+    }
+
+    private function _membersBetweenBrackets(): string
+    {
+        $members = [];
+        foreach ($this->getRunnerList() ?? [] as $runner) {
+            $member = trim(self::_firstWordOf($runner->first_name) . ' ' . self::_firstWordOf($runner->last_name));
+            if ($member !== '') {
+                $members[] = $member;
+            }
+        }
+        if (!$members) {
+            return '';
+        }
+        return '(' . implode(', ', $members) . ')';
+    }
+
+    private static function _firstWordOf(?string $name): string
+    {
+        return explode(' ', trim((string)$name))[0];
     }
 }

@@ -16,11 +16,13 @@ use RestApi\Lib\Helpers\CookieHelper;
 use Results\Controller\ApiController;
 use Results\Lib\ResultsSorter;
 use Results\Model\Table\RunnersTable;
+use Results\Model\Table\TeamsTable;
 
 class RankingComputeClassController extends ApiController
 {
     private const string SECRET_PARAM = 'secret';
     private RunnersTable $Runners;
+    private TeamsTable $Teams;
     private RankingsTable $Rankings;
     private mixed $_currentUid = null;
 
@@ -28,6 +30,7 @@ class RankingComputeClassController extends ApiController
     {
         parent::initialize();
         $this->Runners = RunnersTable::load();
+        $this->Teams = TeamsTable::load();
         $this->Rankings = RankingsTable::load();
     }
 
@@ -68,7 +71,11 @@ class RankingComputeClassController extends ApiController
         $classId = $this->request->getParam('classID');
 
         $this->_validateSecret($data);
-        $participants = $this->Runners->findRunnersInStage($eventId, $stageId, ['class_id' => $classId])->toArray();
+        $filters = ['class_id' => $classId];
+        $participants = array_merge(
+            $this->Teams->findTeamsInStage($eventId, $stageId, $filters)->toArray(),
+            $this->Runners->findRunnersInStage($eventId, $stageId, $filters)->toArray()
+        );
 
         if (!$participants) {
             throw new NotFoundException('Not found participants');

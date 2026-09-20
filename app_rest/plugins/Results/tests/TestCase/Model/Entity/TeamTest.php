@@ -9,6 +9,7 @@ use Cake\I18n\FrozenTime;
 use Cake\TestSuite\TestCase;
 use Rankings\Test\Fixture\RankingsFixture;
 use Results\Model\Entity\ResultType;
+use Results\Model\Entity\Runner;
 use Results\Model\Entity\Team;
 use Results\Model\Entity\TeamResult;
 
@@ -17,6 +18,52 @@ class TeamTest extends TestCase
     protected array $fixtures = [
         RankingsFixture::LOAD,
     ];
+
+    private function _member(string $firstName, string $lastName): Runner
+    {
+        $runner = new Runner();
+        $runner->first_name = $firstName;
+        $runner->last_name = $lastName;
+        return $runner;
+    }
+
+    public function testToArrayWithoutID_shouldNameATeamWithItsMembers()
+    {
+        $team = new Team();
+        $team->team_name = 'Parella alfa';
+        $team->addRunner($this->_member('María del Carmen', 'García Pérez'));
+        $team->addRunner($this->_member('Juan', 'López'));
+
+        $participant = $team->toArrayWithoutID();
+
+        $this->assertEquals('Parella alfa', $participant['first_name']);
+        $this->assertEquals('(María García, Juan López)', $participant['last_name'],
+            'a compound name is cut to its first word so the entry stays readable');
+    }
+
+    public function testToArrayWithoutID_shouldNameATeamWithoutMembersByItsNameAlone()
+    {
+        $team = new Team();
+        $team->team_name = 'Parella alfa';
+
+        $participant = $team->toArrayWithoutID();
+
+        $this->assertEquals('Parella alfa', $participant['first_name']);
+        $this->assertEquals('', $participant['last_name']);
+    }
+
+    public function testToArrayWithoutID_shouldLeaveTheBibOfTheSourceStageBehind()
+    {
+        $team = new Team();
+        $team->team_name = 'Parella alfa';
+        $team->bib_number = '301';
+
+        $participant = $team->toArrayWithoutID();
+
+        $this->assertArrayNotHasKey('bib_number', $participant,
+            'bibs are handed out per event, so ranking a team by its bib would merge teams that '
+            . 'happen to share a number in another stage');
+    }
 
     public function test_getFullName()
     {
