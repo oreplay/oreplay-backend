@@ -18,6 +18,7 @@ use Results\Model\Table\CoursesTable;
 use Results\Model\Table\RunnersTable;
 use Results\Model\Table\SplitsTable;
 use Results\Model\Table\TeamsTable;
+use Results\Model\Table\TeamResultsTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\ControlsFixture;
@@ -152,6 +153,29 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
         $this->assertEquals(19, $xmlUpdated['classes']);
         $this->assertEquals(194, $xmlUpdated['runners']);
         $this->assertEquals(3347, $xmlUpdated['splits']);
+    }
+
+    /**
+     * OE exports a pairs class as teams whose members declare no leg and repeat the team standing on
+     * every member. Both members ran the course with their own chip, so both are stored, while the
+     * standing they share is one team result.
+     */
+    public function testAddNew_shouldStoreEveryMemberOfATeamThatRanTogether()
+    {
+        $this->_postXml('iof/pairs.xml');
+        $this->assertUploadOk();
+
+        $class = ClassesTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'short_name' => 'ABS PAR'])->firstOrFail();
+        $teams = TeamsTable::load()->find()->where(['class_id' => $class->id])->all()->toList();
+        $this->assertCount(2, $teams);
+        $teamIds = array_map(fn($team) => $team->id, $teams);
+        $this->assertEquals(4, RunnersTable::load()->find()->where(['team_id IN' => $teamIds])->count(),
+            'both members of each pair are runners of their own');
+        $this->assertEquals(2, TeamResultsTable::load()->find()->where(['team_id IN' => $teamIds])->count(),
+            'one standing per team, however many members repeat it');
+        $this->assertEquals(12, SplitsTable::load()->find()->where(['class_id' => $class->id])->count(),
+            'four chips read at three controls');
     }
 
     public function testAddNew_shouldRecordTheDetectedUploadTypeOnTheResults()

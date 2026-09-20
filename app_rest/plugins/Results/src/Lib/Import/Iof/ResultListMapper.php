@@ -57,11 +57,23 @@ class ResultListMapper extends IofClassMapper
             $team = $teams[$key] ?? $this->_newTeam($teamResult);
             foreach (IofNode::listOf($teamResult['TeamMemberResult'] ?? []) as $member) {
                 $team['runners'][] = $this->_teamMemberOf($member);
-                $team['team_results'][] = $this->_teamResultOf($member);
+                $result = $this->_teamResultOf($member);
+                $team['team_results'][self::_standingKeyOf($result)] = $result;
             }
             $teams[$key] = $team;
         }
-        return array_values($teams);
+        return array_values(array_map(self::_withListedTeamResults(...), $teams));
+    }
+
+    private static function _standingKeyOf(array $teamResult): string
+    {
+        return $teamResult['stage_order'] . '#' . $teamResult['leg_number'];
+    }
+
+    private static function _withListedTeamResults(array $team): array
+    {
+        $team['team_results'] = array_values($team['team_results']);
+        return $team;
     }
 
     private function _teamKeyOf(array $teamResult): string
@@ -96,6 +108,9 @@ class ResultListMapper extends IofClassMapper
     private function _teamMemberOf(array $member): array
     {
         $runner = $this->runnerOf($member);
+        if (!self::_declaresALeg($member)) {
+            $runner = self::_withoutTheEntryIdOfItsTeam($runner, $member);
+        }
         $course = $this->courseOf(IofNode::listOf($member['Result'] ?? [])[0]['Course'] ?? []);
         if ($course) {
             $runner['course'] = $course;
@@ -120,6 +135,23 @@ class ResultListMapper extends IofClassMapper
         $teamResult = $this->resultOf($overall, ['sicard' => '', 'bib_number' => '']);
         unset($teamResult['splits']);
         return $teamResult;
+    }
+
+    private static function _declaresALeg(array $member): bool
+    {
+        $result = IofNode::listOf($member['Result'] ?? [])[0] ?? [];
+        return ($result['Leg'] ?? '') !== '';
+    }
+
+    private static function _withoutTheEntryIdOfItsTeam(array $runner, array $member): array
+    {
+        $personId = IofNode::repeatedTextOf(($member['Person'] ?? [])['Id'] ?? null, 0);
+        if ($personId === '') {
+            unset($runner['db_id']);
+            return $runner;
+        }
+        $runner['db_id'] = $personId;
+        return $runner;
     }
 
     protected function resultOf(array $result, array $runner): array

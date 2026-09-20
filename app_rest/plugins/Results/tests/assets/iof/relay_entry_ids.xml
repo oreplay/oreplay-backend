@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ResultList xmlns="http://www.orienteering.org/datastandard/3.0" iofVersion="3.0"
+    createTime="2026-08-23T14:00:00.000" creator="SportSoftware OS12 (M) V.12.1">
+<Event>
+<Name>Relay carrying entry ids</Name>
+</Event>
+<ClassResult>
+<Class>
+<Id>7</Id>
+<Name>Relevo mixto</Name>
+<ShortName>REL</ShortName>
+</Class>
+<TeamResult>
+<EntryId>7001</EntryId>
+<Name>Equipo uno</Name>
+<Organisation>
+<Id>201</Id>
+<Name>Club uno</Name>
+<ShortName>UNO</ShortName>
+</Organisation>
+<BibNumber>41</BibNumber>
+<TeamMemberResult>
+<EntryId>7001</EntryId>
+<Person sex="F">
+<Name>
+<Family>lkatmelkat</Family>
+<Given>emlakt</Given>
+</Name>
+</Person>
+<Result>
+<Leg>1</Leg>
+<BibNumber>41.1</BibNumber>
+<StartTime>2026-08-23T10:00:00.000</StartTime>
+<FinishTime>2026-08-23T10:29:04.000</FinishTime>
+<Time>1744</Time>
+<Status>OK</Status>
+<OverallResult>
+<Time>1744</Time>
+<Status>OK</Status>
+</OverallResult>
+<SplitTime>
+<ControlCode>31</ControlCode>
+<Time>620</Time>
+</SplitTime>
+<ControlCard>9200001</ControlCard>
+</Result>
+</TeamMemberResult>
+<TeamMemberResult>
+<EntryId>7001</EntryId>
+<Person sex="M">
+<Name>
+<Family>meltakmelt</Family>
+<Given>akmelt</Given>
+</Name>
+</Person>
+<Result>
+<Leg>2</Leg>
+<BibNumber>41.2</BibNumber>
+<StartTime>2026-08-23T10:29:04.000</StartTime>
+<FinishTime>2026-08-23T11:07:42.000</FinishTime>
+<Time>2318</Time>
+<Status>OK</Status>
+<OverallResult>
+<Time>4062</Time>
+<TimeBehind>0</TimeBehind>
+<Position>1</Position>
+<Status>OK</Status>
+</OverallResult>
+<SplitTime>
+<ControlCode>31</ControlCode>
+<Time>655</Time>
+</SplitTime>
+<ControlCard>9200002</ControlCard>
+</Result>
+</TeamMemberResult>
+</TeamResult>
+</ClassResult>
+</ResultList>

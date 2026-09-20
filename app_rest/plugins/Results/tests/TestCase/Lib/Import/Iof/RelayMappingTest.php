@@ -22,12 +22,33 @@ class RelayMappingTest extends TestCase
 
     private function _relayClass(string $timeZone = self::EVENT_TIME_ZONE): array
     {
-        $path = $this->_asset('relay.xml');
+        return $this->_classOfAsset('relay.xml', $timeZone);
+    }
+
+    private function _classOfAsset(string $asset, string $timeZone = self::EVENT_TIME_ZONE): array
+    {
+        $path = $this->_asset($asset);
         $mapper = new ResultListMapper(IofUploadTypeDetector::detect($path), new DateTimeZone($timeZone));
         foreach ((new IofXmlReader($path))->classes() as $class) {
             return $mapper->classOf($class);
         }
         return [];
+    }
+
+    /**
+     * A relay leg is identified by the entry it belongs to, and the leg number keeps the members apart.
+     * Members of a team that ran no legs cannot be told apart that way, which is why the entry id is
+     * read only where a leg declares one.
+     */
+    public function testClassOf_shouldStillIdentifyRelayMembersByTheEntryIdTheyCarry()
+    {
+        $team = $this->_classOfAsset('relay_entry_ids.xml')['teams'][0];
+
+        $dbIds = array_map(fn($runner) => $runner['db_id'] ?? null, $team['runners']);
+        $this->assertEquals(['7001', '7001'], $dbIds);
+        $legs = array_map(fn($runner) => $runner['runner_results'][0]['leg_number'], $team['runners']);
+        $this->assertEquals([1, 2], $legs, 'the leg is what keeps two members of one entry apart');
+        $this->assertCount(2, $team['team_results'], 'a relay reports one standing per leg');
     }
 
     public function testClassOf_shouldMapEachTeamResultToATeam()
