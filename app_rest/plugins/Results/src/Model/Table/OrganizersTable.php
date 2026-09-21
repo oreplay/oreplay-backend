@@ -13,8 +13,6 @@ use Cake\Validation\Validator;
  */
 class OrganizersTable extends AppTable
 {
-    private const COLUMN_LENGTH = 50;
-
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
@@ -33,11 +31,11 @@ class OrganizersTable extends AppTable
         return $validator
             ->requirePresence('name', 'create')
             ->notEmptyString('name')
-            ->maxLength('name', self::COLUMN_LENGTH)
-            ->allowEmptyString('country')
-            ->maxLength('country', self::COLUMN_LENGTH)
-            ->allowEmptyString('region')
-            ->maxLength('region', self::COLUMN_LENGTH);
+            ->maxLength('name', 50)
+            ->allowEmptyString('country_code')
+            ->maxLength('country_code', 2)
+            ->allowEmptyString('region_code')
+            ->maxLength('region_code', 3);
     }
 
     public function getOrganizers()

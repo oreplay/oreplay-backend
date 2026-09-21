@@ -29,8 +29,8 @@ class OrganizersManagementControllerTest extends ApiCommonErrorsTest
     {
         return [
             'name' => 'NAVARRA-O',
-            'country' => 'ES',
-            'region' => 'ES-NC',
+            'country_code' => 'ES',
+            'region_code' => 'NC',
         ];
     }
 
@@ -61,8 +61,8 @@ class OrganizersManagementControllerTest extends ApiCommonErrorsTest
 
         $saved = OrganizersTable::load()->get($newId);
         $this->assertEquals('NAVARRA-O', $saved->name);
-        $this->assertEquals('ES', $saved->country);
-        $this->assertEquals('ES-NC', $saved->region);
+        $this->assertEquals('ES', $saved->country_code);
+        $this->assertEquals('NC', $saved->region_code);
     }
 
     public function testAddNewIgnoresClientProvidedExternalId()
@@ -81,7 +81,7 @@ class OrganizersManagementControllerTest extends ApiCommonErrorsTest
     public function testAddNewMissingNameReturnsValidationError()
     {
         $this->skipNextRequestInSwagger();
-        $this->post($this->_getEndpoint(), ['country' => 'ES']);
+        $this->post($this->_getEndpoint(), ['country_code' => 'ES']);
 
         $this->assertException('Validation error', 400);
     }
@@ -99,22 +99,23 @@ class OrganizersManagementControllerTest extends ApiCommonErrorsTest
 
     public function testEditUpdatesOrganizer()
     {
-        $data = ['region' => 'ES-MD', 'country' => 'ES'];
+        $data = ['region_code' => 'MD', 'country_code' => 'ES'];
 
         $this->patch($this->_getEndpoint() . Organizer::ID, $data);
 
         $json = $this->assertJsonResponseOK();
-        $this->assertEquals('ES-MD', $json['data']['region']);
+        $this->assertEquals('MD', $json['data']['region_code']);
+        $this->assertEquals('Comunidad de Madrid', $json['data']['region']);
         $this->assertEquals(Organizer::NAME, $json['data']['name']);
 
         $saved = OrganizersTable::load()->get(Organizer::ID);
-        $this->assertEquals('ES-MD', $saved->region);
+        $this->assertEquals('MD', $saved->region_code);
         $this->assertEquals(Organizer::NAME, $saved->name);
     }
 
     public function testEditIgnoresIdChange()
     {
-        $data = ['id' => 'hackedId', 'region' => 'ES-MD'];
+        $data = ['id' => 'hackedId', 'region_code' => 'MD'];
 
         $this->skipNextRequestInSwagger();
         $this->patch($this->_getEndpoint() . Organizer::ID, $data);
@@ -122,13 +123,13 @@ class OrganizersManagementControllerTest extends ApiCommonErrorsTest
         $this->assertJsonResponseOK();
         $Organizers = OrganizersTable::load();
         $this->assertNull($Organizers->find()->where(['id' => 'hackedId'])->first());
-        $this->assertEquals('ES-MD', $Organizers->get(Organizer::ID)->region);
+        $this->assertEquals('MD', $Organizers->get(Organizer::ID)->region_code);
     }
 
     public function testEditNotFoundReturns404()
     {
         $this->skipNextRequestInSwagger();
-        $this->patch($this->_getEndpoint() . 'doesNotExist', ['region' => 'ES-MD']);
+        $this->patch($this->_getEndpoint() . 'doesNotExist', ['region_code' => 'MD']);
 
         $this->assertException('Not Found', 404);
     }

@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
+use Results\Lib\Consts\RegionNames;
+
 /**
  * @property string $description
  */
@@ -15,8 +17,12 @@ class Organizer extends AppEntity
     protected array $_accessible = [
         '*' => false,
         'name' => true,
-        'country' => true,
-        'region' => true
+        'country_code' => true,
+        'region_code' => true
+    ];
+
+    protected array $_virtual = [
+        'region',
     ];
 
     protected array $_hidden = [
@@ -25,4 +31,14 @@ class Organizer extends AppEntity
         'modified',
         'deleted',
     ];
+
+    protected function _getRegion(): ?string
+    {
+        return RegionNames::NAME_OF_ISO_3166_2[$this->_isoRegion()] ?? null;
+    }
+
+    private function _isoRegion(): string
+    {
+        return (string)$this->country_code . '-' . (string)$this->region_code;
+    }
 }

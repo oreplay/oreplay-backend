@@ -31,8 +31,11 @@ class OrganizersControllerTest extends ApiCommonErrorsTest
                 '_c' => Organizer::class,
                 'id' => Organizer::ID,
                 'name' => Organizer::NAME,
-                'country' => 'ES',
-                'region' => 'ES-VC',
+                'country_code' => 'ES',
+                'region_code' => 'VC',
+                'province' => null,
+                'city' => null,
+                'region' => 'Comunidad Valenciana',
             ],
         ];
 
