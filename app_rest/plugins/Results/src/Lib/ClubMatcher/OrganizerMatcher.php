@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Results\Lib;
+namespace Results\Lib\ClubMatcher;
 
 use Cake\Utility\Text;
 use Results\Lib\Consts\RegionNames;

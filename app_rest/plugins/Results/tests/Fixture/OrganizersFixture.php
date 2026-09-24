@@ -18,6 +18,8 @@ class OrganizersFixture extends RestApiFixture
             'name' => Organizer::NAME,
             'country_code' => 'ES',
             'region_code' => 'VC',
+            'province' => 'Valencia',
+            'city' => 'Requena',
             'created' => '2022-03-01 10:01:00',
             'modified' => '2022-03-01 10:01:00',
             'deleted' => null,

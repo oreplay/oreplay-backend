@@ -33,6 +33,7 @@ class OrganizersManagementController extends ApiController
     {
         $organizer = $this->Organizers->patchFromNewWithUuid($data);
         $this->return = $this->Organizers->saveOrFail($organizer);
+        $this->Organizers->deleteMatcherCache();
     }
 
     public function getList()
@@ -47,6 +48,7 @@ class OrganizersManagementController extends ApiController
         unset($data['id']);
         $organizer = $this->Organizers->patchEntity($organizer, $data);
         $saved = $this->Organizers->saveOrFail($organizer);
+        $this->Organizers->deleteMatcherCache();
         $this->return = $this->Organizers->get($saved->id);
     }
 
@@ -54,6 +56,7 @@ class OrganizersManagementController extends ApiController
     {
         $organizer = $this->Organizers->get($id);
         $this->Organizers->softDelete($organizer->id);
+        $this->Organizers->deleteMatcherCache();
         $this->return = false;
     }
 }

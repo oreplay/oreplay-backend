@@ -4,15 +4,20 @@ declare(strict_types = 1);
 
 namespace Results\Model\Table;
 
+use App\Lib\Consts\CacheGrp;
 use App\Model\Table\AppTable;
+use Cake\Cache\Cache;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\Validation\Validator;
+use Results\Lib\ClubMatcher\OrganizerMatcher;
 
 /**
  * @property EventsTable $Events
  */
 class OrganizersTable extends AppTable
 {
+    private const MATCHER_CACHE_KEY = '_organizerMatcher';
+
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
@@ -42,5 +47,17 @@ class OrganizersTable extends AppTable
     {
         return $this->find()
             ->orderByAsc('name')->all();
+    }
+
+    public function getCachedMatcher(): OrganizerMatcher
+    {
+        return Cache::remember(self::MATCHER_CACHE_KEY, function () {
+            return new OrganizerMatcher($this->getOrganizers()->toList());
+        }, CacheGrp::EXTRALONG);
+    }
+
+    public function deleteMatcherCache(): void
+    {
+        Cache::delete(self::MATCHER_CACHE_KEY, CacheGrp::EXTRALONG);
     }
 }

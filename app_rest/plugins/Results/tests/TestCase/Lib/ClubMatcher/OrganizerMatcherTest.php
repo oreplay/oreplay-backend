@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace Results\Test\TestCase\Lib;
+namespace Results\Test\TestCase\Lib\ClubMatcher;
 
 use Cake\TestSuite\TestCase;
-use Results\Lib\OrganizerMatcher;
+use Results\Lib\ClubMatcher\OrganizerMatcher;
 use Results\Model\Entity\Organizer;
 
 class OrganizerMatcherTest extends TestCase

@@ -33,4 +33,12 @@ class Club extends AppEntity
         'modified',
         'deleted',
     ];
+
+    public function addOrganizerInfo(?Organizer $organizer, array $fieldNames): void
+    {
+        foreach ($fieldNames as $fieldName) {
+            $this->set($fieldName, $organizer ? $organizer->get($fieldName) : null);
+        }
+        $this->setHidden(array_diff($this->getHidden(), $fieldNames));
+    }
 }

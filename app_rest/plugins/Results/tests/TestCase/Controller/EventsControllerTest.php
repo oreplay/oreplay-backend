@@ -286,8 +286,8 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'name' => Organizer::NAME,
             'country_code' => 'ES',
             'region_code' => 'VC',
-            'province' => null,
-            'city' => null,
+            'province' => 'Valencia',
+            'city' => 'Requena',
             'region' => 'Comunidad Valenciana',
         ];
     }
