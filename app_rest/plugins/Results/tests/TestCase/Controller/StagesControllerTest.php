@@ -145,7 +145,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
     {
         $description = 'My new test stage';
         $data = [
-            '_c' => 'PostListStagesBody',
+            '_c' => 'PostStagesBody',
             'description' => $description,
         ];
         $this->post($this->_getEndpoint(), $data);
@@ -159,7 +159,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
     {
         $description = 'My other test stage';
         $data = [
-            '_c' => 'PostListStagesBody',
+            '_c' => 'PostStagesBody',
             'description' => $description,
             'stage_type_id' => StageType::MASS_START,
             'start' => '2024-06-10T09:30:00.000+00:00',

@@ -68,7 +68,7 @@
                 "content": {
                     "application/json": {
                         "schema": {
-                            "$ref": "#/components/schemas/PostListStagesBody"
+                            "$ref": "#/components/schemas/PostStagesBody"
                         }
                     }
                 }

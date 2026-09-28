@@ -9,11 +9,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "789bb435-d1f5-4064-94f0-2181b6eb6246"
+                    "example": "d9a0ae1f-dbac-41bf-bd20-9542fc358a7d"
                 },
                 {
                     "type": "string",
-                    "example": "bad09fce-4887-4eca-baef-ffcbcf3b65f8"
+                    "example": "cd937bea-3d7b-46c2-a66e-28469eb28f7d"
                 },
                 {
                     "type": "string",
@@ -160,27 +160,27 @@
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/789bb435-d1f5-4064-94f0-2181b6eb6246"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/d9a0ae1f-dbac-41bf-bd20-9542fc358a7d"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/789bb435-d1f5-4064-94f0-2181b6eb6246/results/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/d9a0ae1f-dbac-41bf-bd20-9542fc358a7d/results/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/789bb435-d1f5-4064-94f0-2181b6eb6246/classes/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/d9a0ae1f-dbac-41bf-bd20-9542fc358a7d/classes/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/bad09fce-4887-4eca-baef-ffcbcf3b65f8"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/cd937bea-3d7b-46c2-a66e-28469eb28f7d"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/bad09fce-4887-4eca-baef-ffcbcf3b65f8/results/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/cd937bea-3d7b-46c2-a66e-28469eb28f7d/results/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/bad09fce-4887-4eca-baef-ffcbcf3b65f8/classes/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/cd937bea-3d7b-46c2-a66e-28469eb28f7d/classes/"
                 },
                 {
                     "type": "string",
@@ -305,7 +305,7 @@
             "data"
         ]
     },
-    "PostListStagesBody": {
+    "PostStagesBody": {
         "type": "object",
         "properties": {
             "description": [
@@ -331,7 +331,7 @@
                 }
             ]
         },
-        "description": "Entity PostListStagesBody"
+        "description": "Entity PostStagesBody"
     },
     "StageType": {
         "type": "object",

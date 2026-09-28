@@ -4,9 +4,9 @@
  */
 
 /**
- * Entity PostListStagesBody
+ * Entity PostStagesBody
  */
-export interface PostListStagesBody {
+export interface PostStagesBody {
   description?: string
   stage_type_id?: string
   start?: string

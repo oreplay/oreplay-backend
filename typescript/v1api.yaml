@@ -1701,7 +1701,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PostListStagesBody'
+              $ref: '#/components/schemas/PostStagesBody'
   /api/v1/events/{eventID}/stages/{stageID}:
     get:
       operationId: getStages
@@ -3272,7 +3272,7 @@ components:
       description: Data wrapper for Stage
       required:
         - data
-    PostListStagesBody:
+    PostStagesBody:
       type: object
       properties:
         description:
@@ -3284,7 +3284,7 @@ components:
         start:
           type: string
           example: '2024-06-10T09:30:00.000+00:00'
-      description: Entity PostListStagesBody
+      description: Entity PostStagesBody
     ResStage:
       type: object
       properties:

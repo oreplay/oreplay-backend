@@ -18,7 +18,7 @@ import type {
   ArrayStage,
   DeleteStagesParams,
   PatchStagesBody,
-  PostListStagesBody,
+  PostStagesBody,
   ResStage
 } from '../../../domain/types/v1api'
 
@@ -117,7 +117,7 @@ export const prefetchGetListStagesQuery = async <
  */
 export const postListStages = (
   eventID: string,
-  postListStagesBody: PostListStagesBody,
+  postStagesBody: PostStagesBody,
   options?: SecondParameter<typeof orvalAxiosInstance>,
   signal?: AbortSignal
 ) => {
@@ -126,7 +126,7 @@ export const postListStages = (
       url: `/api/v1/events/${eventID}/stages/`,
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      data: postListStagesBody,
+      data: postStagesBody,
       signal
     },
     options
@@ -137,14 +137,14 @@ export const getPostListStagesMutationOptions = <TError = unknown, TContext = un
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof postListStages>>,
     TError,
-    { eventID: string; data: PostListStagesBody },
+    { eventID: string; data: PostStagesBody },
     TContext
   >
   request?: SecondParameter<typeof orvalAxiosInstance>
 }): UseMutationOptions<
   Awaited<ReturnType<typeof postListStages>>,
   TError,
-  { eventID: string; data: PostListStagesBody },
+  { eventID: string; data: PostStagesBody },
   TContext
 > => {
   const mutationKey = ['postListStages']
@@ -156,7 +156,7 @@ export const getPostListStagesMutationOptions = <TError = unknown, TContext = un
 
   const mutationFn: MutationFunction<
     Awaited<ReturnType<typeof postListStages>>,
-    { eventID: string; data: PostListStagesBody }
+    { eventID: string; data: PostStagesBody }
   > = (props) => {
     const { eventID, data } = props ?? {}
 
@@ -167,21 +167,21 @@ export const getPostListStagesMutationOptions = <TError = unknown, TContext = un
 }
 
 export type PostListStagesMutationResult = NonNullable<Awaited<ReturnType<typeof postListStages>>>
-export type PostListStagesMutationBody = PostListStagesBody
+export type PostListStagesMutationBody = PostStagesBody
 export type PostListStagesMutationError = unknown
 
 export const usePostListStages = <TError = unknown, TContext = unknown>(options?: {
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof postListStages>>,
     TError,
-    { eventID: string; data: PostListStagesBody },
+    { eventID: string; data: PostStagesBody },
     TContext
   >
   request?: SecondParameter<typeof orvalAxiosInstance>
 }): UseMutationResult<
   Awaited<ReturnType<typeof postListStages>>,
   TError,
-  { eventID: string; data: PostListStagesBody },
+  { eventID: string; data: PostStagesBody },
   TContext
 > => {
   const mutationOptions = getPostListStagesMutationOptions(options)
