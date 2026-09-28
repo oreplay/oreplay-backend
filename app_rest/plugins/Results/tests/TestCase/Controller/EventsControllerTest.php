@@ -462,6 +462,12 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'is_hidden' => true,
             'federation_id' => Federation::FEDO,
             'organizer_id' => Organizer::ID,
+            'scope' => 'local',
+            'location' => 'somewhere',
+            'country_code' => 'ES',
+            'timezone' => 'Atlantic/Canary',
+            'website' => 'https://www.oreplay.es',
+            'picture' => 'https://www.oreplay.es/logo.svg',
         ];
         $this->post($this->_getEndpoint(), $data);
 
@@ -478,6 +484,12 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($data['organizer_id'], $db->organizer_id);
         $this->assertEquals($data['is_hidden'], $db->is_hidden);
         $this->assertEquals($data['id'], $db->id);
+        $this->assertEquals($data['scope'], $db->scope);
+        $this->assertEquals($data['location'], $db->location);
+        $this->assertEquals($data['country_code'], $db->country_code);
+        $this->assertEquals($data['timezone'], $db->timezone);
+        $this->assertEquals($data['website'], $db->website);
+        $this->assertEquals($data['picture'], $db->picture);
     }
 
     public function testAddNew_shouldNotAddFinalDateBefaoreInitialDate()

@@ -156,6 +156,30 @@
                                 "organizer_id": {
                                     "type": "string",
                                     "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                                },
+                                "scope": {
+                                    "type": "string",
+                                    "example": "local"
+                                },
+                                "location": {
+                                    "type": "string",
+                                    "example": "somewhere"
+                                },
+                                "country_code": {
+                                    "type": "string",
+                                    "example": "ES"
+                                },
+                                "timezone": {
+                                    "type": "string",
+                                    "example": "Atlantic/Canary"
+                                },
+                                "website": {
+                                    "type": "string",
+                                    "example": "https://www.oreplay.es"
+                                },
+                                "picture": {
+                                    "type": "string",
+                                    "example": "https://www.oreplay.es/logo.svg"
                                 }
                             },
                             "description": "Generic object when: Add new"
