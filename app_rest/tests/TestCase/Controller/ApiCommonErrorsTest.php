@@ -11,6 +11,15 @@ use Cake\Core\Configure;
 
 abstract class ApiCommonErrorsTest extends \RestApi\TestSuite\ApiCommonErrorsTest
 {
+    protected function _buildRequest(string $url, string $method, array|string $data = []): array
+    {
+        $request = parent::_buildRequest($url, $method, $data);
+        if (is_array($data) && isset($request['post'])) {
+            $request['post'] = $data + $request['post'];
+        }
+        return $request;
+    }
+
     protected function clearUserCache()
     {
         Cache::clear(CacheGrp::EXTRALONG);

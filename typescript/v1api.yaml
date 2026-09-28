@@ -221,8 +221,8 @@ paths:
                   type: string
                   example: '2024-03-26'
                 is_hidden:
-                  type: number
-                  example: 1
+                  type: boolean
+                  example: true
                 federation_id:
                   type: string
                   example: FEDO
@@ -281,8 +281,8 @@ paths:
               type: object
               properties:
                 is_hidden:
-                  type: number
-                  example: 1
+                  type: boolean
+                  example: true
                 description:
                   type: string
                   example: Some description
@@ -3208,8 +3208,8 @@ components:
           type: string
           example: '2024-05-05 09:00:00'
         is_official:
-          type: number
-          example: 1
+          type: boolean
+          example: true
         original_event_id:
           type: string
           example: 1b10cfcc-b3f2-40bb-8dbe-8cb5d8b24c00
@@ -3235,8 +3235,8 @@ components:
           type: string
           example: '2024-05-05 09:00:00'
         is_official:
-          type: number
-          example: 1
+          type: boolean
+          example: true
         original_event_id:
           type: string
           example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
@@ -3264,8 +3264,8 @@ components:
           type: string
           example: ce5e95ea-9f2b-4a98-86e1-2b43651adfee
         state_end:
-          type: number
-          example: 1
+          type: boolean
+          example: true
       description: Entity PatchStagesBody
     ResStage:
       type: object
@@ -3338,8 +3338,8 @@ components:
               type: string
               example: Mixed
             utf:
-              type: number
-              example: 1
+              type: boolean
+              example: true
           description: Generic object.
         event:
           type: object
@@ -3388,7 +3388,7 @@ components:
             type: string
             example: |2
 
-                  [ERROR - 400] (8/11/26, 7:14 AM) Invalid payload structure configuration.contents StartList | ResultList and configuration.results_type Mixed 
+                  [ERROR - 400] (9/28/26, 1:54 PM) Invalid payload structure configuration.contents StartList | ResultList and configuration.results_type Mixed 
       description: Entity UploadedMeta
     ResUploaded:
       type: object
@@ -3410,7 +3410,7 @@ components:
           example: info
         uploadId:
           type: string
-          example: 9ad926ca-5d0d-492c-9db7-13ec0f977d34
+          example: c9b46d03-ab50-49af-9c28-079655761e3b
         uploadType:
           type: string
           example: res_finish
@@ -3450,10 +3450,10 @@ components:
                       example: 0
                     runnersInLoop:
                       type: number
-                      example: 0.03
+                      example: 0.04
                     clubs:
                       type: number
-                      example: 0.02
+                      example: 0.03
                     runnerResults:
                       type: number
                       example: 0.01
@@ -3462,22 +3462,22 @@ components:
                       example: 0
                     total:
                       type: number
-                      example: 0.03
+                      example: 0.04
                   description: objectInArray
                 total:
                   type: number
-                  example: 0.08
+                  example: 0.11
               description: objectInArray
             saving:
               type: object
               properties:
                 total:
                   type: number
-                  example: 0.03
+                  example: 0.04
               description: objectInArray
             total:
               type: number
-              example: 0.12
+              example: 0.16
           description: Generic object.
         messages:
           type: array

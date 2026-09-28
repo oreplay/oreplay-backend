@@ -31,8 +31,8 @@
                             "example": "Mixed"
                         },
                         "utf": {
-                            "type": "number",
-                            "example": 1
+                            "type": "boolean",
+                            "example": true
                         }
                     },
                     "description": "Generic object."
@@ -49,12 +49,12 @@
                             "example": "XML"
                         },
                         "utf": {
-                            "type": "number",
-                            "example": 1
+                            "type": "boolean",
+                            "example": true
                         },
                         "known_data": {
-                            "type": "number",
-                            "example": 1
+                            "type": "boolean",
+                            "example": true
                         },
                         "contents": {
                             "type": "string",
@@ -65,8 +65,8 @@
                             "example": "Radiocontrols"
                         },
                         "one_stage": {
-                            "type": "number",
-                            "example": 1
+                            "type": "boolean",
+                            "example": true
                         },
                         "source": {
                             "type": "string",
@@ -77,8 +77,8 @@
                             "example": 3
                         },
                         "include_score": {
-                            "type": "number",
-                            "example": 0
+                            "type": "boolean",
+                            "example": false
                         },
                         "trailo_type": {
                             "type": "string",
@@ -115,12 +115,12 @@
                             "example": "XML"
                         },
                         "utf": {
-                            "type": "number",
-                            "example": 0
+                            "type": "boolean",
+                            "example": false
                         },
                         "known_data": {
-                            "type": "number",
-                            "example": 1
+                            "type": "boolean",
+                            "example": true
                         },
                         "contents": {
                             "type": "string",
@@ -131,8 +131,8 @@
                             "example": "Totals"
                         },
                         "one_stage": {
-                            "type": "number",
-                            "example": 1
+                            "type": "boolean",
+                            "example": true
                         },
                         "source": {
                             "type": "string",
@@ -143,8 +143,8 @@
                             "example": 3
                         },
                         "include_score": {
-                            "type": "number",
-                            "example": 0
+                            "type": "boolean",
+                            "example": false
                         },
                         "trailo_type": {
                             "type": "string",
@@ -333,8 +333,8 @@
                                                                 "example": "Madrid"
                                                             },
                                                             "is_nc": {
-                                                                "type": "number",
-                                                                "example": 0
+                                                                "type": "boolean",
+                                                                "example": false
                                                             },
                                                             "runner_results": {
                                                                 "type": "array",
@@ -439,8 +439,8 @@
                                                                                         "example": 1
                                                                                     },
                                                                                     "is_intermediate": {
-                                                                                        "type": "number",
-                                                                                        "example": 0
+                                                                                        "type": "boolean",
+                                                                                        "example": false
                                                                                     }
                                                                                 },
                                                                                 "description": "getItems"
@@ -517,8 +517,8 @@
                             "example": "Championship"
                         },
                         "is_hidden": {
-                            "type": "number",
-                            "example": 0
+                            "type": "boolean",
+                            "example": false
                         },
                         "stages": {
                             "type": "array",
@@ -674,8 +674,8 @@
                                                                 "example": ""
                                                             },
                                                             "is_nc": {
-                                                                "type": "number",
-                                                                "example": 0
+                                                                "type": "boolean",
+                                                                "example": false
                                                             },
                                                             "runner_results": {
                                                                 "type": "array",
@@ -814,8 +814,8 @@
                             "example": "relevo fedocv"
                         },
                         "is_hidden": {
-                            "type": "number",
-                            "example": 0
+                            "type": "boolean",
+                            "example": false
                         },
                         "stages": {
                             "type": "array",
@@ -928,8 +928,8 @@
                                                                             "example": 2
                                                                         },
                                                                         "contributory": {
-                                                                            "type": "number",
-                                                                            "example": 1
+                                                                            "type": "boolean",
+                                                                            "example": true
                                                                         },
                                                                         "stage_order": {
                                                                             "type": "number",
@@ -1023,8 +1023,8 @@
                                                                             "example": ""
                                                                         },
                                                                         "is_nc": {
-                                                                            "type": "number",
-                                                                            "example": 0
+                                                                            "type": "boolean",
+                                                                            "example": false
                                                                         },
                                                                         "runner_results": {
                                                                             "type": "array",
@@ -1036,8 +1036,8 @@
                                                                                         "example": ""
                                                                                     },
                                                                                     "contributory": {
-                                                                                        "type": "number",
-                                                                                        "example": 0
+                                                                                        "type": "boolean",
+                                                                                        "example": false
                                                                                     },
                                                                                     "stage_order": {
                                                                                         "type": "number",
@@ -1259,15 +1259,15 @@
             "uploadId": [
                 {
                     "type": "string",
-                    "example": "9ad926ca-5d0d-492c-9db7-13ec0f977d34"
+                    "example": "c9b46d03-ab50-49af-9c28-079655761e3b"
                 },
                 {
                     "type": "string",
-                    "example": "67301934-987e-4484-90a3-dd0261dac86f"
+                    "example": "514c8434-3cb1-4d9c-9b0c-e1c238c83757"
                 },
                 {
                     "type": "string",
-                    "example": "f0557cff-4808-453d-9fad-3b77f551a0f5"
+                    "example": "cf45ee63-db74-4e4c-939f-e070bee07146"
                 }
             ],
             "uploadType": [
@@ -1384,6 +1384,70 @@
                                         },
                                         "runnersInLoop": {
                                             "type": "number",
+                                            "example": 0.04
+                                        },
+                                        "clubs": {
+                                            "type": "number",
+                                            "example": 0.03
+                                        },
+                                        "runnerResults": {
+                                            "type": "number",
+                                            "example": 0.01
+                                        },
+                                        "splits": {
+                                            "type": "number",
+                                            "example": 0
+                                        },
+                                        "total": {
+                                            "type": "number",
+                                            "example": 0.04
+                                        }
+                                    },
+                                    "description": "objectInArray"
+                                },
+                                "total": {
+                                    "type": "number",
+                                    "example": 0.11
+                                }
+                            },
+                            "description": "objectInArray"
+                        },
+                        "saving": {
+                            "type": "object",
+                            "properties": {
+                                "total": {
+                                    "type": "number",
+                                    "example": 0.04
+                                }
+                            },
+                            "description": "objectInArray"
+                        },
+                        "total": {
+                            "type": "number",
+                            "example": 0.16
+                        }
+                    },
+                    "description": "Generic object."
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "processing": {
+                            "type": "object",
+                            "properties": {
+                                "courses": {
+                                    "type": "number",
+                                    "example": 0.01
+                                },
+                                "runners": {
+                                    "type": "object",
+                                    "properties": {
+                                        "runnerLoop": {
+                                            "type": "number",
+                                            "example": 0
+                                        },
+                                        "runnersInLoop": {
+                                            "type": "number",
                                             "example": 0.03
                                         },
                                         "clubs": {
@@ -1396,7 +1460,7 @@
                                         },
                                         "splits": {
                                             "type": "number",
-                                            "example": 0
+                                            "example": 0.01
                                         },
                                         "total": {
                                             "type": "number",
@@ -1407,7 +1471,7 @@
                                 },
                                 "total": {
                                     "type": "number",
-                                    "example": 0.08
+                                    "example": 0.09
                                 }
                             },
                             "description": "objectInArray"
@@ -1417,7 +1481,7 @@
                             "properties": {
                                 "total": {
                                     "type": "number",
-                                    "example": 0.03
+                                    "example": 0.02
                                 }
                             },
                             "description": "objectInArray"
@@ -1448,75 +1512,11 @@
                                         },
                                         "runnersInLoop": {
                                             "type": "number",
-                                            "example": 0.02
-                                        },
-                                        "clubs": {
-                                            "type": "number",
-                                            "example": 0.01
-                                        },
-                                        "runnerResults": {
-                                            "type": "number",
-                                            "example": 0
-                                        },
-                                        "splits": {
-                                            "type": "number",
-                                            "example": 0
-                                        },
-                                        "total": {
-                                            "type": "number",
-                                            "example": 0.02
-                                        }
-                                    },
-                                    "description": "objectInArray"
-                                },
-                                "total": {
-                                    "type": "number",
-                                    "example": 0.06
-                                }
-                            },
-                            "description": "objectInArray"
-                        },
-                        "saving": {
-                            "type": "object",
-                            "properties": {
-                                "total": {
-                                    "type": "number",
-                                    "example": 0.01
-                                }
-                            },
-                            "description": "objectInArray"
-                        },
-                        "total": {
-                            "type": "number",
-                            "example": 0.08
-                        }
-                    },
-                    "description": "Generic object."
-                },
-                {
-                    "type": "object",
-                    "properties": {
-                        "processing": {
-                            "type": "object",
-                            "properties": {
-                                "courses": {
-                                    "type": "number",
-                                    "example": 0.01
-                                },
-                                "runners": {
-                                    "type": "object",
-                                    "properties": {
-                                        "runnerLoop": {
-                                            "type": "number",
-                                            "example": 0
-                                        },
-                                        "runnersInLoop": {
-                                            "type": "number",
                                             "example": 0.06
                                         },
                                         "clubs": {
                                             "type": "number",
-                                            "example": 0.03
+                                            "example": 0.02
                                         },
                                         "runnerResults": {
                                             "type": "number",
@@ -1535,7 +1535,7 @@
                                 },
                                 "total": {
                                     "type": "number",
-                                    "example": 0.09
+                                    "example": 0.11
                                 }
                             },
                             "description": "objectInArray"
@@ -1545,14 +1545,14 @@
                             "properties": {
                                 "total": {
                                     "type": "number",
-                                    "example": 0.06
+                                    "example": 0.05
                                 }
                             },
                             "description": "objectInArray"
                         },
                         "total": {
                             "type": "number",
-                            "example": 0.16
+                            "example": 0.18
                         }
                     },
                     "description": "Generic object."

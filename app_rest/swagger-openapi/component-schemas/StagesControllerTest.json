@@ -9,11 +9,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "469c0448-dcfa-4108-b7cf-b0f6e72df7e4"
+                    "example": "ea58836f-202b-4904-a408-d41a2289bd3a"
                 },
                 {
                     "type": "string",
-                    "example": "9ac05568-afc6-49fa-a560-37e5fd1c1250"
+                    "example": "3e687fed-9e67-40dd-98d4-a588e4397c67"
                 },
                 {
                     "type": "string",
@@ -156,27 +156,27 @@
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/469c0448-dcfa-4108-b7cf-b0f6e72df7e4"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/ea58836f-202b-4904-a408-d41a2289bd3a"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/469c0448-dcfa-4108-b7cf-b0f6e72df7e4/results/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/ea58836f-202b-4904-a408-d41a2289bd3a/results/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/469c0448-dcfa-4108-b7cf-b0f6e72df7e4/classes/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/ea58836f-202b-4904-a408-d41a2289bd3a/classes/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9ac05568-afc6-49fa-a560-37e5fd1c1250"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/3e687fed-9e67-40dd-98d4-a588e4397c67"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9ac05568-afc6-49fa-a560-37e5fd1c1250/results/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/3e687fed-9e67-40dd-98d4-a588e4397c67/results/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/9ac05568-afc6-49fa-a560-37e5fd1c1250/classes/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/3e687fed-9e67-40dd-98d4-a588e4397c67/classes/"
                 },
                 {
                     "type": "string",
@@ -330,8 +330,8 @@
             ],
             "state_end": [
                 {
-                    "type": "number",
-                    "example": 1
+                    "type": "boolean",
+                    "example": true
                 }
             ]
         },

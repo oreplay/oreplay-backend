@@ -9,5 +9,5 @@
 export interface PatchStagesBody {
   description?: string
   stage_type_id?: string
-  state_end?: number
+  state_end?: boolean
 }

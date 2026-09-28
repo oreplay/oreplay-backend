@@ -146,8 +146,8 @@
                                     "example": "2024-03-26"
                                 },
                                 "is_hidden": {
-                                    "type": "number",
-                                    "example": 1
+                                    "type": "boolean",
+                                    "example": true
                                 },
                                 "federation_id": {
                                     "type": "string",
@@ -237,8 +237,8 @@
                             "type": "object",
                             "properties": {
                                 "is_hidden": {
-                                    "type": "number",
-                                    "example": 1
+                                    "type": "boolean",
+                                    "example": true
                                 },
                                 "description": {
                                     "type": "string",

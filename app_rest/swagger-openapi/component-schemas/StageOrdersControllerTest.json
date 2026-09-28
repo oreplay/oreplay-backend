@@ -9,7 +9,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "98aba1d0-7bff-4f73-9a0b-63923381295e"
+                    "example": "066ebf23-b651-43a0-ad12-ec9f4e0721eb"
                 },
                 {
                     "type": "string",
@@ -157,8 +157,8 @@
             ],
             "is_official": [
                 {
-                    "type": "number",
-                    "example": 1
+                    "type": "boolean",
+                    "example": true
                 }
             ],
             "original_event_id": [
@@ -210,8 +210,8 @@
             ],
             "is_official": [
                 {
-                    "type": "number",
-                    "example": 1
+                    "type": "boolean",
+                    "example": true
                 }
             ],
             "original_event_id": [
