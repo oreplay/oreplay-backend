@@ -9,11 +9,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "ea58836f-202b-4904-a408-d41a2289bd3a"
+                    "example": "789bb435-d1f5-4064-94f0-2181b6eb6246"
                 },
                 {
                     "type": "string",
-                    "example": "3e687fed-9e67-40dd-98d4-a588e4397c67"
+                    "example": "bad09fce-4887-4eca-baef-ffcbcf3b65f8"
                 },
                 {
                     "type": "string",
@@ -61,11 +61,15 @@
                 },
                 {
                     "type": "string",
+                    "example": "2024-06-10T09:30:00.000+00:00"
+                },
+                {
+                    "type": "string",
                     "example": "2023-11-01T10:02:00.000+00:00"
                 },
                 {
                     "type": "string",
-                    "example": "2023-11-01T10:01:00.000+00:00"
+                    "example": "2024-06-10T09:30:00.000+00:00"
                 },
                 {
                     "type": "string",
@@ -156,27 +160,27 @@
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/ea58836f-202b-4904-a408-d41a2289bd3a"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/789bb435-d1f5-4064-94f0-2181b6eb6246"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/ea58836f-202b-4904-a408-d41a2289bd3a/results/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/789bb435-d1f5-4064-94f0-2181b6eb6246/results/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/ea58836f-202b-4904-a408-d41a2289bd3a/classes/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/789bb435-d1f5-4064-94f0-2181b6eb6246/classes/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/3e687fed-9e67-40dd-98d4-a588e4397c67"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/bad09fce-4887-4eca-baef-ffcbcf3b65f8"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/3e687fed-9e67-40dd-98d4-a588e4397c67/results/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/bad09fce-4887-4eca-baef-ffcbcf3b65f8/results/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/3e687fed-9e67-40dd-98d4-a588e4397c67/classes/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/bad09fce-4887-4eca-baef-ffcbcf3b65f8/classes/"
                 },
                 {
                     "type": "string",
@@ -301,7 +305,7 @@
             "data"
         ]
     },
-    "PatchStagesBody": {
+    "PostListStagesBody": {
         "type": "object",
         "properties": {
             "description": [
@@ -312,30 +316,22 @@
                 {
                     "type": "string",
                     "example": "My other test stage"
-                },
-                {
-                    "type": "string",
-                    "example": "Some stage"
                 }
             ],
             "stage_type_id": [
                 {
                     "type": "string",
                     "example": "ce5e95ea-9f2b-4a98-86e1-2b43651adfee"
-                },
-                {
-                    "type": "string",
-                    "example": "2b5de3d0-9bc9-435a-8bd9-2d4060b86e45"
                 }
             ],
-            "state_end": [
+            "start": [
                 {
-                    "type": "boolean",
-                    "example": true
+                    "type": "string",
+                    "example": "2024-06-10T09:30:00.000+00:00"
                 }
             ]
         },
-        "description": "Entity PatchStagesBody"
+        "description": "Entity PostListStagesBody"
     },
     "StageType": {
         "type": "object",
@@ -396,5 +392,35 @@
         "required": [
             "data"
         ]
+    },
+    "PatchStagesBody": {
+        "type": "object",
+        "properties": {
+            "description": [
+                {
+                    "type": "string",
+                    "example": "Some stage"
+                }
+            ],
+            "stage_type_id": [
+                {
+                    "type": "string",
+                    "example": "2b5de3d0-9bc9-435a-8bd9-2d4060b86e45"
+                }
+            ],
+            "start": [
+                {
+                    "type": "string",
+                    "example": "2024-06-10T09:30:00.000+00:00"
+                }
+            ],
+            "state_end": [
+                {
+                    "type": "boolean",
+                    "example": true
+                }
+            ]
+        },
+        "description": "Entity PatchStagesBody"
     }
 }

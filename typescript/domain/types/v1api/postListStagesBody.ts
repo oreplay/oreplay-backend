@@ -4,11 +4,10 @@
  */
 
 /**
- * Entity PatchStagesBody
+ * Entity PostListStagesBody
  */
-export interface PatchStagesBody {
+export interface PostListStagesBody {
   description?: string
   stage_type_id?: string
   start?: string
-  state_end?: boolean
 }

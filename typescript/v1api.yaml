@@ -1683,7 +1683,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchStagesBody'
+              $ref: '#/components/schemas/PostListStagesBody'
   /api/v1/events/{eventID}/stages/{stageID}:
     get:
       operationId: getStages
@@ -3254,7 +3254,7 @@ components:
       description: Data wrapper for Stage
       required:
         - data
-    PatchStagesBody:
+    PostListStagesBody:
       type: object
       properties:
         description:
@@ -3263,10 +3263,10 @@ components:
         stage_type_id:
           type: string
           example: ce5e95ea-9f2b-4a98-86e1-2b43651adfee
-        state_end:
-          type: boolean
-          example: true
-      description: Entity PatchStagesBody
+        start:
+          type: string
+          example: '2024-06-10T09:30:00.000+00:00'
+      description: Entity PostListStagesBody
     ResStage:
       type: object
       properties:
@@ -3275,6 +3275,22 @@ components:
       description: Data wrapper for Stage
       required:
         - data
+    PatchStagesBody:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Some stage
+        stage_type_id:
+          type: string
+          example: 2b5de3d0-9bc9-435a-8bd9-2d4060b86e45
+        start:
+          type: string
+          example: '2024-06-10T09:30:00.000+00:00'
+        state_end:
+          type: boolean
+          example: true
+      description: Entity PatchStagesBody
     StatsInClass:
       type: object
       properties:

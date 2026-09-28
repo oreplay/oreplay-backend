@@ -145,7 +145,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
     {
         $description = 'My new test stage';
         $data = [
-            '_c' => 'PatchStagesBody',
+            '_c' => 'PostListStagesBody',
             'description' => $description,
         ];
         $this->post($this->_getEndpoint(), $data);
@@ -159,15 +159,17 @@ class StagesControllerTest extends ApiCommonErrorsTest
     {
         $description = 'My other test stage';
         $data = [
-            '_c' => 'PatchStagesBody',
+            '_c' => 'PostListStagesBody',
             'description' => $description,
             'stage_type_id' => StageType::MASS_START,
+            'start' => '2024-06-10T09:30:00.000+00:00',
         ];
         $this->post($this->_getEndpoint(), $data);
 
         $bodyDecoded = $this->assertJsonResponseOK()['data'];
         $this->assertEquals($description, $bodyDecoded['description']);
         $this->assertEquals(StageType::MASS_START, $bodyDecoded['stage_type']['id']);
+        $this->assertEquals($data['start'], $bodyDecoded['start'], 'a stage can be created with a start time');
     }
 
     public function testEdit()
@@ -177,15 +179,18 @@ class StagesControllerTest extends ApiCommonErrorsTest
             '_c' => 'PatchStagesBody',
             'description' => 'Some stage',
             'stage_type_id' => StageType::SCORE,
+            'start' => '2024-06-10T09:30:00.000+00:00',
         ];
         $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, $data);
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals($data['description'], $bodyDecoded['data']['description']);
+        $this->assertEquals($data['start'], $bodyDecoded['data']['start'], 'the start time was replaced');
         /** @var Stage $db */
         $db = StagesTable::load()->get(Stage::FIRST_STAGE);
         $this->assertEquals($data['description'], $db->description);
         $this->assertEquals($data['stage_type_id'], $db->stage_type_id);
+        $this->assertEquals('2024-06-10 09:30:00', $db->start->format('Y-m-d H:i:s'));
     }
 
     public function testEdit_shouldSetStateEnded()
