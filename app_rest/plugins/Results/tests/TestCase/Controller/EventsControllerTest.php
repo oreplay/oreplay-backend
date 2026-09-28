@@ -18,6 +18,7 @@ use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageType;
 use Results\Model\Entity\UploadLog;
 use Results\Model\Table\EventsTable;
+use Results\Model\Table\OrganizersTable;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\FederationsFixture;
 use Results\Test\Fixture\OrganizersFixture;
@@ -29,6 +30,8 @@ use Results\Test\Fixture\UsersEventsFixture;
 
 class EventsControllerTest extends ApiCommonErrorsTest
 {
+    private const ANOTHER_ORGANIZER = '9f1c2d3e-4a5b-4c6d-8e7f-0a1b2c3d4e5f';
+
     protected array $fixtures = [
         FederationsFixture::LOAD,
         OrganizersFixture::LOAD,
@@ -500,6 +503,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
     public function testEdit()
     {
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $anotherOrganizer = $this->_insertOrganizer('ANOTHER CLUB');
         $data = [
             'is_hidden' => true,
             'description' => 'Some description',
@@ -510,6 +514,8 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'picture' => 'https://www.oreplay.es/logo.svg',
             'initial_date' => '2024-06-10',
             'final_date' => '2024-06-10',
+            'organizer_id' => $anotherOrganizer,
+            'timezone' => 'Atlantic/Canary',
         ];
         $this->patch($this->_getEndpoint() . Event::FIRST_EVENT, $data);
 
@@ -523,6 +529,20 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($data['picture'], $bodyDecoded['data']['picture']);
         $this->assertEquals($data['initial_date'], $bodyDecoded['data']['initial_date']);
         $this->assertEquals($data['final_date'], $bodyDecoded['data']['final_date']);
+        $this->assertEquals($anotherOrganizer, $bodyDecoded['data']['organizer_id'], 'the organizer was replaced');
+        $this->assertNotEquals(Organizer::ID, $bodyDecoded['data']['organizer_id']);
+        $this->assertEquals('Atlantic/Canary', $bodyDecoded['data']['timezone'], 'the timezone was replaced');
+
+        $db = EventsTable::load()->get(Event::FIRST_EVENT);
+        $this->assertEquals($anotherOrganizer, $db->organizer_id);
+        $this->assertEquals('Atlantic/Canary', $db->timezone);
+    }
+
+    private function _insertOrganizer(string $name): string
+    {
+        $organizers = OrganizersTable::load();
+        $organizer = $organizers->patchFromNewWithUuid(['id' => self::ANOTHER_ORGANIZER, 'name' => $name]);
+        return $organizers->saveOrFail($organizer)->id;
     }
 
     public function testEdit_shouldNotEditWithInvalidToken()

@@ -69,7 +69,7 @@
                     "description": "",
                     "in": "query",
                     "name": "initial_date:lte",
-                    "example": "2026-07-11",
+                    "example": "2026-09-28",
                     "required": false,
                     "schema": {
                         "type": "string"
@@ -79,7 +79,7 @@
                     "description": "",
                     "in": "query",
                     "name": "final_date:gte",
-                    "example": "2026-07-11",
+                    "example": "2026-09-28",
                     "required": false,
                     "schema": {
                         "type": "string"
@@ -271,6 +271,14 @@
                                 "final_date": {
                                     "type": "string",
                                     "example": "2024-06-10"
+                                },
+                                "organizer_id": {
+                                    "type": "string",
+                                    "example": "9f1c2d3e-4a5b-4c6d-8e7f-0a1b2c3d4e5f"
+                                },
+                                "timezone": {
+                                    "type": "string",
+                                    "example": "Atlantic/Canary"
                                 }
                             },
                             "description": "Generic object when: Edit"

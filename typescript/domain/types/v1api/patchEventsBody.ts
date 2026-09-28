@@ -13,7 +13,9 @@ export type PatchEventsBody = {
   initial_date?: string
   is_hidden?: number
   location?: string
+  organizer_id?: string
   picture?: string
   scope?: string
+  timezone?: string
   website?: string
 }
