@@ -7,6 +7,6 @@
  * Generic object when: Edit updates organizer
  */
 export type PatchOrganizersManagementBody = {
-  country?: string
-  region?: string
+  country_code?: string
+  region_code?: string
 }

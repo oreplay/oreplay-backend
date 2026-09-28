@@ -14,16 +14,34 @@
                     "example": "ADCON"
                 }
             ],
-            "country": [
+            "country_code": [
                 {
                     "type": "string",
                     "example": "ES"
                 }
             ],
+            "region_code": [
+                {
+                    "type": "string",
+                    "example": "VC"
+                }
+            ],
+            "province": [
+                {
+                    "type": "string",
+                    "example": "Valencia"
+                }
+            ],
+            "city": [
+                {
+                    "type": "string",
+                    "example": "Requena"
+                }
+            ],
             "region": [
                 {
                     "type": "string",
-                    "example": "ES-VC"
+                    "example": "Comunidad Valenciana"
                 }
             ]
         },

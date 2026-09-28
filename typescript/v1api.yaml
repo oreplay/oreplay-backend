@@ -478,12 +478,12 @@ paths:
                 name:
                   type: string
                   example: NAVARRA-O
-                country:
+                country_code:
                   type: string
                   example: ES
-                region:
+                region_code:
                   type: string
-                  example: ES-NC
+                  example: NC
               description: 'Generic object when: Add new generates uuid server side'
   /api/v1/organizersManagement/{organizersManagementID}:
     patch:
@@ -523,10 +523,10 @@ paths:
             schema:
               type: object
               properties:
-                region:
+                region_code:
                   type: string
-                  example: ES-MD
-                country:
+                  example: MD
+                country_code:
                   type: string
                   example: ES
               description: 'Generic object when: Edit updates organizer'
@@ -1441,6 +1441,13 @@ paths:
           schema:
             type: string
           example: 51d63e99-5d7c-4382-a541-8567015d8eed
+        - description: ''
+          in: query
+          name: include
+          example: club.region,club.province,club.city
+          required: false
+          schema:
+            type: string
       tags:
         - StageClubs
       responses:
@@ -2003,10 +2010,10 @@ components:
           nullable: true
         initial_date:
           type: string
-          example: '2026-07-12'
+          example: '2026-09-25'
         final_date:
           type: string
-          example: '2026-07-12'
+          example: '2026-09-25'
         timezone:
           type: string
           example: Europe/Madrid
@@ -2053,17 +2060,27 @@ components:
         name:
           type: string
           example: ADCON
-        country:
+        country_code:
           type: string
           example: ES
+        region_code:
+          type: string
+          example: VC
+        province:
+          type: string
+          example: Valencia
+        city:
+          type: string
+          example: Requena
         region:
           type: string
-          example: ES-VC
+          example: Comunidad Valenciana
       description: Entity Organizer
       required:
         - id
         - name
-        - country
+        - country_code
+        - region_code
         - region
     LinkHref:
       type: object
@@ -2504,6 +2521,18 @@ components:
         short_name:
           type: string
           example: Club A
+        city:
+          type: string
+          nullable: true
+          example: null
+        region:
+          type: string
+          nullable: true
+          example: null
+        province:
+          type: string
+          nullable: true
+          example: null
       description: Entity Club
       required:
         - id

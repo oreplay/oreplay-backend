@@ -7,7 +7,7 @@
  * Generic object when: Add new generates uuid server side
  */
 export type PostListOrganizersManagementBody = {
-  country?: string
+  country_code?: string
   name?: string
-  region?: string
+  region_code?: string
 }

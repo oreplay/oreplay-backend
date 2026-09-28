@@ -11,7 +11,7 @@ import type {
   UseQueryResult
 } from '@tanstack/react-query'
 
-import type { ArrayClub } from '../../../domain/types/v1api'
+import type { ArrayClub, GetListStageClubsParams } from '../../../domain/types/v1api'
 
 import { orvalAxiosInstance } from '../../orval/orval-axios-instance'
 
@@ -27,17 +27,25 @@ type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1]
 export const getListStageClubs = (
   eventID: string,
   stageID: string,
+  params?: GetListStageClubsParams,
   options?: SecondParameter<typeof orvalAxiosInstance>,
   signal?: AbortSignal
 ) => {
   return orvalAxiosInstance<ArrayClub>(
-    { url: `/api/v1/events/${eventID}/stages/${stageID}/clubs/`, method: 'GET', signal },
+    { url: `/api/v1/events/${eventID}/stages/${stageID}/clubs/`, method: 'GET', params, signal },
     options
   )
 }
 
-export const getGetListStageClubsQueryKey = (eventID: string, stageID: string) => {
-  return [`/api/v1/events/${eventID}/stages/${stageID}/clubs/`] as const
+export const getGetListStageClubsQueryKey = (
+  eventID: string,
+  stageID: string,
+  params?: GetListStageClubsParams
+) => {
+  return [
+    `/api/v1/events/${eventID}/stages/${stageID}/clubs/`,
+    ...(params ? [params] : [])
+  ] as const
 }
 
 export const getGetListStageClubsQueryOptions = <
@@ -46,6 +54,7 @@ export const getGetListStageClubsQueryOptions = <
 >(
   eventID: string,
   stageID: string,
+  params?: GetListStageClubsParams,
   options?: {
     query?: UseQueryOptions<Awaited<ReturnType<typeof getListStageClubs>>, TError, TData>
     request?: SecondParameter<typeof orvalAxiosInstance>
@@ -53,10 +62,10 @@ export const getGetListStageClubsQueryOptions = <
 ) => {
   const { query: queryOptions, request: requestOptions } = options ?? {}
 
-  const queryKey = queryOptions?.queryKey ?? getGetListStageClubsQueryKey(eventID, stageID)
+  const queryKey = queryOptions?.queryKey ?? getGetListStageClubsQueryKey(eventID, stageID, params)
 
   const queryFn: QueryFunction<Awaited<ReturnType<typeof getListStageClubs>>> = ({ signal }) =>
-    getListStageClubs(eventID, stageID, requestOptions, signal)
+    getListStageClubs(eventID, stageID, params, requestOptions, signal)
 
   return { queryKey, queryFn, enabled: !!(eventID && stageID), ...queryOptions } as UseQueryOptions<
     Awaited<ReturnType<typeof getListStageClubs>>,
@@ -76,12 +85,13 @@ export function useGetListStageClubs<
 >(
   eventID: string,
   stageID: string,
+  params?: GetListStageClubsParams,
   options?: {
     query?: UseQueryOptions<Awaited<ReturnType<typeof getListStageClubs>>, TError, TData>
     request?: SecondParameter<typeof orvalAxiosInstance>
   }
 ): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetListStageClubsQueryOptions(eventID, stageID, options)
+  const queryOptions = getGetListStageClubsQueryOptions(eventID, stageID, params, options)
 
   const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & { queryKey: QueryKey }
 
@@ -97,12 +107,13 @@ export const prefetchGetListStageClubsQuery = async <
   queryClient: QueryClient,
   eventID: string,
   stageID: string,
+  params?: GetListStageClubsParams,
   options?: {
     query?: UseQueryOptions<Awaited<ReturnType<typeof getListStageClubs>>, TError, TData>
     request?: SecondParameter<typeof orvalAxiosInstance>
   }
 ): Promise<QueryClient> => {
-  const queryOptions = getGetListStageClubsQueryOptions(eventID, stageID, options)
+  const queryOptions = getGetListStageClubsQueryOptions(eventID, stageID, params, options)
 
   await queryClient.prefetchQuery(queryOptions)
 

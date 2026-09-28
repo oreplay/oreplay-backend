@@ -9,7 +9,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "b3bdd975-0d0e-4de5-8490-560e22e86b0f"
+                    "example": "b7be5ce8-a6e5-45df-9413-2c9ebadde966"
                 },
                 {
                     "type": "string",
@@ -30,7 +30,7 @@
                     "example": "ADCON"
                 }
             ],
-            "country": [
+            "country_code": [
                 {
                     "type": "string",
                     "example": "ES"
@@ -44,18 +44,52 @@
                     "example": "ES"
                 }
             ],
+            "region_code": [
+                {
+                    "type": "string",
+                    "example": "VC"
+                },
+                {
+                    "type": "string",
+                    "example": "NC"
+                },
+                {
+                    "type": "string",
+                    "example": "MD"
+                }
+            ],
+            "province": [
+                {
+                    "type": "string",
+                    "example": "Valencia"
+                },
+                {
+                    "type": "string",
+                    "example": "Valencia"
+                }
+            ],
+            "city": [
+                {
+                    "type": "string",
+                    "example": "Requena"
+                },
+                {
+                    "type": "string",
+                    "example": "Requena"
+                }
+            ],
             "region": [
                 {
                     "type": "string",
-                    "example": "ES-VC"
+                    "example": "Comunidad Valenciana"
                 },
                 {
                     "type": "string",
-                    "example": "ES-NC"
+                    "example": "Navarra"
                 },
                 {
                     "type": "string",
-                    "example": "ES-MD"
+                    "example": "Comunidad de Madrid"
                 }
             ]
         },

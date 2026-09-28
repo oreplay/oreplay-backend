@@ -84,13 +84,13 @@
                                     "type": "string",
                                     "example": "NAVARRA-O"
                                 },
-                                "country": {
+                                "country_code": {
                                     "type": "string",
                                     "example": "ES"
                                 },
-                                "region": {
+                                "region_code": {
                                     "type": "string",
-                                    "example": "ES-NC"
+                                    "example": "NC"
                                 }
                             },
                             "description": "Generic object when: Add new generates uuid server side"
@@ -154,11 +154,11 @@
                         "schema": {
                             "type": "object",
                             "properties": {
-                                "region": {
+                                "region_code": {
                                     "type": "string",
-                                    "example": "ES-MD"
+                                    "example": "MD"
                                 },
-                                "country": {
+                                "country_code": {
                                     "type": "string",
                                     "example": "ES"
                                 }

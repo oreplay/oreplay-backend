@@ -472,7 +472,7 @@
             "initial_date": [
                 {
                     "type": "string",
-                    "example": "2026-07-12"
+                    "example": "2026-09-25"
                 },
                 {
                     "type": "string",
@@ -480,11 +480,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-07-12"
+                    "example": "2026-09-25"
                 },
                 {
                     "type": "string",
-                    "example": "2026-07-12"
+                    "example": "2026-09-25"
                 },
                 {
                     "type": "string",
@@ -496,11 +496,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-07-11"
+                    "example": "2026-09-24"
                 },
                 {
                     "type": "string",
-                    "example": "2026-07-12"
+                    "example": "2026-09-25"
                 },
                 {
                     "type": "string",
@@ -526,7 +526,7 @@
             "final_date": [
                 {
                     "type": "string",
-                    "example": "2026-07-12"
+                    "example": "2026-09-25"
                 },
                 {
                     "type": "string",
@@ -534,11 +534,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-07-12"
+                    "example": "2026-09-25"
                 },
                 {
                     "type": "string",
-                    "example": "2026-07-12"
+                    "example": "2026-09-25"
                 },
                 {
                     "type": "string",
@@ -550,11 +550,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-07-11"
+                    "example": "2026-09-24"
                 },
                 {
                     "type": "string",
-                    "example": "2026-07-12"
+                    "example": "2026-09-25"
                 },
                 {
                     "type": "string",
@@ -774,7 +774,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-07-11T12:07:25.132+00:00"
+                    "example": "2026-09-24T15:13:49.872+00:00"
                 },
                 {
                     "type": "string",
@@ -786,7 +786,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-07-11T12:07:25.181+00:00"
+                    "example": "2026-09-24T15:13:49.920+00:00"
                 }
             ],
             "organizer_id": [
@@ -1039,7 +1039,7 @@
                     "example": "ADCON"
                 }
             ],
-            "country": [
+            "country_code": [
                 {
                     "type": "string",
                     "example": "ES"
@@ -1085,50 +1085,188 @@
                     "example": "ES"
                 }
             ],
+            "region_code": [
+                {
+                    "type": "string",
+                    "example": "VC"
+                },
+                {
+                    "type": "string",
+                    "example": "VC"
+                },
+                {
+                    "type": "string",
+                    "example": "VC"
+                },
+                {
+                    "type": "string",
+                    "example": "VC"
+                },
+                {
+                    "type": "string",
+                    "example": "VC"
+                },
+                {
+                    "type": "string",
+                    "example": "VC"
+                },
+                {
+                    "type": "string",
+                    "example": "VC"
+                },
+                {
+                    "type": "string",
+                    "example": "VC"
+                },
+                {
+                    "type": "string",
+                    "example": "VC"
+                },
+                {
+                    "type": "string",
+                    "example": "VC"
+                },
+                {
+                    "type": "string",
+                    "example": "VC"
+                }
+            ],
+            "province": [
+                {
+                    "type": "string",
+                    "example": "Valencia"
+                },
+                {
+                    "type": "string",
+                    "example": "Valencia"
+                },
+                {
+                    "type": "string",
+                    "example": "Valencia"
+                },
+                {
+                    "type": "string",
+                    "example": "Valencia"
+                },
+                {
+                    "type": "string",
+                    "example": "Valencia"
+                },
+                {
+                    "type": "string",
+                    "example": "Valencia"
+                },
+                {
+                    "type": "string",
+                    "example": "Valencia"
+                },
+                {
+                    "type": "string",
+                    "example": "Valencia"
+                },
+                {
+                    "type": "string",
+                    "example": "Valencia"
+                },
+                {
+                    "type": "string",
+                    "example": "Valencia"
+                },
+                {
+                    "type": "string",
+                    "example": "Valencia"
+                }
+            ],
+            "city": [
+                {
+                    "type": "string",
+                    "example": "Requena"
+                },
+                {
+                    "type": "string",
+                    "example": "Requena"
+                },
+                {
+                    "type": "string",
+                    "example": "Requena"
+                },
+                {
+                    "type": "string",
+                    "example": "Requena"
+                },
+                {
+                    "type": "string",
+                    "example": "Requena"
+                },
+                {
+                    "type": "string",
+                    "example": "Requena"
+                },
+                {
+                    "type": "string",
+                    "example": "Requena"
+                },
+                {
+                    "type": "string",
+                    "example": "Requena"
+                },
+                {
+                    "type": "string",
+                    "example": "Requena"
+                },
+                {
+                    "type": "string",
+                    "example": "Requena"
+                },
+                {
+                    "type": "string",
+                    "example": "Requena"
+                }
+            ],
             "region": [
                 {
                     "type": "string",
-                    "example": "ES-VC"
+                    "example": "Comunidad Valenciana"
                 },
                 {
                     "type": "string",
-                    "example": "ES-VC"
+                    "example": "Comunidad Valenciana"
                 },
                 {
                     "type": "string",
-                    "example": "ES-VC"
+                    "example": "Comunidad Valenciana"
                 },
                 {
                     "type": "string",
-                    "example": "ES-VC"
+                    "example": "Comunidad Valenciana"
                 },
                 {
                     "type": "string",
-                    "example": "ES-VC"
+                    "example": "Comunidad Valenciana"
                 },
                 {
                     "type": "string",
-                    "example": "ES-VC"
+                    "example": "Comunidad Valenciana"
                 },
                 {
                     "type": "string",
-                    "example": "ES-VC"
+                    "example": "Comunidad Valenciana"
                 },
                 {
                     "type": "string",
-                    "example": "ES-VC"
+                    "example": "Comunidad Valenciana"
                 },
                 {
                     "type": "string",
-                    "example": "ES-VC"
+                    "example": "Comunidad Valenciana"
                 },
                 {
                     "type": "string",
-                    "example": "ES-VC"
+                    "example": "Comunidad Valenciana"
                 },
                 {
                     "type": "string",
-                    "example": "ES-VC"
+                    "example": "Comunidad Valenciana"
                 }
             ]
         },
@@ -1507,7 +1645,7 @@
                     "properties": {
                         "href": {
                             "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2026-07-11&final_date:gte=2026-07-11&page=1"
+                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2026-09-24&final_date:gte=2026-09-24&page=1"
                         }
                     },
                     "description": "Generic object."

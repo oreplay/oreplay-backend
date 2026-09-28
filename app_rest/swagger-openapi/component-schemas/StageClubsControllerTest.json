@@ -6,12 +6,41 @@
                 {
                     "type": "string",
                     "example": "83dc3504-9edd-4bbd-80b8-589aa0359c3e"
+                },
+                {
+                    "type": "string",
+                    "example": "83dc3504-9edd-4bbd-80b8-589aa0359c3e"
                 }
             ],
             "short_name": [
                 {
                     "type": "string",
                     "example": "Club A"
+                },
+                {
+                    "type": "string",
+                    "example": "Club A"
+                }
+            ],
+            "city": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "region": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "province": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
                 }
             ]
         },
@@ -21,6 +50,12 @@
         "type": "object",
         "properties": {
             "data": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/Club"
+                    }
+                },
                 {
                     "type": "array",
                     "items": {

@@ -24,6 +24,16 @@
                         "type": "string"
                     },
                     "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "include",
+                    "example": "club.region,club.province,club.city",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
                 }
             ],
             "tags": [
