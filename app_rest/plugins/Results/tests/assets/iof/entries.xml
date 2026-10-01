@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EntryList xmlns="http://www.orienteering.org/datastandard/3.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ iofVersion="3.0"
+ createTime="2025-03-26T10:32:44.918"
+ creator="SportSoftware OE12 (M) V.12.1">
+<Event>
+<Name>Test Radiocontroles</Name>
+</Event>
+<PersonEntry>
+<Person sex="M">
+<Name>
+<Family>Garcia</Family>
+<Given>Ana</Given>
+</Name>
+</Person>
+<ControlCard>9000001</ControlCard>
+<Class>
+<Id>1</Id>
+<Name>E</Name>
+</Class>
+</PersonEntry>
+</EntryList>

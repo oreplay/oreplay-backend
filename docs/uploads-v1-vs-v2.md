@@ -108,7 +108,8 @@ come from the query string:
 | `reprocess_all` | as for JSON: ignore stored hashes and re-import every class |
 
 The upload type is detected from the document, including the `<!-- SplitTimeControls: … -->` comment
-SportSoftware writes in radio exports.
+SportSoftware writes in radio exports. A `ResultList` or a `StartList` is imported; an `EntryList` is
+refused with `400`, since its entries are not grouped by class.
 
 ## What is identical
 
