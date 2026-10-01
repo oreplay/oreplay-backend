@@ -25,6 +25,7 @@ use Results\Lib\UploadHelper;
 use Results\Lib\UploadMessage;
 use Results\Lib\UploadMetrics;
 use Results\Model\Table\ClassesTable;
+use Results\Model\Table\EventsTable;
 use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\TokensTable;
 use Results\Model\Entity\UploadLog;
@@ -100,10 +101,22 @@ class UploadsV2Controller extends ApiController
         return new UploadPublishers($publishers);
     }
 
-    private function _assertDesktopClientAuthenticated(string $eventId): void
+    // the desktop client authenticates with the event token; the web admin with the session of a user who
+    // owns the event (or is a manager), which is the rule every other admin endpoint applies
+    private function _assertUploaderAuthenticated(string $eventId): void
     {
-        $token = $this->_getBearer();
-        if (!TokensTable::load()->isValidEventToken($eventId, $token)) {
+        if (TokensTable::load()->isValidEventToken($eventId, $this->_getBearer())) {
+            return;
+        }
+        EventsTable::load()->getEventFromUser($eventId, $this->_userIdFromAccessToken());
+    }
+
+    private function _userIdFromAccessToken(): string
+    {
+        try {
+            return (string)$this->getManualOauth()->verifyAuthorizationAndGetToken()->getUserId();
+        } catch (\Throwable $e) {
+            // neither kind of token: keep the one answer clients already handle for a bad bearer
             throw new ForbiddenException('Invalid Bearer token');
         }
     }
@@ -149,7 +162,7 @@ class UploadsV2Controller extends ApiController
             $eventId = $this->request->getParam('eventID');
             // before the body is read: an anonymous request must not get an XML document buffered and
             // validated against the schema, nor a stored upload looked up by its id
-            $this->_assertDesktopClientAuthenticated($eventId);
+            $this->_assertUploaderAuthenticated($eventId);
             // an XML body arrives as a raw string, so this branch has to come before anything that
             // expects an array: getReUploadedData() is typed array and would raise a TypeError
             if (is_string($data)) {

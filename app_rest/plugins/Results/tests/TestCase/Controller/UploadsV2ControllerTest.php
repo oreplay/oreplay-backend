@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
+use App\Test\Fixture\OauthAccessTokensFixture;
+use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use App\Lib\Consts\CacheGrp;
 use Cake\Cache\Cache;
@@ -36,6 +38,7 @@ use Results\Model\Table\StagesTable;
 use Results\Model\Table\UploadLogsTable;
 use Results\Model\Table\TeamResultsTable;
 use Results\Model\Table\TeamsTable;
+use Results\Model\Table\UsersEventsTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\ControlsFixture;
@@ -51,6 +54,7 @@ use Results\Test\Fixture\StageTypesFixture;
 use Results\Test\Fixture\TeamResultsFixture;
 use Results\Test\Fixture\TeamsFixture;
 use Results\Test\Fixture\TokensFixture;
+use Results\Test\Fixture\UsersEventsFixture;
 use Results\Test\TestCase\Controller\UploadExamples\IntermediateExamples;
 use Results\Test\TestCase\Controller\UploadExamples\MixedExamples;
 use Results\Test\TestCase\Controller\UploadExamples\RelayExamples;
@@ -78,6 +82,9 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         CoursesFixture::LOAD,
         TeamsFixture::LOAD,
         TeamResultsFixture::LOAD,
+        OauthAccessTokensFixture::LOAD,
+        UsersFixture::LOAD,
+        UsersEventsFixture::LOAD,
     ];
 
     protected function _getEndpointAddingToSwagger(): string
@@ -820,6 +827,8 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
             ['id' => ClassEntity::ME]);
 
+        // setUp signs every request in with the admin's session, which may upload since it owns the event
+        $this->configRequest(['headers' => ['Accept' => 'application/json']]);
         $data = ['oreplay_data_transfer' => StartExamples::startImportSmall()];
         $this->post($this->_getEndpoint(), $data);
 
@@ -842,6 +851,47 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             ]],
         ];
         $this->assertUploadMeta($expectedMeta, json_decode((string)$this->_getBodyAsString(), true));
+    }
+
+    public function testAddNew_shouldAcceptTheAccessTokenOfAUserWhoOwnsTheEvent()
+    {
+        $UsersEvents = UsersEventsTable::load();
+        $ownership = $UsersEvents->newEmptyEntity();
+        $ownership->user_id = UsersFixture::USER_NON_ADMIN_ID;
+        $ownership->event_id = Event::FIRST_EVENT;
+        $ownership->is_admin = false;
+        $UsersEvents->saveOrFail($ownership);
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+
+        $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+        $this->post($this->_getEndpoint(), $data);
+
+        $this->assertUploadOk('the organiser uploads from the web with their own session');
+    }
+
+    public function testAddNew_shouldRefuseTheAccessTokenOfAUserWhoDoesNotOwnTheEvent()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+
+        $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+        $this->post($this->_getEndpoint(), $data);
+
+        $jsonDecoded = $this->assertUploadRejected(403);
+        $this->assertEquals('Event not from this user', $jsonDecoded['meta']['messages'][0]['text']);
+        $this->assertEquals(0, RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all()->count(),
+            'a refused upload must not import anything');
+    }
+
+    public function testAddNew_shouldRefuseABearerThatIsNeitherAnEventTokenNorAnAccessToken()
+    {
+        $this->loadAuthToken('not-a-token-of-any-kind');
+
+        $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+        $this->post($this->_getEndpoint(), $data);
+
+        $jsonDecoded = $this->assertUploadRejected(403);
+        $this->assertEquals('Invalid Bearer token', $jsonDecoded['meta']['messages'][0]['text']);
     }
 
     public function testAddNew_shouldAddFinishTimesTwice()
@@ -1960,6 +2010,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
     {
         // no event token. v2 is not bound by v1's 202-for-every-failure contract, so a client can
         // tell a rejected upload from an accepted one without reading meta.human
+        $this->configRequest(['headers' => ['Accept' => 'application/json']]);
         $data = ['oreplay_data_transfer' => IntermediateExamples::intermediateResults()];
         $this->post($this->_getEndpoint(), $data);
 
