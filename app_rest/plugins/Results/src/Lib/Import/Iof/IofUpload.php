@@ -55,12 +55,18 @@ class IofUpload
         bool $validateAgainstSchema
     ) {
         $this->_filePath = $this->_bufferToFile($body);
-        // the header first: it rejects IOF 2.0 and an unknown root with something an operator can act on,
-        // where the schema would only complain about an unexpected namespace
-        $this->_header = IofUploadTypeDetector::detect($this->_filePath, $explicitUploadType);
-        $this->_refuseAClassTooBigToImport();
-        if ($validateAgainstSchema) {
-            $this->_refuseUnlessItMatchesTheSchema();
+        // PHP skips __destruct when the constructor throws, so a refusal has to remove the file itself
+        try {
+            // the header first: it rejects IOF 2.0 and an unknown root with something an operator can act
+            // on, where the schema would only complain about an unexpected namespace
+            $this->_header = IofUploadTypeDetector::detect($this->_filePath, $explicitUploadType);
+            $this->_refuseAClassTooBigToImport();
+            if ($validateAgainstSchema) {
+                $this->_refuseUnlessItMatchesTheSchema();
+            }
+        } catch (\Throwable $e) {
+            $this->_removeBufferedFile();
+            throw $e;
         }
     }
 
@@ -193,10 +199,15 @@ class IofUpload
         return $path;
     }
 
-    public function __destruct()
+    private function _removeBufferedFile(): void
     {
         if (isset($this->_filePath) && is_file($this->_filePath)) {
             unlink($this->_filePath);
         }
+    }
+
+    public function __destruct()
+    {
+        $this->_removeBufferedFile();
     }
 }
