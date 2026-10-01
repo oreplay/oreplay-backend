@@ -66,7 +66,6 @@ class UploadsV2Controller extends ApiController
             $this->_writeLastUploadJson($helper->getData(), TMP . 'lastUpload.json');
         }
         //$this->log('Uploading: ' . " \n\n" . json_encode($helper->getData()), \Psr\Log\LogLevel::DEBUG); // NOSONAR
-        $this->_assertDesktopClientAuthenticated($helper);
 
         //$rawUrl = $this->_getHost() . '/api/v1/events/' . $helper->getEventId() . '/rawUploads';
         //FireAndForget::postJson($rawUrl, $helper->getData(), ['Authorization' => 'Bearer ' . $this->_getBearer()]);
@@ -101,10 +100,10 @@ class UploadsV2Controller extends ApiController
         return new UploadPublishers($publishers);
     }
 
-    private function _assertDesktopClientAuthenticated(UploadHelper $helper): void
+    private function _assertDesktopClientAuthenticated(string $eventId): void
     {
         $token = $this->_getBearer();
-        if (!TokensTable::load()->isValidEventToken($helper->getEventId(), $token)) {
+        if (!TokensTable::load()->isValidEventToken($eventId, $token)) {
             throw new ForbiddenException('Invalid Bearer token');
         }
     }
@@ -148,6 +147,9 @@ class UploadsV2Controller extends ApiController
         $this->_metrics = UploadMetrics::withoutSavedClasses();
         try {
             $eventId = $this->request->getParam('eventID');
+            // before the body is read: an anonymous request must not get an XML document buffered and
+            // validated against the schema, nor a stored upload looked up by its id
+            $this->_assertDesktopClientAuthenticated($eventId);
             // an XML body arrives as a raw string, so this branch has to come before anything that
             // expects an array: getReUploadedData() is typed array and would raise a TypeError
             if (is_string($data)) {

@@ -263,6 +263,33 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
         $this->assertStringContainsString('Unsupported IOF version', (string)$this->_getBodyAsString());
     }
 
+    public function testAddNew_shouldRefuseAnEntryListRatherThanAnswerOkHavingImportedNothing()
+    {
+        $this->_postXml('iof/entries.xml');
+
+        $this->assertUploadRejected(400);
+        $this->assertStringContainsString('EntryList', (string)$this->_getBodyAsString());
+    }
+
+    /**
+     * The token is checked before the body is read: an anonymous request must not get the document
+     * buffered and validated against the schema, nor learn from the answer what is wrong with it.
+     */
+    public function testAddNew_shouldRefuseAnInvalidTokenBeforeReadingTheXml()
+    {
+        $this->configRequest(['headers' => [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer not-a-token',
+            'Content-Type' => 'application/xml',
+        ]]);
+        $this->post($this->_getEndpoint() . $this->_query(''),
+            file_get_contents($this->_asset('iof/invalid_schema.xml')));
+
+        $json = $this->assertUploadRejected(403);
+        $this->assertEquals('forbidden', $json['meta']['messages'][0]['code']);
+        $this->assertNull($json['meta']['uploadType']);
+    }
+
     public function testAddNew_shouldRefuseAnUnknownTimeZone()
     {
         $this->_configureXmlRequest();
