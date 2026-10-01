@@ -15,6 +15,7 @@ author does not have to diff two controllers to find it.
 | Response `meta` | `human` (rendered text with `<br>` and `<b>`) + `humanColor` (a hex colour) | `level` + `messages[]`, and `uploadType`. `human` and `humanColor` are **gone** |
 | `?version=` query parameter | supported; below `402` the response is reshaped | **ignored** — always the modern shape |
 | `?reprocess_all=` | supported | supported |
+| `Authorization: Bearer` | the event token | the event token **or** the access token of a user who owns the event, or of a manager |
 | Published in the OpenAPI spec | yes | **no** |
 
 ---
@@ -39,6 +40,7 @@ Observed today:
 | Situation | v1 | v2 |
 |---|---|---|
 | No valid event token (`ForbiddenException`) | 202 | **403** |
+| A user's access token, but the event is not theirs (`ForbiddenException`) | 202 | **403** |
 | Malformed payload, e.g. `stages: []` | 202 | **400** |
 | Start times uploaded when finish times exist | 202 | **400** |
 | `raw_upload_id` that does not exist | 202 | **404** |
@@ -111,12 +113,23 @@ The upload type is detected from the document, including the `<!-- SplitTimeCont
 SportSoftware writes in radio exports. A `ResultList` or a `StartList` is imported; an `EntryList` is
 refused with `400`, since its entries are not grouped by class.
 
+## 5. v2 also accepts the session of the event's owner
+
+The desktop client has no user session, so both versions take the event token as the `Bearer`. The web
+admin uploads too, and there the organiser is already signed in: v2 also accepts their access token, under
+the rule every other admin endpoint applies (`EventsTable::getEventFromUser()` — a user linked to the event,
+or a manager). The event token is checked first, so the desktop client is untouched. A bearer that is
+neither answers `403 Invalid Bearer token`, as before; a valid session on someone else's event answers
+`403 Event not from this user`.
+
+v1 keeps the event token only: no client of it has a session to send.
+
 ## What is identical
 
-Worth stating, because it is most of the surface: the request body, the authentication (a `Bearer`
-event token), `?reprocess_all=`, every write the import performs, and the whole of `meta` apart from
-the `version` reshaping in v1. Both controllers are kept deliberately in step — a change to one is
-normally applied to the other in the same commit, and the exceptions are the four above.
+Worth stating, because it is most of the surface: the request body, the event token as authentication,
+`?reprocess_all=`, every write the import performs, and the whole of `meta` apart from the `version`
+reshaping in v1. Both controllers are kept deliberately in step — a change to one is normally applied to
+the other in the same commit, and the exceptions are the ones above.
 
 ## Testing
 
