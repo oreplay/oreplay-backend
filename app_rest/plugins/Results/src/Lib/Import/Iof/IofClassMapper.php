@@ -50,7 +50,7 @@ abstract class IofClassMapper
         $data = $classResult->getData();
         $class = $data['Class'] ?? [];
         $teams = $this->teamsOf($data);
-        return [
+        $mapped = [
             'id' => '',
             'uuid' => '',
             'oe_key' => (string)($class['Id'] ?? ''),
@@ -60,6 +60,21 @@ abstract class IofClassMapper
             'course' => $this->courseOf($data['Course'] ?? []) ?: $this->_courseOfFirstLeg($teams),
             'runners' => $this->_runners($data[$this->personElement()] ?? []),
         ];
+        return self::_withDeclaredRadios($mapped, $classResult->getRadioStations());
+    }
+
+    /**
+     * @param string[] $radioStations
+     */
+    private static function _withDeclaredRadios(array $mapped, array $radioStations): array
+    {
+        if ($radioStations) {
+            $mapped['classes_controls'] = array_map(
+                fn(string $station) => ['control' => ['station' => $station]],
+                $radioStations
+            );
+        }
+        return $mapped;
     }
 
     protected function courseOf(mixed $course): array

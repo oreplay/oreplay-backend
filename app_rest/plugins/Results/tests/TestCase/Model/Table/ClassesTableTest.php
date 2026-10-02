@@ -88,8 +88,8 @@ class ClassesTableTest extends TestCase
 
     public function testGetByStageWithRadios_shouldReportNoRadiosWithoutAStoredCourse()
     {
-        // the punch-derived fallback is gone: a class shows radios once its course is stored, and
-        // a stage last uploaded before course_controls existed shows none until it is uploaded again
+        // there is no punch-derived fallback: a class shows radios once its course is stored or a radio
+        // export declares them, and until then it shows none
         $split = new Split([
             'id' => '2e0a9e34-ad82-4f41-a46e-d76427705281',
             'event_id' => Event::FIRST_EVENT,
@@ -135,5 +135,43 @@ class ClassesTableTest extends TestCase
         $actual = array_map(fn($radio) => $radio->toArray(), $res[1]['splits']);
         $this->assertEquals($expected, $actual,
             'station 82 is in the course but carries no radio, and 81 has a radio but no punch');
+    }
+
+    public function testGetByStageWithRadios_shouldListTheDeclaredRadiosInTheirOrderWithoutAStoredCourse()
+    {
+        ControlsTable::load()->markIntermediateStations(Stage::FIRST_STAGE, ['31', '81']);
+        $this->Classes->updateAll(['radio_stations' => '81,82,31'], ['id' => ClassEntity::ME]);
+
+        $res = $this->Classes
+            ->getByStageWithRadios(Event::FIRST_EVENT, Stage::FIRST_STAGE)
+            ->toArray();
+
+        $this->assertEquals('ME', $res[1]['short_name']);
+        $expected = [
+            ['id' => ControlsFixture::CONTROL_81, 'station' => '81'],
+            ['id' => ControlsFixture::CONTROL_31, 'station' => '31'],
+        ];
+        $actual = array_map(fn($radio) => $radio->toArray(), $res[1]['splits']);
+        $this->assertEquals($expected, $actual,
+            'the declared order is kept, and 82 is left out because it is not a radio of the stage');
+        $this->assertEquals([], $res[0]['splits'], 'a class that declares nothing shows nothing');
+    }
+
+    public function testGetByStageWithRadios_shouldPreferTheStoredCourseOverTheDeclaredRadios()
+    {
+        $course = CoursesTable::load()->get(CoursesFixture::COURSE_1);
+        CourseControlsTable::load()->replaceForCourse($course, ['82', '31', '81']);
+        ControlsTable::load()->markIntermediateStations(Stage::FIRST_STAGE, ['31', '81']);
+        $this->Classes->updateAll(
+            ['course_id' => $course->id, 'radio_stations' => '81,31'],
+            ['id' => ClassEntity::ME]
+        );
+
+        $res = $this->Classes
+            ->getByStageWithRadios(Event::FIRST_EVENT, Stage::FIRST_STAGE)
+            ->toArray();
+
+        $actual = array_map(fn($radio) => (string)$radio->station, $res[1]['splits']);
+        $this->assertEquals(['31', '81'], $actual, 'the course learned from the downloads is the order to trust');
     }
 }

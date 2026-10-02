@@ -97,9 +97,25 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
 
     private function _postXml(string $asset, string $query = ''): array
     {
+        return $this->_postXmlBody(file_get_contents($this->_asset($asset)), $query);
+    }
+
+    private function _postXmlBody(string $xml, string $query = ''): array
+    {
         $this->_configureXmlRequest();
-        $this->post($this->_getEndpoint() . $this->_query($query), file_get_contents($this->_asset($asset)));
+        $this->post($this->_getEndpoint() . $this->_query($query), $xml);
         return json_decode((string)$this->_getBodyAsString(), true) ?? [];
+    }
+
+    private function _radiosShownForClass(string $shortName): array
+    {
+        $classes = ClassesTable::load()->getByStageWithRadios(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2);
+        foreach ($classes as $class) {
+            if ($class->short_name === $shortName) {
+                return array_map(fn($radio) => (string)$radio->station, $class->splits);
+            }
+        }
+        return [];
     }
 
     private function _query(string $extra): string
@@ -207,6 +223,20 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
             ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'is_intermediate' => true])
             ->all()->count();
         $this->assertGreaterThan(0, $intermediate);
+    }
+
+    public function testAddNew_shouldShowTheRadiosTheCommentDeclaresBeforeAnyCourseIsStored()
+    {
+        $radioExport = str_replace(
+            'SplitTimeControls: 32,34',
+            'SplitTimeControls: 32,35,34',
+            file_get_contents($this->_asset('iof/radio.xml'))
+        );
+        $this->_postXmlBody($radioExport);
+        $this->assertUploadOk();
+
+        $this->assertEquals(['32', '35', '34'], $this->_radiosShownForClass('E'),
+            'the comment is the order to show, including radio 35 that no runner has reached yet');
     }
 
     public function testAddNew_shouldSkipAnUnchangedClassOnASecondIdenticalXmlUpload()

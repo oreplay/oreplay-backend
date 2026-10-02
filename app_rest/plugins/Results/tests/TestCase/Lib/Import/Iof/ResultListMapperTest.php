@@ -141,6 +141,11 @@ class ResultListMapperTest extends TestCase
             $mapped = $mapper->classOf($class);
             $this->assertEquals('E', $mapped['short_name']);
             $this->assertEquals(['32', '34'], $class->getRadioStations());
+            $this->assertEquals(
+                [['control' => ['station' => '32']], ['control' => ['station' => '34']]],
+                $mapped['classes_controls'],
+                'the declared radios reach the importer in the shape the desktop client sends them'
+            );
         }
     }
 }

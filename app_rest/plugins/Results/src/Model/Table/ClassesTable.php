@@ -86,26 +86,44 @@ class ClassesTable extends AppTable
         $radios = ControlsTable::load()->intermediateInStage($stageId);
         /** @var ClassEntity $class */
         foreach ($classes as $class) {
-            $courseStations = $stationsByCourse[$class->course_id ?? ''] ?? [];
-            $class->splits = $this->_radiosInCourseOrder($courseStations, $radios);
+            $class->splits = $this->_radiosInOrder($this->_radioOrderOf($class, $stationsByCourse), $radios);
         }
         return $classes;
     }
 
     /**
-     * @param string[] $courseStations
+     * @param array<string, string[]> $stationsByCourse
+     * @return string[]
+     */
+    private function _radioOrderOf(ClassEntity $class, array $stationsByCourse): array
+    {
+        $courseStations = $stationsByCourse[$class->course_id ?? ''] ?? [];
+        return $courseStations ?: $class->getDeclaredRadioStations();
+    }
+
+    /**
+     * @param string[] $orderedStations
      * @param Control[] $radios keyed by station
      * @return Control[]
      */
-    private function _radiosInCourseOrder(array $courseStations, array $radios): array
+    private function _radiosInOrder(array $orderedStations, array $radios): array
     {
         $inOrder = [];
-        foreach ($courseStations as $station) {
+        foreach ($orderedStations as $station) {
             if (isset($radios[$station])) {
                 $inOrder[] = $radios[$station];
             }
         }
         return $inOrder;
+    }
+
+    /**
+     * @param string[] $stations
+     */
+    public function storeDeclaredRadios(ClassEntity $class, array $stations): void
+    {
+        $class->declareRadioStations($stations);
+        $this->updateAll(['radio_stations' => $class->radio_stations], ['id' => $class->id]);
     }
 
     public function saveManyWithRelations(

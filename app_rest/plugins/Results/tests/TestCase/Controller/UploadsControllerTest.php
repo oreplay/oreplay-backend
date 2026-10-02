@@ -619,6 +619,27 @@ class UploadsControllerTest extends ApiCommonErrorsTest
             'a station stored by an earlier upload is promoted, not left behind for a new row');
     }
 
+    public function testAddNew_shouldShowTheRadiosTheExportDeclares()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $data = IntermediateExamples::intermediateResults();
+        $data['event']['stages'][0]['classes'][0]['classes_controls'][] = ['control' => ['station' => '33']];
+
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION,
+            ['oreplay_data_transfer' => $data]);
+
+        $this->assertUploadOk();
+        $classes = ClassesTable::load()->getByStageWithRadios(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2);
+        $radiosOfE = [];
+        foreach ($classes as $class) {
+            if ($class->short_name === 'E') {
+                $radiosOfE = array_map(fn($radio) => (string)$radio->station, $class->splits);
+            }
+        }
+        $this->assertEquals(['32', '100', '33'], $radiosOfE,
+            'V1 stores the declared radios too, including 33 that no runner has reached yet');
+    }
+
     private function _storeControl(string $station, string $stageId): Control
     {
         $controls = ControlsTable::load();

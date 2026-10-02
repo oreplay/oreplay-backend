@@ -40,14 +40,19 @@ class ControlsTable extends AppTable
         }
         $entity->setAsNew();
         $entity->is_intermediate = $this->_stillIntermediateAfter($entity, $data);
-        if ($data['station'] === 1 || $data['station'] === '1') {
+        $this->_setTypeOfStationIfNotDefined($entity, $data['station']);
+        return $entity;
+    }
+
+    private function _setTypeOfStationIfNotDefined(Control $entity, int|string $station): void
+    {
+        if ($station === 1 || $station === '1') {
             $entity->setTypeClearIfNotDefined();
-        } else if ($data['station'] > 19 && $data['station'] < 30) {
+        } else if ($station > 19 && $station < 30) {
             $entity->setTypeFinishIfNotDefined();
         } else {
             $entity->setTypeNormalIfNotDefined();
         }
-        return $entity;
     }
 
     // a station that has ever been read by a radio keeps the flag: the later download that replaces
@@ -98,6 +103,51 @@ class ControlsTable extends AppTable
             ['is_intermediate' => true],
             ['stage_id' => $stageId, 'station IN' => $stations, 'is_intermediate' => false]
         );
+    }
+
+    /**
+     * @param string[] $stations
+     */
+    public function storeRadioStations(UploadContext $context, array $stations): void
+    {
+        $this->_createMissingRadios($context, $stations);
+        $this->markIntermediateStations($context->getStageId(), $stations);
+    }
+
+    /**
+     * @param string[] $stations
+     */
+    private function _createMissingRadios(UploadContext $context, array $stations): void
+    {
+        $missing = array_diff($stations, $this->_storedStationsAmong($context, $stations));
+        $radios = [];
+        foreach ($missing as $station) {
+            $radio = $this->fillNewWithStage(['station' => $station], $context->getEventId(), $context->getStageId());
+            $radio->is_intermediate = true;
+            $this->_setTypeOfStationIfNotDefined($radio, $station);
+            $radios[] = $radio;
+        }
+        if ($radios) {
+            $this->saveManyOrFail($radios);
+        }
+    }
+
+    /**
+     * @param string[] $stations
+     * @return string[]
+     */
+    private function _storedStationsAmong(UploadContext $context, array $stations): array
+    {
+        if (!$stations) {
+            return [];
+        }
+        $stored = $this->findWhereEventAndStage($context)
+            ->select(['station'])
+            ->where(['station IN' => $stations])
+            ->all()
+            ->extract('station')
+            ->toList();
+        return array_map('strval', $stored);
     }
 
     public function getAllControls(UploadContext $context): ResultSetInterface

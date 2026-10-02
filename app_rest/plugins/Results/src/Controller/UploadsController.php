@@ -14,6 +14,7 @@ use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\Import\ClassImportReport;
 use Results\Lib\Import\CourseImporter;
+use Results\Lib\Import\DeclaredRadiosImporter;
 use Results\Lib\Import\RunnerImporter;
 use Results\Lib\Import\TeamImporter;
 use Results\Lib\Publish\ClassResultsPublisher;
@@ -95,8 +96,10 @@ class UploadsController extends ApiController
 
         $counter = 0;
         $publisher = $this->_classResultsPublisher();
+        $declaredRadios = new DeclaredRadiosImporter($this->Classes, $helper);
         foreach ($configChecker->getClasses() as $classObj) {
             $class = $this->Classes->createIfNotExists($helper->getEventId(), $stageId, $classObj);
+            $declaredRadios->import($classObj, $class);
             $isTakingTooLong = $this->_setIsTakingTooLongWarning($metrics, $counter);
             if ($this->_needsProcessing($class, $classObj, $helper) && !$isTakingTooLong) {
                 $class->setHash($classObj);
@@ -117,7 +120,7 @@ class UploadsController extends ApiController
             }
         }
 
-        $this->_markIntermediateStations($helper);
+        $this->_storeRadioStations($helper);
 
         $log = UploadLogsTable::load()->saveUploadLog($helper);
         RawUploadsTable::load()->saveFile($log, $helper);
@@ -156,10 +159,10 @@ class UploadsController extends ApiController
         $importer->importInto($class);
     }
 
-    private function _markIntermediateStations(UploadHelper $helper): void
+    private function _storeRadioStations(UploadHelper $helper): void
     {
-        ControlsTable::load()->markIntermediateStations(
-            $helper->getStageId(),
+        ControlsTable::load()->storeRadioStations(
+            $helper->getContext(),
             $helper->getIntermediateStations()->toList()
         );
     }

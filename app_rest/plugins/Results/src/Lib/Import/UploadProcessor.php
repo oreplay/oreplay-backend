@@ -40,9 +40,11 @@ class UploadProcessor
 
         $progress = new UploadProgress();
         $importer = new ClassImporter($this->classes, $helper);
+        $declaredRadios = new DeclaredRadiosImporter($this->classes, $helper);
 
         foreach ($configChecker->getClasses() as $classObj) {
             $class = $this->classes->createIfNotExists($helper->getEventId(), $helper->getStageId(), $classObj);
+            $declaredRadios->import($classObj, $class);
             $isTakingTooLong = $this->_setIsTakingTooLongWarning($metrics, $progress->classCount());
             if ($this->_needsProcessing($class, $classObj, $helper) && !$isTakingTooLong) {
                 $report = $importer->import($classObj, $class);
@@ -51,15 +53,15 @@ class UploadProcessor
             }
         }
 
-        $this->_markIntermediateStations($helper);
+        $this->_storeRadioStations($helper);
 
         return $progress;
     }
 
-    private function _markIntermediateStations(UploadHelper $helper): void
+    private function _storeRadioStations(UploadHelper $helper): void
     {
-        ControlsTable::load()->markIntermediateStations(
-            $helper->getStageId(),
+        ControlsTable::load()->storeRadioStations(
+            $helper->getContext(),
             $helper->getIntermediateStations()->toList()
         );
     }
