@@ -23,6 +23,7 @@ use Results\Lib\Publish\NchanChannel;
 use Results\Lib\Publish\UploadProgressPublisher;
 use Results\Lib\Publish\UploadPublisher;
 use Results\Lib\Publish\UploadPublishers;
+use Results\Lib\UploadConfigChecker;
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMessage;
 use Results\Lib\UploadMetrics;
@@ -35,7 +36,7 @@ use Results\Model\Table\UploadLogsTable;
 
 class UploadsV2Controller extends ApiController
 {
-    private const int LOGGED_XML_HEAD_BYTES = 2000;
+    private const int LOGGED_BODY_BYTES = 500;
     private const int MAX_LOGGED_IDENTIFIER_LENGTH = 36;
 
     private UploadMetrics $_metrics;
@@ -219,11 +220,44 @@ class UploadsV2Controller extends ApiController
         if ($e instanceof ForbiddenException) {
             return self::_whatARefusedRequestAskedFor($data);
         }
+        if ($e instanceof ConflictException) {
+            return 'payload not logged: stage ' . $this->_stageIdOfTheRequest($data) . ' was still importing';
+        }
         if (is_string($data)) {
             return 'XML body of ' . strlen($data) . ' bytes, starting: '
-                . substr($data, 0, self::LOGGED_XML_HEAD_BYTES);
+                . mb_scrub(substr($data, 0, self::LOGGED_BODY_BYTES), 'UTF-8');
         }
-        return (string)json_encode($data);
+        return self::_boundedJson(is_array($data) ? $data : []);
+    }
+
+    private function _stageIdOfTheRequest(mixed $data): string
+    {
+        $stageId = $this->request->getQuery('stage_id');
+        if (!$stageId && is_array($data)) {
+            $stageId = $data[UploadConfigChecker::ENVELOPE_KEY]['event']['stages'][0]['id'] ?? null;
+        }
+        return self::_identifierOf($stageId);
+    }
+
+    private static function _boundedJson(array $data): string
+    {
+        $json = (string)json_encode($data);
+        if (strlen($json) <= self::LOGGED_BODY_BYTES) {
+            return $json;
+        }
+        $transfer = $data[UploadConfigChecker::ENVELOPE_KEY] ?? [];
+        return 'JSON body of ' . strlen($json) . ' bytes, configuration '
+            . substr((string)json_encode($transfer['configuration'] ?? null), 0, self::LOGGED_BODY_BYTES)
+            . ', event ' . self::_identifierOf($transfer['event']['id'] ?? null)
+            . ', stages ' . implode(' ', self::_stageIdsOf($transfer['event']['stages'] ?? []));
+    }
+
+    private static function _stageIdsOf(mixed $stages): array
+    {
+        if (!is_array($stages)) {
+            return [];
+        }
+        return array_map(fn($stage) => self::_identifierOf(is_array($stage) ? ($stage['id'] ?? null) : null), $stages);
     }
 
     private static function _whatARefusedRequestAskedFor(mixed $data): string

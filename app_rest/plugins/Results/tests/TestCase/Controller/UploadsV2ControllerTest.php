@@ -358,6 +358,66 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             'an identifier is cut to the length of a uuid');
     }
 
+    /**
+     * A client that posts every few seconds meets the lock constantly during a race, and a refusal caused by
+     * timing says nothing about the payload, so only the contended stage is worth the log.
+     */
+    public function testAddNew_shouldNotLogThePayloadOfAnUploadRefusedWhileTheStageIsImporting()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $lock = $this->_lockTheStage();
+        try {
+            $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+            $lines = $this->errorLogDuring(fn() => $this->post($this->_getEndpoint(), $data));
+        } finally {
+            $lock->release();
+        }
+
+        $this->assertUploadRejected(409);
+        $this->assertTrue($this->anyLineContains($lines,
+            'payload not logged: stage ' . StagesFixture::STAGE_FEDO_2 . ' was still importing'));
+        $this->assertFalse($this->anyLineContains($lines, '"classes"'));
+    }
+
+    private function _malformedUpload(string $description): array
+    {
+        return ['oreplay_data_transfer' => [
+            'configuration' => [
+                'source_vendor' => 'sportSoftware',
+                'source' => 'OE2010',
+                'contents' => 'StartList | ResultList',
+                'results_type' => UploadConfigChecker::TYPE_MIXED,
+            ],
+            'event' => ['id' => Event::FIRST_EVENT, 'description' => $description, 'stages' => []],
+        ]];
+    }
+
+    public function testAddNew_shouldLogTheWholeBodyOfASmallJsonItCannotImport()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+
+        $lines = $this->errorLogDuring(fn() => $this->post($this->_getEndpoint(), $this->_malformedUpload('short')));
+
+        $this->assertUploadRejected(400);
+        $this->assertTrue($this->anyLineContains($lines, '"stages":[]'),
+            'when the body is what was wrong with the upload, a small one is kept whole');
+    }
+
+    public function testAddNew_shouldLogOnlyASummaryOfALargeJsonItCannotImport()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+
+        $lines = $this->errorLogDuring(fn() => $this->post($this->_getEndpoint(),
+            $this->_malformedUpload(str_repeat('d', 5000))));
+
+        $this->assertUploadRejected(400);
+        $this->assertTrue($this->anyLineContains($lines, 'JSON body of '));
+        $this->assertTrue($this->anyLineContains($lines, '"source":"OE2010"'), 'the configuration says who sent it');
+        $this->assertTrue($this->anyLineContains($lines, 'event ' . Event::FIRST_EVENT));
+        $this->assertFalse($this->anyLineContains($lines, str_repeat('d', 100)),
+            'a real upload is hundreds of kilobytes, and a log entry over 64 KB cannot be stored in production');
+    }
+
     public function testAddNew_shouldDecodeGzip()
     {
         Cache::clear();

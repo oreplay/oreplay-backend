@@ -332,6 +332,27 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
             'a document can be 20 MB, and in production the error log is a database table');
     }
 
+    /**
+     * SportSoftware writes windows-1252, and in production the error log is a utf8mb4 column: a raw byte
+     * such as the \xED of "Benjamí" makes the row impossible to store.
+     */
+    public function testAddNew_shouldLogTheStartOfAWindows1252XmlAsValidUtf8()
+    {
+        $body = preg_replace('/\?>/', "?><!-- Pre Benjam\xED -->",
+            file_get_contents($this->_asset('iof/invalid_schema.xml')), 1);
+
+        $lines = $this->errorLogDuring(function () use ($body) {
+            $this->_configureXmlRequest();
+            $this->post($this->_getEndpoint() . $this->_query(''), $body);
+        });
+
+        $this->assertUploadRejected(400);
+        $this->assertTrue($this->anyLineContains($lines, 'Pre Benjam?'));
+        foreach ($lines as $line) {
+            $this->assertTrue(mb_check_encoding($line, 'UTF-8'));
+        }
+    }
+
     public function testAddNew_shouldRefuseAnUnknownTimeZone()
     {
         $this->_configureXmlRequest();
