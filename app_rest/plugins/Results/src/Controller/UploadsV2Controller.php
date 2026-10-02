@@ -11,7 +11,9 @@ use Cake\Core\Configure;
 use Cake\Http\Exception\ConflictException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\HttpException;
+use Cake\Http\Exception\InternalErrorException;
 use RestApi\Lib\Exception\DetailedException;
+use RestApi\Lib\Exception\SilentException;
 use Results\Lib\Import\Iof\IofUploadFactory;
 use Results\Lib\Import\Iof\IofUploadOptions;
 use Results\Lib\Import\StageUploadLock;
@@ -110,9 +112,9 @@ class UploadsV2Controller extends ApiController
     {
         try {
             return (string)$this->getManualOauth()->verifyAuthorizationAndGetToken()->getUserId();
-        } catch (\Throwable $e) {
+        } catch (InternalErrorException | SilentException $e) {
             // neither kind of token: keep the one answer clients already handle for a bad bearer
-            throw new ForbiddenException('Invalid Bearer token');
+            throw new ForbiddenException('Invalid Bearer token', null, $e);
         }
     }
 
