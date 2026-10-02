@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Lib\Import\Iof;
 
 use App\Lib\Exception\InvalidPayloadException;
+use Cake\Http\Exception\InternalErrorException;
 use Cake\TestSuite\TestCase;
 use DateTimeZone;
 use PHPUnit\Framework\Attributes\RunInSeparateProcess;
@@ -72,10 +73,28 @@ class IofUploadTempFileTest extends TestCase
             IofUpload::fromBody(file_get_contents($this->_asset('splits.xml')), 'event-id', 'stage-id',
                 new DateTimeZone('UTC'));
             $this->fail('a body that cannot be written has to be refused');
-        } catch (InvalidPayloadException $e) {
+        } catch (InternalErrorException $e) {
             $left = array_diff($this->_bufferedFiles(), $before);
             array_map('unlink', $left);
             $this->assertSame([], array_values($left), 'the empty file tempnam() created was left behind');
+        }
+    }
+
+    #[RunInSeparateProcess]
+    public function testFromBody_shouldReportAFailedWriteAsAServerErrorWithItsReason()
+    {
+        require __DIR__ . '/FileWriteFailure.php';
+        $before = $this->_bufferedFiles();
+        try {
+            IofUpload::fromBody(file_get_contents($this->_asset('splits.xml')), 'event-id', 'stage-id',
+                new DateTimeZone('UTC'));
+            $this->fail('a body that cannot be written has to be refused');
+        } catch (InternalErrorException $e) {
+            $this->assertEquals(500, $e->getCode(), 'a full disk is the server failing, not the request');
+            $this->assertStringContainsString('possibly out of free disk space',
+                (string)$e->getPrevious()?->getMessage(), 'what PHP said is the only clue to why it failed');
+        } finally {
+            array_map('unlink', array_diff($this->_bufferedFiles(), $before));
         }
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Lib\Import\Iof;
 
 use App\Lib\Exception\InvalidPayloadException;
+use Cake\Http\Exception\InternalErrorException;
 use DateTimeZone;
 use Generator;
 use Results\Lib\UploadConfigChecker;
@@ -189,15 +190,27 @@ class IofUpload
 
     private function _bufferToFile(string $body): string
     {
+        error_clear_last();
         $path = tempnam(sys_get_temp_dir(), 'iof');
-        if ($path !== false && file_put_contents($path, $body) === false) {
-            unlink($path);
-            $path = false;
-        }
         if ($path === false) {
-            throw new InvalidPayloadException('Could not buffer the uploaded XML');
+            throw self::_couldNotBuffer();
+        }
+        if (file_put_contents($path, $body) === false) {
+            $failure = self::_couldNotBuffer();
+            unlink($path);
+            throw $failure;
         }
         return $path;
+    }
+
+    private static function _couldNotBuffer(): InternalErrorException
+    {
+        $error = error_get_last();
+        $cause = null;
+        if ($error) {
+            $cause = new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
+        }
+        return new InternalErrorException('Could not buffer the uploaded XML', null, $cause);
     }
 
     private function _removeBufferedFile(): void
