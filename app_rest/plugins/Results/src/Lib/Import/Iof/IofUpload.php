@@ -190,7 +190,11 @@ class IofUpload
     private function _bufferToFile(string $body): string
     {
         $path = tempnam(sys_get_temp_dir(), 'iof');
-        if ($path === false || file_put_contents($path, $body) === false) {
+        if ($path !== false && file_put_contents($path, $body) === false) {
+            unlink($path);
+            $path = false;
+        }
+        if ($path === false) {
             throw new InvalidPayloadException('Could not buffer the uploaded XML');
         }
         return $path;

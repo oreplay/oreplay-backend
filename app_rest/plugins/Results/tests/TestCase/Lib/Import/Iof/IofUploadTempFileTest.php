@@ -7,6 +7,7 @@ namespace Results\Test\TestCase\Lib\Import\Iof;
 use App\Lib\Exception\InvalidPayloadException;
 use Cake\TestSuite\TestCase;
 use DateTimeZone;
+use PHPUnit\Framework\Attributes\RunInSeparateProcess;
 use Results\Lib\Import\Iof\IofUpload;
 
 class IofUploadTempFileTest extends TestCase
@@ -55,5 +56,26 @@ class IofUploadTempFileTest extends TestCase
         unset($upload);
 
         $this->assertSame([], array_values(array_diff($this->_bufferedFiles(), $before)));
+    }
+
+    /**
+     * tempnam() creates the file before anything is written into it, so a write that fails, on a full disk
+     * for instance, has to remove it as well. The failing write is a file_put_contents() declared in the
+     * importer's namespace, which only a process of its own can hold without breaking every other upload.
+     */
+    #[RunInSeparateProcess]
+    public function testFromBody_shouldRemoveTheTempFileWhenTheBodyCannotBeWritten()
+    {
+        require __DIR__ . '/FileWriteFailure.php';
+        $before = $this->_bufferedFiles();
+        try {
+            IofUpload::fromBody(file_get_contents($this->_asset('splits.xml')), 'event-id', 'stage-id',
+                new DateTimeZone('UTC'));
+            $this->fail('a body that cannot be written has to be refused');
+        } catch (InvalidPayloadException $e) {
+            $left = array_diff($this->_bufferedFiles(), $before);
+            array_map('unlink', $left);
+            $this->assertSame([], array_values($left), 'the empty file tempnam() created was left behind');
+        }
     }
 }
