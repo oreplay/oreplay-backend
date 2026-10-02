@@ -55,6 +55,7 @@ use Results\Test\Fixture\StageTypesFixture;
 use Results\Test\Fixture\TeamResultsFixture;
 use Results\Test\Fixture\TeamsFixture;
 use Results\Test\Fixture\TokensFixture;
+use Results\Test\Fixture\RawUploadsFixture;
 use Results\Test\TestCase\Controller\UploadExamples\IntermediateExamples;
 use Results\Test\TestCase\Controller\UploadExamples\MixedExamples;
 use Results\Test\TestCase\Controller\UploadExamples\RelayExamples;
@@ -82,6 +83,7 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         CoursesFixture::LOAD,
         TeamsFixture::LOAD,
         TeamResultsFixture::LOAD,
+        RawUploadsFixture::LOAD,
     ];
 
     const PREFIX = ' *** PLEASE UPDATE THE DESKTOP CLIENT TO THE LAST VERSION!!!!!!!!!!!!!!!!!!!!!';
@@ -162,6 +164,34 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $jsonDecoded = $this->assertJsonResponseOK();
         $this->assertStringContainsString('[ERROR', $jsonDecoded['meta']['human'][0]);
         $this->assertEquals(['classes' => 0, 'runners' => 0], $jsonDecoded['meta']['updated']);
+    }
+
+    private function _postReplayOf(string $rawUploadId): void
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint() . '?version=' . UploadsController::NEW_VERSION,
+            ['raw_upload_id' => $rawUploadId, 'stage_id' => StagesFixture::STAGE_FEDO_2]);
+    }
+
+    /**
+     * v1 knows only event tokens, and a token covers one event, so a replay is confined to that event: v2
+     * applies the same rule, and closing it in one version alone would leave the other as the way around.
+     */
+    public function testAddNew_shouldRefuseToReplayAnUploadOfAnotherEvent()
+    {
+        $this->_postReplayOf($this->storeRawUploadOf(EventsFixture::EVENT_TODAY,
+            ResultExamples::resultSimpleFinishTime()));
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $this->assertStringContainsString('token', $jsonDecoded['meta']['human'][0]);
+        $this->assertEquals(['classes' => 0, 'runners' => 0], $jsonDecoded['meta']['updated']);
+    }
+
+    public function testAddNew_shouldReplayAnUploadOfItsOwnEvent()
+    {
+        $this->_postReplayOf($this->storeRawUploadOf(Event::FIRST_EVENT, ResultExamples::resultSimpleFinishTime()));
+
+        $this->assertUploadOk('an event token still replays the uploads of its own event');
     }
 
     public function testAddNew_shouldDecodeGzip()

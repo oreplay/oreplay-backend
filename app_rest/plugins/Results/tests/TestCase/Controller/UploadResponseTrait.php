@@ -4,6 +4,10 @@ declare(strict_types = 1);
 
 namespace Results\Test\TestCase\Controller;
 
+use Cake\Utility\Text;
+use Results\Model\Table\RawUploadsTable;
+use Results\Test\Fixture\StagesFixture;
+
 trait UploadResponseTrait
 {
     /**
@@ -63,5 +67,18 @@ trait UploadResponseTrait
         $body = (string)$this->_getBodyAsString();
         $this->assertEquals($expectedStatus, $this->_response->getStatusCode(), $body);
         return json_decode($body, true);
+    }
+
+    protected function storeRawUploadOf(string $eventId, array $dataTransfer): string
+    {
+        $rawUploads = RawUploadsTable::load();
+        $raw = $rawUploads->newEmptyEntity();
+        $raw->id = Text::uuid();
+        $raw->event_id = $eventId;
+        $raw->stage_id = StagesFixture::STAGE_RAID;
+        $raw->upload_log_id = Text::uuid();
+        $raw->file_data = (string)json_encode(['oreplay_data_transfer' => $dataTransfer]);
+        $rawUploads->saveOrFail($raw);
+        return $raw->id;
     }
 }

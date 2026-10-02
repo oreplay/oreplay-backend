@@ -35,6 +35,8 @@ use Results\Model\Table\UploadLogsTable;
 
 class UploadsV2Controller extends ApiController
 {
+    private const int LOGGED_XML_HEAD_BYTES = 2000;
+
     private UploadMetrics $_metrics;
     private ClassesTable $Classes;
     // held for the lifetime of the request: the classes stream lazily from the buffered document
@@ -108,6 +110,17 @@ class UploadsV2Controller extends ApiController
         EventsTable::load()->getEventFromUser($eventId, $this->_userIdFromAccessToken());
     }
 
+    private function _withReplayedUpload(array $data, string $eventId): array
+    {
+        $rawUploads = RawUploadsTable::load();
+        $source = $rawUploads->findReUploadSource($data);
+        if (!$source) {
+            return $data;
+        }
+        $this->_assertUploaderAuthenticated($source->event_id);
+        return $rawUploads->reUploadedDataOf($source, $eventId, $data['stage_id']);
+    }
+
     private function _userIdFromAccessToken(): string
     {
         try {
@@ -159,14 +172,11 @@ class UploadsV2Controller extends ApiController
             $eventId = $this->request->getParam('eventID');
             $this->_assertUploaderAuthenticated($eventId);
             // an XML body arrives as a raw string, so this branch has to come before anything that
-            // expects an array: getReUploadedData() is typed array and would raise a TypeError
+            // expects an array: _withReplayedUpload() is typed array and would raise a TypeError
             if (is_string($data)) {
                 $helper = $this->_iofXmlHelper($data);
             } else {
-                $reUploadedData = RawUploadsTable::load()->getReUploadedData($data, $eventId);
-                if ($reUploadedData) {
-                    $data = $reUploadedData;
-                }
+                $data = $this->_withReplayedUpload($data, $eventId);
                 $helper = new UploadHelper($data, $eventId, $this->_metrics);
             }
             if ($this->_isReprocessAllRequested()) {
@@ -175,16 +185,16 @@ class UploadsV2Controller extends ApiController
             $this->return = $this->_addNew($helper);
         } catch (\PDOException $e) {
             $this->log('Uploads PDOException: ' . $e->getMessage()
-                . " \n\n" . json_encode($data)
+                . " \n\n" . $this->_loggablePayload($data, $e)
                 . " \n\n" . json_encode($this->return)
             );
             $this->return = $this->respondError($e->getMessage(), $e);
         } catch (DetailedException $e) {
-            $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . json_encode($data)
+            $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . $this->_loggablePayload($data, $e)
                 . " \n" . $e->getTraceAsString());
             $this->return = $this->respondError($e->getMessage(), $e);
         } catch (\Throwable $e) {
-            $this->log('Uploads GeneralException: ' . $e->getMessage() . " \n" . json_encode($data)
+            $this->log('Uploads GeneralException: ' . $e->getMessage() . " \n" . $this->_loggablePayload($data, $e)
                 . " \n" . $e->getTraceAsString());
             // an HttpException carries a message meant for the client, such as the reason a token was
             // refused; anything else is unexpected, and only its type is safe to report
@@ -203,6 +213,18 @@ class UploadsV2Controller extends ApiController
     // v1 answers 202 for every failure because its contract with the desktop client says so. v2 is
     // free of that promise and answers a real status, so a client can tell a rejected upload from an
     // accepted one without parsing meta.human. See docs/uploads-v1-vs-v2.md
+    private function _loggablePayload(mixed $data, \Throwable $e): string
+    {
+        if ($e instanceof ForbiddenException) {
+            return '(payload of a refused request not logged)';
+        }
+        if (is_string($data)) {
+            return 'XML body of ' . strlen($data) . ' bytes, starting: '
+                . substr($data, 0, self::LOGGED_XML_HEAD_BYTES);
+        }
+        return (string)json_encode($data);
+    }
+
     private function respondError(string $message, \Throwable $e): array
     {
         $this->response = $this->response->withStatus($this->_errorStatus($e));

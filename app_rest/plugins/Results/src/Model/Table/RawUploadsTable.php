@@ -103,19 +103,22 @@ class RawUploadsTable extends AppTable
         return $res;
     }
 
-    public function getReUploadedData(array $data, string $eventId): ?array
+    public function findReUploadSource(array $data): ?RawUpload
     {
-        $arrayKeys = array_keys($data);
-        sort($arrayKeys);
-        if ($arrayKeys !== ['raw_upload_id', 'stage_id']) {
+        if (!self::_isReUploadRequest($data)) {
             return null;
         }
-        $res = $this->find()
+        /** @var RawUpload $source */
+        $source = $this->find()
             ->where(['id' => $data['raw_upload_id']])
             ->limit(1)
             ->firstOrFail();
+        return $source;
+    }
 
-        $toRet = json_decode($res->file_data, true);
+    public function reUploadedDataOf(RawUpload $source, string $eventId, string $stageId): array
+    {
+        $toRet = json_decode($source->file_data, true);
         if (!is_array($toRet)) {
             // an XML upload is stored as the original bytes, which have no ids to overwrite here
             throw new InvalidPayloadException('Re-uploading a stored XML upload is not supported yet');
@@ -124,8 +127,15 @@ class RawUploadsTable extends AppTable
         $toRet[$envelope]['event']['id'] = $eventId;
         $stages = $toRet[$envelope]['event']['stages'] ?? [];
         foreach ($stages as $i => $stage) {
-            $toRet[$envelope]['event']['stages'][$i]['id'] = $data['stage_id'];
+            $toRet[$envelope]['event']['stages'][$i]['id'] = $stageId;
         }
         return $toRet;
+    }
+
+    private static function _isReUploadRequest(array $data): bool
+    {
+        $arrayKeys = array_keys($data);
+        sort($arrayKeys);
+        return $arrayKeys === ['raw_upload_id', 'stage_id'];
     }
 }

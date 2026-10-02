@@ -44,6 +44,7 @@ Observed today:
 | Malformed payload, e.g. `stages: []` | 202 | **400** |
 | Start times uploaded when finish times exist | 202 | **400** |
 | `raw_upload_id` that does not exist | 202 | **404** |
+| `raw_upload_id` of an event the caller could not upload to (`ForbiddenException`) | 202 | **403** |
 | Anything unexpected, including `PDOException` | 202 | **500** |
 | An upload for the same stage is still importing | 202, and both imports run | **409**, and the second is refused |
 

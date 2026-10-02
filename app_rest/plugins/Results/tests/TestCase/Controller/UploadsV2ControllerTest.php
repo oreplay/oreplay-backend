@@ -55,6 +55,7 @@ use Results\Test\Fixture\TeamResultsFixture;
 use Results\Test\Fixture\TeamsFixture;
 use Results\Test\Fixture\TokensFixture;
 use Results\Test\Fixture\UsersEventsFixture;
+use Results\Test\Fixture\RawUploadsFixture;
 use Results\Test\TestCase\Controller\UploadExamples\IntermediateExamples;
 use Results\Test\TestCase\Controller\UploadExamples\MixedExamples;
 use Results\Test\TestCase\Controller\UploadExamples\RelayExamples;
@@ -85,6 +86,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         OauthAccessTokensFixture::LOAD,
         UsersFixture::LOAD,
         UsersEventsFixture::LOAD,
+        RawUploadsFixture::LOAD,
     ];
 
     protected function _getEndpointAddingToSwagger(): string
@@ -274,6 +276,52 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('error', $jsonDecoded['meta']['level']);
         $this->assertEquals(['classes' => 0, 'courses' => 0, 'runners' => 0, 'splits' => 0,
             'runnerResults' => 0], $jsonDecoded['meta']['updated']);
+    }
+
+    private function _replayRequestOf(string $rawUploadId): array
+    {
+        return ['raw_upload_id' => $rawUploadId, 'stage_id' => StagesFixture::STAGE_FEDO_2];
+    }
+
+    private function _linkNonAdminUserTo(string $eventId): void
+    {
+        $UsersEvents = UsersEventsTable::load();
+        $ownership = $UsersEvents->newEmptyEntity();
+        $ownership->user_id = UsersFixture::USER_NON_ADMIN_ID;
+        $ownership->event_id = $eventId;
+        $ownership->is_admin = false;
+        $UsersEvents->saveOrFail($ownership);
+    }
+
+    /**
+     * A replay rewrites the stored upload's event and stage to the caller's, so whoever replays it reads
+     * another event's upload: that is only allowed to someone who could have uploaded to that event.
+     */
+    public function testAddNew_shouldRefuseToReplayAnUploadOfAnEventTheTokenDoesNotCover()
+    {
+        $rawUploadId = $this->storeRawUploadOf(EventsFixture::EVENT_TODAY, ResultExamples::resultSimpleFinishTime());
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+
+        $this->post($this->_getEndpoint(), $this->_replayRequestOf($rawUploadId));
+
+        $this->assertUploadRejected(403);
+        $this->assertEquals(0, RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all()->count(),
+            'an event token covers its own event, so it cannot pull another event\'s upload into it');
+    }
+
+    public function testAddNew_shouldReplayAnUploadOfAnotherEventForAUserWhoOwnsBoth()
+    {
+        $this->_linkNonAdminUserTo(Event::FIRST_EVENT);
+        $this->_linkNonAdminUserTo(EventsFixture::EVENT_TODAY);
+        $rawUploadId = $this->storeRawUploadOf(EventsFixture::EVENT_TODAY, ResultExamples::resultSimpleFinishTime());
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+
+        $this->post($this->_getEndpoint(), $this->_replayRequestOf($rawUploadId));
+
+        $this->assertUploadOk('replaying into another event is deliberate, for whoever may upload to both');
+        $this->assertGreaterThan(0, RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all()->count());
     }
 
     public function testAddNew_shouldDecodeGzip()

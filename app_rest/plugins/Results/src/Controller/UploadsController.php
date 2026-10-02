@@ -37,6 +37,9 @@ use Results\Model\Table\UploadLogsTable;
 
 class UploadsController extends ApiController
 {
+    private const string INVALID_TOKEN_MESSAGE =
+        'There is a problem with the token, create a new one and set it in the client';
+
     public const NEW_VERSION = 402;
 
     private UploadMetrics $_metrics;
@@ -75,8 +78,7 @@ class UploadsController extends ApiController
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($helper->getEventId(), $token);
         if (!$isDesktopClientAuthenticated) {
-            throw new InvalidTokenException(
-                'There is a problem with the token, create a new one and set it in the client');
+            throw new InvalidTokenException(self::INVALID_TOKEN_MESSAGE);
         }
 
         $configChecker = $helper->validateConfigChecker();
@@ -268,10 +270,7 @@ class UploadsController extends ApiController
         $this->flatResponse = true;
         $this->_metrics = new UploadMetrics();
         try {
-            $reUploadedData = RawUploadsTable::load()->getReUploadedData($data, $this->request->getParam('eventID'));
-            if ($reUploadedData) {
-                $data = $reUploadedData;
-            }
+            $data = $this->_withReplayedUpload($data, $this->request->getParam('eventID'));
             $helper = new UploadHelper($data, $this->request->getParam('eventID'), $this->_metrics);
             if ($this->_isReprocessAllRequested()) {
                 $helper->reprocessAll();
@@ -299,6 +298,19 @@ class UploadsController extends ApiController
         } finally {
             $this->_clearUploadCache();
         }
+    }
+
+    private function _withReplayedUpload(array $data, string $eventId): array
+    {
+        $rawUploads = RawUploadsTable::load();
+        $source = $rawUploads->findReUploadSource($data);
+        if (!$source) {
+            return $data;
+        }
+        if (!TokensTable::load()->isValidEventToken($source->event_id, $this->_getBearer())) {
+            throw new InvalidTokenException(self::INVALID_TOKEN_MESSAGE);
+        }
+        return $rawUploads->reUploadedDataOf($source, $eventId, $data['stage_id']);
     }
 
     private function respondError(string $message, $code): array

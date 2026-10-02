@@ -7,6 +7,8 @@ namespace Results\Test\TestCase\Controller;
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Cake\Cache\Cache;
+use Cake\Log\Engine\ArrayLog;
+use Cake\Log\Log;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\Event;
 use Results\Model\Table\EventsTable;
@@ -288,6 +290,69 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
         $json = $this->assertUploadRejected(403);
         $this->assertEquals('forbidden', $json['meta']['messages'][0]['code']);
         $this->assertNull($json['meta']['uploadType']);
+    }
+
+    private const string BODY_MARKER = 'BODY-MARKER-NEVER-LOGGED';
+
+    private function _errorLogDuring(callable $request): array
+    {
+        Log::setConfig('captured', ['className' => ArrayLog::class, 'levels' => ['error']]);
+        try {
+            $request();
+            return Log::engine('captured')->read();
+        } finally {
+            Log::drop('captured');
+        }
+    }
+
+    private static function _anyLineContains(array $lines, string $needle): bool
+    {
+        foreach ($lines as $line) {
+            if (str_contains($line, $needle)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * A refused request is anonymous and its body is whatever the caller chose to send, up to the size
+     * limit, so writing it to the log would let anyone fill the log from outside.
+     */
+    public function testAddNew_shouldNotLogTheBodyOfARefusedRequest()
+    {
+        $lines = $this->_errorLogDuring(function () {
+            $this->configRequest(['headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer not-a-token',
+                'Content-Type' => 'application/xml',
+            ]]);
+            $this->post($this->_getEndpoint() . $this->_query(''),
+                file_get_contents($this->_asset('iof/splits.xml')) . '<!-- ' . self::BODY_MARKER . ' -->');
+        });
+
+        $this->assertUploadRejected(403);
+        $this->assertTrue(self::_anyLineContains($lines, 'Invalid Bearer token'),
+            'the refusal itself is still logged');
+        $this->assertFalse(self::_anyLineContains($lines, self::BODY_MARKER));
+    }
+
+    public function testAddNew_shouldLogOnlyTheStartOfAnXmlItCannotImport()
+    {
+        $body = file_get_contents($this->_asset('iof/invalid_schema.xml'))
+            . '<!-- ' . str_repeat('x', 3000) . self::BODY_MARKER . ' -->';
+
+        $lines = $this->_errorLogDuring(function () use ($body) {
+            $this->_configureXmlRequest();
+            $this->post($this->_getEndpoint() . $this->_query(''), $body);
+        });
+
+        $this->assertUploadRejected(400);
+        $this->assertTrue(self::_anyLineContains($lines, 'XML body of ' . strlen($body) . ' bytes'),
+            'the size says how much was refused without storing it');
+        $this->assertTrue(self::_anyLineContains($lines, '<?xml'), 'the start still shows what the document was');
+        $this->assertFalse(self::_anyLineContains($lines, self::BODY_MARKER),
+            'a document can be 20 MB, and in production the error log is a database table');
     }
 
     public function testAddNew_shouldRefuseAnUnknownTimeZone()
