@@ -117,6 +117,40 @@ class RunnerResultTest extends TestCase
             . 'the control is still shown with its time, so the timeless copy adds nothing but a broken split');
     }
 
+    public function testCleanSplitsWithoutRadios_shouldHideTheRadiosOfARunnerWhoReachedNoneYet()
+    {
+        $runnerResult = new RunnerResult();
+        $runnerResult->id = 'notReachedAnyRadio';
+        $runnerResult->addSplit($this->_radioSplit('radio59', '59', null));
+        $runnerResult->addSplit($this->_radioSplit('radio47', '47', null));
+
+        $runnerResult->cleanSplitsWithoutRadios();
+
+        $this->assertSame([], $runnerResult->getSplits(),
+            'OE v12 exports every declared radio for every runner, so a runner who reached none yet '
+            . 'carries only timeless radios, which the frontend shows as missed controls');
+    }
+
+    public function testCleanSplitsWithoutRadios_shouldNotAddSplitsToAResultLoadedWithoutThem()
+    {
+        $runnerResult = new RunnerResult();
+        $runnerResult->id = 'splitsNotContained';
+
+        $runnerResult->cleanSplitsWithoutRadios();
+
+        $this->assertArrayNotHasKey('splits', $runnerResult->toArray());
+    }
+
+    private function _radioSplit(string $id, string $station, ?string $readingTime): Split
+    {
+        $split = new Split();
+        $split->id = $id;
+        $split->is_intermediate = true;
+        $split->station = $station;
+        $split->reading_time = $readingTime ? new FrozenTime($readingTime) : null;
+        return $split;
+    }
+
     private function _normalSplit(string $id, string $station, int $orderNumber, ?string $readingTime): Split
     {
         $split = new Split();
