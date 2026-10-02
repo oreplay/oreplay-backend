@@ -32,8 +32,28 @@ class Organizer extends AppEntity
         'deleted',
     ];
 
+    private const array PROPERTIES_THE_DESKTOP_CLIENT_DECLARES = ['id', 'name', 'country', 'region'];
+
+    private bool $_shapedForTheDesktopClient = false;
+
+    public function shapedForTheDesktopClient(): static
+    {
+        $this->_shapedForTheDesktopClient = true;
+        $this->setVirtual(['country', 'region'], true);
+        $this->setHidden(array_diff($this->getVisible(), self::PROPERTIES_THE_DESKTOP_CLIENT_DECLARES), true);
+        return $this;
+    }
+
+    protected function _getCountry(): ?string
+    {
+        return $this->country_code;
+    }
+
     protected function _getRegion(): ?string
     {
+        if ($this->_shapedForTheDesktopClient) {
+            return $this->country_code && $this->region_code ? $this->_isoRegion() : null;
+        }
         return RegionNames::NAME_OF_ISO_3166_2[$this->_isoRegion()] ?? null;
     }
 

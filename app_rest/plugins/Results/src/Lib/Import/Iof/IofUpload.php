@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Lib\Import\Iof;
 
 use App\Lib\Exception\InvalidPayloadException;
+use Cake\Http\Exception\InternalErrorException;
 use DateTimeZone;
 use Generator;
 use Results\Lib\UploadConfigChecker;
@@ -55,12 +56,15 @@ class IofUpload
         bool $validateAgainstSchema
     ) {
         $this->_filePath = $this->_bufferToFile($body);
-        // the header first: it rejects IOF 2.0 and an unknown root with something an operator can act on,
-        // where the schema would only complain about an unexpected namespace
-        $this->_header = IofUploadTypeDetector::detect($this->_filePath, $explicitUploadType);
-        $this->_refuseAClassTooBigToImport();
-        if ($validateAgainstSchema) {
-            $this->_refuseUnlessItMatchesTheSchema();
+        try {
+            $this->_header = IofUploadTypeDetector::detect($this->_filePath, $explicitUploadType);
+            $this->_refuseAClassTooBigToImport();
+            if ($validateAgainstSchema) {
+                $this->_refuseUnlessItMatchesTheSchema();
+            }
+        } catch (\Throwable $e) {
+            $this->_removeBufferedFile();
+            throw $e;
         }
     }
 
@@ -186,17 +190,38 @@ class IofUpload
 
     private function _bufferToFile(string $body): string
     {
+        error_clear_last();
         $path = tempnam(sys_get_temp_dir(), 'iof');
-        if ($path === false || file_put_contents($path, $body) === false) {
-            throw new InvalidPayloadException('Could not buffer the uploaded XML');
+        if ($path === false) {
+            throw self::_couldNotBuffer();
+        }
+        if (file_put_contents($path, $body) === false) {
+            $failure = self::_couldNotBuffer();
+            unlink($path);
+            throw $failure;
         }
         return $path;
     }
 
-    public function __destruct()
+    private static function _couldNotBuffer(): InternalErrorException
+    {
+        $error = error_get_last();
+        $cause = null;
+        if ($error) {
+            $cause = new \ErrorException($error['message'], 0, $error['type'], $error['file'], $error['line']);
+        }
+        return new InternalErrorException('Could not buffer the uploaded XML', null, $cause);
+    }
+
+    private function _removeBufferedFile(): void
     {
         if (isset($this->_filePath) && is_file($this->_filePath)) {
             unlink($this->_filePath);
         }
+    }
+
+    public function __destruct()
+    {
+        $this->_removeBufferedFile();
     }
 }

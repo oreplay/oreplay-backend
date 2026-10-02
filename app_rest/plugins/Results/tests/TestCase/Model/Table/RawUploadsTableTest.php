@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Model\Table;
 
 use Cake\TestSuite\TestCase;
+use Results\Model\Entity\Event;
 use Results\Model\Table\RawUploadsTable;
 use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\RawUploadsFixture;
@@ -35,25 +36,37 @@ class RawUploadsTableTest extends TestCase
         $this->assertEmpty($raw);
     }
 
-    public function testGetReUploadedData(): void
+    public function testFindReUploadSource_shouldFindTheStoredUploadOfAReplayRequest(): void
     {
-        // get by id
-        $data = [
+        $source = $this->RawUploads->findReUploadSource([
             'raw_upload_id' => RawUploadsFixture::FIRST,
             'stage_id' => StagesFixture::STAGE_RAID,
-        ];
-        $reUploadedData = $this->RawUploads->getReUploadedData($data, EventsFixture::EVENT_TODAY);
+        ]);
+
+        $this->assertEquals(Event::FIRST_EVENT, $source->event_id,
+            'the caller is authorised against this event before the upload is replayed');
+    }
+
+    public function testFindReUploadSource_shouldIgnoreAnOrdinaryUpload(): void
+    {
+        $this->assertNull($this->RawUploads->findReUploadSource(['raw_upload_id' => 'wrong']));
+    }
+
+    public function testReUploadedDataOf_shouldMoveTheUploadIntoTheTargetEvent(): void
+    {
+        $source = $this->RawUploads->get(RawUploadsFixture::FIRST);
+
+        $reUploaded = $this->RawUploads->reUploadedDataOf($source, EventsFixture::EVENT_TODAY,
+            StagesFixture::STAGE_RAID);
+
         $expected = [
             'empty' => 'fixture',
             'oreplay_data_transfer' => [
                 'event' => [
-                    'id' => '1b10cfcc-b3f2-40bb-8dbe-8b24c0-today'
-                ]
-            ]
+                    'id' => EventsFixture::EVENT_TODAY,
+                ],
+            ],
         ];
-        $this->assertEquals($expected, $reUploadedData);
-        // not valid payload
-        $data1 = ['raw_upload_id' => 'wrong'];
-        $this->assertNull($this->RawUploads->getReUploadedData($data1, EventsFixture::EVENT_TODAY));
+        $this->assertEquals($expected, $reUploaded);
     }
 }

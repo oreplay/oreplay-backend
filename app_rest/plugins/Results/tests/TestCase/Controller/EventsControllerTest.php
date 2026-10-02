@@ -203,6 +203,43 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($this->_getSecondEvent(), $bodyDecoded['data'][0]);
     }
 
+    private function _organizerOfTheFirstEventAs(string $userAgent): array
+    {
+        $this->cleanup();
+        $this->configRequest(['headers' => ['Accept' => 'application/json', 'User-Agent' => $userAgent]]);
+        $this->skipNextRequestInSwagger();
+        $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
+        $organizer = $this->assertJsonResponseOK()['data']['organizer'];
+        unset($organizer['_c']);
+        return $organizer;
+    }
+
+    /**
+     * The desktop client connects anonymously to read the whole event, and parses it with a Jackson mapper
+     * that refuses any property its model does not declare: its Organizer declares id, name, country and
+     * region, as served up to 0.5.1, so the codes split out since then would stop it connecting at all.
+     */
+    public function testGetData_shouldServeTheDesktopClientTheOrganizerItCanRead()
+    {
+        $organizer = $this->_organizerOfTheFirstEventAs('Java-http-client/17.0.2');
+
+        $this->assertEquals([
+            'id' => Organizer::ID,
+            'name' => Organizer::NAME,
+            'country' => 'ES',
+            'region' => 'ES-VC',
+        ], $organizer);
+    }
+
+    public function testGetData_shouldServeEveryOtherCallerTheOrganizerWithItsCodes()
+    {
+        $organizer = $this->_organizerOfTheFirstEventAs('Mozilla/5.0');
+
+        $this->assertEquals('ES', $organizer['country_code']);
+        $this->assertEquals('VC', $organizer['region_code']);
+        $this->assertArrayNotHasKey('country', $organizer);
+    }
+
     public function testGetData()
     {
         $this->cleanup();

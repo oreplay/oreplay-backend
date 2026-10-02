@@ -400,6 +400,11 @@ Example request body. This is example is a draft to give a general illustration 
 ```
 It is important to notice the `event.id` MUST be the event ID on the url (in our example `79bad6e6-7c42-4317-958d-5c83c905b0ad`) and `event.stages.id` MUST be the **stage ID** selected in the stage selector (for example `995cdc24-66f9-4a64-bba6-90d6584475ac` )
 
+In a radio upload (`results_type` `Radiocontrols`) each class SHOULD list its radio controls in course order as
+`classes_controls`, e.g. `"classes_controls":[{"control":{"station":"34"}},{"control":{"station":"200"}}]`. Those
+are the radios the results page shows for the class until downloaded cards reveal its whole course, including
+radios no runner has reached yet. A class left out of a later radio upload keeps the radios it last declared.
+
 ## Uploading IOF XML v3 instead
 
 The **v2** endpoint, `POST /api/v1/events/<Event ID>/uploads/v2/`, accepts an IOF XML v3 `ResultList` or
@@ -427,7 +432,8 @@ Authorization: Bearer <token>
 
 The kind of upload — full splits, radio intermediates or finish times only — is detected from the document
 itself, including the `<!-- SplitTimeControls: … -->` comment SportSoftware writes into radio exports, so
-nothing has to declare it.
+nothing has to declare it. The stations that comment lists are the class's radios, as `classes_controls` is in
+JSON.
 
 Differences between v1 and v2 that a client author needs, including the response shape and the `409` a
 second concurrent upload receives, are in `uploads-v1-vs-v2.md`.

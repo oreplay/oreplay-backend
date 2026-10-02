@@ -27,9 +27,8 @@ trait ResultTrait
 
     public function cleanSplitsWithoutRadios(): void
     {
-        $splits = $this->getSplitsWithoutRadios();
-        if ($splits) {
-            $this->replaceSplits($splits);
+        if ($this->getSplits()) {
+            $this->replaceSplits($this->getSplitsWithoutRadios());
         }
     }
 

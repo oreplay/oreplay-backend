@@ -83,6 +83,18 @@ class IofUploadTypeDetectorTest extends TestCase
         IofUploadTypeDetector::detect($this->_asset('iof_v2.xml'));
     }
 
+    /**
+     * An EntryList holds PersonEntry rows that each name their class, not ClassResult/ClassStart groups,
+     * so the class-by-class reader finds nothing in it. Accepting it answered 200 and imported nothing.
+     */
+    public function testDetect_shouldRejectAnEntryListItCannotImport()
+    {
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessage('IOF EntryList cannot be imported');
+
+        IofUploadTypeDetector::detect($this->_asset('entries.xml'));
+    }
+
     public function testDetect_shouldRejectADocumentThatIsNotAnIofUploadAtAll()
     {
         $path = tempnam(sys_get_temp_dir(), 'iof');

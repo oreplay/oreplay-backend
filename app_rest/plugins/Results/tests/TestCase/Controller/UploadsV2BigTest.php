@@ -88,6 +88,14 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
 
     private const SPLITS_STORED_BEFORE_RE_SYNC = 280;
 
+    // in no numeric order, and 31 is a radio none of their runners has reached yet
+    private const RADIOS_DECLARED_ON_FIRST_RADIO_BATCH = [
+        'PreBe' => ['48', '49', '57'],
+        'Ben M' => ['49', '31', '55', '40'],
+    ];
+    private const RADIOS_DECLARED_ON_SECOND_RADIO_BATCH = ['Sen M' => ['31', '47']];
+    private const RADIOS_DECLARED_ON_THIRD_RADIO_BATCH = ['Ben M' => ['49', '55', '40']];
+
     private const STAGE_ID = 'b19e7e57-0000-4000-8000-0000000000b1';
 
     private string $_stageId = '';
@@ -131,6 +139,63 @@ class UploadsV2BigTest extends ApiCommonErrorsTest
         $this->_secondRadioBatchForRunnersStillOut();
         $this->_organiserReSyncsTheWholeEvent();
         $this->_reUploadingTheWholeEventChangesNothing();
+    }
+
+    public function testAddNew_shouldShowTheRadiosTheExportDeclaresBeforeAnyCourseIsStored()
+    {
+        $this->_upload(BigEventExamples::startList(self::FIRST_STARTERS, $this->_stageId));
+        $this->_upload(BigEventExamples::radioPunches(
+            self::FIRST_STARTERS,
+            self::PUNCHES_ON_FIRST_RADIO_BATCH,
+            $this->_stageId,
+            self::RADIOS_DECLARED_ON_FIRST_RADIO_BATCH
+        ));
+
+        $this->assertEquals(0, $this->_courseControlAmount(),
+            'neither a start list nor a radio upload carries a whole course');
+        $this->assertEquals(self::RADIOS_DECLARED_ON_FIRST_RADIO_BATCH['PreBe'], $this->_radiosShownForClass('PreBe'),
+            'a live race shows the radios the export declares before any card is downloaded');
+        $this->assertEquals(self::RADIOS_DECLARED_ON_FIRST_RADIO_BATCH['Ben M'], $this->_radiosShownForClass('Ben M'),
+            'in the declared order, including radio 31 that no runner has reached yet');
+
+        $this->_upload(BigEventExamples::radioPunches(
+            self::STILL_ON_COURSE,
+            self::PUNCHES_ON_SECOND_RADIO_BATCH,
+            $this->_stageId,
+            self::RADIOS_DECLARED_ON_SECOND_RADIO_BATCH
+        ));
+
+        $this->assertEquals(self::RADIOS_DECLARED_ON_SECOND_RADIO_BATCH['Sen M'], $this->_radiosShownForClass('Sen M'));
+        $this->assertEquals(self::RADIOS_DECLARED_ON_FIRST_RADIO_BATCH['Ben M'], $this->_radiosShownForClass('Ben M'),
+            'an export only lists the classes with punches, so a class it leaves out keeps its radios');
+
+        $this->_upload(BigEventExamples::radioPunches(
+            self::FIRST_STARTERS,
+            self::PUNCHES_ON_FIRST_RADIO_BATCH,
+            $this->_stageId,
+            self::RADIOS_DECLARED_ON_THIRD_RADIO_BATCH
+        ));
+
+        $this->assertEquals(self::RADIOS_DECLARED_ON_THIRD_RADIO_BATCH['Ben M'], $this->_radiosShownForClass('Ben M'),
+            'a later export declaring the class replaces its radios');
+    }
+
+    public function testAddNew_shouldStoreTheDeclaredRadiosOfAClassItSkipsAsUnchanged()
+    {
+        $radios = BigEventExamples::radioPunches(
+            self::FIRST_STARTERS,
+            self::PUNCHES_ON_FIRST_RADIO_BATCH,
+            $this->_stageId,
+            self::RADIOS_DECLARED_ON_FIRST_RADIO_BATCH
+        );
+        $this->_upload($radios);
+        ClassesTable::load()->updateAll(['radio_stations' => null], ['stage_id' => $this->_stageId]);
+
+        $meta = $this->_upload($radios);
+
+        $this->assertEquals(0, $meta['updated']['classes'], 'the identical upload skips every class');
+        $this->assertEquals(self::RADIOS_DECLARED_ON_FIRST_RADIO_BATCH['Ben M'], $this->_radiosShownForClass('Ben M'),
+            'a class imported before its radios were stored gets them from the next export, changed or not');
     }
 
     private function _firstRadiosWhileTheyRun(): void

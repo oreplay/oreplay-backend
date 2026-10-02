@@ -25,7 +25,6 @@ class IofUploadTypeDetector
 
     private const UPLOAD_TYPE_OF_ROOT = [
         'StartList' => UploadTypes::START_LIST,
-        'EntryList' => UploadTypes::ENTRY_LIST,
     ];
 
     public static function detect(string $filePath, ?string $explicitUploadType = null): IofHeader
@@ -51,6 +50,9 @@ class IofUploadTypeDetector
                 throw new InvalidPayloadException('Unsupported IOF version ' . ($version ?: 'missing'));
             }
             $creator = self::_attribute($head, 'creator') ?: 'unknown';
+            if ($rootElement === 'EntryList') {
+                throw new InvalidPayloadException('An IOF EntryList cannot be imported yet, upload a StartList');
+            }
             if (isset(self::UPLOAD_TYPE_OF_ROOT[$rootElement])) {
                 return new IofHeader($rootElement, $creator, $version, self::UPLOAD_TYPE_OF_ROOT[$rootElement]);
             }

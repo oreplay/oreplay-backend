@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
+use App\Test\Fixture\OauthAccessTokensFixture;
+use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use App\Lib\Consts\CacheGrp;
 use Cake\Cache\Cache;
@@ -36,6 +38,7 @@ use Results\Model\Table\StagesTable;
 use Results\Model\Table\UploadLogsTable;
 use Results\Model\Table\TeamResultsTable;
 use Results\Model\Table\TeamsTable;
+use Results\Model\Table\UsersEventsTable;
 use Results\Test\Fixture\ClassesFixture;
 use Results\Test\Fixture\ClubsFixture;
 use Results\Test\Fixture\ControlsFixture;
@@ -51,6 +54,8 @@ use Results\Test\Fixture\StageTypesFixture;
 use Results\Test\Fixture\TeamResultsFixture;
 use Results\Test\Fixture\TeamsFixture;
 use Results\Test\Fixture\TokensFixture;
+use Results\Test\Fixture\UsersEventsFixture;
+use Results\Test\Fixture\RawUploadsFixture;
 use Results\Test\TestCase\Controller\UploadExamples\IntermediateExamples;
 use Results\Test\TestCase\Controller\UploadExamples\MixedExamples;
 use Results\Test\TestCase\Controller\UploadExamples\RelayExamples;
@@ -78,6 +83,10 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         CoursesFixture::LOAD,
         TeamsFixture::LOAD,
         TeamResultsFixture::LOAD,
+        OauthAccessTokensFixture::LOAD,
+        UsersFixture::LOAD,
+        UsersEventsFixture::LOAD,
+        RawUploadsFixture::LOAD,
     ];
 
     protected function _getEndpointAddingToSwagger(): string
@@ -267,6 +276,187 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->assertEquals('error', $jsonDecoded['meta']['level']);
         $this->assertEquals(['classes' => 0, 'courses' => 0, 'runners' => 0, 'splits' => 0,
             'runnerResults' => 0], $jsonDecoded['meta']['updated']);
+    }
+
+    private function _replayRequestOf(string $rawUploadId): array
+    {
+        return ['raw_upload_id' => $rawUploadId, 'stage_id' => StagesFixture::STAGE_FEDO_2];
+    }
+
+    private function _linkNonAdminUserTo(string $eventId): void
+    {
+        $UsersEvents = UsersEventsTable::load();
+        $ownership = $UsersEvents->newEmptyEntity();
+        $ownership->user_id = UsersFixture::USER_NON_ADMIN_ID;
+        $ownership->event_id = $eventId;
+        $ownership->is_admin = false;
+        $UsersEvents->saveOrFail($ownership);
+    }
+
+    /**
+     * A replay rewrites the stored upload's event and stage to the caller's, so whoever replays it reads
+     * another event's upload: that is only allowed to someone who could have uploaded to that event.
+     */
+    public function testAddNew_shouldRefuseToReplayAnUploadOfAnEventTheTokenDoesNotCover()
+    {
+        $rawUploadId = $this->storeRawUploadOf(EventsFixture::EVENT_TODAY, ResultExamples::resultSimpleFinishTime());
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+
+        $this->post($this->_getEndpoint(), $this->_replayRequestOf($rawUploadId));
+
+        $this->assertUploadRejected(403);
+        $this->assertEquals(0, RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all()->count(),
+            'an event token covers its own event, so it cannot pull another event\'s upload into it');
+    }
+
+    public function testAddNew_shouldReplayAnUploadOfAnotherEventForAUserWhoOwnsBoth()
+    {
+        $this->_linkNonAdminUserTo(Event::FIRST_EVENT);
+        $this->_linkNonAdminUserTo(EventsFixture::EVENT_TODAY);
+        $rawUploadId = $this->storeRawUploadOf(EventsFixture::EVENT_TODAY, ResultExamples::resultSimpleFinishTime());
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+
+        $this->post($this->_getEndpoint(), $this->_replayRequestOf($rawUploadId));
+
+        $this->assertUploadOk('replaying into another event is deliberate, for whoever may upload to both');
+        $this->assertGreaterThan(0, RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all()->count());
+    }
+
+    /**
+     * The body of a refused request is never logged, but for a replay the two ids it carries are what tells
+     * an organiser's mistake from someone walking through the ids of other events' uploads.
+     */
+    public function testAddNew_shouldLogWhichUploadARefusedReplayAskedFor()
+    {
+        $rawUploadId = $this->storeRawUploadOf(EventsFixture::EVENT_TODAY, ResultExamples::resultSimpleFinishTime());
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+
+        $lines = $this->errorLogDuring(fn() => $this->post($this->_getEndpoint(),
+            $this->_replayRequestOf($rawUploadId)));
+
+        $this->assertUploadRejected(403);
+        $this->assertTrue($this->anyLineContains($lines,
+            'replay of raw upload ' . $rawUploadId . ' into stage ' . StagesFixture::STAGE_FEDO_2));
+    }
+
+    public function testAddNew_shouldLogOnlyTheIdentifierCharactersOfARefusedReplay()
+    {
+        $this->loadAuthToken('not-a-token-of-any-kind');
+        $forged = "abc\nFORGED LOG LINE " . str_repeat('x', 5000);
+
+        $lines = $this->errorLogDuring(fn() => $this->post($this->_getEndpoint(),
+            ['raw_upload_id' => $forged, 'stage_id' => StagesFixture::STAGE_FEDO_2]));
+
+        $this->assertUploadRejected(403);
+        $this->assertTrue($this->anyLineContains($lines, 'replay of raw upload abcFORGEDLOGLINE'),
+            'the request chose these values, so only identifier characters reach the log');
+        $this->assertFalse($this->anyLineContains($lines, 'FORGED LOG LINE'),
+            'a newline in the request must not start a line of its own in the log');
+        $this->assertFalse($this->anyLineContains($lines, str_repeat('x', 100)),
+            'an identifier is cut to the length of a uuid');
+    }
+
+    /**
+     * A client that posts every few seconds meets the lock constantly during a race, and a refusal caused by
+     * timing says nothing about the payload, so only the contended stage is worth the log.
+     */
+    public function testAddNew_shouldNotLogThePayloadOfAnUploadRefusedWhileTheStageIsImporting()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $lock = $this->_lockTheStage();
+        try {
+            $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+            $lines = $this->errorLogDuring(fn() => $this->post($this->_getEndpoint(), $data));
+        } finally {
+            $lock->release();
+        }
+
+        $this->assertUploadRejected(409);
+        $this->assertTrue($this->anyLineContains($lines,
+            'payload not logged: stage ' . StagesFixture::STAGE_FEDO_2 . ' was still importing'));
+        $this->assertFalse($this->anyLineContains($lines, '"classes"'));
+    }
+
+    private function _malformedUpload(string $description): array
+    {
+        return ['oreplay_data_transfer' => [
+            'configuration' => [
+                'source_vendor' => 'sportSoftware',
+                'source' => 'OE2010',
+                'contents' => 'StartList | ResultList',
+                'results_type' => UploadConfigChecker::TYPE_MIXED,
+            ],
+            'event' => ['id' => Event::FIRST_EVENT, 'description' => $description, 'stages' => []],
+        ]];
+    }
+
+    public function testAddNew_shouldLogTheWholeBodyOfASmallJsonItCannotImport()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+
+        $lines = $this->errorLogDuring(fn() => $this->post($this->_getEndpoint(), $this->_malformedUpload('short')));
+
+        $this->assertUploadRejected(400);
+        $this->assertTrue($this->anyLineContains($lines, '"stages":[]'),
+            'when the body is what was wrong with the upload, a small one is kept whole');
+    }
+
+    public function testAddNew_shouldLogOnlyASummaryOfALargeJsonItCannotImport()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+
+        $lines = $this->errorLogDuring(fn() => $this->post($this->_getEndpoint(),
+            $this->_malformedUpload(str_repeat('d', 5000))));
+
+        $this->assertUploadRejected(400);
+        $this->assertTrue($this->anyLineContains($lines, 'JSON body of '));
+        $this->assertTrue($this->anyLineContains($lines, '"source":"OE2010"'), 'the configuration says who sent it');
+        $this->assertTrue($this->anyLineContains($lines, 'event ' . Event::FIRST_EVENT));
+        $this->assertFalse($this->anyLineContains($lines, str_repeat('d', 100)),
+            'a real upload is hundreds of kilobytes, and a log entry over 64 KB cannot be stored in production');
+    }
+
+    /**
+     * The controller catches a database error itself, so the renderer that hides messages when debug is off
+     * never sees it, and Cake's QueryException carries the query with its values: names and chips.
+     */
+    public function testAddNew_shouldKeepTheQueryOfADatabaseErrorOutOfTheResponse()
+    {
+        $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+        array_walk_recursive($data, function (&$value, $key) {
+            if ($key === 'sicard') {
+                $value = str_repeat('9', 40);
+            }
+        });
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+
+        $lines = $this->errorLogDuring(fn() => $this->post($this->_getEndpoint(), $data));
+
+        $jsonDecoded = $this->assertUploadRejected(500);
+        $text = $jsonDecoded['meta']['messages'][0]['text'];
+        $this->assertStringNotContainsString('SQLSTATE', $text);
+        $this->assertStringNotContainsString('INSERT', $text);
+        $this->assertTrue($this->anyLineContains($lines, 'SQLSTATE'),
+            'the detail moves to the log rather than being lost');
+    }
+
+    /**
+     * The 403 replaces the OAuth library's own refusal, which says why the bearer was refused (expired,
+     * malformed, unknown); the client keeps the one answer it handles, and the reason goes to the log.
+     */
+    public function testAddNew_shouldLogWhyABearerWasRefused()
+    {
+        $this->loadAuthToken('not-a-token-of-any-kind');
+
+        $lines = $this->errorLogDuring(fn() => $this->post($this->_getEndpoint(),
+            ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()]));
+
+        $this->assertUploadRejected(403);
+        $this->assertTrue($this->anyLineContains($lines, 'Invalid Bearer token'));
+        $this->assertTrue($this->anyLineContains($lines, 'Verify authorization error'),
+            'the cause chained onto the 403 is what tells an expired token from a malformed one');
     }
 
     public function testAddNew_shouldDecodeGzip()
@@ -820,6 +1010,8 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             ['stage_id' => StagesFixture::STAGE_FEDO_2],
             ['id' => ClassEntity::ME]);
 
+        // setUp signs every request in with the admin's session, which may upload since it owns the event
+        $this->configRequest(['headers' => ['Accept' => 'application/json']]);
         $data = ['oreplay_data_transfer' => StartExamples::startImportSmall()];
         $this->post($this->_getEndpoint(), $data);
 
@@ -842,6 +1034,47 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             ]],
         ];
         $this->assertUploadMeta($expectedMeta, json_decode((string)$this->_getBodyAsString(), true));
+    }
+
+    public function testAddNew_shouldAcceptTheAccessTokenOfAUserWhoOwnsTheEvent()
+    {
+        $UsersEvents = UsersEventsTable::load();
+        $ownership = $UsersEvents->newEmptyEntity();
+        $ownership->user_id = UsersFixture::USER_NON_ADMIN_ID;
+        $ownership->event_id = Event::FIRST_EVENT;
+        $ownership->is_admin = false;
+        $UsersEvents->saveOrFail($ownership);
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+
+        $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+        $this->post($this->_getEndpoint(), $data);
+
+        $this->assertUploadOk('the organiser uploads from the web with their own session');
+    }
+
+    public function testAddNew_shouldRefuseTheAccessTokenOfAUserWhoDoesNotOwnTheEvent()
+    {
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+
+        $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+        $this->post($this->_getEndpoint(), $data);
+
+        $jsonDecoded = $this->assertUploadRejected(403);
+        $this->assertEquals('Event not from this user', $jsonDecoded['meta']['messages'][0]['text']);
+        $this->assertEquals(0, RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all()->count(),
+            'a refused upload must not import anything');
+    }
+
+    public function testAddNew_shouldRefuseABearerThatIsNeitherAnEventTokenNorAnAccessToken()
+    {
+        $this->loadAuthToken('not-a-token-of-any-kind');
+
+        $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+        $this->post($this->_getEndpoint(), $data);
+
+        $jsonDecoded = $this->assertUploadRejected(403);
+        $this->assertEquals('Invalid Bearer token', $jsonDecoded['meta']['messages'][0]['text']);
     }
 
     public function testAddNew_shouldAddFinishTimesTwice()
@@ -1960,6 +2193,7 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
     {
         // no event token. v2 is not bound by v1's 202-for-every-failure contract, so a client can
         // tell a rejected upload from an accepted one without reading meta.human
+        $this->configRequest(['headers' => ['Accept' => 'application/json']]);
         $data = ['oreplay_data_transfer' => IntermediateExamples::intermediateResults()];
         $this->post($this->_getEndpoint(), $data);
 

@@ -14,6 +14,7 @@ use Cake\I18n\FrozenTime;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\Import\ClassImportReport;
 use Results\Lib\Import\CourseImporter;
+use Results\Lib\Import\DeclaredRadiosImporter;
 use Results\Lib\Import\RunnerImporter;
 use Results\Lib\Import\TeamImporter;
 use Results\Lib\Publish\ClassResultsPublisher;
@@ -37,6 +38,9 @@ use Results\Model\Table\UploadLogsTable;
 
 class UploadsController extends ApiController
 {
+    private const string INVALID_TOKEN_MESSAGE =
+        'There is a problem with the token, create a new one and set it in the client';
+
     public const NEW_VERSION = 402;
 
     private UploadMetrics $_metrics;
@@ -75,8 +79,7 @@ class UploadsController extends ApiController
         $token = $this->_getBearer();
         $isDesktopClientAuthenticated = TokensTable::load()->isValidEventToken($helper->getEventId(), $token);
         if (!$isDesktopClientAuthenticated) {
-            throw new InvalidTokenException(
-                'There is a problem with the token, create a new one and set it in the client');
+            throw new InvalidTokenException(self::INVALID_TOKEN_MESSAGE);
         }
 
         $configChecker = $helper->validateConfigChecker();
@@ -93,8 +96,10 @@ class UploadsController extends ApiController
 
         $counter = 0;
         $publisher = $this->_classResultsPublisher();
+        $declaredRadios = new DeclaredRadiosImporter($this->Classes, $helper);
         foreach ($configChecker->getClasses() as $classObj) {
             $class = $this->Classes->createIfNotExists($helper->getEventId(), $stageId, $classObj);
+            $declaredRadios->import($classObj, $class);
             $isTakingTooLong = $this->_setIsTakingTooLongWarning($metrics, $counter);
             if ($this->_needsProcessing($class, $classObj, $helper) && !$isTakingTooLong) {
                 $class->setHash($classObj);
@@ -115,7 +120,7 @@ class UploadsController extends ApiController
             }
         }
 
-        $this->_markIntermediateStations($helper);
+        $this->_storeRadioStations($helper);
 
         $log = UploadLogsTable::load()->saveUploadLog($helper);
         RawUploadsTable::load()->saveFile($log, $helper);
@@ -154,10 +159,10 @@ class UploadsController extends ApiController
         $importer->importInto($class);
     }
 
-    private function _markIntermediateStations(UploadHelper $helper): void
+    private function _storeRadioStations(UploadHelper $helper): void
     {
-        ControlsTable::load()->markIntermediateStations(
-            $helper->getStageId(),
+        ControlsTable::load()->storeRadioStations(
+            $helper->getContext(),
             $helper->getIntermediateStations()->toList()
         );
     }
@@ -268,10 +273,7 @@ class UploadsController extends ApiController
         $this->flatResponse = true;
         $this->_metrics = new UploadMetrics();
         try {
-            $reUploadedData = RawUploadsTable::load()->getReUploadedData($data, $this->request->getParam('eventID'));
-            if ($reUploadedData) {
-                $data = $reUploadedData;
-            }
+            $data = $this->_withReplayedUpload($data, $this->request->getParam('eventID'));
             $helper = new UploadHelper($data, $this->request->getParam('eventID'), $this->_metrics);
             if ($this->_isReprocessAllRequested()) {
                 $helper->reprocessAll();
@@ -299,6 +301,19 @@ class UploadsController extends ApiController
         } finally {
             $this->_clearUploadCache();
         }
+    }
+
+    private function _withReplayedUpload(array $data, string $eventId): array
+    {
+        $rawUploads = RawUploadsTable::load();
+        $source = $rawUploads->findReUploadSource($data);
+        if (!$source) {
+            return $data;
+        }
+        if (!TokensTable::load()->isValidEventToken($source->event_id, $this->_getBearer())) {
+            throw new InvalidTokenException(self::INVALID_TOKEN_MESSAGE);
+        }
+        return $rawUploads->reUploadedDataOf($source, $eventId, $data['stage_id']);
     }
 
     private function respondError(string $message, $code): array

@@ -11,7 +11,9 @@ use Cake\Core\Configure;
 use Cake\Http\Exception\ConflictException;
 use Cake\Http\Exception\ForbiddenException;
 use Cake\Http\Exception\HttpException;
+use Cake\Http\Exception\InternalErrorException;
 use RestApi\Lib\Exception\DetailedException;
+use RestApi\Lib\Exception\SilentException;
 use Results\Lib\Import\Iof\IofUploadFactory;
 use Results\Lib\Import\Iof\IofUploadOptions;
 use Results\Lib\Import\StageUploadLock;
@@ -21,10 +23,12 @@ use Results\Lib\Publish\NchanChannel;
 use Results\Lib\Publish\UploadProgressPublisher;
 use Results\Lib\Publish\UploadPublisher;
 use Results\Lib\Publish\UploadPublishers;
+use Results\Lib\UploadConfigChecker;
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMessage;
 use Results\Lib\UploadMetrics;
 use Results\Model\Table\ClassesTable;
+use Results\Model\Table\EventsTable;
 use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\TokensTable;
 use Results\Model\Entity\UploadLog;
@@ -32,6 +36,9 @@ use Results\Model\Table\UploadLogsTable;
 
 class UploadsV2Controller extends ApiController
 {
+    private const int LOGGED_BODY_BYTES = 500;
+    private const int MAX_LOGGED_IDENTIFIER_LENGTH = 36;
+
     private UploadMetrics $_metrics;
     private ClassesTable $Classes;
     // held for the lifetime of the request: the classes stream lazily from the buffered document
@@ -66,10 +73,6 @@ class UploadsV2Controller extends ApiController
             $this->_writeLastUploadJson($helper->getData(), TMP . 'lastUpload.json');
         }
         //$this->log('Uploading: ' . " \n\n" . json_encode($helper->getData()), \Psr\Log\LogLevel::DEBUG); // NOSONAR
-        $this->_assertDesktopClientAuthenticated($helper);
-
-        //$rawUrl = $this->_getHost() . '/api/v1/events/' . $helper->getEventId() . '/rawUploads';
-        //FireAndForget::postJson($rawUrl, $helper->getData(), ['Authorization' => 'Bearer ' . $this->_getBearer()]);
 
         // the log row describes the upload, so the payload has to be understood before it can be written
         $type = $helper->validateConfigChecker()->preCheckType();
@@ -101,11 +104,32 @@ class UploadsV2Controller extends ApiController
         return new UploadPublishers($publishers);
     }
 
-    private function _assertDesktopClientAuthenticated(UploadHelper $helper): void
+    private function _assertUploaderAuthenticated(string $eventId): void
     {
-        $token = $this->_getBearer();
-        if (!TokensTable::load()->isValidEventToken($helper->getEventId(), $token)) {
-            throw new ForbiddenException('Invalid Bearer token');
+        if (TokensTable::load()->isValidEventToken($eventId, $this->_getBearer())) {
+            return;
+        }
+        EventsTable::load()->getEventFromUser($eventId, $this->_userIdFromAccessToken());
+    }
+
+    private function _withReplayedUpload(array $data, string $eventId): array
+    {
+        $rawUploads = RawUploadsTable::load();
+        $source = $rawUploads->findReUploadSource($data);
+        if (!$source) {
+            return $data;
+        }
+        $this->_assertUploaderAuthenticated($source->event_id);
+        return $rawUploads->reUploadedDataOf($source, $eventId, $data['stage_id']);
+    }
+
+    private function _userIdFromAccessToken(): string
+    {
+        try {
+            return (string)$this->getManualOauth()->verifyAuthorizationAndGetToken()->getUserId();
+        } catch (InternalErrorException | SilentException $e) {
+            // neither kind of token: keep the one answer clients already handle for a bad bearer
+            throw new ForbiddenException('Invalid Bearer token', null, $e);
         }
     }
 
@@ -148,15 +172,13 @@ class UploadsV2Controller extends ApiController
         $this->_metrics = UploadMetrics::withoutSavedClasses();
         try {
             $eventId = $this->request->getParam('eventID');
+            $this->_assertUploaderAuthenticated($eventId);
             // an XML body arrives as a raw string, so this branch has to come before anything that
-            // expects an array: getReUploadedData() is typed array and would raise a TypeError
+            // expects an array: _withReplayedUpload() is typed array and would raise a TypeError
             if (is_string($data)) {
                 $helper = $this->_iofXmlHelper($data);
             } else {
-                $reUploadedData = RawUploadsTable::load()->getReUploadedData($data, $eventId);
-                if ($reUploadedData) {
-                    $data = $reUploadedData;
-                }
+                $data = $this->_withReplayedUpload($data, $eventId);
                 $helper = new UploadHelper($data, $eventId, $this->_metrics);
             }
             if ($this->_isReprocessAllRequested()) {
@@ -164,30 +186,105 @@ class UploadsV2Controller extends ApiController
             }
             $this->return = $this->_addNew($helper);
         } catch (\PDOException $e) {
-            $this->log('Uploads PDOException: ' . $e->getMessage()
-                . " \n\n" . json_encode($data)
+            $this->log('Uploads PDOException: ' . self::_withCauses($e)
+                . " \n\n" . $this->_loggablePayload($data, $e)
                 . " \n\n" . json_encode($this->return)
             );
-            $this->return = $this->respondError($e->getMessage(), $e);
+            $this->return = $this->respondError(self::_clientSafeMessage($e), $e);
         } catch (DetailedException $e) {
-            $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . json_encode($data)
+            $this->log('Uploads DetailedException: ' . self::_withCauses($e)
+                . " \n" . $this->_loggablePayload($data, $e)
                 . " \n" . $e->getTraceAsString());
             $this->return = $this->respondError($e->getMessage(), $e);
         } catch (\Throwable $e) {
-            $this->log('Uploads GeneralException: ' . $e->getMessage() . " \n" . json_encode($data)
+            $this->log('Uploads GeneralException: ' . self::_withCauses($e)
+                . " \n" . $this->_loggablePayload($data, $e)
                 . " \n" . $e->getTraceAsString());
-            // an HttpException carries a message meant for the client, such as the reason a token was
-            // refused; anything else is unexpected, and only its type is safe to report
-            $exploded = explode('\\', get_class($e));
-            $exceptionName = array_pop($exploded);
-            if (!$exceptionName) {
-                $exceptionName = array_pop($exploded);
-            }
-            $clientSafe = $e instanceof HttpException ? $e->getMessage() : '';
-            $this->return = $this->respondError($clientSafe ?: $exceptionName, $e);
+            $this->return = $this->respondError(self::_clientSafeMessage($e), $e);
         } finally {
             $this->_clearUploadCache();
         }
+    }
+
+    private function _loggablePayload(mixed $data, \Throwable $e): string
+    {
+        if ($e instanceof ForbiddenException) {
+            return self::_whatARefusedRequestAskedFor($data);
+        }
+        if ($e instanceof ConflictException) {
+            return 'payload not logged: stage ' . $this->_stageIdOfTheRequest($data) . ' was still importing';
+        }
+        if (is_string($data)) {
+            return 'XML body of ' . strlen($data) . ' bytes, starting: '
+                . mb_scrub(substr($data, 0, self::LOGGED_BODY_BYTES), 'UTF-8');
+        }
+        return self::_boundedJson(is_array($data) ? $data : []);
+    }
+
+    private function _stageIdOfTheRequest(mixed $data): string
+    {
+        $stageId = $this->request->getQuery('stage_id');
+        if (!$stageId && is_array($data)) {
+            $stageId = $data[UploadConfigChecker::ENVELOPE_KEY]['event']['stages'][0]['id'] ?? null;
+        }
+        return self::_identifierOf($stageId);
+    }
+
+    private static function _boundedJson(array $data): string
+    {
+        $json = (string)json_encode($data);
+        if (strlen($json) <= self::LOGGED_BODY_BYTES) {
+            return $json;
+        }
+        $transfer = $data[UploadConfigChecker::ENVELOPE_KEY] ?? [];
+        return 'JSON body of ' . strlen($json) . ' bytes, configuration '
+            . substr((string)json_encode($transfer['configuration'] ?? null), 0, self::LOGGED_BODY_BYTES)
+            . ', event ' . self::_identifierOf($transfer['event']['id'] ?? null)
+            . ', stages ' . implode(' ', self::_stageIdsOf($transfer['event']['stages'] ?? []));
+    }
+
+    private static function _stageIdsOf(mixed $stages): array
+    {
+        if (!is_array($stages)) {
+            return [];
+        }
+        return array_map(fn($stage) => self::_identifierOf(is_array($stage) ? ($stage['id'] ?? null) : null), $stages);
+    }
+
+    private static function _whatARefusedRequestAskedFor(mixed $data): string
+    {
+        if (is_array($data) && RawUploadsTable::isReUploadRequest($data)) {
+            return 'replay of raw upload ' . self::_identifierOf($data['raw_upload_id'])
+                . ' into stage ' . self::_identifierOf($data['stage_id']);
+        }
+        return '(payload of a refused request not logged)';
+    }
+
+    private static function _identifierOf(mixed $value): string
+    {
+        $text = is_scalar($value) ? (string)$value : '';
+        return substr((string)preg_replace('/[^A-Za-z0-9-]/', '', $text), 0, self::MAX_LOGGED_IDENTIFIER_LENGTH);
+    }
+
+    private static function _withCauses(\Throwable $e): string
+    {
+        $message = $e->getMessage();
+        for ($cause = $e->getPrevious(); $cause; $cause = $cause->getPrevious()) {
+            $message .= ' (caused by ' . $cause::class . ': ' . $cause->getMessage() . ')';
+        }
+        return $message;
+    }
+
+    // an HttpException carries a message meant for the client, such as the reason a token was
+    // refused; anything else is unexpected, and only its type is safe to report
+    private static function _clientSafeMessage(\Throwable $e): string
+    {
+        $message = $e instanceof HttpException ? $e->getMessage() : '';
+        if ($message) {
+            return $message;
+        }
+        $exploded = explode('\\', get_class($e));
+        return (string)array_pop($exploded);
     }
 
     // v1 answers 202 for every failure because its contract with the desktop client says so. v2 is

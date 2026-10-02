@@ -16,6 +16,8 @@ use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageType;
 use Results\Model\Entity\UploadLog;
 use Results\Model\Table\ClassesTable;
+use Results\Model\Table\EventsTable;
+use Results\Model\Table\RunnersTable;
 use Results\Model\Table\StageOrdersTable;
 use Results\Model\Table\StagesTable;
 use Results\Model\Table\UploadLogsTable;
@@ -212,7 +214,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
 
     public function testEdit_adminCanEditStageInEventTheyDoNotOwn()
     {
-        $this->markTestSkipped();
+        $this->skipNextRequestInSwagger();
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
         $url = ApiController::ROUTE_PREFIX . '/events/' . EventsFixture::FIRST_RAID
             . '/stages/' . StagesFixture::STAGE_RAID;
@@ -224,13 +226,141 @@ class StagesControllerTest extends ApiCommonErrorsTest
 
     public function testEdit_nonAdminNonOwnerIsForbidden()
     {
-        $this->markTestSkipped();
+        $this->skipNextRequestInSwagger();
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
         $url = ApiController::ROUTE_PREFIX . '/events/' . EventsFixture::FIRST_RAID
             . '/stages/' . StagesFixture::STAGE_RAID;
         $this->patch($url, ['description' => 'Hacked']);
 
         $this->assertResponseCode(403);
+        $this->assertEquals('Stage raid', StagesTable::load()->get(StagesFixture::STAGE_RAID)->description);
+    }
+
+    private function _raidStagesUrl(): string
+    {
+        return ApiController::ROUTE_PREFIX . '/events/' . EventsFixture::FIRST_RAID . '/stages/';
+    }
+
+    private function _raidStageUrl(): string
+    {
+        return $this->_raidStagesUrl() . StagesFixture::STAGE_RAID;
+    }
+
+    private function _makeNonAdminOwnerOfFirstEvent(): void
+    {
+        $events = EventsTable::load();
+        $owner = $events->Users->get(UsersFixture::USER_NON_ADMIN_ID);
+        $events->Users->link($events->get(Event::FIRST_EVENT), [$owner]);
+    }
+
+    private function _stagesInEvent(string $eventId): int
+    {
+        return StagesTable::load()->find()->where(['event_id' => $eventId])->count();
+    }
+
+    public function testEdit_shouldNotEditWithInvalidToken()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken('bad_token');
+        $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, ['description' => 'Hacked']);
+
+        $this->assertResponseCode(401);
+        $this->assertEquals('First stage', StagesTable::load()->get(Stage::FIRST_STAGE)->description);
+    }
+
+    public function testEdit_ownerWhoIsNotAdminCanEditTheirStage()
+    {
+        $this->_makeNonAdminOwnerOfFirstEvent();
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+        $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, ['description' => 'Edited by its owner']);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals('Edited by its owner', $bodyDecoded['data']['description']);
+    }
+
+    public function testEdit_shouldNotEditAStageOfAnotherEvent()
+    {
+        $this->_makeNonAdminOwnerOfFirstEvent();
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+        $this->patch($this->_getEndpoint() . StagesFixture::STAGE_RAID, ['description' => 'Hacked']);
+
+        $this->assertException('Forbidden', 403, 'The stage is not from this event');
+        $this->assertEquals('Stage raid', StagesTable::load()->get(StagesFixture::STAGE_RAID)->description);
+    }
+
+    public function testAddNew_shouldNotAddWithInvalidToken()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken('bad_token');
+        $this->post($this->_getEndpoint(), ['description' => 'Hacked stage']);
+
+        $this->assertResponseCode(401);
+        $this->assertEquals(2, $this->_stagesInEvent(Event::FIRST_EVENT));
+    }
+
+    public function testAddNew_nonAdminNonOwnerIsForbidden()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+        $this->post($this->_raidStagesUrl(), ['description' => 'Hacked stage']);
+
+        $this->assertResponseCode(403);
+        $this->assertEquals(1, $this->_stagesInEvent(EventsFixture::FIRST_RAID));
+    }
+
+    public function testAddNew_adminCanAddInAnEventTheyDoNotOwn()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $this->post($this->_raidStagesUrl(), ['description' => 'Added by admin']);
+
+        $bodyDecoded = $this->assertJsonResponseOK();
+        $this->assertEquals('Added by admin', $bodyDecoded['data']['description']);
+        $this->assertEquals(2, $this->_stagesInEvent(EventsFixture::FIRST_RAID));
+    }
+
+    public function testDelete_shouldNotDeleteWithInvalidToken()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken('bad_token');
+        $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE);
+
+        $this->assertResponseCode(401);
+        $this->assertNotNull(StagesTable::load()->findById(Stage::FIRST_STAGE)->first());
+    }
+
+    public function testDelete_nonAdminNonOwnerIsForbidden()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+        $this->delete($this->_raidStageUrl());
+
+        $this->assertResponseCode(403);
+        $this->assertNotNull(StagesTable::load()->findById(StagesFixture::STAGE_RAID)->first());
+        $this->assertNotNull(RunnersTable::load()->findById(RunnersFixture::RUNNER_RAID_ID)->first());
+    }
+
+    public function testDelete_shouldNotDeleteAStageOfAnotherEvent()
+    {
+        $this->_makeNonAdminOwnerOfFirstEvent();
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_NON_ADMIN_PROVIDER);
+        $this->delete($this->_getEndpoint() . StagesFixture::STAGE_RAID);
+
+        $this->assertException('Forbidden', 403, 'The stage is not from this event');
+        $this->assertNotNull(StagesTable::load()->findById(StagesFixture::STAGE_RAID)->first());
+    }
+
+    public function testDelete_adminCanDeleteAStageOfAnEventTheyDoNotOwn()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $this->delete($this->_raidStageUrl());
+
+        $this->assertResponse204NoContent();
+        $this->assertNull(StagesTable::load()->findById(StagesFixture::STAGE_RAID)->first());
     }
 
     public function testDelete_withCleanParamShouldNotRemoveStageButEmptyContents()

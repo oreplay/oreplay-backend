@@ -97,9 +97,25 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
 
     private function _postXml(string $asset, string $query = ''): array
     {
+        return $this->_postXmlBody(file_get_contents($this->_asset($asset)), $query);
+    }
+
+    private function _postXmlBody(string $xml, string $query = ''): array
+    {
         $this->_configureXmlRequest();
-        $this->post($this->_getEndpoint() . $this->_query($query), file_get_contents($this->_asset($asset)));
+        $this->post($this->_getEndpoint() . $this->_query($query), $xml);
         return json_decode((string)$this->_getBodyAsString(), true) ?? [];
+    }
+
+    private function _radiosShownForClass(string $shortName): array
+    {
+        $classes = ClassesTable::load()->getByStageWithRadios(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2);
+        foreach ($classes as $class) {
+            if ($class->short_name === $shortName) {
+                return array_map(fn($radio) => (string)$radio->station, $class->splits);
+            }
+        }
+        return [];
     }
 
     private function _query(string $extra): string
@@ -209,6 +225,20 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
         $this->assertGreaterThan(0, $intermediate);
     }
 
+    public function testAddNew_shouldShowTheRadiosTheCommentDeclaresBeforeAnyCourseIsStored()
+    {
+        $radioExport = str_replace(
+            'SplitTimeControls: 32,34',
+            'SplitTimeControls: 32,35,34',
+            file_get_contents($this->_asset('iof/radio.xml'))
+        );
+        $this->_postXmlBody($radioExport);
+        $this->assertUploadOk();
+
+        $this->assertEquals(['32', '35', '34'], $this->_radiosShownForClass('E'),
+            'the comment is the order to show, including radio 35 that no runner has reached yet');
+    }
+
     public function testAddNew_shouldSkipAnUnchangedClassOnASecondIdenticalXmlUpload()
     {
         $first = $this->_postXml('iof/splits.xml');
@@ -261,6 +291,96 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
 
         $this->assertUploadRejected(400);
         $this->assertStringContainsString('Unsupported IOF version', (string)$this->_getBodyAsString());
+    }
+
+    public function testAddNew_shouldRefuseAnEntryListRatherThanAnswerOkHavingImportedNothing()
+    {
+        $this->_postXml('iof/entries.xml');
+
+        $this->assertUploadRejected(400);
+        $this->assertStringContainsString('EntryList', (string)$this->_getBodyAsString());
+    }
+
+    /**
+     * The token is checked before the body is read: an anonymous request must not get the document
+     * buffered and validated against the schema, nor learn from the answer what is wrong with it.
+     */
+    public function testAddNew_shouldRefuseAnInvalidTokenBeforeReadingTheXml()
+    {
+        $this->configRequest(['headers' => [
+            'Accept' => 'application/json',
+            'Authorization' => 'Bearer not-a-token',
+            'Content-Type' => 'application/xml',
+        ]]);
+        $this->post($this->_getEndpoint() . $this->_query(''),
+            file_get_contents($this->_asset('iof/invalid_schema.xml')));
+
+        $json = $this->assertUploadRejected(403);
+        $this->assertEquals('forbidden', $json['meta']['messages'][0]['code']);
+        $this->assertNull($json['meta']['uploadType']);
+    }
+
+    private const string BODY_MARKER = 'BODY-MARKER-NEVER-LOGGED';
+
+    /**
+     * A refused request is anonymous and its body is whatever the caller chose to send, up to the size
+     * limit, so writing it to the log would let anyone fill the log from outside.
+     */
+    public function testAddNew_shouldNotLogTheBodyOfARefusedRequest()
+    {
+        $lines = $this->errorLogDuring(function () {
+            $this->configRequest(['headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer not-a-token',
+                'Content-Type' => 'application/xml',
+            ]]);
+            $this->post($this->_getEndpoint() . $this->_query(''),
+                file_get_contents($this->_asset('iof/splits.xml')) . '<!-- ' . self::BODY_MARKER . ' -->');
+        });
+
+        $this->assertUploadRejected(403);
+        $this->assertTrue($this->anyLineContains($lines, 'Invalid Bearer token'),
+            'the refusal itself is still logged');
+        $this->assertFalse($this->anyLineContains($lines, self::BODY_MARKER));
+    }
+
+    public function testAddNew_shouldLogOnlyTheStartOfAnXmlItCannotImport()
+    {
+        $body = file_get_contents($this->_asset('iof/invalid_schema.xml'))
+            . '<!-- ' . str_repeat('x', 3000) . self::BODY_MARKER . ' -->';
+
+        $lines = $this->errorLogDuring(function () use ($body) {
+            $this->_configureXmlRequest();
+            $this->post($this->_getEndpoint() . $this->_query(''), $body);
+        });
+
+        $this->assertUploadRejected(400);
+        $this->assertTrue($this->anyLineContains($lines, 'XML body of ' . strlen($body) . ' bytes'),
+            'the size says how much was refused without storing it');
+        $this->assertTrue($this->anyLineContains($lines, '<?xml'), 'the start still shows what the document was');
+        $this->assertFalse($this->anyLineContains($lines, self::BODY_MARKER),
+            'a document can be 20 MB, and in production the error log is a database table');
+    }
+
+    /**
+     * SportSoftware writes windows-1252, and in production the error log is a utf8mb4 column: a raw byte
+     * such as the \xED of "Benjamí" makes the row impossible to store.
+     */
+    public function testAddNew_shouldLogTheStartOfAWindows1252XmlAsValidUtf8()
+    {
+        $body = preg_replace('/\?>/', "?><!-- Pre Benjam\xED -->",
+            file_get_contents($this->_asset('iof/invalid_schema.xml')), 1);
+
+        $lines = $this->errorLogDuring(function () use ($body) {
+            $this->_configureXmlRequest();
+            $this->post($this->_getEndpoint() . $this->_query(''), $body);
+        });
+
+        $this->assertUploadRejected(400);
+        $this->assertTrue($this->anyLineContains($lines, 'Pre Benjam?'));
+        foreach ($lines as $line) {
+            $this->assertTrue(mb_check_encoding($line, 'UTF-8'));
+        }
     }
 
     public function testAddNew_shouldRefuseAnUnknownTimeZone()

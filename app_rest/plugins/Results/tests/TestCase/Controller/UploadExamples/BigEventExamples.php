@@ -17,19 +17,35 @@ class BigEventExamples
     public const EVENT_NAME = 'CEEBO';
     public const SOURCE_FILE = 'Splits_CEEBO.json';
 
+    private const START_LIST = 'StartList';
+    private const RESULT_LIST = 'ResultList';
+    private const START_TIMES = 'Other';
     private const RADIO_CONTROLS = 'Radiocontrols';
     private const DOWNLOADED_CARDS = 'Breakdown';
     private const READING_TIME_FORMAT = 'Y-m-d\TH:i:s.v';
 
     private static ?array $_classes = null;
 
+    public static function startList(
+        array $runnersByClass,
+        string $stageId = StagesFixture::STAGE_FEDO_2
+    ): array {
+        $classes = self::_beforeTheStart(self::_selected($runnersByClass));
+        return self::_upload(self::START_TIMES, $classes, $stageId, self::START_LIST);
+    }
+
+    /**
+     * @param array<string, string[]> $declaredRadiosByClass the radios the export lists for each class, as
+     *                                                       the desktop client sends them in classes_controls
+     */
     public static function radioPunches(
         array $runnersByClass,
         int $punchAmount,
-        string $stageId = StagesFixture::STAGE_FEDO_2
+        string $stageId = StagesFixture::STAGE_FEDO_2,
+        array $declaredRadiosByClass = []
     ): array {
         $classes = self::_stillOnCourse(self::_selected($runnersByClass), $punchAmount);
-        return self::_upload(self::RADIO_CONTROLS, $classes, $stageId);
+        return self::_upload(self::RADIO_CONTROLS, self::_declaring($classes, $declaredRadiosByClass), $stageId);
     }
 
     public static function downloadedCards(
@@ -53,14 +69,18 @@ class BigEventExamples
         return $everyRunner;
     }
 
-    private static function _upload(string $resultsType, array $classes, string $stageId): array
-    {
+    private static function _upload(
+        string $resultsType,
+        array $classes,
+        string $stageId,
+        string $contents = self::RESULT_LIST
+    ): array {
         return [
             'configuration' => [
                 'source_vendor' => 'oreplay',
                 'source' => 'IofXml',
                 'source_version' => '3.0',
-                'contents' => 'ResultList',
+                'contents' => $contents,
                 'results_type' => $resultsType,
                 'utf' => true,
             ],
@@ -102,6 +122,43 @@ class BigEventExamples
             }
         }
         return $classes;
+    }
+
+    private static function _declaring(array $classes, array $declaredRadiosByClass): array
+    {
+        foreach ($classes as $classIndex => $class) {
+            $stations = $declaredRadiosByClass[$class['short_name']] ?? [];
+            if ($stations) {
+                $classes[$classIndex]['classes_controls'] = array_map(
+                    fn(string $station) => ['control' => ['station' => $station]],
+                    $stations
+                );
+            }
+        }
+        return $classes;
+    }
+
+    private static function _beforeTheStart(array $classes): array
+    {
+        foreach ($classes as $classIndex => $class) {
+            foreach ($class['runners'] as $runnerIndex => $runner) {
+                $classes[$classIndex]['runners'][$runnerIndex] = self::_onlyTheStartTime($runner);
+            }
+        }
+        return $classes;
+    }
+
+    private static function _onlyTheStartTime(array $runner): array
+    {
+        $result = $runner['runner_results'][0];
+        $runner['runner_results'] = [[
+            'id' => '',
+            'start_time' => $result['start_time'],
+            'status_code' => StatusCode::OK,
+            'leg_number' => $result['leg_number'],
+            'result_type' => $result['result_type'],
+        ]];
+        return $runner;
     }
 
     private static function _withoutFinish(array $runner, int $punchAmount): array

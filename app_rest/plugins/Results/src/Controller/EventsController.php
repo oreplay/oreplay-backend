@@ -16,6 +16,8 @@ use Results\Model\Table\TokensTable;
  */
 class EventsController extends ApiController
 {
+    private const string DESKTOP_CLIENT_USER_AGENT = 'Java-http-client/';
+
     public function isPublicController(): bool
     {
         return true;
@@ -59,10 +61,17 @@ class EventsController extends ApiController
         }
         if ($isDesktopClientAuthenticated) {
             $res = $res->getVerySimplified();
+        } elseif ($this->_isRequestedByTheDesktopClient()) {
+            $res->organizer?->shapedForTheDesktopClient();
         }
         $this->return = [
             $rootEntity => $res
         ];
+    }
+
+    private function _isRequestedByTheDesktopClient(): bool
+    {
+        return str_starts_with($this->getRequest()->getHeaderLine('User-Agent'), self::DESKTOP_CLIENT_USER_AGENT);
     }
 
     private function _getBearer(): ?string
