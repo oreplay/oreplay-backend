@@ -418,6 +418,30 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             'a real upload is hundreds of kilobytes, and a log entry over 64 KB cannot be stored in production');
     }
 
+    /**
+     * The controller catches a database error itself, so the renderer that hides messages when debug is off
+     * never sees it, and Cake's QueryException carries the query with its values: names and chips.
+     */
+    public function testAddNew_shouldKeepTheQueryOfADatabaseErrorOutOfTheResponse()
+    {
+        $data = ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()];
+        array_walk_recursive($data, function (&$value, $key) {
+            if ($key === 'sicard') {
+                $value = str_repeat('9', 40);
+            }
+        });
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+
+        $lines = $this->errorLogDuring(fn() => $this->post($this->_getEndpoint(), $data));
+
+        $jsonDecoded = $this->assertUploadRejected(500);
+        $text = $jsonDecoded['meta']['messages'][0]['text'];
+        $this->assertStringNotContainsString('SQLSTATE', $text);
+        $this->assertStringNotContainsString('INSERT', $text);
+        $this->assertTrue($this->anyLineContains($lines, 'SQLSTATE'),
+            'the detail moves to the log rather than being lost');
+    }
+
     public function testAddNew_shouldDecodeGzip()
     {
         Cache::clear();

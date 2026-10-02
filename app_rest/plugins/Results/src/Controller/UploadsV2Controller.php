@@ -190,7 +190,7 @@ class UploadsV2Controller extends ApiController
                 . " \n\n" . $this->_loggablePayload($data, $e)
                 . " \n\n" . json_encode($this->return)
             );
-            $this->return = $this->respondError($e->getMessage(), $e);
+            $this->return = $this->respondError(self::_clientSafeMessage($e), $e);
         } catch (DetailedException $e) {
             $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . $this->_loggablePayload($data, $e)
                 . " \n" . $e->getTraceAsString());
@@ -198,23 +198,12 @@ class UploadsV2Controller extends ApiController
         } catch (\Throwable $e) {
             $this->log('Uploads GeneralException: ' . $e->getMessage() . " \n" . $this->_loggablePayload($data, $e)
                 . " \n" . $e->getTraceAsString());
-            // an HttpException carries a message meant for the client, such as the reason a token was
-            // refused; anything else is unexpected, and only its type is safe to report
-            $exploded = explode('\\', get_class($e));
-            $exceptionName = array_pop($exploded);
-            if (!$exceptionName) {
-                $exceptionName = array_pop($exploded);
-            }
-            $clientSafe = $e instanceof HttpException ? $e->getMessage() : '';
-            $this->return = $this->respondError($clientSafe ?: $exceptionName, $e);
+            $this->return = $this->respondError(self::_clientSafeMessage($e), $e);
         } finally {
             $this->_clearUploadCache();
         }
     }
 
-    // v1 answers 202 for every failure because its contract with the desktop client says so. v2 is
-    // free of that promise and answers a real status, so a client can tell a rejected upload from an
-    // accepted one without parsing meta.human. See docs/uploads-v1-vs-v2.md
     private function _loggablePayload(mixed $data, \Throwable $e): string
     {
         if ($e instanceof ForbiddenException) {
@@ -275,6 +264,21 @@ class UploadsV2Controller extends ApiController
         return substr((string)preg_replace('/[^A-Za-z0-9-]/', '', $text), 0, self::MAX_LOGGED_IDENTIFIER_LENGTH);
     }
 
+    // an HttpException carries a message meant for the client, such as the reason a token was
+    // refused; anything else is unexpected, and only its type is safe to report
+    private static function _clientSafeMessage(\Throwable $e): string
+    {
+        $message = $e instanceof HttpException ? $e->getMessage() : '';
+        if ($message) {
+            return $message;
+        }
+        $exploded = explode('\\', get_class($e));
+        return (string)array_pop($exploded);
+    }
+
+    // v1 answers 202 for every failure because its contract with the desktop client says so. v2 is
+    // free of that promise and answers a real status, so a client can tell a rejected upload from an
+    // accepted one without parsing meta.human. See docs/uploads-v1-vs-v2.md
     private function respondError(string $message, \Throwable $e): array
     {
         $this->response = $this->response->withStatus($this->_errorStatus($e));
