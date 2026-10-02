@@ -186,17 +186,19 @@ class UploadsV2Controller extends ApiController
             }
             $this->return = $this->_addNew($helper);
         } catch (\PDOException $e) {
-            $this->log('Uploads PDOException: ' . $e->getMessage()
+            $this->log('Uploads PDOException: ' . self::_withCauses($e)
                 . " \n\n" . $this->_loggablePayload($data, $e)
                 . " \n\n" . json_encode($this->return)
             );
             $this->return = $this->respondError(self::_clientSafeMessage($e), $e);
         } catch (DetailedException $e) {
-            $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . $this->_loggablePayload($data, $e)
+            $this->log('Uploads DetailedException: ' . self::_withCauses($e)
+                . " \n" . $this->_loggablePayload($data, $e)
                 . " \n" . $e->getTraceAsString());
             $this->return = $this->respondError($e->getMessage(), $e);
         } catch (\Throwable $e) {
-            $this->log('Uploads GeneralException: ' . $e->getMessage() . " \n" . $this->_loggablePayload($data, $e)
+            $this->log('Uploads GeneralException: ' . self::_withCauses($e)
+                . " \n" . $this->_loggablePayload($data, $e)
                 . " \n" . $e->getTraceAsString());
             $this->return = $this->respondError(self::_clientSafeMessage($e), $e);
         } finally {
@@ -262,6 +264,15 @@ class UploadsV2Controller extends ApiController
     {
         $text = is_scalar($value) ? (string)$value : '';
         return substr((string)preg_replace('/[^A-Za-z0-9-]/', '', $text), 0, self::MAX_LOGGED_IDENTIFIER_LENGTH);
+    }
+
+    private static function _withCauses(\Throwable $e): string
+    {
+        $message = $e->getMessage();
+        for ($cause = $e->getPrevious(); $cause; $cause = $cause->getPrevious()) {
+            $message .= ' (caused by ' . $cause::class . ': ' . $cause->getMessage() . ')';
+        }
+        return $message;
     }
 
     // an HttpException carries a message meant for the client, such as the reason a token was

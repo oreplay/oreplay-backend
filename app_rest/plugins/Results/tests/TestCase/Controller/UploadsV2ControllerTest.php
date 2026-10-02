@@ -442,6 +442,23 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             'the detail moves to the log rather than being lost');
     }
 
+    /**
+     * The 403 replaces the OAuth library's own refusal, which says why the bearer was refused (expired,
+     * malformed, unknown); the client keeps the one answer it handles, and the reason goes to the log.
+     */
+    public function testAddNew_shouldLogWhyABearerWasRefused()
+    {
+        $this->loadAuthToken('not-a-token-of-any-kind');
+
+        $lines = $this->errorLogDuring(fn() => $this->post($this->_getEndpoint(),
+            ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()]));
+
+        $this->assertUploadRejected(403);
+        $this->assertTrue($this->anyLineContains($lines, 'Invalid Bearer token'));
+        $this->assertTrue($this->anyLineContains($lines, 'Verify authorization error'),
+            'the cause chained onto the 403 is what tells an expired token from a malformed one');
+    }
+
     public function testAddNew_shouldDecodeGzip()
     {
         Cache::clear();
