@@ -55,10 +55,7 @@ class IofUpload
         bool $validateAgainstSchema
     ) {
         $this->_filePath = $this->_bufferToFile($body);
-        // PHP skips __destruct when the constructor throws, so a refusal has to remove the file itself
         try {
-            // the header first: it rejects IOF 2.0 and an unknown root with something an operator can act
-            // on, where the schema would only complain about an unexpected namespace
             $this->_header = IofUploadTypeDetector::detect($this->_filePath, $explicitUploadType);
             $this->_refuseAClassTooBigToImport();
             if ($validateAgainstSchema) {

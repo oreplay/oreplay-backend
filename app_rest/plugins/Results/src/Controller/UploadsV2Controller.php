@@ -68,9 +68,6 @@ class UploadsV2Controller extends ApiController
         }
         //$this->log('Uploading: ' . " \n\n" . json_encode($helper->getData()), \Psr\Log\LogLevel::DEBUG); // NOSONAR
 
-        //$rawUrl = $this->_getHost() . '/api/v1/events/' . $helper->getEventId() . '/rawUploads';
-        //FireAndForget::postJson($rawUrl, $helper->getData(), ['Authorization' => 'Bearer ' . $this->_getBearer()]);
-
         // the log row describes the upload, so the payload has to be understood before it can be written
         $type = $helper->validateConfigChecker()->preCheckType();
         $lock = new StageUploadLock();
@@ -101,8 +98,6 @@ class UploadsV2Controller extends ApiController
         return new UploadPublishers($publishers);
     }
 
-    // the desktop client authenticates with the event token; the web admin with the session of a user who
-    // owns the event (or is a manager), which is the rule every other admin endpoint applies
     private function _assertUploaderAuthenticated(string $eventId): void
     {
         if (TokensTable::load()->isValidEventToken($eventId, $this->_getBearer())) {
@@ -160,8 +155,6 @@ class UploadsV2Controller extends ApiController
         $this->_metrics = UploadMetrics::withoutSavedClasses();
         try {
             $eventId = $this->request->getParam('eventID');
-            // before the body is read: an anonymous request must not get an XML document buffered and
-            // validated against the schema, nor a stored upload looked up by its id
             $this->_assertUploaderAuthenticated($eventId);
             // an XML body arrives as a raw string, so this branch has to come before anything that
             // expects an array: getReUploadedData() is typed array and would raise a TypeError
