@@ -324,6 +324,40 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
             ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all()->count());
     }
 
+    /**
+     * The body of a refused request is never logged, but for a replay the two ids it carries are what tells
+     * an organiser's mistake from someone walking through the ids of other events' uploads.
+     */
+    public function testAddNew_shouldLogWhichUploadARefusedReplayAskedFor()
+    {
+        $rawUploadId = $this->storeRawUploadOf(EventsFixture::EVENT_TODAY, ResultExamples::resultSimpleFinishTime());
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+
+        $lines = $this->errorLogDuring(fn() => $this->post($this->_getEndpoint(),
+            $this->_replayRequestOf($rawUploadId)));
+
+        $this->assertUploadRejected(403);
+        $this->assertTrue($this->anyLineContains($lines,
+            'replay of raw upload ' . $rawUploadId . ' into stage ' . StagesFixture::STAGE_FEDO_2));
+    }
+
+    public function testAddNew_shouldLogOnlyTheIdentifierCharactersOfARefusedReplay()
+    {
+        $this->loadAuthToken('not-a-token-of-any-kind');
+        $forged = "abc\nFORGED LOG LINE " . str_repeat('x', 5000);
+
+        $lines = $this->errorLogDuring(fn() => $this->post($this->_getEndpoint(),
+            ['raw_upload_id' => $forged, 'stage_id' => StagesFixture::STAGE_FEDO_2]));
+
+        $this->assertUploadRejected(403);
+        $this->assertTrue($this->anyLineContains($lines, 'replay of raw upload abcFORGEDLOGLINE'),
+            'the request chose these values, so only identifier characters reach the log');
+        $this->assertFalse($this->anyLineContains($lines, 'FORGED LOG LINE'),
+            'a newline in the request must not start a line of its own in the log');
+        $this->assertFalse($this->anyLineContains($lines, str_repeat('x', 100)),
+            'an identifier is cut to the length of a uuid');
+    }
+
     public function testAddNew_shouldDecodeGzip()
     {
         Cache::clear();

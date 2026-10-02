@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Results\Test\TestCase\Controller;
 
+use Cake\Log\Engine\ArrayLog;
+use Cake\Log\Log;
 use Cake\Utility\Text;
 use Results\Model\Table\RawUploadsTable;
 use Results\Test\Fixture\StagesFixture;
@@ -80,5 +82,26 @@ trait UploadResponseTrait
         $raw->file_data = (string)json_encode(['oreplay_data_transfer' => $dataTransfer]);
         $rawUploads->saveOrFail($raw);
         return $raw->id;
+    }
+
+    protected function errorLogDuring(callable $request): array
+    {
+        Log::setConfig('captured', ['className' => ArrayLog::class, 'levels' => ['error']]);
+        try {
+            $request();
+            return Log::engine('captured')->read();
+        } finally {
+            Log::drop('captured');
+        }
+    }
+
+    protected function anyLineContains(array $lines, string $needle): bool
+    {
+        foreach ($lines as $line) {
+            if (str_contains($line, $needle)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

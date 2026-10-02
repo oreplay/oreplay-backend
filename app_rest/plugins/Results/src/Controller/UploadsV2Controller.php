@@ -36,6 +36,7 @@ use Results\Model\Table\UploadLogsTable;
 class UploadsV2Controller extends ApiController
 {
     private const int LOGGED_XML_HEAD_BYTES = 2000;
+    private const int MAX_LOGGED_IDENTIFIER_LENGTH = 36;
 
     private UploadMetrics $_metrics;
     private ClassesTable $Classes;
@@ -216,13 +217,28 @@ class UploadsV2Controller extends ApiController
     private function _loggablePayload(mixed $data, \Throwable $e): string
     {
         if ($e instanceof ForbiddenException) {
-            return '(payload of a refused request not logged)';
+            return self::_whatARefusedRequestAskedFor($data);
         }
         if (is_string($data)) {
             return 'XML body of ' . strlen($data) . ' bytes, starting: '
                 . substr($data, 0, self::LOGGED_XML_HEAD_BYTES);
         }
         return (string)json_encode($data);
+    }
+
+    private static function _whatARefusedRequestAskedFor(mixed $data): string
+    {
+        if (is_array($data) && RawUploadsTable::isReUploadRequest($data)) {
+            return 'replay of raw upload ' . self::_identifierOf($data['raw_upload_id'])
+                . ' into stage ' . self::_identifierOf($data['stage_id']);
+        }
+        return '(payload of a refused request not logged)';
+    }
+
+    private static function _identifierOf(mixed $value): string
+    {
+        $text = is_scalar($value) ? (string)$value : '';
+        return substr((string)preg_replace('/[^A-Za-z0-9-]/', '', $text), 0, self::MAX_LOGGED_IDENTIFIER_LENGTH);
     }
 
     private function respondError(string $message, \Throwable $e): array

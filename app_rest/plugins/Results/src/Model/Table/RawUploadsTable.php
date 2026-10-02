@@ -105,7 +105,7 @@ class RawUploadsTable extends AppTable
 
     public function findReUploadSource(array $data): ?RawUpload
     {
-        if (!self::_isReUploadRequest($data)) {
+        if (!self::isReUploadRequest($data)) {
             return null;
         }
         /** @var RawUpload $source */
@@ -132,7 +132,7 @@ class RawUploadsTable extends AppTable
         return $toRet;
     }
 
-    private static function _isReUploadRequest(array $data): bool
+    public static function isReUploadRequest(array $data): bool
     {
         $arrayKeys = array_keys($data);
         sort($arrayKeys);
