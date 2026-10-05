@@ -18,32 +18,27 @@ class ProxyFrontendController extends ApiController
 
     protected function getList()
     {
-        $param = $this->getRequest()->getQuery('updateFront');
-        if ($param) {
-            FrontUtil::uncacheIndexJson();
-        }
-        $this->getData('');
+        // the frontend CI calls this after a release; kept so the call goes on working
+        $this->_renderIndex('/', (bool)$this->getRequest()->getQuery('updateFront'));
     }
 
     protected function getData($id)
     {
         $path = '/' . $id;
-        $hasLocales = str_starts_with($path, '/locales/');
-        $hasAssets = str_starts_with($path, '/assets/');
-        $hasOrganizers = str_starts_with($path, '/organizers/');
-        $hasImg = str_starts_with($path, '/img/');
-        $hasStatic = str_starts_with($path, '/staticwebapp.config.json');
-        if ($hasLocales || $hasAssets || $hasOrganizers || $hasImg || $hasStatic) {
-            $this->redirect($this->_getFrontDomain() . $path);
-        }
-        $lang = $this->_getSimpleLang();
+        // the copy the service worker keeps until the next release, see FrontUtil::getIndexHtml()
+        $this->_renderIndex($path, $path === '/index.html');
+    }
 
-        $html = '';
+    private function _renderIndex(string $path, bool $revalidate)
+    {
+        $lang = $this->_getSimpleLang();
         $description = $this->_getEventDateAndTitle($path) ?? $this->_getDescription($lang);
-        $stringBody = $this->_getFallbackHtml($description, $html);
+        $html = FrontUtil::getIndexHtml($this->_getFrontDomain(), $revalidate);
+        $stringBody = FrontUtil::buildHtml($html, $lang, $description, SwaggerJsonController::version());
 
         $this->autoRender = false;
-        $this->response = $this->response->withStringBody($stringBody);
+        $this->response = $this->response->withStringBody($stringBody)
+            ->withHeader('Cache-Control', 'no-cache');
         return $this->response;
     }
 
@@ -72,64 +67,6 @@ class ProxyFrontendController extends ApiController
             throw new NotFoundException('Front domain not defined');
         }
         return $domain;
-    }
-
-    private function _getFallbackHtml(string $description, string $html = ''): string
-    {
-        $version = SwaggerJsonController::version();
-        $url = $this->_getFrontDomain();
-        $index = FrontUtil::getIndexJson($url);
-        $description = htmlspecialchars($description);
-        $og = FrontUtil::getOgImage(FrontUtil::addBreakLine($description));
-        $lang = $this->_getSimpleLang();
-        if (strlen($lang) != 2) {
-            $lang = 'en';
-        }
-        return '<!doctype html>
-            <html lang="' . $lang . '" translate="no">
-              <head>
-                <meta charset="UTF-8" />
-                <meta name="google" content="notranslate" />
-                <link rel="icon" type="image/jpg" href="' . $url . '/img/logo.svg" />
-                <link rel="icon" type="image/x-icon" href="' . $url . '/img/logo.png" />
-                <meta data-hid="image" itemprop="image" content="' . $url . '/img/logo.png" />
-                <meta data-hid="og:image" property="og:image" content="' . $og . '" />
-                <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-                <meta data-hid="title" itemprop="title" content="O-Replay" />
-                <meta data-hid="og:title" property="og:title" content="O-Replay" />
-                <meta data-hid="og:site_name" property="og:site_name" content="O-Replay" />
-                <meta
-                  data-hid="apple-mobile-web-app-title"
-                  name="apple-mobile-web-app-title"
-                  content="O-Replay"
-                />
-                <meta data-hid="language" name="language" content="en" />
-                <meta
-                  data-hid="description"
-                  itemprop="description"
-                  content="' . $description . '"
-                />
-                <meta
-                  data-hid="og:image:alt"
-                  property="og:image:alt"
-                  content="' . $description . '"
-                />
-                <meta
-                  data-hid="og:description"
-                  property="og:description"
-                  content="' . $description . '"
-                />
-                <meta data-hid="og:type" property="og:type" content="website" />
-                <title>O-Replay</title>
-                <script>console.log("SSR v' . $version . '")</script>
-                <script>window._ssr="' . $version . '"</script>
-                <script type="module" crossorigin src="' . $url . '/assets/' . $index . '"></script>
-              </head>
-              <body style="margin: 0; height: 100vh">
-                <div id="root">' . $html . '</div>
-                <noscript>' . $description . '</noscript>
-              </body>
-            </html>';
     }
 
     private function _getDescription(string $lang)

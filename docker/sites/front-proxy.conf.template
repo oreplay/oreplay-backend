@@ -1,0 +1,12 @@
+# Sends a request to the host that serves the frontend build, so the browser gets the file from this origin:
+# a service worker can only be registered from, and can only cache, the origin of the page.
+# Rendered into snippets/front-proxy.conf by docker/front-proxy-conf.sh when the container starts, because
+# nginx cannot read FRONT_DOMAIN itself. The host name is resolved once, when nginx starts.
+proxy_pass __FRONT_ORIGIN__;
+proxy_set_header Host __FRONT_HOST__;
+proxy_ssl_server_name on;
+proxy_http_version 1.1;
+# the session belongs to this origin and is none of the static host's business
+proxy_set_header Cookie "";
+proxy_set_header Authorization "";
+proxy_connect_timeout 5s;

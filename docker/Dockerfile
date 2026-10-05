@@ -21,6 +21,11 @@ RUN echo 'xdebug.mode=off' > /etc/php/8.3/fpm/conf.d/99-xdebug-off.ini
 ADD ./app_rest /var/www/cplatform/public/app_rest
 ADD ./docker/sites/nginx-site-dev.conf /etc/nginx/sites-available/courseticket
 ADD ./docker/sites/nchan-dev.conf /etc/nginx/sites-enabled/nchan.conf
+## The start command runs front-proxy-conf before nginx, see docker-compose-dev.yml: it turns FRONT_DOMAIN
+## into the snippet that sites-available/courseticket includes.
+ADD ./docker/sites/front-proxy.conf.template /etc/nginx/snippets/front-proxy.conf.template
+ADD ./docker/front-proxy-conf.sh /usr/local/bin/front-proxy-conf
+RUN chmod 755 /usr/local/bin/front-proxy-conf
 RUN chown www-data:www-data -R /var/www/cplatform/public/app_rest/tmp
 RUN chown www-data:www-data -R /var/www/cplatform/public/app_rest/logs
 
