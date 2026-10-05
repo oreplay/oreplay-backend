@@ -4,12 +4,136 @@ declare(strict_types = 1);
 
 namespace App\Test\TestCase\Lib\ProxyFront;
 
+use App\Lib\Consts\CacheGrp;
 use App\Lib\ProxyFront\FrontUtil;
+use Cake\Cache\Cache;
+use Cake\Http\TestSuite\HttpClientTrait;
 use Cake\TestSuite\TestCase;
 use RestApi\Lib\Exception\DetailedException;
 
 class FrontUtilTest extends TestCase
 {
+    use HttpClientTrait;
+
+    private const string FRONT = 'https://front.example.com';
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        Cache::delete('_frontIndexHtml', CacheGrp::DEFAULT);
+    }
+
+    /**
+     * The head as the static host serves it, stray <cors> block included, plus the tags of the PWA build.
+     */
+    private function _indexHtml(string $entry = 'index-BHdyZzfh.js'): string
+    {
+        return '<!doctype html>
+<html lang="en" translate="no">
+  <head><!--Inserte su codigo HTML a continuacion-->
+<cors>
+  <allowed-origins>
+    <origin>https://www.oreplay.es</origin>
+  </allowed-origins>
+</cors>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="/img/logo.png">
+    <meta data-hid="image" itemprop="image" content="/img/logo.png">
+    <meta data-hid="og:image" property="og:image" content="/img/logo.png">
+    <meta data-hid="og:title" property="og:title" content="O-Replay">
+    <meta data-hid="description" itemprop="description" content="O-Replay is the home">
+    <meta data-hid="og:image:alt" property="og:image:alt" content="O-Replay is the home">
+    <meta data-hid="og:description" property="og:description" content="O-Replay is the home">
+    <title>O-Replay</title>
+    <link rel="manifest" href="/manifest.webmanifest">
+    <script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script>
+    <script type="module" crossorigin="" src="/assets/' . $entry . '"></script>
+  </head>
+  <body style="margin: 0; height: 100vh">
+    <div style="min-height: 100vh" id="root"></div>
+    <noscript>O-Replay is the home</noscript>
+  </body>
+</html>';
+    }
+
+    public function testBuildHtml(): void
+    {
+        $html = FrontUtil::buildHtml($this->_indexHtml(), 'es', '2026-10-05 Trofeo "A&B" $1', '0.4.18');
+
+        $description = '2026-10-05 Trofeo &quot;A&amp;B&quot; $1';
+        $this->assertStringContainsString('<html lang="es" translate="no">', $html);
+        $this->assertStringContainsString('itemprop="description" content="' . $description . '">', $html);
+        $this->assertStringContainsString('property="og:image:alt" content="' . $description . '">', $html);
+        $this->assertStringContainsString('property="og:description" content="' . $description . '">', $html);
+        $this->assertStringContainsString('<noscript>' . $description . '</noscript>', $html);
+        $this->assertStringContainsString(
+            'property="og:image" content="https://or-img.gumlet.io/oreplay-og.png?sharp=false&amp;text=2026-10-05',
+            $html
+        );
+        $this->assertStringContainsString('<script>window._ssr="0.4.18"</script></head>', $html);
+        // what the static host owns stays as the frontend build wrote it
+        $this->assertStringContainsString('itemprop="image" content="/img/logo.png">', $html);
+        $this->assertStringContainsString('property="og:title" content="O-Replay">', $html);
+        $this->assertStringContainsString('<link rel="manifest" href="/manifest.webmanifest">', $html);
+        $this->assertStringContainsString('src="/registerSW.js"></script>', $html);
+        $this->assertStringContainsString('crossorigin="" src="/assets/index-BHdyZzfh.js"></script>', $html);
+        $this->assertStringNotContainsString('cors>', $html);
+        $this->assertStringNotContainsString('Inserte', $html);
+        $this->assertStringContainsString("<head><meta charset", preg_replace('/>\s+</', '><', $html));
+    }
+
+    public function testBuildHtml_shouldFallbackToEnglishOnInvalidLang(): void
+    {
+        $html = FrontUtil::buildHtml($this->_indexHtml(), '">', 'Home', '0.4.18');
+        $this->assertStringContainsString('<html lang="en" translate="no">', $html);
+    }
+
+    public function testGetIndexHtml_shouldReuseTheCopyWhileFresh(): void
+    {
+        $this->mockClientGet(self::FRONT . '/index.html', $this->newClientResponse(200, [], $this->_indexHtml()));
+        $this->mockClientGet(
+            self::FRONT . '/index.html',
+            $this->newClientResponse(200, [], $this->_indexHtml('index-NEW.js'))
+        );
+
+        $this->assertStringContainsString('index-BHdyZzfh.js', FrontUtil::getIndexHtml(self::FRONT . '/'));
+        // the second answer is waiting, and is not asked for
+        $this->assertStringContainsString('index-BHdyZzfh.js', FrontUtil::getIndexHtml(self::FRONT));
+    }
+
+    public function testGetIndexHtml_shouldAskAgainWhenRevalidating(): void
+    {
+        $this->mockClientGet(self::FRONT . '/index.html', $this->newClientResponse(200, [], $this->_indexHtml()));
+        $this->mockClientGet(
+            self::FRONT . '/index.html',
+            $this->newClientResponse(200, [], $this->_indexHtml('index-NEW.js'))
+        );
+
+        FrontUtil::getIndexHtml(self::FRONT);
+        $this->assertStringContainsString('index-NEW.js', FrontUtil::getIndexHtml(self::FRONT, true));
+        // and the new build is what the other pages get from then on
+        $this->assertStringContainsString('index-NEW.js', FrontUtil::getIndexHtml(self::FRONT));
+    }
+
+    public function testGetIndexHtml_shouldKeepTheLastBuildWhenTheHostFails(): void
+    {
+        $this->mockClientGet(self::FRONT . '/index.html', $this->newClientResponse(200, [], $this->_indexHtml()));
+        $this->mockClientGet(self::FRONT . '/index.html', $this->newClientResponse(503, [], 'down'));
+        $this->mockClientGet(self::FRONT . '/index.html', $this->newClientResponse(200, [], '<html>oops</html>'));
+
+        FrontUtil::getIndexHtml(self::FRONT);
+        $this->assertStringContainsString('index-BHdyZzfh.js', FrontUtil::getIndexHtml(self::FRONT, true));
+        $this->assertStringContainsString('index-BHdyZzfh.js', FrontUtil::getIndexHtml(self::FRONT, true));
+    }
+
+    public function testGetIndexHtml_shouldThrowWhenThereIsNoCopyToFallBackOn(): void
+    {
+        $this->mockClientGet(self::FRONT . '/index.html', $this->newClientResponse(200, [], '<html>oops</html>'));
+
+        $this->expectException(DetailedException::class);
+        FrontUtil::getIndexHtml(self::FRONT);
+    }
+
     public function testGetOgImage(): void
     {
         $og = FrontUtil::getOgImage("Home for orienteering\nevents");
