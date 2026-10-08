@@ -8,7 +8,6 @@ use Cake\TestSuite\TestCase;
 use Results\Lib\Consts\ResultStatus;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\Import\Iof\IofStatusMap;
-use RestApi\Lib\Exception\DetailedException;
 
 class IofStatusMapTest extends TestCase
 {
@@ -25,15 +24,21 @@ class IofStatusMapTest extends TestCase
     }
 
     /**
-     * The divergence from the desktop client, decided 2026-08-17. SportSoftware writes Inactive for a
-     * runner who has started and is still out on the course, not for one who has not started: mid-race
-     * every one of them has a start time, none has a finish time, and by the final export they have all
-     * become OK, DNS or MP. The client has no branch for it, so today they arrive as OK.
+     * As the desktop client does. SportSoftware writes Inactive for a runner who has started and is still
+     * out on the course, so mid-race they show as OK; by the final export they are OK, DNS or MP.
      */
-    public function testCodeOf_shouldMapInactiveToRunningRatherThanOk()
+    public function testCodeOf_shouldMapActiveAndInactiveToOkLikeTheDesktopClient()
     {
-        $this->assertEquals(StatusCode::RUNNING, IofStatusMap::codeOf(ResultStatus::INACTIVE));
-        $this->assertEquals(StatusCode::RUNNING, IofStatusMap::codeOf(ResultStatus::ACTIVE));
+        $this->assertSame(StatusCode::OK, IofStatusMap::codeOf(ResultStatus::INACTIVE));
+        $this->assertSame(StatusCode::OK, IofStatusMap::codeOf(ResultStatus::ACTIVE));
+    }
+
+    public function testCodeOf_shouldMapTheStatusesTheDesktopClientDoesNotKnowToOk()
+    {
+        $this->assertSame(StatusCode::OK, IofStatusMap::codeOf(ResultStatus::SPORTING_WITHDRAWAL));
+        $this->assertSame(StatusCode::OK, IofStatusMap::codeOf(ResultStatus::CANCELLED));
+        $this->assertSame(StatusCode::OK, IofStatusMap::codeOf(ResultStatus::MOVED));
+        $this->assertSame(StatusCode::OK, IofStatusMap::codeOf(ResultStatus::MOVED_UP));
     }
 
     public function testCodeOf_shouldCoverEveryStatusTheStandardDefines()
@@ -45,15 +50,9 @@ class IofStatusMapTest extends TestCase
         }
     }
 
-    /**
-     * Defaulting an unrecognised status to OK is how the desktop client loses Inactive; a value outside
-     * the standard is invalid input and has to say so.
-     */
-    public function testCodeOf_shouldRejectAStatusOutsideTheStandard()
+    public function testCodeOf_shouldMapAStatusOutsideTheStandardToOkInsteadOfFailing()
     {
-        $this->expectException(DetailedException::class);
-        $this->expectExceptionMessage('Unknown IOF result status: Sleeping');
-
-        IofStatusMap::codeOf('Sleeping');
+        $this->assertSame(StatusCode::OK, IofStatusMap::codeOf('Sleeping'));
+        $this->assertSame(StatusCode::OK, IofStatusMap::codeOf(''));
     }
 }

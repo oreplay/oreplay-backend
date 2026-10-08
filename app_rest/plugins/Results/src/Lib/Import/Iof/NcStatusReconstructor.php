@@ -10,8 +10,9 @@ use Results\Lib\Consts\StatusCode;
 /**
  * IOF puts "not competing" in the Status slot, so a runner who is both not competing *and* mispunched
  * cannot be expressed: the real status is destroyed. oreplay keeps the two apart (is_nc beside
- * status_code), and this recovers the lost half the way the Java desktop client does — see
- * docs/upload-xml-input.md 2B.
+ * status_code), and this recovers the lost half the way the Java desktop client does
+ * (RunnerResult.setStatusCodeFromNc, and ConverterIofToModel for the missing split). See "Estados IOF
+ * al importar XML" in CLAUDE.md.
  */
 class NcStatusReconstructor
 {
@@ -31,10 +32,9 @@ class NcStatusReconstructor
         bool $hasFinishTime,
         bool $hasMissingSplit
     ): string {
-        // a result with no Status at all is not invalid input, only incomplete: infer it the same way,
-        // rather than crashing a whole upload over one row or calling it OK as the desktop client does
+        // a result with no Status at all is OK, as in the desktop client
         if ($iofStatus === null || $iofStatus === '') {
-            return self::_inferredCode($position, $hasStartTime, $hasFinishTime);
+            return StatusCode::OK;
         }
         if (!self::isNotCompeting($iofStatus)) {
             return IofStatusMap::codeOf($iofStatus);

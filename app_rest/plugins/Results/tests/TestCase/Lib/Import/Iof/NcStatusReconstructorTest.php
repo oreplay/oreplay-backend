@@ -20,7 +20,7 @@ class NcStatusReconstructorTest extends TestCase
     {
         $this->assertEquals(StatusCode::MP,
             NcStatusReconstructor::codeOf(ResultStatus::MISSING_PUNCH, 1, true, true, false));
-        $this->assertEquals(StatusCode::RUNNING,
+        $this->assertSame(StatusCode::OK,
             NcStatusReconstructor::codeOf(ResultStatus::INACTIVE, null, true, false, false));
     }
 
@@ -68,19 +68,19 @@ class NcStatusReconstructorTest extends TestCase
 
     /**
      * None of the 54 250 Result elements in the sampled corpus lacks a Status, but a malformed or
-     * third-party file could, and one such row must not take a whole upload down with it.
+     * third-party file could. The desktop client calls it OK whatever the times say, and so does this.
      */
-    public function testCodeOf_shouldInferAMissingStatusInsteadOfFailing()
+    public function testCodeOf_shouldCallAMissingStatusOkLikeTheDesktopClient()
     {
-        $this->assertEquals(StatusCode::OK, NcStatusReconstructor::codeOf(null, null, true, true, false));
-        $this->assertEquals(StatusCode::DNS, NcStatusReconstructor::codeOf('', null, false, false, false));
-        $this->assertEquals(StatusCode::DNF, NcStatusReconstructor::codeOf(null, null, true, false, false));
+        $this->assertSame(StatusCode::OK, NcStatusReconstructor::codeOf(null, null, true, true, false));
+        $this->assertSame(StatusCode::OK, NcStatusReconstructor::codeOf('', null, false, false, false));
+        $this->assertSame(StatusCode::OK, NcStatusReconstructor::codeOf(null, null, true, false, false));
+        $this->assertSame(StatusCode::OK, NcStatusReconstructor::codeOf(null, null, true, true, true),
+            'the missing split only downgrades a not-competing runner');
     }
 
-    public function testCodeOf_shouldStillRejectAStatusThatIsNotInTheStandard()
+    public function testCodeOf_shouldCallAStatusOutsideTheStandardOk()
     {
-        $this->expectException(\RestApi\Lib\Exception\DetailedException::class);
-
-        NcStatusReconstructor::codeOf('Sleeping', 1, true, true, false);
+        $this->assertSame(StatusCode::OK, NcStatusReconstructor::codeOf('Sleeping', null, false, false, false));
     }
 }
