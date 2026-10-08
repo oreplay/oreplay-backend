@@ -20,6 +20,15 @@ case "$origin" in
         ;;
 esac
 
-sed -e "s|__FRONT_ORIGIN__|$origin|" -e "s|__FRONT_HOST__|$host|" \
+resolver="$(awk '$1 == "nameserver" { print $2; exit }' "${RESOLV_CONF:-/etc/resolv.conf}")"
+case "$resolver" in
+    "")
+        echo "no nameserver in ${RESOLV_CONF:-/etc/resolv.conf} to resolve $host with" >&2
+        exit 1
+        ;;
+    *:*) resolver="[$resolver]" ;;
+esac
+
+sed -e "s|__FRONT_ORIGIN__|$origin|" -e "s|__FRONT_HOST__|$host|" -e "s|__RESOLVER__|$resolver|" \
     "${FRONT_PROXY_TEMPLATE:-/etc/nginx/snippets/front-proxy.conf.template}" \
     > "${FRONT_PROXY_CONF:-/etc/nginx/snippets/front-proxy.conf}"
