@@ -18,20 +18,19 @@ class ProxyFrontendController extends ApiController
 
     protected function getList()
     {
-        // the frontend CI calls this after a release; kept so the call goes on working
-        $this->_renderIndex('/', (bool)$this->getRequest()->getQuery('updateFront'));
+        $this->_renderIndex('/');
     }
 
     protected function getData($id)
     {
-        $this->_renderIndex('/' . $id, false);
+        $this->_renderIndex('/' . $id);
     }
 
-    private function _renderIndex(string $path, bool $revalidate)
+    private function _renderIndex(string $path)
     {
         $lang = $this->_getSimpleLang();
         $description = $this->_getEventDateAndTitle($path) ?? $this->_getDescription($lang);
-        $html = FrontUtil::getIndexHtml($this->_getFrontDomain(), $revalidate);
+        $html = FrontUtil::getIndexHtml($this->_getFrontDomain());
         $stringBody = FrontUtil::buildHtml($html, $lang, $description, SwaggerJsonController::version());
 
         $this->autoRender = false;
