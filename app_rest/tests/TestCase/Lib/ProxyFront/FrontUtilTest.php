@@ -23,10 +23,7 @@ class FrontUtilTest extends TestCase
         Cache::delete('_frontIndexHtml', CacheGrp::DEFAULT);
     }
 
-    /**
-     * The head as the static host serves it, stray <cors> block included, plus the tags of the PWA build.
-     */
-    private function _indexHtml(string $entry = 'index-BHdyZzfh.js'): string
+    private function _indexHtmlAsTheStaticHostServesIt(string $entry = 'index-BHdyZzfh.js'): string
     {
         return '<!doctype html>
 <html lang="en" translate="no">
@@ -58,7 +55,7 @@ class FrontUtilTest extends TestCase
 
     public function testBuildHtml(): void
     {
-        $html = FrontUtil::buildHtml($this->_indexHtml(), 'es', '2026-10-05 Trofeo "A&B" $1', '0.4.18');
+        $html = $this->_buildTrofeoPage();
 
         $description = '2026-10-05 Trofeo &quot;A&amp;B&quot; $1';
         $this->assertStringContainsString('<html lang="es" translate="no">', $html);
@@ -71,54 +68,82 @@ class FrontUtilTest extends TestCase
             $html
         );
         $this->assertStringContainsString('<script>window._ssr="0.4.18"</script></head>', $html);
-        // what the static host owns stays as the frontend build wrote it
+    }
+
+    public function testBuildHtml_shouldLeaveTheTagsTheFrontendOwnsUntouched(): void
+    {
+        $html = $this->_buildTrofeoPage();
+
         $this->assertStringContainsString('itemprop="image" content="/img/logo.png">', $html);
         $this->assertStringContainsString('property="og:title" content="O-Replay">', $html);
         $this->assertStringContainsString('<link rel="manifest" href="/manifest.webmanifest">', $html);
         $this->assertStringContainsString('src="/registerSW.js"></script>', $html);
         $this->assertStringContainsString('crossorigin="" src="/assets/index-BHdyZzfh.js"></script>', $html);
+    }
+
+    public function testBuildHtml_shouldRemoveTheStrayCorsBlockSoTheHeadKeepsItsTags(): void
+    {
+        $html = $this->_buildTrofeoPage();
+
         $this->assertStringNotContainsString('cors>', $html);
         $this->assertStringNotContainsString('Inserte', $html);
         $this->assertStringContainsString("<head><meta charset", preg_replace('/>\s+</', '><', $html));
     }
 
+    private function _buildTrofeoPage(): string
+    {
+        return FrontUtil::buildHtml(
+            $this->_indexHtmlAsTheStaticHostServesIt(),
+            'es',
+            '2026-10-05 Trofeo "A&B" $1',
+            '0.4.18'
+        );
+    }
+
     public function testBuildHtml_shouldFallbackToEnglishOnInvalidLang(): void
     {
-        $html = FrontUtil::buildHtml($this->_indexHtml(), '">', 'Home', '0.4.18');
+        $html = FrontUtil::buildHtml($this->_indexHtmlAsTheStaticHostServesIt(), '">', 'Home', '0.4.18');
         $this->assertStringContainsString('<html lang="en" translate="no">', $html);
     }
 
     public function testGetIndexHtml_shouldReuseTheCopyWhileFresh(): void
     {
-        $this->mockClientGet(self::FRONT . '/index.html', $this->newClientResponse(200, [], $this->_indexHtml()));
         $this->mockClientGet(
             self::FRONT . '/index.html',
-            $this->newClientResponse(200, [], $this->_indexHtml('index-NEW.js'))
+            $this->newClientResponse(200, [], $this->_indexHtmlAsTheStaticHostServesIt())
+        );
+        $this->mockClientGet(
+            self::FRONT . '/index.html',
+            $this->newClientResponse(200, [], $this->_indexHtmlAsTheStaticHostServesIt('index-NEW.js'))
         );
 
         $this->assertStringContainsString('index-BHdyZzfh.js', FrontUtil::getIndexHtml(self::FRONT . '/'));
-        // the second answer is waiting, and is not asked for
         $this->assertStringContainsString('index-BHdyZzfh.js', FrontUtil::getIndexHtml(self::FRONT));
     }
 
     public function testGetIndexHtml_shouldAskAgainOnceTheCopyIsStale(): void
     {
-        $this->mockClientGet(self::FRONT . '/index.html', $this->newClientResponse(200, [], $this->_indexHtml()));
         $this->mockClientGet(
             self::FRONT . '/index.html',
-            $this->newClientResponse(200, [], $this->_indexHtml('index-NEW.js'))
+            $this->newClientResponse(200, [], $this->_indexHtmlAsTheStaticHostServesIt())
+        );
+        $this->mockClientGet(
+            self::FRONT . '/index.html',
+            $this->newClientResponse(200, [], $this->_indexHtmlAsTheStaticHostServesIt('index-NEW.js'))
         );
 
         FrontUtil::getIndexHtml(self::FRONT);
         $this->_ageTheStoredCopyBy(10);
         $this->assertStringContainsString('index-NEW.js', FrontUtil::getIndexHtml(self::FRONT));
-        // and the new build is what the other pages get from then on
         $this->assertStringContainsString('index-NEW.js', FrontUtil::getIndexHtml(self::FRONT));
     }
 
     public function testGetIndexHtml_shouldKeepTheLastBuildWhenTheHostFails(): void
     {
-        $this->mockClientGet(self::FRONT . '/index.html', $this->newClientResponse(200, [], $this->_indexHtml()));
+        $this->mockClientGet(
+            self::FRONT . '/index.html',
+            $this->newClientResponse(200, [], $this->_indexHtmlAsTheStaticHostServesIt())
+        );
         $this->mockClientGet(self::FRONT . '/index.html', $this->newClientResponse(503, [], 'down'));
         $this->mockClientGet(self::FRONT . '/index.html', $this->newClientResponse(200, [], '<html>oops</html>'));
 
