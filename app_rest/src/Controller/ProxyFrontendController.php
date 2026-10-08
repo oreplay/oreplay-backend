@@ -24,9 +24,7 @@ class ProxyFrontendController extends ApiController
 
     protected function getData($id)
     {
-        $path = '/' . $id;
-        // the copy the service worker keeps until the next release, see FrontUtil::getIndexHtml()
-        $this->_renderIndex($path, $path === '/index.html');
+        $this->_renderIndex('/' . $id, false);
     }
 
     private function _renderIndex(string $path, bool $revalidate)

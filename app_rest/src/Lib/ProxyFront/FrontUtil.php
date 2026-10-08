@@ -13,6 +13,7 @@ class FrontUtil
 {
     private const string INDEX_HTML_KEY = '_frontIndexHtml';
     private const int INDEX_FRESH_SECONDS = 10;
+    private const int INDEX_REVALIDATED_SECONDS = 1;
 
     public static function getOgImage(string $text): string
     {
@@ -62,15 +63,17 @@ class FrontUtil
     /**
      * The index.html that the frontend build published, as the static host serves it right now.
      *
-     * The service worker stores whatever /index.html answers and replays it for every navigation until the
-     * next frontend release, so that request passes $revalidate and never gets a copy older than the sw.js
-     * nginx proxies beside it. Any other page tolerates INDEX_FRESH_SECONDS of delay, which keeps a burst of
-     * visitors from becoming a burst of requests to the static host.
+     * A page tolerates INDEX_FRESH_SECONDS of delay, which keeps a burst of visitors from becoming a burst of
+     * requests to the static host. $revalidate is the call the frontend CI makes after a release; anyone may
+     * make it, so it still reuses a copy younger than INDEX_REVALIDATED_SECONDS rather than holding a worker
+     * waiting on the static host for each request. The service worker's own /index.html never reaches php:
+     * nginx proxies it beside sw.js, so both come from the same build.
      */
     public static function getIndexHtml(string $url, bool $revalidate = false): string
     {
         $cached = Cache::read(self::INDEX_HTML_KEY, CacheGrp::DEFAULT) ?: null;
-        if ($cached && !$revalidate && time() - $cached['checkedAt'] < self::INDEX_FRESH_SECONDS) {
+        $freshSeconds = $revalidate ? self::INDEX_REVALIDATED_SECONDS : self::INDEX_FRESH_SECONDS;
+        if ($cached && time() - $cached['checkedAt'] < $freshSeconds) {
             return $cached['html'];
         }
         try {
