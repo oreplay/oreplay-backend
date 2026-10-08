@@ -110,6 +110,7 @@ class FrontUtilTest extends TestCase
         );
 
         FrontUtil::getIndexHtml(self::FRONT);
+        $this->_ageTheStoredCopyBy(1);
         $this->assertStringContainsString('index-NEW.js', FrontUtil::getIndexHtml(self::FRONT, true));
         // and the new build is what the other pages get from then on
         $this->assertStringContainsString('index-NEW.js', FrontUtil::getIndexHtml(self::FRONT));
@@ -122,8 +123,32 @@ class FrontUtilTest extends TestCase
         $this->mockClientGet(self::FRONT . '/index.html', $this->newClientResponse(200, [], '<html>oops</html>'));
 
         FrontUtil::getIndexHtml(self::FRONT);
+        $this->_ageTheStoredCopyBy(1);
         $this->assertStringContainsString('index-BHdyZzfh.js', FrontUtil::getIndexHtml(self::FRONT, true));
+        $this->_ageTheStoredCopyBy(1);
         $this->assertStringContainsString('index-BHdyZzfh.js', FrontUtil::getIndexHtml(self::FRONT, true));
+    }
+
+    public function testGetIndexHtml_shouldNotAskTheStaticHostAgainWithinASecondWhenRevalidating(): void
+    {
+        $this->mockClientGet(self::FRONT . '/index.html', $this->newClientResponse(200, [], $this->_indexHtml()));
+        $this->mockClientGet(
+            self::FRONT . '/index.html',
+            $this->newClientResponse(200, [], $this->_indexHtml('index-NEW.js'))
+        );
+
+        FrontUtil::getIndexHtml(self::FRONT, true);
+
+        $this->assertStringContainsString('index-BHdyZzfh.js', FrontUtil::getIndexHtml(self::FRONT, true),
+            'anyone may request ?updateFront=1, so a loop of them must not become a loop of '
+            . 'php workers each waiting on the static host');
+    }
+
+    private function _ageTheStoredCopyBy(int $seconds): void
+    {
+        $stored = Cache::read('_frontIndexHtml', CacheGrp::DEFAULT);
+        $stored['checkedAt'] -= $seconds;
+        Cache::write('_frontIndexHtml', $stored, CacheGrp::DEFAULT);
     }
 
     public function testGetIndexHtml_shouldThrowWhenThereIsNoCopyToFallBackOn(): void
