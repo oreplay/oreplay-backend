@@ -32,7 +32,7 @@ export interface Event {
   /** @nullable */
   scope?: string | null
   stages?: Stage[]
-  timezone?: string
+  timezone: string
   /** @nullable */
   website?: string | null
 }

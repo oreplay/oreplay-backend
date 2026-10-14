@@ -212,6 +212,10 @@
                 },
                 {
                     "type": "string",
+                    "example": "https://www.oreplay.es/logo.svg"
+                },
+                {
+                    "type": "string",
                     "nullable": true,
                     "example": null
                 },
@@ -270,6 +274,10 @@
                     "type": "string",
                     "nullable": true,
                     "example": null
+                },
+                {
+                    "type": "string",
+                    "example": "https://www.oreplay.es"
                 },
                 {
                     "type": "string",
@@ -334,6 +342,10 @@
                 },
                 {
                     "type": "string",
+                    "example": "local"
+                },
+                {
+                    "type": "string",
                     "nullable": true,
                     "example": null
                 },
@@ -392,6 +404,10 @@
                     "type": "string",
                     "nullable": true,
                     "example": null
+                },
+                {
+                    "type": "string",
+                    "example": "somewhere"
                 },
                 {
                     "type": "string",
@@ -456,6 +472,10 @@
                 },
                 {
                     "type": "string",
+                    "example": "ES"
+                },
+                {
+                    "type": "string",
                     "nullable": true,
                     "example": null
                 },
@@ -472,7 +492,7 @@
             "initial_date": [
                 {
                     "type": "string",
-                    "example": "2026-09-25"
+                    "example": "2026-10-15"
                 },
                 {
                     "type": "string",
@@ -480,11 +500,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-09-25"
+                    "example": "2026-10-15"
                 },
                 {
                     "type": "string",
-                    "example": "2026-09-25"
+                    "example": "2026-10-15"
                 },
                 {
                     "type": "string",
@@ -496,11 +516,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-09-24"
+                    "example": "2026-10-14"
                 },
                 {
                     "type": "string",
-                    "example": "2026-09-25"
+                    "example": "2026-10-15"
                 },
                 {
                     "type": "string",
@@ -526,7 +546,7 @@
             "final_date": [
                 {
                     "type": "string",
-                    "example": "2026-09-25"
+                    "example": "2026-10-15"
                 },
                 {
                     "type": "string",
@@ -534,11 +554,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-09-25"
+                    "example": "2026-10-15"
                 },
                 {
                     "type": "string",
-                    "example": "2026-09-25"
+                    "example": "2026-10-15"
                 },
                 {
                     "type": "string",
@@ -550,11 +570,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-09-24"
+                    "example": "2026-10-14"
                 },
                 {
                     "type": "string",
-                    "example": "2026-09-25"
+                    "example": "2026-10-15"
                 },
                 {
                     "type": "string",
@@ -616,7 +636,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "Europe/Madrid"
+                    "example": "Atlantic/Canary"
                 },
                 {
                     "type": "string",
@@ -625,6 +645,10 @@
                 {
                     "type": "string",
                     "example": "Europe/Madrid"
+                },
+                {
+                    "type": "string",
+                    "example": "Atlantic/Canary"
                 }
             ],
             "federation_id": [
@@ -774,7 +798,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-09-24T15:13:49.872+00:00"
+                    "example": "2026-10-14T19:54:46.564+00:00"
                 },
                 {
                     "type": "string",
@@ -786,7 +810,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "2026-09-24T15:13:49.920+00:00"
+                    "example": "2026-10-14T19:54:46.607+00:00"
                 }
             ],
             "organizer_id": [
@@ -840,7 +864,7 @@
                 },
                 {
                     "type": "string",
-                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                    "example": "9f1c2d3e-4a5b-4c6d-8e7f-0a1b2c3d4e5f"
                 }
             ],
             "organizer": [
@@ -1645,7 +1669,7 @@
                     "properties": {
                         "href": {
                             "type": "string",
-                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2026-09-24&final_date:gte=2026-09-24&page=1"
+                            "example": "http://dev.example.com/api/v1/events/?when=today&show_hidden=1&initial_date:lte=2026-10-14&final_date:gte=2026-10-14&page=1"
                         }
                     },
                     "description": "Generic object."
@@ -1758,6 +1782,18 @@
                 {
                     "type": "string",
                     "example": "2023-11-01T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "external_results_url": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
                 },
                 {
                     "type": "string",

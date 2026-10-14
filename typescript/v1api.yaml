@@ -167,14 +167,14 @@ paths:
         - description: ''
           in: query
           name: initial_date:lte
-          example: '2026-09-28'
+          example: '2026-10-14'
           required: false
           schema:
             type: string
         - description: ''
           in: query
           name: final_date:gte
-          example: '2026-09-28'
+          example: '2026-10-14'
           required: false
           schema:
             type: string
@@ -2034,10 +2034,10 @@ components:
           nullable: true
         initial_date:
           type: string
-          example: '2026-09-25'
+          example: '2026-10-15'
         final_date:
           type: string
-          example: '2026-09-25'
+          example: '2026-10-15'
         timezone:
           type: string
           example: Europe/Madrid
@@ -2070,6 +2070,7 @@ components:
         - description
         - initial_date
         - final_date
+        - timezone
         - federation_id
         - created
         - modified
@@ -2189,6 +2190,10 @@ components:
         start:
           type: string
           example: '2023-11-01T10:01:00.000+00:00'
+          nullable: true
+        external_results_url:
+          type: string
+          example: https://top.yq.cz/event/123/results
           nullable: true
         stage_type:
           $ref: '#/components/schemas/StageType'
@@ -3305,6 +3310,10 @@ components:
         start:
           type: string
           example: '2024-06-10T09:30:00.000+00:00'
+        external_results_url:
+          type: string
+          example: https://top.yq.cz/event/123/results
+          nullable: true
         state_end:
           type: boolean
           example: true

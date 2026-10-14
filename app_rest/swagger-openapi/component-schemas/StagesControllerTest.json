@@ -9,15 +9,23 @@
                 },
                 {
                     "type": "string",
-                    "example": "d9a0ae1f-dbac-41bf-bd20-9542fc358a7d"
+                    "example": "92b6a5f9-1e4c-462a-9f4f-2efc28d1077b"
                 },
                 {
                     "type": "string",
-                    "example": "cd937bea-3d7b-46c2-a66e-28469eb28f7d"
+                    "example": "aae631c8-dbfb-4f78-9270-01db00e03946"
                 },
                 {
                     "type": "string",
                     "example": "8f45d409-72bc-4cdc-96e9-0a2c4504d964"
+                },
+                {
+                    "type": "string",
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "type": "string",
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
                 },
                 {
                     "type": "string",
@@ -51,6 +59,14 @@
                 },
                 {
                     "type": "string",
+                    "example": "Trail-O stage"
+                },
+                {
+                    "type": "string",
+                    "example": "First stage"
+                },
+                {
+                    "type": "string",
                     "example": "First stage"
                 }
             ],
@@ -73,7 +89,46 @@
                 },
                 {
                     "type": "string",
+                    "example": "2024-06-10T09:30:00.000+00:00"
+                },
+                {
+                    "type": "string",
                     "example": "2023-11-01T10:01:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2023-11-01T10:01:00.000+00:00"
+                }
+            ],
+            "external_results_url": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "example": "https://top.yq.cz/event/123/results"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
                 }
             ],
             "last_logs": [
@@ -106,9 +161,25 @@
                     "type": "object",
                     "description": "Any object",
                     "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
+                },
+                {
+                    "type": "object",
+                    "description": "Any object",
+                    "additionalProperties": true
                 }
             ],
             "_links": [
+                {
+                    "$ref": "#/components/schemas/StageLinks"
+                },
+                {
+                    "$ref": "#/components/schemas/StageLinks"
+                },
                 {
                     "$ref": "#/components/schemas/StageLinks"
                 },
@@ -160,27 +231,27 @@
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/d9a0ae1f-dbac-41bf-bd20-9542fc358a7d"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/92b6a5f9-1e4c-462a-9f4f-2efc28d1077b"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/d9a0ae1f-dbac-41bf-bd20-9542fc358a7d/results/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/92b6a5f9-1e4c-462a-9f4f-2efc28d1077b/results/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/d9a0ae1f-dbac-41bf-bd20-9542fc358a7d/classes/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/92b6a5f9-1e4c-462a-9f4f-2efc28d1077b/classes/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/cd937bea-3d7b-46c2-a66e-28469eb28f7d"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/aae631c8-dbfb-4f78-9270-01db00e03946"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/cd937bea-3d7b-46c2-a66e-28469eb28f7d/results/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/aae631c8-dbfb-4f78-9270-01db00e03946/results/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/cd937bea-3d7b-46c2-a66e-28469eb28f7d/classes/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/aae631c8-dbfb-4f78-9270-01db00e03946/classes/"
                 },
                 {
                     "type": "string",
@@ -193,6 +264,30 @@
                 {
                     "type": "string",
                     "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/8f45d409-72bc-4cdc-96e9-0a2c4504d964/classes/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/results/"
+                },
+                {
+                    "type": "string",
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/classes/"
                 },
                 {
                     "type": "string",
@@ -243,6 +338,12 @@
                 },
                 {
                     "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
                 }
             ],
             "results": [
@@ -263,9 +364,21 @@
                 },
                 {
                     "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
                 }
             ],
             "classes": [
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
+                {
+                    "$ref": "#/components/schemas/LinkHref"
+                },
                 {
                     "$ref": "#/components/schemas/LinkHref"
                 },
@@ -385,6 +498,12 @@
                 },
                 {
                     "$ref": "#/components/schemas/Stage"
+                },
+                {
+                    "$ref": "#/components/schemas/Stage"
+                },
+                {
+                    "$ref": "#/components/schemas/Stage"
                 }
             ]
         },
@@ -400,18 +519,41 @@
                 {
                     "type": "string",
                     "example": "Some stage"
+                },
+                {
+                    "type": "string",
+                    "example": "Trail-O stage"
                 }
             ],
             "stage_type_id": [
                 {
                     "type": "string",
                     "example": "2b5de3d0-9bc9-435a-8bd9-2d4060b86e45"
+                },
+                {
+                    "type": "string",
+                    "example": "de0dd0e7-ffcb-4bdf-9842-327b4ea33e44"
                 }
             ],
             "start": [
                 {
                     "type": "string",
                     "example": "2024-06-10T09:30:00.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-06-10T09:30:00.000+00:00"
+                }
+            ],
+            "external_results_url": [
+                {
+                    "type": "string",
+                    "example": "https://top.yq.cz/event/123/results"
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
                 }
             ],
             "state_end": [
