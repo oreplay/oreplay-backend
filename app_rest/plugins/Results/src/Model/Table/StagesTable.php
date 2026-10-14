@@ -7,6 +7,8 @@ namespace Results\Model\Table;
 use App\Model\Table\AppTable;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
+use Cake\Validation\Validator;
+use Results\Lib\TrailOResultsUrl;
 use Results\Model\Entity\Stage;
 use Results\Model\Entity\StageType;
 
@@ -25,6 +27,18 @@ class StagesTable extends AppTable
         RunnersTable::addBelongsTo($this);
         StageTypesTable::addHasMany($this);
         UploadLogsTable::addBelongsTo($this)->setSort([UploadLogsTable::field('created') => 'ASC']);
+    }
+
+    public function validationDefault(Validator $validator): Validator
+    {
+        $allowedHosts = implode(', ', TrailOResultsUrl::ALLOWED_HOSTS);
+        return $validator
+            ->allowEmptyString('external_results_url')
+            ->maxLength('external_results_url', 255)
+            ->add('external_results_url', 'trailOResultsUrl', [
+                'rule' => fn ($url) => TrailOResultsUrl::isAllowed($url),
+                'message' => 'Only results URLs from ' . $allowedHosts . ' are allowed',
+            ]);
     }
 
     public static function load(): self
