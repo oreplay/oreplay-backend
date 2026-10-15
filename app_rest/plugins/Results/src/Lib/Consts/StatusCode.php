@@ -14,7 +14,7 @@ class StatusCode
     public const OT = '5'; //out of time
     // started and still out on the course, so no result yet. Defined but not produced by the XML import:
     // the desktop client maps Active and Inactive to OK, the backend copies it so both agree, and the
-    // frontend does not know '6'. See "Estados IOF al importar XML" in CLAUDE.md
+    // frontend does not know '6'
     public const RUNNING = '6';
     // finished but not yet validated. The desktop client has always emitted it; only the constant was
     // missing. Note it breaks the `status_code: type: number` claim in typescript/v1api.yaml, which was

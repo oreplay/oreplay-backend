@@ -11,8 +11,7 @@ use Results\Lib\Consts\StatusCode;
  * IOF puts "not competing" in the Status slot, so a runner who is both not competing *and* mispunched
  * cannot be expressed: the real status is destroyed. oreplay keeps the two apart (is_nc beside
  * status_code), and this recovers the lost half the way the Java desktop client does
- * (RunnerResult.setStatusCodeFromNc, and ConverterIofToModel for the missing split). See "Estados IOF
- * al importar XML" in CLAUDE.md.
+ * (RunnerResult.setStatusCodeFromNc, and ConverterIofToModel for the missing split).
  */
 class NcStatusReconstructor
 {

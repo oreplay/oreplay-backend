@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Lib\Import\Iof;
 
 use Cake\TestSuite\TestCase;
+use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\Consts\ResultStatus;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\Import\Iof\NcStatusReconstructor;
@@ -79,8 +80,9 @@ class NcStatusReconstructorTest extends TestCase
             'the missing split only downgrades a not-competing runner');
     }
 
-    public function testCodeOf_shouldCallAStatusOutsideTheStandardOk()
+    public function testCodeOf_shouldRefuseAStatusOutsideTheStandard()
     {
-        $this->assertSame(StatusCode::OK, NcStatusReconstructor::codeOf('Sleeping', null, false, false, false));
+        $this->expectException(DetailedException::class);
+        NcStatusReconstructor::codeOf('Sleeping', null, false, false, false);
     }
 }

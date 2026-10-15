@@ -248,17 +248,18 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
     }
 
     /**
-     * Only reachable with validate=0: the schema refuses both a status outside the standard and a Result
-     * without one. Either way it is OK, as in the desktop client, and the upload goes through.
+     * Only reachable with validate=0, since the schema refuses a status outside the standard. Inventing a
+     * status for it would publish a result nobody set, so the upload is refused and names the value.
      */
-    public function testAddNew_shouldStoreAnUnknownStatusAsOkInsteadOfRefusingTheUpload()
+    public function testAddNew_shouldRefuseAnUnknownStatusWithoutStoringAnything()
     {
         $xml = str_replace('<Status>OK</Status>', '<Status>Sleeping</Status>',
             file_get_contents($this->_asset('iof/splits.xml')));
         $this->_postXmlBody($xml, 'validate=0');
-        $this->assertUploadOk();
 
-        $this->assertSame([StatusCode::OK], array_values(array_unique($this->_storedStatusCodes())));
+        $this->assertUploadRejected(400);
+        $this->assertStringContainsString('Unknown IOF result status: Sleeping', $this->_getBodyAsString());
+        $this->assertSame([], $this->_storedStatusCodes());
     }
 
     public function testAddNew_shouldStoreAResultWithoutStatusAsOkWhateverItsTimesSay()

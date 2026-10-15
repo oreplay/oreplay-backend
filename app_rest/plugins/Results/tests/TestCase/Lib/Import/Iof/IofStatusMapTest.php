@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Lib\Import\Iof;
 
 use Cake\TestSuite\TestCase;
+use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\Consts\ResultStatus;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\Import\Iof\IofStatusMap;
@@ -33,12 +34,13 @@ class IofStatusMapTest extends TestCase
         $this->assertSame(StatusCode::OK, IofStatusMap::codeOf(ResultStatus::ACTIVE));
     }
 
-    public function testCodeOf_shouldMapTheStatusesTheDesktopClientDoesNotKnowToOk()
+    public function testCodeOf_shouldMapAWithdrawalToDnfAndACancelledOrMovedEntryToDns()
     {
-        $this->assertSame(StatusCode::OK, IofStatusMap::codeOf(ResultStatus::SPORTING_WITHDRAWAL));
-        $this->assertSame(StatusCode::OK, IofStatusMap::codeOf(ResultStatus::CANCELLED));
-        $this->assertSame(StatusCode::OK, IofStatusMap::codeOf(ResultStatus::MOVED));
-        $this->assertSame(StatusCode::OK, IofStatusMap::codeOf(ResultStatus::MOVED_UP));
+        $message = 'an OK without a finish time is shown as still running, which none of these runners is';
+        $this->assertSame(StatusCode::DNF, IofStatusMap::codeOf(ResultStatus::SPORTING_WITHDRAWAL), $message);
+        $this->assertSame(StatusCode::DNS, IofStatusMap::codeOf(ResultStatus::CANCELLED), $message);
+        $this->assertSame(StatusCode::DNS, IofStatusMap::codeOf(ResultStatus::MOVED), $message);
+        $this->assertSame(StatusCode::DNS, IofStatusMap::codeOf(ResultStatus::MOVED_UP), $message);
     }
 
     public function testCodeOf_shouldCoverEveryStatusTheStandardDefines()
@@ -50,9 +52,10 @@ class IofStatusMapTest extends TestCase
         }
     }
 
-    public function testCodeOf_shouldMapAStatusOutsideTheStandardToOkInsteadOfFailing()
+    public function testCodeOf_shouldRefuseAStatusOutsideTheStandard()
     {
-        $this->assertSame(StatusCode::OK, IofStatusMap::codeOf('Sleeping'));
-        $this->assertSame(StatusCode::OK, IofStatusMap::codeOf(''));
+        $this->expectException(DetailedException::class);
+        $this->expectExceptionMessage('Unknown IOF result status: Sleeping');
+        IofStatusMap::codeOf('Sleeping');
     }
 }
