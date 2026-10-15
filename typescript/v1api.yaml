@@ -2191,7 +2191,7 @@ components:
           type: string
           example: '2023-11-01T10:01:00.000+00:00'
           nullable: true
-        external_results_url:
+        external_url:
           type: string
           example: https://top.yq.cz/event/123/results
           nullable: true
@@ -3310,7 +3310,7 @@ components:
         start:
           type: string
           example: '2024-06-10T09:30:00.000+00:00'
-        external_results_url:
+        external_url:
           type: string
           example: https://top.yq.cz/event/123/results
           nullable: true

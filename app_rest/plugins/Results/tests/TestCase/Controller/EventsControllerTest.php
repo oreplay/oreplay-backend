@@ -253,7 +253,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
                 'id' => Stage::FIRST_STAGE,
                 'description' => 'First stage',
                 'start' => '2023-11-01T10:01:00.000+00:00',
-                'external_results_url' => null,
+                'external_url' => null,
                 'stage_type' => [
                     '_c' => StageType::class,
                     'id' => '29d5050b-4769-4be5-ace4-7e5973f68e3c',
@@ -287,7 +287,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
                 'id' => StagesFixture::STAGE_FEDO_2,
                 'description' => 'Second stage',
                 'start' => '2023-11-01T10:02:00.000+00:00',
-                'external_results_url' => null,
+                'external_url' => null,
                 'stage_type' => [
                     '_c' => StageType::class,
                     'id' => '29d5050b-4769-4be5-ace4-7e5973f68e3c',
@@ -407,7 +407,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
                 'id' => StagesFixture::STAGE_RAID,
                 'description' => 'Stage raid',
                 'start' => null,
-                'external_results_url' => null,
+                'external_url' => null,
                 'stage_type' => [
                     '_c' => StageType::class,
                     'id' => 'a30b2db1-5649-491a-b5a8-ca53e4e58461',

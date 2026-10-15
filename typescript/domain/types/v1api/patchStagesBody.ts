@@ -9,7 +9,7 @@
 export interface PatchStagesBody {
   description?: string
   /** @nullable */
-  external_results_url?: string | null
+  external_url?: string | null
   stage_type_id?: string
   start?: string
   state_end?: boolean

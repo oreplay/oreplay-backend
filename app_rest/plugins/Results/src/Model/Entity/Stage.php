@@ -14,7 +14,7 @@ use RestApi\Model\Entity\LinkHref;
  * @property string $stage_type_id
  * @property StageType $stage_type
  * @property string $description
- * @property string|null $external_results_url
+ * @property string|null $external_url
  * @property FrozenTime $created
  */
 class Stage extends AppEntity
@@ -27,7 +27,7 @@ class Stage extends AppEntity
         'description' => true,
         'stage_type_id' => true,
         'start' => true,
-        'external_results_url' => true,
+        'external_url' => true,
     ];
 
     protected array $_virtual = [

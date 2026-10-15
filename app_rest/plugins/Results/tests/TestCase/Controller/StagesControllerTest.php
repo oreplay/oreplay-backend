@@ -65,7 +65,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
                 'id' => Stage::FIRST_STAGE,
                 'description' => 'First stage',
                 'start' => '2023-11-01T10:01:00.000+00:00',
-                'external_results_url' => null,
+                'external_url' => null,
                 'last_logs' => [],
                 '_links' => [
                     '_c' => 'StageLinks',
@@ -88,7 +88,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
                 'id' => StagesFixture::STAGE_FEDO_2,
                 'description' => 'Second stage',
                 'start' => '2023-11-01T10:02:00.000+00:00',
-                'external_results_url' => null,
+                'external_url' => null,
                 'last_logs' => [],
                 '_links' => [
                     '_c' => 'StageLinks',
@@ -120,7 +120,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
             'id' => StagesFixture::STAGE_FEDO_2,
             'description' => 'Second stage',
             'start' => '2023-11-01T10:02:00.000+00:00',
-            'external_results_url' => null,
+            'external_url' => null,
             'stage_type' => [
                 '_c' => StageType::class,
                 'id' => StageType::CLASSIC,
@@ -206,16 +206,16 @@ class StagesControllerTest extends ApiCommonErrorsTest
             'description' => 'Trail-O stage',
             'stage_type_id' => StageType::TRAIL,
             'start' => '2024-06-10T09:30:00.000+00:00',
-            'external_results_url' => 'https://top.yq.cz/event/123/results',
+            'external_url' => 'https://top.yq.cz/event/123/results',
         ];
         $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, $data);
 
         $bodyDecoded = $this->assertJsonResponseOK();
-        $this->assertEquals($data['external_results_url'], $bodyDecoded['data']['external_results_url']);
+        $this->assertEquals($data['external_url'], $bodyDecoded['data']['external_url']);
         /** @var Stage $db */
         $db = StagesTable::load()->get(Stage::FIRST_STAGE);
         $this->assertEquals(StageType::TRAIL, $db->stage_type_id);
-        $this->assertEquals($data['external_results_url'], $db->external_results_url);
+        $this->assertEquals($data['external_url'], $db->external_url);
     }
 
     public function testEdit_shouldSaveAJaruoriResultsUrl()
@@ -223,34 +223,34 @@ class StagesControllerTest extends ApiCommonErrorsTest
         $this->skipNextRequestInSwagger();
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
         $url = 'https://jaruori.es/eventos/2021xermade/index.html';
-        $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, ['external_results_url' => $url]);
+        $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, ['external_url' => $url]);
 
         $this->assertJsonResponseOK();
-        $this->assertEquals($url, StagesTable::load()->get(Stage::FIRST_STAGE)->external_results_url);
+        $this->assertEquals($url, StagesTable::load()->get(Stage::FIRST_STAGE)->external_url);
     }
 
     public function testEdit_shouldClearTheResultsUrl()
     {
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
         $stages = StagesTable::load();
-        $stages->updateAll(['external_results_url' => 'https://top.yq.cz/event/1'], ['id' => Stage::FIRST_STAGE]);
+        $stages->updateAll(['external_url' => 'https://top.yq.cz/event/1'], ['id' => Stage::FIRST_STAGE]);
         $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, [
             '_c' => 'PatchStagesBody',
-            'external_results_url' => null,
+            'external_url' => null,
         ]);
 
         $this->assertJsonResponseOK();
-        $this->assertNull($stages->get(Stage::FIRST_STAGE)->external_results_url);
+        $this->assertNull($stages->get(Stage::FIRST_STAGE)->external_url);
     }
 
     public function testEdit_shouldRejectAResultsUrlFromAnotherSite()
     {
         $this->skipNextRequestInSwagger();
         $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
-        $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, ['external_results_url' => 'https://example.com/results']);
+        $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, ['external_url' => 'https://example.com/results']);
 
         $this->assertResponseCode(400);
-        $this->assertNull(StagesTable::load()->get(Stage::FIRST_STAGE)->external_results_url);
+        $this->assertNull(StagesTable::load()->get(Stage::FIRST_STAGE)->external_url);
     }
 
     public function testEdit_shouldSetStateEnded()
