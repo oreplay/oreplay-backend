@@ -21,6 +21,33 @@ class Stage extends AppEntity
 {
     public const FIRST_STAGE = '51d63e99-5d7c-4382-a541-8567015d8eed';
 
+    private const array PROPERTIES_THE_DESKTOP_CLIENT_DECLARES = [
+        '_links',
+        'answers',
+        'base_date',
+        'base_time',
+        'classes',
+        'classes_controls',
+        'clubs',
+        'controls',
+        'courses',
+        'description',
+        'event',
+        'id',
+        'last_logs',
+        'order_number',
+        'runner_results',
+        'runners',
+        'server_offset',
+        'splits',
+        'stage_discipline',
+        'stage_type',
+        'start',
+        'team_results',
+        'teams',
+        'utc_value',
+    ];
+
     protected array $_accessible = [
         '*' => false,
         'id' => false,
@@ -44,6 +71,12 @@ class Stage extends AppEntity
         'modified',
         'deleted',
     ];
+
+    public function shapedForTheDesktopClient(): static
+    {
+        $this->setHidden(array_diff($this->getVisible(), self::PROPERTIES_THE_DESKTOP_CLIENT_DECLARES), true);
+        return $this;
+    }
 
     /**
      * @return UploadLog[]

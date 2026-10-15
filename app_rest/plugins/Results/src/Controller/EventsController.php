@@ -62,7 +62,7 @@ class EventsController extends ApiController
         if ($isDesktopClientAuthenticated) {
             $res = $res->getVerySimplified();
         } elseif ($this->_isRequestedByTheDesktopClient()) {
-            $res->organizer?->shapedForTheDesktopClient();
+            $res->shapedForTheDesktopClient();
         }
         $this->return = [
             $rootEntity => $res

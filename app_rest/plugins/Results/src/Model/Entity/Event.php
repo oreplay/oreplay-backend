@@ -15,6 +15,7 @@ use RestApi\Model\Entity\LinkUri;
  * @property string $federation_id
  * @property Federation $federation
  * @property Stage[] $stages
+ * @property Organizer|null $organizer
  * @property bool $is_hidden
  */
 class Event extends AppEntity
@@ -53,6 +54,15 @@ class Event extends AppEntity
     public function _get_links(): array
     {
         return LinkUri::onlySelf(FullBaseUrl::host() . ApiController::ROUTE_PREFIX . '/events/' . $this->id);
+    }
+
+    public function shapedForTheDesktopClient(): static
+    {
+        $this->organizer?->shapedForTheDesktopClient();
+        foreach ($this->stages ?? [] as $stage) {
+            $stage->shapedForTheDesktopClient();
+        }
+        return $this;
     }
 
     public function getFirstUser()

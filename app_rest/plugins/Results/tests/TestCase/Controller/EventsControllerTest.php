@@ -203,15 +203,25 @@ class EventsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($this->_getSecondEvent(), $bodyDecoded['data'][0]);
     }
 
-    private function _organizerOfTheFirstEventAs(string $userAgent): array
+    private function _firstEventAs(string $userAgent): array
     {
         $this->cleanup();
         $this->configRequest(['headers' => ['Accept' => 'application/json', 'User-Agent' => $userAgent]]);
         $this->skipNextRequestInSwagger();
         $this->get($this->_getEndpoint() . Event::FIRST_EVENT);
-        $organizer = $this->assertJsonResponseOK()['data']['organizer'];
+        return $this->assertJsonResponseOK()['data'];
+    }
+
+    private function _organizerOfTheFirstEventAs(string $userAgent): array
+    {
+        $organizer = $this->_firstEventAs($userAgent)['organizer'];
         unset($organizer['_c']);
         return $organizer;
+    }
+
+    private function _stagesOfTheFirstEventAs(string $userAgent): array
+    {
+        return $this->_firstEventAs($userAgent)['stages'];
     }
 
     /**
@@ -229,6 +239,37 @@ class EventsControllerTest extends ApiCommonErrorsTest
             'country' => 'ES',
             'region' => 'ES-VC',
         ], $organizer);
+    }
+
+    /**
+     * Its Stage declares only the properties served up to 0.5.1, so a property added to the stages since
+     * then, such as external_url, would stop it connecting to every event.
+     */
+    public function testGetData_shouldServeTheDesktopClientTheStagesItCanRead()
+    {
+        $propertiesItsStageDeclares = [
+            '_c', '_links', 'answers', 'base_date', 'base_time', 'classes', 'classes_controls', 'clubs',
+            'controls', 'courses', 'description', 'event', 'id', 'last_logs', 'order_number', 'runner_results',
+            'runners', 'server_offset', 'splits', 'stage_discipline', 'stage_type', 'start', 'team_results',
+            'teams', 'utc_value',
+        ];
+
+        $stages = $this->_stagesOfTheFirstEventAs('Java-http-client/17.0.2');
+
+        $this->assertCount(2, $stages);
+        foreach ($stages as $stage) {
+            $this->assertEquals([], array_diff(array_keys($stage), $propertiesItsStageDeclares));
+        }
+        $this->assertEquals(Stage::FIRST_STAGE, $stages[0]['id']);
+        $this->assertEquals('2023-11-01T10:01:00.000+00:00', $stages[0]['start']);
+        $this->assertArrayHasKey('stage_type', $stages[0]);
+    }
+
+    public function testGetData_shouldServeEveryOtherCallerTheStagesWithTheirExternalUrl()
+    {
+        $stages = $this->_stagesOfTheFirstEventAs('Mozilla/5.0');
+
+        $this->assertArrayHasKey('external_url', $stages[0]);
     }
 
     public function testGetData_shouldServeEveryOtherCallerTheOrganizerWithItsCodes()
