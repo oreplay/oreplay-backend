@@ -6,6 +6,7 @@ namespace Results\Test\TestCase\Lib\Import\Iof;
 
 use Cake\TestSuite\TestCase;
 use DateTimeZone;
+use Results\Lib\Consts\StatusCode;
 use Results\Lib\Import\Iof\IofUploadTypeDetector;
 use Results\Lib\Import\Iof\IofXmlReader;
 use Results\Lib\Import\Iof\ResultListMapper;
@@ -131,6 +132,27 @@ class ResultListMapperTest extends TestCase
             $this->assertNotEmpty($split['station']);
             $this->assertGreaterThan(0, $split['order_number']);
         }
+    }
+
+    /**
+     * radio.xml is a SportSoftware export taken mid-race: every runner is Inactive, with a start time and
+     * no finish. The desktop client sends them as OK, and so does this.
+     */
+    public function testClassOf_shouldMapAnInactiveRunnerOnTheCourseToOkLikeTheDesktopClient()
+    {
+        $codes = [];
+        foreach ($this->_mappedClasses('iof/radio.xml') as $class) {
+            foreach ($class['runners'] as $runner) {
+                foreach ($runner['runner_results'] as $result) {
+                    $this->assertArrayHasKey('start_time', $result);
+                    $this->assertArrayNotHasKey('finish_time', $result);
+                    $codes[] = $result['status_code'];
+                }
+            }
+        }
+
+        $this->assertCount(3, $codes);
+        $this->assertSame([StatusCode::OK], array_values(array_unique($codes)));
     }
 
     public function testClassOf_shouldCarryTheRadioStationsOfTheClassThroughUnchanged()

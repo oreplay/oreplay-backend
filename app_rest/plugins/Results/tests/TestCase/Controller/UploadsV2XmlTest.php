@@ -7,6 +7,7 @@ namespace Results\Test\TestCase\Controller;
 use App\Controller\ApiController;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Cake\Cache\Cache;
+use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\Event;
 use Results\Model\Table\EventsTable;
@@ -223,6 +224,53 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
             ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'is_intermediate' => true])
             ->all()->count();
         $this->assertGreaterThan(0, $intermediate);
+    }
+
+    private function _storedStatusCodes(): array
+    {
+        return RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->all()->extract('status_code')->toList();
+    }
+
+    /**
+     * SportSoftware writes Inactive for a runner who has started and is still out on the course. The
+     * desktop client calls it OK, and an XML uploaded straight here has to end up the same.
+     */
+    public function testAddNew_shouldStoreAnInactiveRunnerAsOkLikeTheDesktopClient()
+    {
+        $this->_postXml('iof/radio.xml');
+        $this->assertUploadOk();
+
+        $codes = $this->_storedStatusCodes();
+        $this->assertCount(3, $codes);
+        $this->assertSame([StatusCode::OK], array_values(array_unique($codes)));
+    }
+
+    /**
+     * Only reachable with validate=0, since the schema refuses a status outside the standard. Inventing a
+     * status for it would publish a result nobody set, so the upload is refused and names the value.
+     */
+    public function testAddNew_shouldRefuseAnUnknownStatusWithoutStoringAnything()
+    {
+        $xml = str_replace('<Status>OK</Status>', '<Status>Sleeping</Status>',
+            file_get_contents($this->_asset('iof/splits.xml')));
+        $this->_postXmlBody($xml, 'validate=0');
+
+        $this->assertUploadRejected(400);
+        $this->assertStringContainsString('Unknown IOF result status: Sleeping', $this->_getBodyAsString());
+        $this->assertSame([], $this->_storedStatusCodes());
+    }
+
+    public function testAddNew_shouldStoreAResultWithoutStatusAsOkWhateverItsTimesSay()
+    {
+        // without Status, Position or FinishTime the old inference would have said DidNotFinish
+        $xml = preg_replace('#<(Status|Position|FinishTime)>[^<]*</\1>#', '',
+            file_get_contents($this->_asset('iof/splits.xml')));
+        $this->_postXmlBody($xml, 'validate=0');
+        $this->assertUploadOk();
+
+        $this->assertSame([StatusCode::OK], array_values(array_unique($this->_storedStatusCodes())));
     }
 
     public function testAddNew_shouldShowTheRadiosTheCommentDeclaresBeforeAnyCourseIsStored()
