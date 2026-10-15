@@ -13,7 +13,7 @@ export interface Stage {
   _links: StageLinks
   description: string
   /** @nullable */
-  external_results_url?: string | null
+  external_url?: string | null
   id: string
   last_logs: UploadLog[]
   stage_type?: StageType

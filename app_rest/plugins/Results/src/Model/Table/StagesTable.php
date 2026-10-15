@@ -33,9 +33,9 @@ class StagesTable extends AppTable
     {
         $allowedHosts = implode(', ', TrailOResultsUrl::ALLOWED_HOSTS);
         return $validator
-            ->allowEmptyString('external_results_url')
-            ->maxLength('external_results_url', 255)
-            ->add('external_results_url', 'trailOResultsUrl', [
+            ->allowEmptyString('external_url')
+            ->maxLength('external_url', 255)
+            ->add('external_url', 'trailOResultsUrl', [
                 'rule' => fn ($url) => TrailOResultsUrl::isAllowed($url),
                 'message' => 'Only results URLs from ' . $allowedHosts . ' are allowed',
             ]);

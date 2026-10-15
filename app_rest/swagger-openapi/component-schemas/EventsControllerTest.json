@@ -1789,7 +1789,7 @@
                     "example": null
                 }
             ],
-            "external_results_url": [
+            "external_url": [
                 {
                     "type": "string",
                     "nullable": true,
