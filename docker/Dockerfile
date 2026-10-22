@@ -1,4 +1,4 @@
-FROM public.ecr.aws/ct-nilus/base-images:nginx-php-dev-v21-noble-8.3
+FROM public.ecr.aws/ct-nilus/base-images:nginx-php-dev-v23-noble-8.3
 
 ## nchan holds the long-lived SSE connections that php-fpm cannot: every connection would occupy one
 ## worker, so a few dozen viewers would starve the pool and the uploads themselves would begin to queue.
