@@ -9,11 +9,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "92b6a5f9-1e4c-462a-9f4f-2efc28d1077b"
+                    "example": "856bdcfb-04e0-4b0f-89a3-62d54ec5a3f6"
                 },
                 {
                     "type": "string",
-                    "example": "aae631c8-dbfb-4f78-9270-01db00e03946"
+                    "example": "d3103718-fdd7-4df3-94e6-c6703df004ac"
                 },
                 {
                     "type": "string",
@@ -173,6 +173,32 @@
                     "additionalProperties": true
                 }
             ],
+            "last_dates": [
+                {
+                    "$ref": "#/components/schemas/LastDates"
+                },
+                {
+                    "$ref": "#/components/schemas/LastDates"
+                },
+                {
+                    "$ref": "#/components/schemas/LastDates"
+                },
+                {
+                    "$ref": "#/components/schemas/LastDates"
+                },
+                {
+                    "$ref": "#/components/schemas/LastDates"
+                },
+                {
+                    "$ref": "#/components/schemas/LastDates"
+                },
+                {
+                    "$ref": "#/components/schemas/LastDates"
+                },
+                {
+                    "$ref": "#/components/schemas/LastDates"
+                }
+            ],
             "_links": [
                 {
                     "$ref": "#/components/schemas/StageLinks"
@@ -213,6 +239,180 @@
         },
         "description": "Entity Stage"
     },
+    "LastDates": {
+        "type": "object",
+        "properties": {
+            "cleared": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "start_list": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "results": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "final": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ]
+        },
+        "description": "Entity LastDates"
+    },
     "LinkHref": {
         "type": "object",
         "properties": {
@@ -231,27 +431,27 @@
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/92b6a5f9-1e4c-462a-9f4f-2efc28d1077b"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/856bdcfb-04e0-4b0f-89a3-62d54ec5a3f6"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/92b6a5f9-1e4c-462a-9f4f-2efc28d1077b/results/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/856bdcfb-04e0-4b0f-89a3-62d54ec5a3f6/results/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/92b6a5f9-1e4c-462a-9f4f-2efc28d1077b/classes/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/856bdcfb-04e0-4b0f-89a3-62d54ec5a3f6/classes/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/aae631c8-dbfb-4f78-9270-01db00e03946"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/d3103718-fdd7-4df3-94e6-c6703df004ac"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/aae631c8-dbfb-4f78-9270-01db00e03946/results/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/d3103718-fdd7-4df3-94e6-c6703df004ac/results/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/aae631c8-dbfb-4f78-9270-01db00e03946/classes/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/d3103718-fdd7-4df3-94e6-c6703df004ac/classes/"
                 },
                 {
                     "type": "string",

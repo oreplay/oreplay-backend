@@ -3,6 +3,7 @@
  * O-replay - OpenAPI 3.0
  */
 import type { Participant } from './participant'
+import type { LastDates } from './lastDates'
 import type { UploadLog } from './uploadLog'
 
 /**
@@ -10,5 +11,6 @@ import type { UploadLog } from './uploadLog'
  */
 export interface ArrayParticipant {
   data: Participant[]
+  last_dates?: LastDates
   last_logs?: UploadLog[]
 }

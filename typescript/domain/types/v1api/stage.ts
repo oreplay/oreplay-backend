@@ -3,6 +3,7 @@
  * O-replay - OpenAPI 3.0
  */
 import type { StageLinks } from './stageLinks'
+import type { LastDates } from './lastDates'
 import type { UploadLog } from './uploadLog'
 import type { StageType } from './stageType'
 
@@ -15,6 +16,7 @@ export interface Stage {
   /** @nullable */
   external_url?: string | null
   id: string
+  last_dates: LastDates
   last_logs: UploadLog[]
   stage_type?: StageType
   /** @nullable */
