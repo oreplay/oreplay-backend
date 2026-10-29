@@ -70,6 +70,7 @@ class StagesController extends ApiController
     {
         $eventId = $this->request->getParam('eventID');
         $this->_isUserAllowedInStage($eventId, $id);
+        UploadLogsTable::load()->assertResultsAreNotFinal($eventId, $id);
 
         $clean = $this->getRequest()->getQuery('clean');
 
@@ -112,16 +113,25 @@ class StagesController extends ApiController
 
         $stage =$this->Stages->get($id);
         $stage = $this->Stages->patchEntity($stage, $data);
+        $hasState = array_key_exists('state_end', $data);
+        $makesResultsProvisional = $hasState && !$this->_isStateEnd($data);
+        if (!$makesResultsProvisional) {
+            $this->Stages->UploadLogs->assertResultsAreNotFinal($eventId, $id);
+        }
         $saved = $this->Stages->saveOrFail($stage);
-        if (array_key_exists('state_end', $data)) {
-            $stateEnd = filter_var($data['state_end'], FILTER_VALIDATE_BOOLEAN);
-            if ($stateEnd) {
+        if ($hasState) {
+            if ($this->_isStateEnd($data)) {
                 $this->Stages->UploadLogs->saveStateEnded($eventId, $id);
             } else {
                 $this->Stages->UploadLogs->deleteStateEnded($eventId, $id);
             }
         }
         $this->return = $this->Stages->get($saved->id);
+    }
+
+    private function _isStateEnd(array $data): bool
+    {
+        return filter_var($data['state_end'], FILTER_VALIDATE_BOOLEAN);
     }
 
     private function _isUserAllowedInEvent(string $eventId): void

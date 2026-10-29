@@ -10,6 +10,7 @@ use Results\Lib\Output\DuplicatedRunners;
 use Results\Lib\Output\ReadablePointsCsv;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Team;
+use Results\Model\Entity\UploadLog;
 use Results\Model\Table\RunnersTable;
 use Results\Model\Table\UploadLogsTable;
 use Results\Model\Table\TeamsTable;
@@ -47,9 +48,11 @@ class ResultsController extends ApiController
             return $results;
         }
         $this->flatResponse = true;
+        $lastLogs = UploadLogsTable::load()->getLastLogsInStage($eventId, $stageId);
         return [
             'data' => $results,
-            'last_logs' => UploadLogsTable::load()->getLastLogsInStage($eventId, $stageId),
+            'last_logs' => $lastLogs,
+            'last_dates' => UploadLog::lastDates($lastLogs),
         ];
     }
 
