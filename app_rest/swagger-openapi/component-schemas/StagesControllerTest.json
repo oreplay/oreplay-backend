@@ -9,11 +9,11 @@
                 },
                 {
                     "type": "string",
-                    "example": "856bdcfb-04e0-4b0f-89a3-62d54ec5a3f6"
+                    "example": "ecb8e6d8-edc3-4c55-a6f1-0546b396d3fb"
                 },
                 {
                     "type": "string",
-                    "example": "d3103718-fdd7-4df3-94e6-c6703df004ac"
+                    "example": "15f9410d-c4dd-49b6-a9d7-fd672b9a1791"
                 },
                 {
                     "type": "string",
@@ -133,9 +133,10 @@
             ],
             "last_logs": [
                 {
-                    "type": "object",
-                    "description": "Any object",
-                    "additionalProperties": true
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/UploadLog"
+                    }
                 },
                 {
                     "type": "object",
@@ -153,24 +154,28 @@
                     "additionalProperties": true
                 },
                 {
-                    "type": "object",
-                    "description": "Any object",
-                    "additionalProperties": true
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/UploadLog"
+                    }
                 },
                 {
-                    "type": "object",
-                    "description": "Any object",
-                    "additionalProperties": true
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/UploadLog"
+                    }
                 },
                 {
-                    "type": "object",
-                    "description": "Any object",
-                    "additionalProperties": true
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/UploadLog"
+                    }
                 },
                 {
-                    "type": "object",
-                    "description": "Any object",
-                    "additionalProperties": true
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/UploadLog"
+                    }
                 }
             ],
             "last_dates": [
@@ -239,6 +244,56 @@
         },
         "description": "Entity Stage"
     },
+    "UploadLog": {
+        "type": "object",
+        "properties": {
+            "state": [
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                },
+                {
+                    "type": "number",
+                    "example": 1
+                }
+            ],
+            "created": [
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                },
+                {
+                    "type": "string",
+                    "example": "****-**-*****:**:**.***+**:**"
+                }
+            ]
+        },
+        "description": "Entity UploadLog"
+    },
     "LastDates": {
         "type": "object",
         "properties": {
@@ -287,8 +342,7 @@
             "start_list": [
                 {
                     "type": "string",
-                    "nullable": true,
-                    "example": null
+                    "example": "2024-01-02T10:00:05.000+00:00"
                 },
                 {
                     "type": "string",
@@ -307,23 +361,19 @@
                 },
                 {
                     "type": "string",
-                    "nullable": true,
-                    "example": null
+                    "example": "2024-01-02T10:00:05.000+00:00"
                 },
                 {
                     "type": "string",
-                    "nullable": true,
-                    "example": null
+                    "example": "2024-01-02T10:00:05.000+00:00"
                 },
                 {
                     "type": "string",
-                    "nullable": true,
-                    "example": null
+                    "example": "2024-01-02T10:00:05.000+00:00"
                 },
                 {
                     "type": "string",
-                    "nullable": true,
-                    "example": null
+                    "example": "2024-01-02T10:00:05.000+00:00"
                 }
             ],
             "results": [
@@ -406,8 +456,7 @@
                 },
                 {
                     "type": "string",
-                    "nullable": true,
-                    "example": null
+                    "example": "2026-10-29T14:20:05.000+00:00"
                 }
             ]
         },
@@ -431,27 +480,27 @@
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/856bdcfb-04e0-4b0f-89a3-62d54ec5a3f6"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/ecb8e6d8-edc3-4c55-a6f1-0546b396d3fb"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/856bdcfb-04e0-4b0f-89a3-62d54ec5a3f6/results/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/ecb8e6d8-edc3-4c55-a6f1-0546b396d3fb/results/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/856bdcfb-04e0-4b0f-89a3-62d54ec5a3f6/classes/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/ecb8e6d8-edc3-4c55-a6f1-0546b396d3fb/classes/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/d3103718-fdd7-4df3-94e6-c6703df004ac"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/15f9410d-c4dd-49b6-a9d7-fd672b9a1791"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/d3103718-fdd7-4df3-94e6-c6703df004ac/results/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/15f9410d-c4dd-49b6-a9d7-fd672b9a1791/results/"
                 },
                 {
                     "type": "string",
-                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/d3103718-fdd7-4df3-94e6-c6703df004ac/classes/"
+                    "example": "http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/15f9410d-c4dd-49b6-a9d7-fd672b9a1791/classes/"
                 },
                 {
                     "type": "string",

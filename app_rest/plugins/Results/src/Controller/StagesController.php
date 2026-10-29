@@ -38,9 +38,7 @@ class StagesController extends ApiController
     public function getList()
     {
         $eventId = $this->request->getParam('eventID');
-        $this->return = $this->Stages->find()
-            ->where(['event_id' => $eventId])
-            ->orderByAsc('created')->all();
+        $this->return = $this->Stages->findAllInEvent($eventId)->all();
     }
 
     protected function getData($id)
@@ -126,7 +124,7 @@ class StagesController extends ApiController
                 $this->Stages->UploadLogs->deleteStateEnded($eventId, $id);
             }
         }
-        $this->return = $this->Stages->get($saved->id);
+        $this->return = $this->Stages->getWithLastLogs($saved->id, $eventId);
     }
 
     private function _isStateEnd(array $data): bool
