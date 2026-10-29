@@ -1392,6 +1392,20 @@
                         "$ref": "#/components/schemas/UploadLog"
                     }
                 }
+            ],
+            "last_dates": [
+                {
+                    "$ref": "#/components/schemas/LastDates"
+                },
+                {
+                    "$ref": "#/components/schemas/LastDates"
+                },
+                {
+                    "$ref": "#/components/schemas/LastDates"
+                },
+                {
+                    "$ref": "#/components/schemas/LastDates"
+                }
             ]
         },
         "description": "Data wrapper for Participant",
@@ -1440,5 +1454,95 @@
             ]
         },
         "description": "Entity UploadLog"
+    },
+    "LastDates": {
+        "type": "object",
+        "properties": {
+            "cleared": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "start_list": [
+                {
+                    "type": "string",
+                    "example": "2024-01-02T10:00:05.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-02T10:00:05.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-02T10:00:05.000+00:00"
+                },
+                {
+                    "type": "string",
+                    "example": "2024-01-02T10:00:05.000+00:00"
+                }
+            ],
+            "results": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ],
+            "final": [
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                },
+                {
+                    "type": "string",
+                    "nullable": true,
+                    "example": null
+                }
+            ]
+        },
+        "description": "Entity LastDates"
     }
 }

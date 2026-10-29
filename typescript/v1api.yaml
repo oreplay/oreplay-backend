@@ -2201,6 +2201,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UploadLog'
+        last_dates:
+          $ref: '#/components/schemas/LastDates'
         _links:
           $ref: '#/components/schemas/StageLinks'
       description: Entity Stage
@@ -2208,6 +2210,7 @@ components:
         - id
         - description
         - last_logs
+        - last_dates
         - _links
     StageType:
       type: object
@@ -2232,6 +2235,26 @@ components:
           type: string
           example: '****-**-*****:**:**.***+**:**'
       description: Entity UploadLog
+    LastDates:
+      type: object
+      properties:
+        cleared:
+          type: string
+          nullable: true
+          example: null
+        start_list:
+          type: string
+          example: '2024-01-02T10:00:05.000+00:00'
+          nullable: true
+        results:
+          type: string
+          nullable: true
+          example: null
+        final:
+          type: string
+          nullable: true
+          example: null
+      description: Entity LastDates
     StageLinks:
       type: object
       properties:
@@ -3118,6 +3141,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UploadLog'
+        last_dates:
+          $ref: '#/components/schemas/LastDates'
       description: Data wrapper for Participant
       required:
         - data
