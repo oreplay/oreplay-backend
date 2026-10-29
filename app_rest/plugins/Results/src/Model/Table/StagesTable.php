@@ -7,6 +7,7 @@ namespace Results\Model\Table;
 use App\Model\Table\AppTable;
 use Cake\ORM\Behavior\TimestampBehavior;
 use Cake\ORM\Query;
+use Cake\ORM\Query\SelectQuery;
 use Cake\Validation\Validator;
 use Results\Lib\TrailOResultsUrl;
 use Results\Model\Entity\Stage;
@@ -58,9 +59,30 @@ class StagesTable extends AppTable
     public function getByEvent(string $stageId, string $eventId): Stage
     {
         /** @var Stage $res */
-        $res = $this->findByEvent($stageId, $eventId)
+        $res = $this->_withLastLogs($this->findByEvent($stageId, $eventId), $eventId)
             ->firstOrFail();
         return $res;
+    }
+
+    public function getWithLastLogs(string $stageId, string $eventId): Stage
+    {
+        /** @var Stage $res */
+        $res = $this->_withLastLogs($this->find()->where([$this->aliasField('id') => $stageId]), $eventId)
+            ->firstOrFail();
+        return $res;
+    }
+
+    public function findAllInEvent(string $eventId): Query
+    {
+        return $this->_withLastLogs($this->find()->where(['event_id' => $eventId]), $eventId)
+            ->orderByAsc($this->aliasField('created'));
+    }
+
+    private function _withLastLogs(Query $query, string $eventId): Query
+    {
+        return $query->contain(UploadLogsTable::name(), function (SelectQuery $logs) use ($eventId) {
+            return UploadLogsTable::load()->keepOnlyNewestPerState($logs, $eventId);
+        });
     }
 
     public function getOrCreateTotalsInEvent(string $eventId): Stage

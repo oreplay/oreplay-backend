@@ -77,8 +77,14 @@ class StagesControllerTest extends ApiCommonErrorsTest
                 'description' => 'First stage',
                 'start' => '2023-11-01T10:01:00.000+00:00',
                 'external_url' => null,
-                'last_logs' => [],
-                'last_dates' => self::NO_LAST_DATES,
+                'last_logs' => [
+                    [
+                        '_c' => UploadLog::class,
+                        'state' => UploadLog::STATE_START,
+                        'created' => '2024-01-02T10:00:05.000+00:00',
+                    ]
+                ],
+                'last_dates' => ['start_list' => '2024-01-02T10:00:05.000+00:00'] + self::NO_LAST_DATES,
                 '_links' => [
                     '_c' => 'StageLinks',
                     'self' => [
@@ -278,6 +284,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals('First stage', $bodyDecoded['data']['description']);
+        $this->assertNotNull($bodyDecoded['data']['last_dates']['final']);
 
         $logs = UploadLogsTable::load()->find()
             ->where(['stage_id' => Stage::FIRST_STAGE, 'state' => UploadLog::STATE_ENDED])->all()->count();
