@@ -154,6 +154,19 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $lock->release();
     }
 
+    public function testAddNew_shouldRefuseToImportIntoAStageWithFinalResults()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        UploadLogsTable::load()->saveStateEnded(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2);
+
+        $this->post($this->_getEndpoint(), ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()]);
+
+        $jsonDecoded = $this->assertUploadRejected(409);
+        $this->assertEquals('final_results', $jsonDecoded['meta']['messages'][0]['code']);
+        $this->assertEquals(0, RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all()->count());
+    }
+
     public function testAddNew_shouldReleaseTheLockSoTheNextUploadGoesThrough()
     {
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);

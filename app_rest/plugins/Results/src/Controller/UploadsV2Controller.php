@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Controller;
 
 use App\Lib\Consts\CacheGrp;
+use App\Lib\Exception\FinalResultsException;
 use App\Lib\FullBaseUrl;
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
@@ -76,6 +77,7 @@ class UploadsV2Controller extends ApiController
 
         // the log row describes the upload, so the payload has to be understood before it can be written
         $type = $helper->validateConfigChecker()->preCheckType();
+        UploadLogsTable::load()->assertResultsAreNotFinal($helper->getEventId(), $helper->getStageId());
         $lock = new StageUploadLock();
         if (!$lock->acquire($helper->getEventId(), $helper->getStageId())) {
             throw new ConflictException('An upload for this stage is still being processed');
@@ -213,6 +215,9 @@ class UploadsV2Controller extends ApiController
         }
         if ($e instanceof ConflictException) {
             return 'payload not logged: stage ' . $this->_stageIdOfTheRequest($data) . ' was still importing';
+        }
+        if ($e instanceof FinalResultsException) {
+            return 'payload not logged: stage ' . $this->_stageIdOfTheRequest($data) . ' has final results';
         }
         if (is_string($data)) {
             return 'XML body of ' . strlen($data) . ' bytes, starting: '

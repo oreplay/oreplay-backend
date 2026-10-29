@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Model\Table;
 
+use App\Lib\Exception\FinalResultsException;
 use App\Model\Table\AppTable;
 use Cake\I18n\FrozenTime;
 use Cake\Database\Expression\IdentifierExpression;
@@ -62,6 +63,18 @@ class UploadLogsTable extends AppTable
     {
         $logs = $this->keepOnlyNewestPerState($this->_inStage($eventId, $stageId), $eventId)->all();
         return UploadLog::onePerState($logs);
+    }
+
+    public function assertResultsAreNotFinal(string $eventId, string $stageId): void
+    {
+        if ($this->_areResultsFinal($eventId, $stageId)) {
+            throw new FinalResultsException();
+        }
+    }
+
+    private function _areResultsFinal(string $eventId, string $stageId): bool
+    {
+        return $this->_inStage($eventId, $stageId)->where(['state' => UploadLog::STATE_ENDED])->count() > 0;
     }
 
     private function _inStage(string $eventId, string $stageId): Query

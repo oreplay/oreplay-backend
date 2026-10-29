@@ -32,6 +32,14 @@ class EventsControllerTest extends ApiCommonErrorsTest
 {
     private const ANOTHER_ORGANIZER = '9f1c2d3e-4a5b-4c6d-8e7f-0a1b2c3d4e5f';
 
+    private const array NO_LAST_DATES = [
+        '_c' => 'LastDates',
+        'cleared' => null,
+        'start_list' => null,
+        'results' => null,
+        'final' => null,
+    ];
+
     protected array $fixtures = [
         FederationsFixture::LOAD,
         OrganizersFixture::LOAD,
@@ -307,6 +315,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
                         'created' => '2024-01-02T10:00:05.000+00:00',
                     ]
                 ],
+                'last_dates' => ['start_list' => '2024-01-02T10:00:05.000+00:00'] + self::NO_LAST_DATES,
                 '_links' => [
                     '_c' => 'StageLinks',
                     'self' => [
@@ -335,6 +344,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
                     'description' => 'Foot-O, MTBO, Ski-O',
                 ],
                 'last_logs' => [],
+                'last_dates' => self::NO_LAST_DATES,
                 '_links' => [
                     '_c' => 'StageLinks',
                     'self' => [
@@ -455,6 +465,7 @@ class EventsControllerTest extends ApiCommonErrorsTest
                     'description' => 'Raid',
                 ],
                 'last_logs' => [],
+                'last_dates' => self::NO_LAST_DATES,
                 '_links' => [
                     '_c' => 'StageLinks',
                     'self' => [
