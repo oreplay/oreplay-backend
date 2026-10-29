@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Controller;
 
 use App\Lib\Consts\CacheGrp;
+use App\Lib\Exception\FinalResultsException;
 use App\Lib\Exception\InvalidPayloadException;
 use App\Lib\Exception\InvalidTokenException;
 use App\Lib\FullBaseUrl;
@@ -84,6 +85,7 @@ class UploadsController extends ApiController
 
         $configChecker = $helper->validateConfigChecker();
         $stageId = $helper->getStageId();
+        UploadLogsTable::load()->assertResultsAreNotFinal($helper->getEventId(), $stageId);
 
         //$rawUrl = $this->_getHost() . '/api/v1/events/' . $helper->getEventId() . '/rawUploads';
         //FireAndForget::postJson($rawUrl, $helper->getData(), ['Authorization' => 'Bearer ' . $token]);
@@ -284,6 +286,9 @@ class UploadsController extends ApiController
                 . " \n\n" . json_encode($data)
                 . " \n\n" . json_encode($this->return)
             );
+            $this->return = $this->respondError($e->getMessage(), $e->getCode());
+        } catch (FinalResultsException $e) {
+            $this->log('Uploads refused: ' . $e->getMessage());
             $this->return = $this->respondError($e->getMessage(), $e->getCode());
         } catch (DetailedException $e) {
             $this->log('Uploads DetailedException: ' . $e->getMessage() . " \n" . json_encode($data)

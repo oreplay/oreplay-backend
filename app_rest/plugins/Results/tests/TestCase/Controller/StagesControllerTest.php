@@ -34,6 +34,17 @@ use Results\Test\Fixture\UsersEventsFixture;
 
 class StagesControllerTest extends ApiCommonErrorsTest
 {
+    private const array NO_LAST_DATES = [
+        '_c' => 'LastDates',
+        'cleared' => null,
+        'start_list' => null,
+        'results' => null,
+        'final' => null,
+    ];
+
+    private const string FINAL_RESULTS_MESSAGE =
+        'The results of this stage are final, make them provisional before changing them';
+
     protected array $fixtures = [
         FederationsFixture::LOAD,
         UsersEventsFixture::LOAD,
@@ -67,6 +78,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
                 'start' => '2023-11-01T10:01:00.000+00:00',
                 'external_url' => null,
                 'last_logs' => [],
+                'last_dates' => self::NO_LAST_DATES,
                 '_links' => [
                     '_c' => 'StageLinks',
                     'self' => [
@@ -90,6 +102,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
                 'start' => '2023-11-01T10:02:00.000+00:00',
                 'external_url' => null,
                 'last_logs' => [],
+                'last_dates' => self::NO_LAST_DATES,
                 '_links' => [
                     '_c' => 'StageLinks',
                     'self' => [
@@ -127,6 +140,7 @@ class StagesControllerTest extends ApiCommonErrorsTest
                 'description' => 'Foot-O, MTBO, Ski-O',
             ],
             'last_logs' => [],
+            'last_dates' => self::NO_LAST_DATES,
             '_links' => [
                 '_c' => 'StageLinks',
                 'self' => [
@@ -268,6 +282,62 @@ class StagesControllerTest extends ApiCommonErrorsTest
         $logs = UploadLogsTable::load()->find()
             ->where(['stage_id' => Stage::FIRST_STAGE, 'state' => UploadLog::STATE_ENDED])->all()->count();
         $this->assertEquals(1, $logs);
+    }
+
+    private function _makeFirstStageFinal(): void
+    {
+        UploadLogsTable::load()->saveStateEnded(Event::FIRST_EVENT, Stage::FIRST_STAGE);
+    }
+
+    private function _isFirstStageFinal(): bool
+    {
+        return UploadLogsTable::load()->find()
+            ->where(['stage_id' => Stage::FIRST_STAGE, 'state' => UploadLog::STATE_ENDED])->count() > 0;
+    }
+
+    public function testEdit_shouldRefuseToEditAFinalStage()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->_makeFirstStageFinal();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, ['start' => '2024-06-10T09:30:00.000+00:00']);
+
+        $this->assertExceptionMessage(self::FINAL_RESULTS_MESSAGE, 409);
+        $db = StagesTable::load()->get(Stage::FIRST_STAGE);
+        $this->assertEquals('2023-11-01 10:01:00', $db->start->format('Y-m-d H:i:s'));
+    }
+
+    public function testEdit_shouldMakeAFinalStageProvisional()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->_makeFirstStageFinal();
+        $this->loadAuthToken(OauthAccessTokensFixture::ACCESS_ADMIN_PROVIDER);
+        $this->patch($this->_getEndpoint() . Stage::FIRST_STAGE, ['state_end' => false]);
+
+        $this->assertJsonResponseOK();
+        $this->assertFalse($this->_isFirstStageFinal());
+    }
+
+    public function testDelete_shouldRefuseToDeleteAFinalStage()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->_makeFirstStageFinal();
+        $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE);
+
+        $this->assertExceptionMessage(self::FINAL_RESULTS_MESSAGE, 409);
+        $this->assertNotNull(StagesTable::load()->findById(Stage::FIRST_STAGE)->first());
+    }
+
+    public function testDelete_shouldRefuseToCleanAFinalStage()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->_makeFirstStageFinal();
+        $this->delete($this->_getEndpoint() . Stage::FIRST_STAGE . '?clean=1');
+
+        $this->assertExceptionMessage(self::FINAL_RESULTS_MESSAGE, 409);
+        $this->assertTrue($this->_isFirstStageFinal());
+        $this->assertEquals(0, UploadLogsTable::load()->find()
+            ->where(['stage_id' => Stage::FIRST_STAGE, 'state' => 0])->count());
     }
 
     public function testEdit_adminCanEditStageInEventTheyDoNotOwn()

@@ -23,6 +23,13 @@ class UploadLog extends AppEntity
     private const STATE_RESULT = 2;
     public const STATE_ENDED = 3;
 
+    private const array LAST_DATE_OF_STATE = [
+        self::STATE_CLEAR => 'cleared',
+        self::STATE_START => 'start_list',
+        self::STATE_RESULT => 'results',
+        self::STATE_ENDED => 'final',
+    ];
+
     protected array $_accessible = [
         '*' => false,
         'id' => false,
@@ -50,6 +57,18 @@ class UploadLog extends AppEntity
             $byState[$log->state] = $log;
         }
         return array_values($byState);
+    }
+
+    /**
+     * @param iterable<UploadLog>|null $logs
+     */
+    public static function lastDates(?iterable $logs): array
+    {
+        $dates = array_fill_keys(self::LAST_DATE_OF_STATE, null);
+        foreach (self::onePerState($logs) as $log) {
+            $dates[self::LAST_DATE_OF_STATE[$log->state]] = $log->created;
+        }
+        return self::toChild('LastDates', $dates);
     }
 
     public function setClearState(): int

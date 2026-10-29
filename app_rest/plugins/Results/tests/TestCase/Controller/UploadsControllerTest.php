@@ -187,6 +187,19 @@ class UploadsControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(['classes' => 0, 'runners' => 0], $jsonDecoded['meta']['updated']);
     }
 
+    public function testAddNew_shouldRefuseToImportIntoAStageWithFinalResults()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        UploadLogsTable::load()->saveStateEnded(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2);
+
+        $this->post($this->_getEndpoint(), ['oreplay_data_transfer' => ResultExamples::resultSimpleFinishTime()]);
+
+        $jsonDecoded = $this->assertJsonResponseOK();
+        $this->assertStringContainsString('The results of this stage are final', $jsonDecoded['meta']['human'][0]);
+        $this->assertEquals(0, RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all()->count());
+    }
+
     public function testAddNew_shouldReplayAnUploadOfItsOwnEvent()
     {
         $this->_postReplayOf($this->storeRawUploadOf(Event::FIRST_EVENT, ResultExamples::resultSimpleFinishTime()));

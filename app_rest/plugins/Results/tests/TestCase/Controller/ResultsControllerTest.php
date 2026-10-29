@@ -436,6 +436,23 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         ], $bodyDecoded['last_logs']);
     }
 
+    public function testLastDatesSayWhenEachStateLastHappened()
+    {
+        $this->_addLogInFirstStage(2, '2024-01-02 12:00:00');
+        $this->_addLogInFirstStage(UploadLog::STATE_ENDED, '2024-01-02 13:00:00');
+
+        $this->skipNextRequestInSwagger();
+        $this->get($this->_getEndpoint());
+
+        $this->assertEquals([
+            '_c' => 'LastDates',
+            'cleared' => null,
+            'start_list' => '2024-01-02T10:00:05.000+00:00',
+            'results' => '2024-01-02T12:00:00.000+00:00',
+            'final' => '2024-01-02T13:00:00.000+00:00',
+        ], $this->assertJsonResponseOK()['last_dates']);
+    }
+
     public function testASoftDeletedLogIsNotReported()
     {
         // clearing a stage soft deletes its logs, and a cleared stage must stop claiming it has results

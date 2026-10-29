@@ -59,6 +59,7 @@ class Stage extends AppEntity
 
     protected array $_virtual = [
         'last_logs',
+        'last_dates',
         '_links',
     ];
 
@@ -84,6 +85,11 @@ class Stage extends AppEntity
     public function _getLastLogs(): array
     {
         return UploadLog::onePerState($this->upload_logs);
+    }
+
+    public function _getLastDates(): array
+    {
+        return UploadLog::lastDates($this->upload_logs);
     }
 
     public function _get_links(): array
