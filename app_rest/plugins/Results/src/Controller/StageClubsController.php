@@ -8,9 +8,12 @@ use Results\Lib\ClubMatcher\ClubOrganizerInfo;
 use Results\Lib\ClubMatcher\IncludedOrganizerFields;
 use Results\Model\Table\ClubsTable;
 use Results\Model\Table\OrganizersTable;
+use Results\Controller\Traits\GuardsHiddenEventsTrait;
 
 class StageClubsController extends ApiController
 {
+    use GuardsHiddenEventsTrait;
+
     private ClubsTable $Clubs;
     private ClubOrganizerInfo $organizerInfo;
 

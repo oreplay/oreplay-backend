@@ -13,9 +13,12 @@ use Results\Model\Entity\Team;
 use Results\Model\Table\RunnersTable;
 use Results\Model\Table\UploadLogsTable;
 use Results\Model\Table\TeamsTable;
+use Results\Controller\Traits\GuardsHiddenEventsTrait;
 
 class ResultsController extends ApiController
 {
+    use GuardsHiddenEventsTrait;
+
     protected RestApiTable $Teams;
     protected RunnersTable $Runners;
 
