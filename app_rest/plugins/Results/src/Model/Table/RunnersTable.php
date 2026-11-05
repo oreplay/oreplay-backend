@@ -299,6 +299,8 @@ class RunnersTable extends AppTable
                     $this->RunnerResults->updateAll($fields, $conditions);
                     $this->softDelete($runnerFrom->id);
                     $matchedRunners++;
+                    // its results now belong to $runnerTo, a second match would move them again
+                    break;
                 }
             }
         }
