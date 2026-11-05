@@ -5,9 +5,12 @@ declare(strict_types = 1);
 namespace Results\Controller;
 
 use Results\Model\Table\RunnerResultsTable;
+use Results\Controller\Traits\GuardsHiddenEventsTrait;
 
 class StatsController extends ApiController
 {
+    use GuardsHiddenEventsTrait;
+
     private RunnerResultsTable $RunnerResults;
 
     public function initialize(): void

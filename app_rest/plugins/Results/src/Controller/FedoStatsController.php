@@ -6,9 +6,12 @@ namespace Results\Controller;
 
 use RestApi\Model\Entity\RestApiEntity;
 use Results\Model\Table\RunnerResultsTable;
+use Results\Controller\Traits\GuardsHiddenEventsTrait;
 
 class FedoStatsController extends ApiController
 {
+    use GuardsHiddenEventsTrait;
+
     private RunnerResultsTable $RunnerResults;
 
     public function initialize(): void

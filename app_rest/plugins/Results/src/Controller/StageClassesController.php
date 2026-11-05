@@ -5,9 +5,12 @@ declare(strict_types = 1);
 namespace Results\Controller;
 
 use Results\Model\Table\ClassesTable;
+use Results\Controller\Traits\GuardsHiddenEventsTrait;
 
 class StageClassesController extends ApiController
 {
+    use GuardsHiddenEventsTrait;
+
     private ClassesTable $Classes;
 
     public function isPublicController(): bool
