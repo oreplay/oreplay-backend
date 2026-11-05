@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Controller;
 
+use App\Model\Table\UsersTable;
 use RestApi\Lib\RestRenderer;
 use RestApi\Model\Table\RestApiTable;
 use Results\Lib\Output\DuplicatedRunners;
@@ -89,13 +90,22 @@ class ResultsController extends ApiController
                     $renderer = new ReadablePointsCsv($filters['contrib_text'] ?? null);
                     return $renderer->setResults($results);
                 case 'DuplicatedRunners':
-                    // TODO if not user with rights we should remove the filter
-                    //if (!$this->OAuthServer->isManagerUser()) { // TODO public endpoint dont have OAuthServer
-                    //    unset($filters[DuplicatedRunners::PARAM_REMOVE_FROM_RANKING]);
-                    //}
+                    if (isset($filters[DuplicatedRunners::PARAM_REMOVE_FROM_RANKING])) {
+                        $this->_assertManager();
+                    }
                     return DuplicatedRunners::setResults($results, $filters);
             }
         }
         return $results;
+    }
+
+    /**
+     * Removing a runner from the ranking writes to the database, so on this otherwise public endpoint it is
+     * reserved to managers
+     */
+    private function _assertManager(): void
+    {
+        $userId = $this->getManualOauth()->verifyAuthorizationAndGetToken()->getUserId();
+        UsersTable::load()->getManagerOrFail((string)$userId);
     }
 }
