@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Results\Test\TestCase\Controller;
 
 use App\Controller\ApiController;
+use App\Test\Fixture\OauthAccessTokensFixture;
+use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Cake\Datasource\ResultSetInterface;
 use Cake\I18n\FrozenTime;
@@ -23,6 +25,7 @@ use Results\Model\Entity\Stage;
 use Results\Model\Entity\UploadLog;
 use Results\Model\Entity\Team;
 use Results\Model\Entity\TeamResult;
+use Results\Model\Table\RunnersTable;
 use Results\Model\Table\SplitsTable;
 use Results\Model\Table\UploadLogsTable;
 use Results\Test\Fixture\ClassesFixture;
@@ -33,12 +36,18 @@ use Results\Test\Fixture\EventsFixture;
 use Results\Test\Fixture\RunnerResultsFixture;
 use Results\Test\Fixture\RunnersFixture;
 use Results\Test\Fixture\SplitsFixture;
+use Results\Test\Fixture\StagesFixture;
+use Results\Test\Fixture\StageTypesFixture;
 use Results\Test\Fixture\TeamResultsFixture;
 use Results\Test\Fixture\UploadLogsFixture;
 use Results\Test\Fixture\TeamsFixture;
 
 class ResultsControllerTest extends ApiCommonErrorsTest
 {
+    private const DUPLICATED_RUNNER = 'e1f2a3b4-0000-4000-8000-00000000d0d1';
+    private const DUPLICATED_RUNNER_TWIN = 'e1f2a3b4-0000-4000-8000-00000000d0d2';
+    private const DUPLICATED_BIB = 7777;
+
     protected array $fixtures = [
         EventsFixture::LOAD,
         ClubsFixture::LOAD,
@@ -51,6 +60,10 @@ class ResultsControllerTest extends ApiCommonErrorsTest
         TeamsFixture::LOAD,
         TeamResultsFixture::LOAD,
         UploadLogsFixture::LOAD,
+        StagesFixture::LOAD,
+        StageTypesFixture::LOAD,
+        UsersFixture::LOAD,
+        OauthAccessTokensFixture::LOAD,
     ];
 
     protected function _getEndpoint(): string
@@ -75,6 +88,51 @@ class ResultsControllerTest extends ApiCommonErrorsTest
     private function _getAllSplits(): ResultSetInterface
     {
         return SplitsTable::load()->find()->all();
+    }
+
+    public function testGetList_anonymousCannotRemoveADuplicatedRunnerFromTheRanking()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->_addTwoRunnersWithTheSameBibInClassFE();
+        $this->_request['headers'] = ['Accept' => 'application/json'];
+        $this->get($this->_removeFromRankingUrl(self::DUPLICATED_RUNNER));
+
+        $this->assertNotEquals(200, $this->_response->getStatusCode(), $this->_getBodyAsString());
+        $runner = RunnersTable::load()->get(self::DUPLICATED_RUNNER);
+        $this->assertEquals(self::DUPLICATED_BIB, $runner->bib_number);
+        $this->assertFalse((bool)$runner->is_nc);
+    }
+
+    public function testGetList_managerRemovesADuplicatedRunnerFromTheRanking()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->_addTwoRunnersWithTheSameBibInClassFE();
+        $this->get($this->_removeFromRankingUrl(self::DUPLICATED_RUNNER));
+
+        $this->assertJsonResponseOK();
+        $runner = RunnersTable::load()->get(self::DUPLICATED_RUNNER);
+        $this->assertEquals(-self::DUPLICATED_BIB, $runner->bib_number);
+        $this->assertTrue((bool)$runner->is_nc);
+    }
+
+    private function _removeFromRankingUrl(string $runnerId): string
+    {
+        return $this->_getEndpoint() . '?class_id=' . ClassEntity::FE
+            . '&output=DuplicatedRunners&remove_from_ranking_runner_id=' . $runnerId;
+    }
+
+    private function _addTwoRunnersWithTheSameBibInClassFE(): void
+    {
+        foreach ([self::DUPLICATED_RUNNER, self::DUPLICATED_RUNNER_TWIN] as $id) {
+            $record = (new RunnersFixture())->records[0];
+            $record['id'] = $id;
+            $record['class_id'] = ClassEntity::FE;
+            $record['bib_number'] = self::DUPLICATED_BIB;
+            RunnersTable::load()->insertQuery()
+                ->insert(array_keys($record))
+                ->values($record)
+                ->execute();
+        }
     }
 
     public function testGetList_filteredByExistingClass()
