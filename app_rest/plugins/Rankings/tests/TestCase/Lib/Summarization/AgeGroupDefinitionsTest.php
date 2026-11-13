@@ -9,7 +9,7 @@ use Rankings\Lib\Summarization\Settings\AgeGroupDefinitions;
 
 class AgeGroupDefinitionsTest extends TestCase
 {
-    protected $fixtures = [
+    protected array $fixtures = [
     ];
 
     public function testGetAgeGroup()

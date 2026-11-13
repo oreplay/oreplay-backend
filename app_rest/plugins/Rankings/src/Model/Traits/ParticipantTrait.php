@@ -6,9 +6,9 @@ namespace Rankings\Model\Traits;
 
 use Cake\Log\LogTrait;
 use Rankings\Lib\ScoringAlgorithms\ScoringAlgorithm;
-use Rankings\Lib\ScoringAlgorithms\SimpleScoreCalculator;
 use Rankings\Model\Entity\Ranking;
 use Rankings\Model\Table\ParticipantInterface;
+use Rankings\Model\Table\RankingsTable;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\ResultsFilter;
 use Results\Model\Entity\ClassEntity;
@@ -79,7 +79,7 @@ trait ParticipantTrait
 
     public function _getRankingPoints(): ?float
     {
-        $calc = new SimpleScoreCalculator($this->_settings);
+        $calc = RankingsTable::getCalculator($this->_settings->id);
         return $calc->participantScore($this, $this->_getLeader());
     }
 
