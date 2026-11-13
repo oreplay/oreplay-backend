@@ -6,16 +6,23 @@ namespace Results\Lib\Output;
 
 use Cake\Http\Response;
 use Rankings\Lib\Summarization\Lvl1ClubList;
+use Rankings\Lib\ScoringAlgorithms\ScoringAlgorithm;
 use Rankings\Lib\Summarization\Settings\AgeGroupDefinitions;
 use RestApi\Lib\RestRenderer;
 
 class AgeGroupClubs implements RestRenderer
 {
     private Lvl1ClubList $_results;
+    private ScoringAlgorithm $_calculator;
+
+    public function __construct(ScoringAlgorithm $calculator)
+    {
+        $this->_calculator = $calculator;
+    }
 
     public function setResults(array $results): static
     {
-        $ageGroupDefinitions = new AgeGroupDefinitions();
+        $ageGroupDefinitions = new AgeGroupDefinitions($this->_calculator);
         $this->_results = new Lvl1ClubList();
         foreach ($results as $runnersList) {
             foreach ($runnersList as $runner) {

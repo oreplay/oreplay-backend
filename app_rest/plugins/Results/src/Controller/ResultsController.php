@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Results\Controller;
 
 use App\Model\Table\UsersTable;
+use Rankings\Model\Table\RankingsTable;
 use RestApi\Lib\RestRenderer;
 use RestApi\Model\Table\RestApiTable;
 use Results\Lib\Output\AgeGroupClubs;
@@ -94,7 +95,8 @@ class ResultsController extends ApiController
                     $renderer = new ReadablePointsCsv($filters['contrib_text'] ?? null);
                     return $renderer->setResults($results);
                 case 'AgeGroupClubs':
-                    $renderer = new AgeGroupClubs();
+                    $calculator = RankingsTable::getCalculatorByStage($this->request->getParam('stageID'));
+                    $renderer = new AgeGroupClubs($calculator);
                     return $renderer->setResults($results);
                 case 'DuplicatedRunners':
                     if (isset($filters[DuplicatedRunners::PARAM_REMOVE_FROM_RANKING])) {

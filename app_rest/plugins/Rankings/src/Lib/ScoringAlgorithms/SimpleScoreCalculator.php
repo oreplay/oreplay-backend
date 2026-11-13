@@ -53,7 +53,7 @@ class SimpleScoreCalculator implements ScoringAlgorithm
             $this->log('Invalid points calculation for runner id: ' . $id);
         }
         $points = $runnerPoints * $this->_settings->_getMaxPoints();
-        return $this->_round($points);
+        return $this->round($points);
     }
 
     private function _divide($x, $y): float
@@ -64,7 +64,7 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         return (float)$x / $y;
     }
 
-    private function _round(float|int $number): float
+    public function round(float|int $number): float
     {
         if ($this->_settings->isFloorInsteadOfRound()) {
             return floor($number);
@@ -87,7 +87,7 @@ class SimpleScoreCalculator implements ScoringAlgorithm
         }
     }
 
-    private function _getTotalRaces(): int
+    public function getTotalRaces(): int
     {
         // number of races in this circuit
         // e.g. use 9 if there are 9 races in the circuit
@@ -111,7 +111,7 @@ class SimpleScoreCalculator implements ScoringAlgorithm
     public function hasFewComputable(int $amountRacesParticipated, int $totalRaces = null): bool
     {
         if ($totalRaces === null) {
-            $totalRaces = $this->_getTotalRaces();
+            $totalRaces = $this->getTotalRaces();
         }
         return $amountRacesParticipated <= $totalRaces * $this->_getOrgComputableConstant();
     }
@@ -119,7 +119,7 @@ class SimpleScoreCalculator implements ScoringAlgorithm
     public function getOrgComputable(int $amountRacesParticipated, int $totalRaces = null): int
     {
         if ($totalRaces === null) {
-            $totalRaces = $this->_getTotalRaces();
+            $totalRaces = $this->getTotalRaces();
         }
         if ($this->hasFewComputable($amountRacesParticipated, $totalRaces)) {
             return $amountRacesParticipated;
@@ -157,7 +157,7 @@ class SimpleScoreCalculator implements ScoringAlgorithm
                 $avgPoints = $this->_getMinAsOrg();
             }
         }
-        $overalls->updateComputedOrganizers($this->_round($avgPoints), (int)$avgSeconds);
+        $overalls->updateComputedOrganizers($this->round($avgPoints), (int)$avgSeconds);
 
         $partsToSum = $overalls->getBestParts($this->_getMaxRacesCounted());
 
@@ -165,10 +165,10 @@ class SimpleScoreCalculator implements ScoringAlgorithm
 
         $amountOrg = count($partsOrg);
         if ($sumSeconds) {
-            $sumSeconds = $this->_round($sumSeconds);
+            $sumSeconds = $this->round($sumSeconds);
         }
         if ($sumPoints) {
-            $sumPoints = $this->_round($sumPoints);
+            $sumPoints = $this->round($sumPoints);
         }
         $res = PartialOverall::fromValues(
             $amountNormal + $amountOrg,

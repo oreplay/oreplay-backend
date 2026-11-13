@@ -14,6 +14,8 @@ interface ScoringAlgorithm
 
     public function participantScore(ParticipantInterface $participant, ?ParticipantInterface $leader): ?float;
     public function calculateOverallScore(Overalls $overalls): Overalls;
+    public function round(float|int $number): float;
+    public function getTotalRaces(): int;
 
     /**
      * @param RankingOrganizer $newOrganizer
