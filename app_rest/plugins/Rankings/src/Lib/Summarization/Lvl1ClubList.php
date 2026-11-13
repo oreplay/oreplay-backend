@@ -6,6 +6,7 @@ namespace Rankings\Lib\Summarization;
 
 use Cake\Http\Exception\InternalErrorException;
 use Rankings\Lib\Summarization\Settings\AgeGroupDefinitions;
+use RestApi\Lib\Exception\DetailedException;
 use Results\Model\Entity\Runner;
 
 class Lvl1ClubList
@@ -16,7 +17,7 @@ class Lvl1ClubList
     {
         $club = $runner->_getClub();
         if (!$club) {
-            throw new InternalErrorException('Runner without club: ' . $runner->_getFullName());
+            throw new DetailedException('Runner without club: ' . $runner->_getFullName(), 500);
         }
         $clubId = $club->id;
         if (!isset($this->_clubs[$clubId])) {
