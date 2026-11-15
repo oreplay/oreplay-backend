@@ -6,6 +6,7 @@ namespace Results\Controller;
 
 use App\Model\Table\UsersTable;
 use Rankings\Model\Table\RankingsTable;
+use RestApi\Lib\Exception\DetailedException;
 use RestApi\Lib\RestRenderer;
 use RestApi\Model\Table\RestApiTable;
 use Results\Lib\Output\AgeGroupClubs;
@@ -20,6 +21,8 @@ use Results\Model\Table\TeamsTable;
 
 class ResultsController extends ApiController
 {
+    public const string OUTPUT_AGE_GROUP_CLUBS = 'AgeGroupClubs';
+
     protected RestApiTable $Teams;
     protected RunnersTable $Runners;
 
@@ -40,9 +43,18 @@ class ResultsController extends ApiController
         $eventId = $this->request->getParam('eventID');
         $stageId = $this->request->getParam('stageID');
         $filters = $this->request->getQueryParams();
+        $this->_assertOutputNeedsNoClassGrouping($filters);
         $toRet = $this->_getResults($eventId, $stageId, $filters);
         $results = $this->_parseOutput($toRet, $filters);
         $this->return = $this->_withLastLogs($results, $eventId, $stageId);
+    }
+
+    private function _assertOutputNeedsNoClassGrouping(array $filters): void
+    {
+        if (($filters['output'] ?? null) === self::OUTPUT_AGE_GROUP_CLUBS) {
+            $message = 'Output ' . self::OUTPUT_AGE_GROUP_CLUBS . ' is only available in resultsByClass';
+            throw new DetailedException($message);
+        }
     }
 
     protected function _withLastLogs(array|RestRenderer $results, mixed $eventId, mixed $stageId): array|RestRenderer
@@ -94,7 +106,7 @@ class ResultsController extends ApiController
                 case 'ReadablePointsCsv':
                     $renderer = new ReadablePointsCsv($filters['contrib_text'] ?? null);
                     return $renderer->setResults($results);
-                case 'AgeGroupClubs':
+                case self::OUTPUT_AGE_GROUP_CLUBS:
                     $calculator = RankingsTable::getCalculatorByStage($this->request->getParam('stageID'));
                     $renderer = new AgeGroupClubs($calculator);
                     return $renderer->setResults($results);

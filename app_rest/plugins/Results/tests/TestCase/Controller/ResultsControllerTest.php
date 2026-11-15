@@ -10,6 +10,7 @@ use App\Test\Fixture\UsersFixture;
 use App\Test\TestCase\Controller\ApiCommonErrorsTest;
 use Cake\Datasource\ResultSetInterface;
 use Cake\I18n\FrozenTime;
+use Results\Controller\ResultsController;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\ClassEntity;
@@ -152,6 +153,14 @@ class ResultsControllerTest extends ApiCommonErrorsTest
 
         $bodyDecoded = $this->assertJsonResponseOK();
         $this->assertEquals([], $bodyDecoded['data']);
+    }
+
+    public function testGetList_rejectsTheAgeGroupClubsOutputThatNeedsResultsGroupedByClass()
+    {
+        $this->skipNextRequestInSwagger();
+        $this->get($this->_getEndpoint() . '?output=' . ResultsController::OUTPUT_AGE_GROUP_CLUBS);
+
+        $this->assertException('DetailedException', 400, 'Output AgeGroupClubs is only available in resultsByClass');
     }
 
     public function testGetList_filteredByExistingClubAndStation()
