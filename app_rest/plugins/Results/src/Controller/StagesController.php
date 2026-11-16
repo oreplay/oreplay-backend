@@ -24,12 +24,15 @@ use Results\Model\Table\StagesTable;
 use Results\Model\Table\TeamResultsTable;
 use Results\Model\Table\TeamsTable;
 use Results\Model\Table\UploadLogsTable;
+use Results\Controller\Traits\GuardsHiddenEventsTrait;
 
 /**
  * @property StagesTable $Stages
  */
 class StagesController extends ApiController
 {
+    use GuardsHiddenEventsTrait;
+
     public function isPublicController(): bool
     {
         return true;
