@@ -76,6 +76,7 @@ class AgeGroupDefinitions
                     'M-21' => 0.8,
                     'F-21' => 0.8,
                     'E-BIKE' => 0, // mtbo
+                    'ABS PAR' => 0, // mtbo
                 ],
             ],
             'veteran' => [
