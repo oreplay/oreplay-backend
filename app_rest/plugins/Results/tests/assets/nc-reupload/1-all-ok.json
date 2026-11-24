@@ -1,0 +1,262 @@
+{
+ "oreplay_data_transfer": {
+  "configuration": {
+   "file": "C:/fake/results.csv",
+   "extension": "CSV",
+   "utf": true,
+   "known_data": true,
+   "contents": "ResultList",
+   "results_type": "Breakdown",
+   "one_stage": true,
+   "source": "OEv11",
+   "iof_version": "3.0"
+  },
+  "event": {
+   "id": "<EVENT_ID>",
+   "description": "Fake NC re-upload event",
+   "is_hidden": false,
+   "stages": [
+    {
+     "id": "<STAGE_ID>",
+     "description": "Stage 1",
+     "classes": [
+      {
+       "id": "",
+       "uuid": "",
+       "oe_key": "1",
+       "short_name": "C1",
+       "long_name": "Class 1",
+       "course": {
+        "id": "",
+        "uuid": "",
+        "distance": "4000.0",
+        "climb": "100.0",
+        "controls": 3,
+        "oe_key": "1",
+        "short_name": "Course 1"
+       },
+       "runners": [
+        {
+         "id": "",
+         "uuid": "",
+         "db_id": "1001",
+         "sicard": "9000001",
+         "sicard_alt": "",
+         "first_name": "Name 1",
+         "last_name": "Surname 1",
+         "bib_number": "1",
+         "sex": "M",
+         "is_nc": false,
+         "runner_results": [
+          {
+           "id": "",
+           "start_time": "2026-11-01T10:00:00.000",
+           "finish_time": "2026-11-01T10:50:00.000",
+           "time_seconds": 3000,
+           "status_code": "0",
+           "time_behind": 0,
+           "time_neutralization": 0,
+           "time_adjusted": 3000,
+           "time_penalty": 0,
+           "time_bonus": 0,
+           "points_final": 0,
+           "points_adjusted": 0,
+           "points_penalty": 0,
+           "points_bonus": 0,
+           "splits": [
+            {
+             "station": "31",
+             "points": 0,
+             "order_number": 1,
+             "time_seconds": 600,
+             "reading_time": "2026-11-01T10:10:00.000"
+            },
+            {
+             "station": "32",
+             "points": 0,
+             "order_number": 2,
+             "time_seconds": 1500,
+             "reading_time": "2026-11-01T10:25:00.000"
+            },
+            {
+             "station": "33",
+             "points": 0,
+             "order_number": 3,
+             "time_seconds": 2400,
+             "reading_time": "2026-11-01T10:40:00.000"
+            },
+            {
+             "station": "100",
+             "points": 0,
+             "order_number": 4,
+             "time_seconds": 2900,
+             "reading_time": "2026-11-01T10:48:20.000"
+            }
+           ],
+           "result_type": {
+            "id": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e",
+            "description": "Stage"
+           },
+           "position": 1
+          }
+         ],
+         "club": {
+          "id": "",
+          "uuid": "",
+          "oe_key": "1",
+          "short_name": "Club 1",
+          "long_name": "Club 1"
+         }
+        },
+        {
+         "id": "",
+         "uuid": "",
+         "db_id": "1002",
+         "sicard": "9000002",
+         "sicard_alt": "",
+         "first_name": "Name 2",
+         "last_name": "Surname 2",
+         "bib_number": "2",
+         "sex": "M",
+         "is_nc": false,
+         "runner_results": [
+          {
+           "id": "",
+           "start_time": "2026-11-01T10:02:00.000",
+           "finish_time": "2026-11-01T10:57:00.000",
+           "time_seconds": 3300,
+           "status_code": "0",
+           "time_behind": 0,
+           "time_neutralization": 0,
+           "time_adjusted": 3300,
+           "time_penalty": 0,
+           "time_bonus": 0,
+           "points_final": 0,
+           "points_adjusted": 0,
+           "points_penalty": 0,
+           "points_bonus": 0,
+           "splits": [
+            {
+             "station": "31",
+             "points": 0,
+             "order_number": 1,
+             "time_seconds": 700,
+             "reading_time": "2026-11-01T10:13:40.000"
+            },
+            {
+             "station": "32",
+             "points": 0,
+             "order_number": 2,
+             "time_seconds": 1600,
+             "reading_time": "2026-11-01T10:28:40.000"
+            },
+            {
+             "station": "33",
+             "points": 0,
+             "order_number": 3,
+             "time_seconds": 2600,
+             "reading_time": "2026-11-01T10:45:20.000"
+            },
+            {
+             "station": "100",
+             "points": 0,
+             "order_number": 4,
+             "time_seconds": 3200,
+             "reading_time": "2026-11-01T10:55:20.000"
+            }
+           ],
+           "result_type": {
+            "id": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e",
+            "description": "Stage"
+           },
+           "position": 2
+          }
+         ],
+         "club": {
+          "id": "",
+          "uuid": "",
+          "oe_key": "2",
+          "short_name": "Club 2",
+          "long_name": "Club 2"
+         }
+        },
+        {
+         "id": "",
+         "uuid": "",
+         "db_id": "1003",
+         "sicard": "9000003",
+         "sicard_alt": "",
+         "first_name": "Name 3",
+         "last_name": "Surname 3",
+         "bib_number": "3",
+         "sex": "M",
+         "is_nc": false,
+         "runner_results": [
+          {
+           "id": "",
+           "start_time": "2026-11-01T10:04:00.000",
+           "finish_time": "2026-11-01T11:04:00.000",
+           "time_seconds": 3600,
+           "status_code": "0",
+           "time_behind": 0,
+           "time_neutralization": 0,
+           "time_adjusted": 3600,
+           "time_penalty": 0,
+           "time_bonus": 0,
+           "points_final": 0,
+           "points_adjusted": 0,
+           "points_penalty": 0,
+           "points_bonus": 0,
+           "splits": [
+            {
+             "station": "31",
+             "points": 0,
+             "order_number": 1,
+             "time_seconds": 800,
+             "reading_time": "2026-11-01T10:17:20.000"
+            },
+            {
+             "station": "32",
+             "points": 0,
+             "order_number": 2,
+             "time_seconds": 1800,
+             "reading_time": "2026-11-01T10:34:00.000"
+            },
+            {
+             "station": "33",
+             "points": 0,
+             "order_number": 3,
+             "time_seconds": 2900,
+             "reading_time": "2026-11-01T10:52:20.000"
+            },
+            {
+             "station": "100",
+             "points": 0,
+             "order_number": 4,
+             "time_seconds": 3500,
+             "reading_time": "2026-11-01T11:02:20.000"
+            }
+           ],
+           "result_type": {
+            "id": "e4ddfa9d-3347-47e4-9d32-c6c119aeac0e",
+            "description": "Stage"
+           },
+           "position": 3
+          }
+         ],
+         "club": {
+          "id": "",
+          "uuid": "",
+          "oe_key": "3",
+          "short_name": "Club 3",
+          "long_name": "Club 3"
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ }
+}

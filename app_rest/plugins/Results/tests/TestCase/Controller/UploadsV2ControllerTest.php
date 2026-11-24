@@ -66,6 +66,7 @@ use Results\Test\TestCase\Controller\UploadExamples\TotalsExamples;
 class UploadsV2ControllerTest extends ApiCommonErrorsTest
 {
     use UploadResponseTrait;
+    use NcUploadTrait;
 
     protected array $fixtures = [
         EventsFixture::LOAD,
@@ -2542,5 +2543,33 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $logs = UploadLogsTable::load()->find()->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all();
         $this->assertCount(1, $logs);
         $this->assertSame('1 classes, 2 participants, last 10 Mas30F', $logs->first()->info);
+    }
+
+    /**
+     * The desktop client flags NC only on the runner, never inside its runner_results, so the result row
+     * (stage.is_nc in the public results) has to inherit it or the two flags disagree (#85).
+     */
+    public function testAddNew_shouldFlagTheResultsOfARunnerUploadedAsNcAsNc()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), $this->_ncReuploadJson('2-runner2-nc.json'));
+        $this->assertUploadOk();
+
+        $this->_assertNcEverywhere('Name 2', 'Surname 2', true);
+        $this->_assertNcEverywhere('Name 1', 'Surname 1', false);
+    }
+
+    public function testAddNew_shouldLetAResultDeclareItsOwnNcFlag()
+    {
+        $data = $this->_ncReuploadJson('1-all-ok.json');
+        $data['oreplay_data_transfer']['event']['stages'][0]['classes'][0]['runners'][0]
+            ['runner_results'][0]['is_nc'] = true;
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertUploadOk();
+
+        $runner = $this->_storedRunnerNamed('Name 1', 'Surname 1');
+        $this->assertFalse((bool)$runner->is_nc);
+        $this->assertTrue((bool)$this->_stageShownByTheApi($runner)['is_nc']);
     }
 }
