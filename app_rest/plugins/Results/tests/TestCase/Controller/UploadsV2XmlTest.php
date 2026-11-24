@@ -10,6 +10,7 @@ use Cake\Cache\Cache;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\Event;
+use Results\Model\Entity\RunnerResult;
 use Results\Model\Table\EventsTable;
 use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\RunnerResultsTable;
@@ -246,6 +247,46 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
         $codes = $this->_storedStatusCodes();
         $this->assertCount(3, $codes);
         $this->assertSame([StatusCode::OK], array_values(array_unique($codes)));
+    }
+
+    private function _storedResultOfFamily(string $family): RunnerResult
+    {
+        $runner = RunnersTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'last_name' => $family])
+            ->firstOrFail();
+        return RunnerResultsTable::load()->find()->where(['runner_id' => $runner->id])->firstOrFail();
+    }
+
+    /**
+     * The IOF result of a runner who did not finish carries no FinishTime, Time or Position, and a
+     * re-upload reusing the stored row must not keep the ones of the earlier upload.
+     */
+    public function testAddNew_shouldClearTheFinishDataOfAResultReUploadedAsDidNotFinish()
+    {
+        $original = file_get_contents($this->_asset('iof/splits.xml'));
+        $this->_postXmlBody($original);
+        $this->assertUploadOk();
+        $this->assertEquals(3, $this->_storedResultOfFamily('stni stni')->position);
+
+        $dnf = str_replace([
+            '<FinishTime>2025-03-26T09:07:52.000</FinishTime>',
+            '<Time>3952</Time>',
+            '<TimeBehind>42</TimeBehind>',
+            '<Position>3</Position>',
+        ], '', $original);
+        $dnf = preg_replace('#(<Family>stni stni</Family>.*?)<Status>OK</Status>#s',
+            '$1<Status>DidNotFinish</Status>', $dnf, 1);
+        $this->_postXmlBody($dnf);
+        $this->assertUploadOk();
+
+        $result = $this->_storedResultOfFamily('stni stni');
+        $this->assertEquals(StatusCode::DNF, $result->status_code);
+        $this->assertNull($result->finish_time);
+        $this->assertEmpty($result->time_seconds);
+        $this->assertEmpty($result->position);
+        $this->assertEmpty($result->time_behind);
+        $this->assertEquals(1, $this->_storedResultOfFamily('rnrss rnrss')->position);
+        $this->assertEquals(2, $this->_storedResultOfFamily('srmos srmos')->position);
     }
 
     /**

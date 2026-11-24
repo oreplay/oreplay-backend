@@ -1473,6 +1473,96 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($runnerResultAmount, RunnerResultsTable::load()->find()->all()->count());
     }
 
+    private function _uploadSimpleFinishTimes(array $finishTimes): void
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), ['oreplay_data_transfer' => $finishTimes]);
+        $this->assertUploadOk();
+    }
+
+    private function _storedResultOf(string $lastName): RunnerResult
+    {
+        $runner = RunnersTable::load()
+            ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
+            ->where(['last_name' => $lastName])
+            ->firstOrFail();
+        return RunnerResultsTable::load()->find()->where(['runner_id' => $runner->id])->firstOrFail();
+    }
+
+    private function _publicStageResultOf(string $fullName): array
+    {
+        $this->skipNextRequestInSwagger();
+        $this->get(ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/stages/'
+            . StagesFixture::STAGE_FEDO_2 . '/results/');
+        $bodyDecoded = $this->assertJsonResponseOK();
+        foreach ($bodyDecoded['data'] as $runner) {
+            if ($runner['full_name'] === $fullName) {
+                return $runner['stage'];
+            }
+        }
+        $this->fail('The public results do not list ' . $fullName);
+    }
+
+    /**
+     * A re-upload reuses the stored row, which used to be saved as an UPDATE of the payload's keys only,
+     * so a runner corrected to DNF kept the finish time, time and position of the earlier upload.
+     */
+    public function testAddNew_shouldClearTheFinishDataOfAResultReUploadedAsDnfWithoutIt()
+    {
+        Cache::clear();
+        ClassesTable::load()->updateAll(['stage_id' => StagesFixture::STAGE_FEDO_2], ['id' => ClassEntity::ME]);
+        $finishTimes = ResultExamples::resultSimpleFinishTime();
+        $this->_uploadSimpleFinishTimes($finishTimes);
+        $this->assertEquals(2, $this->_storedResultOf('Pino')->position);
+
+        $dnf = &$finishTimes['event']['stages'][0]['classes'][0]['runners'][1]['runner_results'][0];
+        $dnf['status_code'] = StatusCode::DNF;
+        unset($dnf['finish_time'], $dnf['time_seconds'], $dnf['position'], $dnf['time_behind']);
+        unset($dnf);
+        $this->_uploadSimpleFinishTimes($finishTimes);
+
+        $result = $this->_storedResultOf('Pino');
+        $this->assertEquals(StatusCode::DNF, $result->status_code);
+        $this->assertNull($result->finish_time);
+        $this->assertEmpty($result->time_seconds);
+        $this->assertEmpty($result->position);
+        $this->assertEmpty($result->time_behind);
+        $this->assertEquals('2024-09-29T11:00:00.000+00:00', $result->start_time->jsonSerialize(),
+            'what the upload still carries is stored as before');
+        $this->assertEquals(1, $this->_storedResultOf('Ballesteros')->position);
+
+        $shown = $this->_publicStageResultOf('Antonio Pino');
+        $this->assertEquals(StatusCode::DNF, $shown['status_code']);
+        $this->assertNull($shown['finish_time']);
+        $this->assertEmpty($shown['time_seconds']);
+        $this->assertEmpty($shown['position']);
+    }
+
+    /**
+     * A runner that becomes NC has no position in the new upload, while the next runner takes it over:
+     * keeping the stale one left two runners sharing a position.
+     */
+    public function testAddNew_shouldNotKeepThePositionOfARunnerReUploadedWithoutOne()
+    {
+        Cache::clear();
+        ClassesTable::load()->updateAll(['stage_id' => StagesFixture::STAGE_FEDO_2], ['id' => ClassEntity::ME]);
+        $finishTimes = ResultExamples::resultSimpleFinishTime();
+        $this->_uploadSimpleFinishTimes($finishTimes);
+        $this->assertEquals(1, $this->_storedResultOf('Ballesteros')->position);
+
+        $runners = &$finishTimes['event']['stages'][0]['classes'][0]['runners'];
+        $runners[0]['runner_results'][0]['status_code'] = StatusCode::NC;
+        unset($runners[0]['runner_results'][0]['position']);
+        $runners[1]['runner_results'][0]['position'] = 1;
+        unset($runners);
+        $this->_uploadSimpleFinishTimes($finishTimes);
+
+        $this->assertEmpty($this->_storedResultOf('Ballesteros')->position);
+        $this->assertEquals(1, $this->_storedResultOf('Pino')->position);
+        $this->assertEmpty($this->_publicStageResultOf('Maria Ballesteros')['position']);
+        $this->assertEquals(1, $this->_publicStageResultOf('Antonio Pino')['position']);
+    }
+
     public function testAddNew_shouldNotUpdateStartListWhenThereAreFinishTimes()
     {
         Cache::clear();
