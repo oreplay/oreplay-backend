@@ -1263,6 +1263,129 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(-2, $runner->bib_number);
     }
 
+    private function _uploadFinishTimesWithFirstRunner(array $changes): void
+    {
+        $data = ResultExamples::resultSimpleFinishTime();
+        $runner = &$data['event']['stages'][0]['classes'][0]['runners'][0];
+        $runner = array_merge($runner, $changes);
+        unset($runner);
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), ['oreplay_data_transfer' => $data]);
+        $this->assertUploadOk();
+    }
+
+    private function _storedRunnerByLastName(string $lastName): Runner
+    {
+        /** @var Runner $runner */
+        $runner = RunnersTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'last_name' => $lastName])
+            ->firstOrFail();
+        return $runner;
+    }
+
+    private function _publicResultOf(string $runnerId): array
+    {
+        $this->skipNextRequestInSwagger();
+        $this->get(ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/stages/'
+            . StagesFixture::STAGE_FEDO_2 . '/results/');
+        $bodyDecoded = $this->assertJsonResponseOK();
+        foreach ($bodyDecoded['data'] as $runner) {
+            if ($runner['id'] === $runnerId) {
+                return $runner;
+            }
+        }
+        $this->fail('Runner not found in the public results');
+    }
+
+    /**
+     * #86: the event software corrects a rented card and a misspelt name after a first upload, and the
+     * runner matched by bib on the re-upload has to take the corrections instead of keeping the old row.
+     */
+    public function testAddNew_shouldUpdateTheCardAndNameOfAnExistingRunnerOnReupload()
+    {
+        $this->flushMemcached();
+        $this->_uploadFinishTimesWithFirstRunner([]);
+        $runnerId = $this->_storedRunnerByLastName('Ballesteros')->id;
+
+        $this->_uploadFinishTimesWithFirstRunner([
+            'sicard' => '7777777',
+            'first_name' => 'Mariana',
+            'sex' => 'M',
+        ]);
+
+        $runner = $this->_storedRunnerByLastName('Ballesteros');
+        $this->assertEquals($runnerId, $runner->id, 'the runner is matched, not created again');
+        $this->assertEquals('7777777', $runner->sicard);
+        $this->assertEquals('Mariana', $runner->first_name);
+        $this->assertEquals('M', $runner->sex);
+        $this->assertEquals('125', $runner->bib_number);
+        $this->assertEquals(2, RunnersTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all()->count());
+        $public = $this->_publicResultOf($runnerId);
+        $this->assertEquals('7777777', $public['sicard']);
+        $this->assertEquals('Mariana Ballesteros', $public['full_name']);
+    }
+
+    public function testAddNew_shouldKeepTheStoredValuesOfFieldsMissingFromTheReupload()
+    {
+        $this->flushMemcached();
+        $this->_uploadFinishTimesWithFirstRunner(['sicard_alt' => '8888888']);
+
+        $this->_uploadFinishTimesWithFirstRunner(['sicard' => '', 'sex' => null, 'eligibility' => 'X']);
+
+        $runner = $this->_storedRunnerByLastName('Ballesteros');
+        $this->assertEquals('X', $runner->eligibility);
+        $this->assertEquals('4440522', $runner->sicard);
+        $this->assertEquals('8888888', $runner->sicard_alt);
+        $this->assertEquals('F', $runner->sex);
+    }
+
+    /**
+     * RunnersTable::removeFromRanking() negates the bib on purpose, so a re-upload that still carries the
+     * positive bib must not bring the runner back into the ranking, while its other corrections still apply.
+     */
+    public function testAddNew_shouldKeepTheBibNegativeOfARunnerRemovedFromTheRankingOnReupload()
+    {
+        $this->flushMemcached();
+        $this->_uploadFinishTimesWithFirstRunner([]);
+        $runnerId = $this->_storedRunnerByLastName('Ballesteros')->id;
+        RunnersTable::load()->removeFromRanking($runnerId, 'duplicated');
+
+        $this->_uploadFinishTimesWithFirstRunner(['sicard' => '7777777']);
+
+        $runner = $this->_storedRunnerByLastName('Ballesteros');
+        $this->assertEquals($runnerId, $runner->id);
+        $this->assertEquals('-125', $runner->bib_number);
+        $this->assertEquals('7777777', $runner->sicard);
+    }
+
+    /**
+     * Several people sharing a bib all match the first one's row. On a re-upload only the row that really
+     * is that runner may correct it: the others must not overwrite its name or card with their own.
+     */
+    public function testAddNew_shouldNotLetARunnerSharingTheBibOverwriteTheMatchedRunnerOnReupload()
+    {
+        Cache::clear();
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(['stage_id' => StagesFixture::STAGE_FEDO_2], ['id' => ClassEntity::ME]);
+        $data = ['oreplay_data_transfer' => IntermediateExamples::itermediateWithDuplicatedBibs()];
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertUploadOk();
+
+        $data['oreplay_data_transfer']['configuration']['reprocess_all'] = true;
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertUploadOk();
+
+        /** @var Runner $runner */
+        $runner = RunnersTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'bib_number' => '1'])
+            ->firstOrFail();
+        $this->assertEquals('Sara Alonso', $runner->first_name . ' ' . $runner->last_name);
+        $this->assertEquals('8502422', $runner->sicard);
+    }
+
     public function testAddNew_shouldReprocessAnUnchangedClassWhenReprocessAllIsRequested()
     {
         $this->flushMemcached();

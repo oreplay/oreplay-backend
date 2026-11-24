@@ -129,7 +129,12 @@ class RunnersTable extends AppTable
     ): Runner {
         $this->getStoredAllParticipantsInClass($eventId, $stageId, $class->id);
         try {
-            $runner = $this->matchRunner($runnerData, $class)->applyUploadedNc($runnerData);
+            $runner = $this->matchRunner($runnerData, $class);
+            if ($this->claimParticipant($runner)) {
+                $keysBeforeUpdate = $runner->matchingKeys();
+                $runner->updateFromUpload($runnerData);
+                $this->reindexParticipant($runner, $keysBeforeUpdate);
+            }
         } catch (NotFoundException $e) {
             /** @var Runner $runner */
             $runner = $this->fillNewWithStage($runnerData, $eventId, $stageId);

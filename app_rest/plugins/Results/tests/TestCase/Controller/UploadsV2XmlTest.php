@@ -379,6 +379,40 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
             'the canonical upload hash has to recognise the same XML as unchanged');
     }
 
+    /**
+     * #86: an IOF XML re-upload carries the corrected card in <ControlCard> and the fixed name in <Given>;
+     * the runner matched by its bib has to take both.
+     */
+    public function testAddNew_shouldUpdateTheCardAndNameOfAnExistingRunnerOnXmlReupload()
+    {
+        $xml = file_get_contents($this->_asset('iof/splits.xml'));
+        $this->_postXmlBody($xml);
+        $this->assertUploadOk();
+        $runnerId = $this->_storedRunnerWithBib('3')->id;
+
+        $corrected = str_replace(
+            ['<Given>maoli</Given>', '<ControlCard>9000003</ControlCard>'],
+            ['<Given>maolia</Given>', '<ControlCard>7777777</ControlCard>'],
+            $xml
+        );
+        $this->_postXmlBody($corrected);
+        $this->assertUploadOk();
+
+        $runner = $this->_storedRunnerWithBib('3');
+        $this->assertEquals($runnerId, $runner->id, 'the runner is matched, not created again');
+        $this->assertEquals('7777777', $runner->sicard);
+        $this->assertEquals('maolia', $runner->first_name);
+    }
+
+    private function _storedRunnerWithBib(string $bib): \Results\Model\Entity\Runner
+    {
+        /** @var \Results\Model\Entity\Runner $runner */
+        $runner = RunnersTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'bib_number' => $bib])
+            ->firstOrFail();
+        return $runner;
+    }
+
     public function testAddNew_shouldStoreTheOriginalBytesInRawUploads()
     {
         $this->_postXml('iof/splits.xml');
