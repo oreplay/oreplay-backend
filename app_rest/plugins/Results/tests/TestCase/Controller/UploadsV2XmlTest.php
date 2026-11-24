@@ -288,6 +288,43 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
             'the comment is the order to show, including radio 35 that no runner has reached yet');
     }
 
+    private function _isNcOfRunner2(): bool
+    {
+        $runner = RunnersTable::load()->find()
+            ->where([
+                'event_id' => Event::FIRST_EVENT,
+                'stage_id' => StagesFixture::STAGE_FEDO_2,
+                'first_name' => 'Name 2',
+                'last_name' => 'Surname 2',
+            ])
+            ->firstOrFail();
+        return (bool)$runner->is_nc;
+    }
+
+    public function testAddNew_shouldMarkARunnerNotCompetingWhenAReUploadFlagsIt()
+    {
+        $this->_postXml('nc-reupload/1-all-ok.xml');
+        $this->assertUploadOk();
+        $this->assertFalse($this->_isNcOfRunner2());
+
+        $this->_postXml('nc-reupload/2-runner2-nc.xml');
+        $this->assertUploadOk();
+
+        $this->assertTrue($this->_isNcOfRunner2());
+    }
+
+    public function testAddNew_shouldClearNotCompetingWhenAReUploadNoLongerFlagsIt()
+    {
+        $this->_postXml('nc-reupload/2-runner2-nc.xml');
+        $this->assertUploadOk();
+        $this->assertTrue($this->_isNcOfRunner2());
+
+        $this->_postXml('nc-reupload/1-all-ok.xml');
+        $this->assertUploadOk();
+
+        $this->assertFalse($this->_isNcOfRunner2());
+    }
+
     public function testAddNew_shouldSkipAnUnchangedClassOnASecondIdenticalXmlUpload()
     {
         $first = $this->_postXml('iof/splits.xml');

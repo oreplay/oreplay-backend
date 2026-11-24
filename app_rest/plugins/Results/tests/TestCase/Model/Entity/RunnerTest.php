@@ -202,4 +202,42 @@ class RunnerTest extends TestCase
         ];
         $this->assertEquals($expected, $teamResult->_getStage()->toArray());
     }
+
+    private function _storedRunner(bool $isNc, int $bib): Runner
+    {
+        $runner = new Runner(['is_nc' => $isNc, 'bib_number' => $bib], ['markClean' => true]);
+        $runner->setNew(false);
+        return $runner;
+    }
+
+    public function testApplyUploadedNc_shouldMarkAStoredRunnerNcWhenTheReUploadSaysSo()
+    {
+        $runner = $this->_storedRunner(false, 2)->applyUploadedNc(['is_nc' => true]);
+
+        $this->assertTrue($runner->is_nc);
+        $this->assertTrue($runner->isDirty('is_nc'), 'the class save only writes dirty fields');
+    }
+
+    public function testApplyUploadedNc_shouldClearNcWhenTheReUploadNoLongerFlagsIt()
+    {
+        $runner = $this->_storedRunner(true, 2)->applyUploadedNc(['is_nc' => false]);
+
+        $this->assertFalse($runner->is_nc);
+    }
+
+    public function testApplyUploadedNc_shouldKeepTheFlagWhenThePayloadDoesNotSendIt()
+    {
+        $runner = $this->_storedRunner(true, 2)->applyUploadedNc(['first_name' => 'Name 2']);
+
+        $this->assertTrue($runner->is_nc);
+        $this->assertFalse($runner->isDirty('is_nc'));
+    }
+
+    public function testApplyUploadedNc_shouldNotUndoARemovalFromTheRanking()
+    {
+        $runner = $this->_storedRunner(true, -2)->applyUploadedNc(['is_nc' => false]);
+
+        $this->assertTrue($runner->is_nc);
+        $this->assertFalse($runner->isDirty('is_nc'));
+    }
 }

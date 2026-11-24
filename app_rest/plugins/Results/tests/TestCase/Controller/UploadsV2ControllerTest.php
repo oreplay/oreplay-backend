@@ -1166,6 +1166,103 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($runnerResultAmount, RunnerResultsTable::load()->find()->all()->count());
     }
 
+    private function _ncReuploadAsset(string $name): array
+    {
+        $json = str_replace(
+            ['<EVENT_ID>', '<STAGE_ID>'],
+            [Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2],
+            file_get_contents(dirname(__DIR__, 2) . '/assets/nc-reupload/' . $name)
+        );
+        return json_decode($json, true);
+    }
+
+    private function _uploadNcReupload(array $body): void
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), $body);
+        $this->assertUploadOk();
+    }
+
+    private function _storedRunner2(): Runner
+    {
+        /** @var Runner $runner */
+        $runner = RunnersTable::load()->find()
+            ->where([
+                'event_id' => Event::FIRST_EVENT,
+                'stage_id' => StagesFixture::STAGE_FEDO_2,
+                'db_id' => '1002',
+            ])
+            ->firstOrFail();
+        return $runner;
+    }
+
+    private function _publicIsNcOfRunner2(): bool
+    {
+        $this->_request['headers'] = ['Accept' => 'application/json'];
+        $this->get(ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT
+            . '/stages/' . StagesFixture::STAGE_FEDO_2 . '/results/');
+        $body = $this->assertJsonResponseOK();
+        foreach ($body['data'] as $participant) {
+            if (($participant['full_name'] ?? null) === 'Name 2 Surname 2') {
+                return $participant['is_nc'];
+            }
+        }
+        $this->fail('Runner 2 not found in the public results: ' . json_encode($body['data']));
+    }
+
+    public function testAddNew_shouldMarkARunnerNcWhenAReUploadFlagsIt()
+    {
+        $this->_uploadNcReupload($this->_ncReuploadAsset('1-all-ok.json'));
+        $this->assertFalse((bool)$this->_storedRunner2()->is_nc);
+
+        $this->_uploadNcReupload($this->_ncReuploadAsset('2-runner2-nc.json'));
+
+        $this->assertTrue((bool)$this->_storedRunner2()->is_nc);
+        $this->assertTrue($this->_publicIsNcOfRunner2());
+    }
+
+    public function testAddNew_shouldKeepARunnerNcWhenItIsNcOnTheFirstUpload()
+    {
+        $this->_uploadNcReupload($this->_ncReuploadAsset('2-runner2-nc.json'));
+
+        $this->assertTrue((bool)$this->_storedRunner2()->is_nc);
+    }
+
+    public function testAddNew_shouldClearNcWhenAReUploadNoLongerFlagsTheRunner()
+    {
+        $this->_uploadNcReupload($this->_ncReuploadAsset('2-runner2-nc.json'));
+
+        $this->_uploadNcReupload($this->_ncReuploadAsset('1-all-ok.json'));
+
+        $this->assertFalse((bool)$this->_storedRunner2()->is_nc);
+        $this->assertFalse($this->_publicIsNcOfRunner2());
+    }
+
+    public function testAddNew_shouldKeepNcWhenAReUploadDoesNotSendTheFlag()
+    {
+        $this->_uploadNcReupload($this->_ncReuploadAsset('2-runner2-nc.json'));
+        $withoutNc = $this->_ncReuploadAsset('1-all-ok.json');
+        foreach ($withoutNc['oreplay_data_transfer']['event']['stages'][0]['classes'][0]['runners'] as &$runner) {
+            unset($runner['is_nc']);
+        }
+
+        $this->_uploadNcReupload($withoutNc);
+
+        $this->assertTrue((bool)$this->_storedRunner2()->is_nc);
+    }
+
+    public function testAddNew_shouldNotUndoARemovalFromTheRankingOnAReUpload()
+    {
+        $this->_uploadNcReupload($this->_ncReuploadAsset('1-all-ok.json'));
+        RunnersTable::load()->removeFromRanking($this->_storedRunner2()->id, 'duplicated');
+
+        $this->_uploadNcReupload($this->_ncReuploadAsset('1-all-ok.json'));
+
+        $runner = $this->_storedRunner2();
+        $this->assertTrue((bool)$runner->is_nc);
+        $this->assertEquals(-2, $runner->bib_number);
+    }
+
     public function testAddNew_shouldReprocessAnUnchangedClassWhenReprocessAllIsRequested()
     {
         $this->flushMemcached();

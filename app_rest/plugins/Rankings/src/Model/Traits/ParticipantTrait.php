@@ -64,6 +64,29 @@ trait ParticipantTrait
         return isset($this[$field]) && $this[$field] && $this[$field] == $dbId;
     }
 
+    /**
+     * A participant matched on a re-upload keeps its stored row, so the NC flag of the new payload
+     * has to be copied onto it. Payloads without is_nc (older clients, radios, start lists) leave it
+     * untouched, and so does a participant an organizer removed from the ranking.
+     */
+    public function applyUploadedNc(array $participantData): static
+    {
+        $uploadedNc = $participantData['is_nc'] ?? null;
+        if ($uploadedNc === null || $this->isRemovedFromRanking()) {
+            return $this;
+        }
+        $this->set('is_nc', (bool)$uploadedNc);
+        return $this;
+    }
+
+    /**
+     * RunnersTable::removeFromRanking() marks the runner NC and negates its bib.
+     */
+    public function isRemovedFromRanking(): bool
+    {
+        return $this->is_nc && is_numeric($this->bib_number) && $this->bib_number < 0;
+    }
+
     public function isSameClass(ClassEntity $class = null): null|static
     {
         if ($class) {
