@@ -2555,18 +2555,25 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->_assertNcEverywhere('Name 1', 'Surname 1', false);
     }
 
-    public function testAddNew_shouldLetAResultDeclareItsOwnNcFlag()
+    public function testAddNew_shouldKeepTheNcFlagEachStageDeclares()
     {
-        $data = $this->_ncReuploadJson('1-all-ok.json');
-        $data['oreplay_data_transfer']['event']['stages'][0]['classes'][0]['runners'][0]
-            ['runner_results'][0]['is_nc'] = true;
+        $data = $this->_ncReuploadJson('2-runner2-nc.json');
+        $runners = &$data['oreplay_data_transfer']['event']['stages'][0]['classes'][0]['runners'];
+        $runners[0]['runner_results'][0]['is_nc'] = true;
+        $runners[1]['runner_results'][0]['is_nc'] = false;
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
         $this->post($this->_getEndpoint(), $data);
         $this->assertUploadOk();
 
-        $runner = $this->_storedRunnerNamed('Name 1', 'Surname 1');
-        $this->assertFalse((bool)$runner->is_nc);
-        $this->assertTrue((bool)$this->_stageShownByTheApi($runner)['is_nc']);
+        $competingRunner = $this->_storedRunnerNamed('Name 1', 'Surname 1');
+        $nonCompetingRunner = $this->_storedRunnerNamed('Name 2', 'Surname 2');
+        $this->assertSame([false, true], [(bool)$competingRunner->is_nc, (bool)$nonCompetingRunner->is_nc]);
+        $stageFlags = [
+            (bool)$this->_stageShownByTheApi($competingRunner)['is_nc'],
+            (bool)$this->_stageShownByTheApi($nonCompetingRunner)['is_nc'],
+        ];
+        $this->assertSame([true, false], $stageFlags, 'a runner can be NC in one stage of the totals and not in'
+            . ' another, so the is_nc a result declares must win over the runner\'s');
     }
 
     public function testAddNew_shouldKeepTheResultsOfARunnerRemovedFromTheRankingNcOnReupload()
