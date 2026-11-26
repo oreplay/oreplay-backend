@@ -1,0 +1,15 @@
+{
+  "enabledPlugins": {
+    "engineering@courseticket": true
+  },
+  "extraKnownMarketplaces": {
+    "courseticket": {
+      "source": {
+        "source": "git",
+        "url": "https://gitlab.com/courseticket-nilus/claude-plugins.git",
+        "ref": "main"
+      },
+      "autoUpdate": true
+    }
+  }
+}
