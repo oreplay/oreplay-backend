@@ -598,10 +598,6 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
         $this->assertEquals(1, $response['meta']['updated']['classes']);
     }
 
-    /**
-     * The IOF mapper turns NotCompeting into is_nc on the runner only, so the result row (stage.is_nc in
-     * the public results) has to inherit it or the two flags disagree (#85).
-     */
     public function testAddNew_shouldFlagTheResultsOfANotCompetingRunnerAsNc()
     {
         $this->_postXml('nc-reupload/2-runner2-nc.xml');

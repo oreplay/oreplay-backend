@@ -62,10 +62,6 @@ class RunnerResultImporter
         return [$this->_helper->processRunnerResults($resultToSave, $participant), $resultToSave];
     }
 
-    /**
-     * The desktop client and the IOF mapper only flag NC on the runner, so its results follow the runner
-     * (stage.is_nc would otherwise always be false) unless the result payload declares its own flag.
-     */
     private function _isNcOf(Runner $participant, array $resultData): bool
     {
         return (bool)($resultData['is_nc'] ?? $participant->is_nc ?? false);
