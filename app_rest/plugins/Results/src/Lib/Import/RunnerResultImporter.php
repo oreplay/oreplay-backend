@@ -39,7 +39,7 @@ class RunnerResultImporter
             fn() => $this->_reconcileWithExistingResults($participant, $resultData, $courseId)
         );
 
-        $resultToSave->is_nc = $this->_isNcOf($participant, $resultData);
+        $resultToSave->is_nc = $this->_ncDeclaredByTheResultElseByItsRunner($participant, $resultData);
 
         $splits = $resultData['splits'] ?? [];
         $warningMessage = 'card: ' . $participant->sicard;
@@ -62,7 +62,7 @@ class RunnerResultImporter
         return [$this->_helper->processRunnerResults($resultToSave, $participant), $resultToSave];
     }
 
-    private function _isNcOf(Runner $participant, array $resultData): bool
+    private function _ncDeclaredByTheResultElseByItsRunner(Runner $participant, array $resultData): bool
     {
         return (bool)($resultData['is_nc'] ?? $participant->is_nc ?? false);
     }
