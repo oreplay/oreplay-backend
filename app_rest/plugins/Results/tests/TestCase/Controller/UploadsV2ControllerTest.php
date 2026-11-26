@@ -2545,10 +2545,6 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->assertSame('1 classes, 2 participants, last 10 Mas30F', $logs->first()->info);
     }
 
-    /**
-     * The desktop client flags NC only on the runner, never inside its runner_results, so the result row
-     * (stage.is_nc in the public results) has to inherit it or the two flags disagree (#85).
-     */
     public function testAddNew_shouldFlagTheResultsOfARunnerUploadedAsNcAsNc()
     {
         $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
@@ -2571,5 +2567,32 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $runner = $this->_storedRunnerNamed('Name 1', 'Surname 1');
         $this->assertFalse((bool)$runner->is_nc);
         $this->assertTrue((bool)$this->_stageShownByTheApi($runner)['is_nc']);
+    }
+
+    public function testAddNew_shouldKeepTheResultsOfARunnerRemovedFromTheRankingNcOnReupload()
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), $this->_ncReuploadJson('1-all-ok.json'));
+        $this->assertUploadOk();
+        $removedRunner = $this->_storedRunnerNamed('Name 2', 'Surname 2');
+        RunnersTable::load()->removeFromRanking($removedRunner->id, 'duplicated');
+        $correctedTime = $this->_ncReuploadJson('1-all-ok.json');
+        $correctedTime['oreplay_data_transfer']['event']['stages'][0]['classes'][0]['runners'][1]
+            ['runner_results'][0]['time_seconds'] = 3301;
+
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), $correctedTime);
+        $this->assertUploadOk();
+        $storedTimes = RunnerResultsTable::load()->find()->where(['runner_id' => $removedRunner->id])
+            ->all()->extract('time_seconds')->toList();
+        $this->assertEquals([3301], $storedTimes,
+            'the re-upload has to rewrite the removed runner result, or the NC flag is never put to the test');
+
+        $runnersNamedLikeTheRemovedOne = RunnersTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'first_name' => 'Name 2', 'last_name' => 'Surname 2'])
+            ->all()->extract('id')->toList();
+        $this->assertSame([$removedRunner->id], $runnersNamedLikeTheRemovedOne,
+            'the re-upload has to match the removed runner instead of creating a new one');
+        $this->_assertNcEverywhere('Name 2', 'Surname 2', true);
     }
 }

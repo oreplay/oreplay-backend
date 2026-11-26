@@ -11,10 +11,6 @@ use Results\Model\Table\RunnerResultsTable;
 use Results\Model\Table\RunnersTable;
 use Results\Test\Fixture\StagesFixture;
 
-/**
- * Checks the NC flag of an uploaded runner on both places it is stored (runners.is_nc and
- * runner_results.is_nc) and on what the public results API shows, so the two can never disagree.
- */
 trait NcUploadTrait
 {
     private function _ncReuploadAsset(string $name): string
