@@ -557,6 +557,25 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
         $this->assertEquals([1, 1, 2, 2], $legs);
     }
 
+    public function testAddNew_shouldCutATeamNameLongerThanTheColumnAndStillFindTheTeamAgain()
+    {
+        $longName = str_repeat('Club con un nombre muy largo ', 5);
+        $expectedName = mb_substr($longName, 0, TeamsTable::TEAM_NAME_MAX_LENGTH);
+        $xml = str_replace('Club Uno Infantil 01', $longName,
+            file_get_contents($this->_asset('iof/relay_starts.xml')));
+
+        $this->_postXmlBody($xml);
+        $this->assertUploadOk('first upload');
+        $this->_postXmlBody($xml, 'reprocess_all=1');
+        $this->assertUploadOk('second upload');
+
+        $names = TeamsTable::load()->find()->where(['stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->all()->extract('team_name')->toList();
+        sort($names);
+        $this->assertEquals(['Club Dos Infantil 01', $expectedName], $names,
+            'the second upload has to match the cut name instead of creating the team again');
+    }
+
     /**
      * Each leg declares its own variant, so the class gets a course of its own carrying what the legs
      * share, and every result points at the variant that leg ran.

@@ -23,6 +23,8 @@ class TeamsTable extends AppTable
 {
     use StoredParticipantTrait;
 
+    public const int TEAM_NAME_MAX_LENGTH = 100;
+
     public function initialize(array $config): void
     {
         $this->addBehavior(TimestampBehavior::class);
@@ -105,6 +107,7 @@ class TeamsTable extends AppTable
         array $teamData,
         ClassEntity $class
     ): Team {
+        $teamData = self::_withStorableName($teamData);
         $this->getStoredAllParticipantsInClass($eventId, $stageId, $class->id);
         try {
             $team = $this->matchTeam($teamData, $class);
@@ -114,5 +117,13 @@ class TeamsTable extends AppTable
             $this->addParticipantInClass($team, $class->id);
         }
         return $team;
+    }
+
+    private static function _withStorableName(array $teamData): array
+    {
+        if (isset($teamData['team_name'])) {
+            $teamData['team_name'] = mb_substr((string)$teamData['team_name'], 0, self::TEAM_NAME_MAX_LENGTH);
+        }
+        return $teamData;
     }
 }
