@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="windows-1252"?>
+ <StartList xmlns="http://www.orienteering.org/datastandard/3.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ iofVersion="3.0"
+ createTime="2026-11-27T19:27:06.572"
+ creator="SportSoftware OS2010 V.11.0">
+<Event>
+<Name>Test Relevos</Name>
+</Event>
+<ClassStart>
+<Class>
+<Id>1</Id>
+<Name>Infantil</Name>
+<ShortName>INF</ShortName>
+<Leg/>
+<Leg/>
+<TeamFee>
+<Name>Default</Name>
+<Amount>0.00</Amount>
+</TeamFee>
+<RaceClass>
+<FirstStart>2026-11-28T11:00:00.000</FirstStart>
+</RaceClass>
+</Class>
+<TeamStart>
+<Name>Club Uno Infantil 01</Name>
+<Organisation>
+<Id>6</Id>
+<Name>Club Uno</Name>
+<ShortName>Club Uno</ShortName>
+</Organisation>
+<BibNumber>101</BibNumber>
+<TeamMemberStart>
+<Person sex="F">
+<Id>person0001</Id>
+<Name>
+<Family>aaaaa bbbbb</Family>
+<Given>ccccc</Given>
+</Name>
+<BirthDate>2013-01-01</BirthDate>
+</Person>
+<Start>
+<Leg>1</Leg>
+<LegOrder>1</LegOrder>
+<StartTime>2026-11-28T11:00:00.000</StartTime>
+<Course>
+<Id>2</Id>
+<Name>#1</Name>
+<Length>3100</Length>
+<Climb>60</Climb>
+<NumberOfControls>16</NumberOfControls>
+</Course>
+<ControlCard>9100001</ControlCard>
+</Start>
+</TeamMemberStart>
+<TeamMemberStart>
+<Person sex="M">
+<Id>person0002</Id>
+<Name>
+<Family>ddddd eeeee</Family>
+<Given>fffff</Given>
+</Name>
+<BirthDate>2015-01-01</BirthDate>
+</Person>
+<Start>
+<Leg>2</Leg>
+<LegOrder>1</LegOrder>
+<Course>
+<Id>3</Id>
+<Name>#2</Name>
+<Length>2800</Length>
+<Climb>50</Climb>
+<NumberOfControls>14</NumberOfControls>
+</Course>
+<ControlCard>9100002</ControlCard>
+</Start>
+</TeamMemberStart>
+<AssignedFee>
+<Fee>
+<Name>Actual</Name>
+<Amount>0.00</Amount>
+</Fee>
+</AssignedFee>
+</TeamStart>
+<TeamStart>
+<Name>Club Dos Infantil 01</Name>
+<Organisation>
+<Id>7</Id>
+<Name>Club Dos</Name>
+<ShortName>Club Dos</ShortName>
+</Organisation>
+<BibNumber>102</BibNumber>
+<TeamMemberStart>
+<Person sex="M">
+<Id>person0003</Id>
+<Name>
+<Family>ggggg hhhhh</Family>
+<Given>iiiii</Given>
+</Name>
+<BirthDate>2014-01-01</BirthDate>
+</Person>
+<Start>
+<Leg>1</Leg>
+<LegOrder>1</LegOrder>
+<StartTime>2026-11-28T11:00:00.000</StartTime>
+<Course>
+<Id>2</Id>
+<Name>#1</Name>
+<Length>3100</Length>
+<Climb>60</Climb>
+<NumberOfControls>16</NumberOfControls>
+</Course>
+<ControlCard>9100003</ControlCard>
+</Start>
+</TeamMemberStart>
+<TeamMemberStart>
+<Person sex="F">
+<Id>person0004</Id>
+<Name>
+<Family>jjjjj kkkkk</Family>
+<Given>lllll</Given>
+</Name>
+<BirthDate>2016-01-01</BirthDate>
+</Person>
+<Start>
+<Leg>2</Leg>
+<LegOrder>1</LegOrder>
+<Course>
+<Id>3</Id>
+<Name>#2</Name>
+<Length>2800</Length>
+<Climb>50</Climb>
+<NumberOfControls>14</NumberOfControls>
+</Course>
+<ControlCard>9100004</ControlCard>
+</Start>
+</TeamMemberStart>
+<AssignedFee>
+<Fee>
+<Name>Actual</Name>
+<Amount>0.00</Amount>
+</Fee>
+</AssignedFee>
+</TeamStart>
+</ClassStart>
+</StartList>

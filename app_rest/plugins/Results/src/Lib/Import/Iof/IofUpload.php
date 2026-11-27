@@ -36,7 +36,7 @@ class IofUpload
     public const MAX_AVERAGE_ENTRIES_PER_CLASS = 2000;
 
     private const CLASS_TAGS = ['<ClassResult', '<ClassStart'];
-    private const ENTRY_TAGS = ['<PersonResult', '<PersonStart', '<TeamMemberResult'];
+    private const ENTRY_TAGS = ['<PersonResult', '<PersonStart', '<TeamMemberResult', '<TeamMemberStart'];
 
     /**
      * Generous: the largest file in the sampled corpus is 5.5 MB. This bounds only the cost of holding the

@@ -82,6 +82,61 @@ class StartListMapperTest extends TestCase
         $this->assertArrayNotHasKey('position', $result);
     }
 
+    public function testClassOf_shouldMapARelayStartListToTeamsWithOneRunnerPerLeg()
+    {
+        $expectedTeams = [
+            ['101', 'Club Uno Infantil 01', 'Club Uno', ['9100001', '9100002'], [1, 2]],
+            ['102', 'Club Dos Infantil 01', 'Club Dos', ['9100003', '9100004'], [1, 2]],
+        ];
+
+        $class = $this->_mappedClasses('relay_starts.xml')[0];
+
+        $this->assertEquals([], $class['runners'], 'a relay class carries no individual entries');
+        $teams = array_map(fn($team) => [
+            $team['bib_number'],
+            $team['team_name'],
+            $team['club']['short_name'],
+            array_column($team['runners'], 'sicard'),
+            array_map(fn($runner) => $runner['runner_results'][0]['leg_number'], $team['runners']),
+        ], $class['teams']);
+        $this->assertEquals($expectedTeams, $teams);
+    }
+
+    public function testClassOf_shouldStartOnlyTheFirstLegOfARelayAtItsStartTime()
+    {
+        $expectedStartTimes = ['2026-11-28T11:00:00.000+01:00', null];
+
+        $team = $this->_mappedClasses('relay_starts.xml')[0]['teams'][0];
+
+        $startTimes = array_map(fn($runner) => $runner['runner_results'][0]['start_time'] ?? null, $team['runners']);
+        $this->assertEquals($expectedStartTimes, $startTimes);
+    }
+
+    public function testClassOf_shouldGiveARelayTeamTheStartOfItsFirstLegAsItsOnlyResult()
+    {
+        $expectedTeamResults = [[
+            'id' => '',
+            'stage_order' => 1,
+            'status_code' => StatusCode::OK,
+            'leg_number' => 1,
+            'result_type' => ['id' => ResultType::STAGE, 'description' => 'Stage'],
+            'start_time' => '2026-11-28T11:00:00.000+01:00',
+        ]];
+
+        $team = $this->_mappedClasses('relay_starts.xml')[0]['teams'][0];
+
+        $this->assertEquals($expectedTeamResults, $team['team_results']);
+    }
+
+    public function testClassOf_shouldKeepTheCourseEachRelayLegRuns()
+    {
+        $class = $this->_mappedClasses('relay_starts.xml')[0];
+
+        $legCourses = array_map(fn($runner) => $runner['course']['short_name'], $class['teams'][0]['runners']);
+        $this->assertEquals(['#1', '#2'], $legCourses);
+        $this->assertEquals('#1', $class['course']['short_name'], 'the first leg stands in for the class course');
+    }
+
     public function testClassOf_shouldKeepTheClubOfEachEntry()
     {
         $runners = $this->_mappedClasses('starts.xml')[0]['runners'];

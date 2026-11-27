@@ -37,19 +37,103 @@ abstract class IofClassMapper
 
     abstract protected function resultOf(array $result, array $runner): array;
 
+    abstract protected function teamElement(): string;
+
+    abstract protected function teamMemberElement(): string;
+
+    abstract protected function teamResultsOf(array $members): array;
+
     /**
-     * A relay class carries teams instead of individual entries. Only a result list has them.
+     * The same team may be split across several team tags — one per leg in some exports — so they are
+     * merged on the first identifier that is present. A team member's result is shaped exactly like an
+     * individual entry's, so the entry mapping is reused unchanged.
      */
-    protected function teamsOf(array $data): array
+    private function _teamsOf(array $data): array
     {
-        return [];
+        $teams = [];
+        $membersOfTeam = [];
+        foreach (IofNode::listOf($data[$this->teamElement()] ?? []) as $teamNode) {
+            $key = self::_teamKeyOf($teamNode);
+            $teams[$key] ??= $this->_newTeam($teamNode);
+            foreach (IofNode::listOf($teamNode[$this->teamMemberElement()] ?? []) as $member) {
+                $teams[$key]['runners'][] = $this->_teamMemberOf($member);
+                $membersOfTeam[$key][] = $member;
+            }
+        }
+        foreach ($teams as $key => $team) {
+            $teams[$key]['team_results'] = $this->teamResultsOf($membersOfTeam[$key] ?? []);
+        }
+        return array_values($teams);
+    }
+
+    private static function _teamKeyOf(array $teamNode): string
+    {
+        $bib = (string)($teamNode['BibNumber'] ?? '');
+        $entryId = IofNode::repeatedTextOf($teamNode['EntryId'] ?? null, 0);
+        $name = (string)($teamNode['Name'] ?? '');
+        return $bib ?: ($entryId ?: $name);
+    }
+
+    private function _newTeam(array $teamNode): array
+    {
+        $team = [
+            'id' => '',
+            'uuid' => '',
+            'bib_number' => (string)($teamNode['BibNumber'] ?? ''),
+            'team_name' => (string)($teamNode['Name'] ?? ''),
+            'runners' => [],
+            'team_results' => [],
+        ];
+        $club = $this->clubOf($teamNode['Organisation'] ?? []);
+        if ($club) {
+            $team['club'] = $club;
+        }
+        return $team;
+    }
+
+    /**
+     * Each leg declares the variant that leg ran, and this is the only place those courses reach the
+     * database: runner_results.course_id, which the forked-class handling consumes.
+     */
+    private function _teamMemberOf(array $member): array
+    {
+        $runner = $this->runnerOf($member);
+        if (!$this->_declaresALeg($member)) {
+            $runner = self::_withoutTheEntryIdOfItsTeam($runner, $member);
+        }
+        $course = $this->courseOf($this->legOf($member)['Course'] ?? []);
+        if ($course) {
+            $runner['course'] = $course;
+        }
+        return $runner;
+    }
+
+    protected function legOf(array $member): array
+    {
+        return IofNode::listOf($member[$this->resultElement()] ?? [])[0] ?? [];
+    }
+
+    private function _declaresALeg(array $member): bool
+    {
+        return ($this->legOf($member)['Leg'] ?? '') !== '';
+    }
+
+    private static function _withoutTheEntryIdOfItsTeam(array $runner, array $member): array
+    {
+        $personId = IofNode::repeatedTextOf(($member['Person'] ?? [])['Id'] ?? null, 0);
+        if ($personId === '') {
+            unset($runner['db_id']);
+            return $runner;
+        }
+        $runner['db_id'] = $personId;
+        return $runner;
     }
 
     public function classOf(IofClassResult $classResult): array
     {
         $data = $classResult->getData();
         $class = $data['Class'] ?? [];
-        $teams = $this->teamsOf($data);
+        $teams = $this->_teamsOf($data);
         $mapped = [
             'id' => '',
             'uuid' => '',

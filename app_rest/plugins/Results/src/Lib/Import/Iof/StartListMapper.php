@@ -28,6 +28,26 @@ class StartListMapper extends IofClassMapper
         return 'Start';
     }
 
+    protected function teamElement(): string
+    {
+        return 'TeamStart';
+    }
+
+    protected function teamMemberElement(): string
+    {
+        return 'TeamMemberStart';
+    }
+
+    protected function teamResultsOf(array $members): array
+    {
+        if (!$members) {
+            return [];
+        }
+        $teamStart = $this->resultOf($this->legOf($members[0]), []);
+        unset($teamStart['splits']);
+        return [$teamStart];
+    }
+
     protected function resultOf(array $result, array $runner): array
     {
         $mapped = [

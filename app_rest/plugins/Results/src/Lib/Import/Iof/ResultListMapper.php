@@ -44,78 +44,29 @@ class ResultListMapper extends IofClassMapper
         return 'Result';
     }
 
-    /**
-     * The same team may be split across several TeamResult tags — one per leg in some exports — so they
-     * are merged on the first identifier that is present. A team member's Result is shaped exactly like
-     * an individual PersonResult, so the entry mapping is reused unchanged.
-     */
-    protected function teamsOf(array $data): array
+    protected function teamElement(): string
     {
-        $teams = [];
-        foreach (IofNode::listOf($data['TeamResult'] ?? []) as $teamResult) {
-            $key = $this->_teamKeyOf($teamResult);
-            $team = $teams[$key] ?? $this->_newTeam($teamResult);
-            foreach (IofNode::listOf($teamResult['TeamMemberResult'] ?? []) as $member) {
-                $team['runners'][] = $this->_teamMemberOf($member);
-                $result = $this->_teamResultOf($member);
-                $team['team_results'][self::_standingKeyOf($result)] = $result;
-            }
-            $teams[$key] = $team;
+        return 'TeamResult';
+    }
+
+    protected function teamMemberElement(): string
+    {
+        return 'TeamMemberResult';
+    }
+
+    protected function teamResultsOf(array $members): array
+    {
+        $standings = [];
+        foreach ($members as $member) {
+            $result = $this->_teamResultOf($member);
+            $standings[self::_standingKeyOf($result)] = $result;
         }
-        return array_values(array_map(self::_withListedTeamResults(...), $teams));
+        return array_values($standings);
     }
 
     private static function _standingKeyOf(array $teamResult): string
     {
         return $teamResult['stage_order'] . '#' . $teamResult['leg_number'];
-    }
-
-    private static function _withListedTeamResults(array $team): array
-    {
-        $team['team_results'] = array_values($team['team_results']);
-        return $team;
-    }
-
-    private function _teamKeyOf(array $teamResult): string
-    {
-        $bib = (string)($teamResult['BibNumber'] ?? '');
-        $entryId = IofNode::repeatedTextOf($teamResult['EntryId'] ?? null, 0);
-        $name = (string)($teamResult['Name'] ?? '');
-        return $bib ?: ($entryId ?: $name);
-    }
-
-    private function _newTeam(array $teamResult): array
-    {
-        $team = [
-            'id' => '',
-            'uuid' => '',
-            'bib_number' => (string)($teamResult['BibNumber'] ?? ''),
-            'team_name' => (string)($teamResult['Name'] ?? ''),
-            'runners' => [],
-            'team_results' => [],
-        ];
-        $club = $this->clubOf($teamResult['Organisation'] ?? []);
-        if ($club) {
-            $team['club'] = $club;
-        }
-        return $team;
-    }
-
-    /**
-     * Each leg declares the variant that leg ran, and this is the only place those courses reach the
-     * database: runner_results.course_id, which the forked-class handling consumes.
-     */
-    private function _teamMemberOf(array $member): array
-    {
-        $runner = $this->runnerOf($member);
-        if (!self::_declaresALeg($member)) {
-            $runner = self::_withoutTheEntryIdOfItsTeam($runner, $member);
-        }
-        $course = $this->courseOf(IofNode::listOf($member['Result'] ?? [])[0]['Course'] ?? []);
-        if ($course) {
-            $runner['course'] = $course;
-        }
-        return $runner;
     }
 
     /**
@@ -124,7 +75,7 @@ class ResultListMapper extends IofClassMapper
      */
     private function _teamResultOf(array $member): array
     {
-        $legResult = IofNode::listOf($member['Result'] ?? [])[0] ?? [];
+        $legResult = $this->legOf($member);
         $overall = IofNode::firstOf($legResult['OverallResult'] ?? []);
         $legNumber = (int)($legResult['Leg'] ?? 1);
         if (!$overall) {
@@ -135,23 +86,6 @@ class ResultListMapper extends IofClassMapper
         $teamResult = $this->resultOf($overall, ['sicard' => '', 'bib_number' => '']);
         unset($teamResult['splits']);
         return $teamResult;
-    }
-
-    private static function _declaresALeg(array $member): bool
-    {
-        $result = IofNode::listOf($member['Result'] ?? [])[0] ?? [];
-        return ($result['Leg'] ?? '') !== '';
-    }
-
-    private static function _withoutTheEntryIdOfItsTeam(array $runner, array $member): array
-    {
-        $personId = IofNode::repeatedTextOf(($member['Person'] ?? [])['Id'] ?? null, 0);
-        if ($personId === '') {
-            unset($runner['db_id']);
-            return $runner;
-        }
-        $runner['db_id'] = $personId;
-        return $runner;
     }
 
     protected function resultOf(array $result, array $runner): array

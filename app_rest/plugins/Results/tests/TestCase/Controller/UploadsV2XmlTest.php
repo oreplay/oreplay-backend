@@ -538,6 +538,25 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
         $this->assertEquals([1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4], $legs);
     }
 
+    public function testAddNew_shouldImportARelayStartListAsTeamsWithOneRunnerPerLeg()
+    {
+        $response = $this->_postXml('iof/relay_starts.xml');
+        $this->assertUploadOk();
+
+        $this->assertEquals(UploadTypes::START_LIST, $response['meta']['uploadType']);
+        $this->assertEquals(6, $response['meta']['updated']['runners'], 'participants: 4 legs and 2 teams');
+        $teams = TeamsTable::load()->find()->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all();
+        $this->assertEquals(2, $teams->count());
+        $runners = RunnersTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'team_id IS NOT' => null])->all();
+        $this->assertEquals(4, $runners->count());
+        $legs = RunnerResultsTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])
+            ->all()->extract('leg_number')->toList();
+        sort($legs);
+        $this->assertEquals([1, 1, 2, 2], $legs);
+    }
+
     /**
      * Each leg declares its own variant, so the class gets a course of its own carrying what the legs
      * share, and every result points at the variant that leg ran.
