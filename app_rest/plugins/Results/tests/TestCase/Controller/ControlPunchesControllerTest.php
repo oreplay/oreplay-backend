@@ -51,26 +51,43 @@ class ControlPunchesControllerTest extends ApiCommonErrorsTest
 
     public function testGetList_teamAndIndividualPunches()
     {
+        $expected = [
+            'total' => 2,
+            'limit' => 10,
+            'punches' => [
+                [
+                    'split_id' => SplitsFixture::SPLIT_2,
+                    'reading_time' => '2024-01-03T11:00:20.321+00:00',
+                    'runner_id' => null,
+                    'club_id' => null,
+                    'class_short_name' => null,
+                    'runner_has_splits' => false,
+                    'team_id' => Team::FIRST_TEAM,
+                    'team_lists_runners' => true,
+                ],
+                [
+                    'split_id' => SplitsFixture::SPLIT_1,
+                    'reading_time' => '2024-01-02T10:00:10.321+00:00',
+                    'runner_id' => Runner::FIRST_RUNNER,
+                    'club_id' => ClubsFixture::CLUB_1,
+                    'class_short_name' => 'ME',
+                    'runner_has_splits' => true,
+                    'team_id' => null,
+                    'team_lists_runners' => false,
+                ],
+            ],
+        ];
+
         $this->skipNextRequestInSwagger();
         $this->get($this->_getEndpoint());
 
         $bodyDecoded = $this->assertJsonResponseOK();
-        $this->assertSame(2, $bodyDecoded['total']);
-        $this->assertSame(10, $bodyDecoded['limit']);
-        [$teamPunch, $runnerPunch] = $bodyDecoded['data'];
-
-        $this->assertSame(SplitsFixture::SPLIT_2, $teamPunch['split']['id']);
-        $this->assertSame('2024-01-03T11:00:20.321+00:00', $teamPunch['split']['reading_time']);
-        $this->assertNull($teamPunch['runner']);
-        $this->assertSame(Team::FIRST_TEAM, $teamPunch['team']['id']);
-        $this->assertArrayHasKey('runners', $teamPunch['team']);
-
-        $this->assertSame(SplitsFixture::SPLIT_1, $runnerPunch['split']['id']);
-        $this->assertSame(Runner::FIRST_RUNNER, $runnerPunch['runner']['id']);
-        $this->assertSame(ClubsFixture::CLUB_1, $runnerPunch['runner']['club']['id']);
-        $this->assertSame('ME', $runnerPunch['runner']['class']['short_name']);
-        $this->assertNotEmpty($runnerPunch['runner']['stage']['splits']);
-        $this->assertNull($runnerPunch['team']);
+        $page = [
+            'total' => $bodyDecoded['total'],
+            'limit' => $bodyDecoded['limit'],
+            'punches' => array_map([$this, '_identifyPunch'], $bodyDecoded['data']),
+        ];
+        $this->assertSame($expected, $page);
     }
 
     public function testGetList()
@@ -124,6 +141,22 @@ class ControlPunchesControllerTest extends ApiCommonErrorsTest
         $this->skipNextRequestInSwagger();
         $this->get($this->_getEndpoint() . '?limit=311');
         $this->assertResponseCode(400);
+    }
+
+    private function _identifyPunch(array $punch): array
+    {
+        $runner = $punch['runner'];
+        $team = $punch['team'];
+        return [
+            'split_id' => $punch['split']['id'],
+            'reading_time' => $punch['split']['reading_time'],
+            'runner_id' => $runner['id'] ?? null,
+            'club_id' => $runner['club']['id'] ?? null,
+            'class_short_name' => $runner['class']['short_name'] ?? null,
+            'runner_has_splits' => !empty($runner['stage']['splits']),
+            'team_id' => $team['id'] ?? null,
+            'team_lists_runners' => isset($team['runners']),
+        ];
     }
 
     private function _saveRadioPunch(string $runnerId, string $readingTime): string
