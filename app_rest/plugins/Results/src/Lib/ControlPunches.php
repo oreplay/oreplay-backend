@@ -27,15 +27,15 @@ class ControlPunches
      */
     public function buildRows(array $splits): array
     {
-        $runnersByResultId = $this->_loadRunnersByResultId($splits);
-        $teamIdsBySplitId = $this->_teamIdsBySplitId($splits, $runnersByResultId);
+        $runnersBySplitId = $this->_loadRunnersBySplitId($splits);
+        $teamIdsBySplitId = $this->_teamIdsBySplitId($splits, $runnersBySplitId);
         $teamsById = $this->_loadTeamsById($teamIdsBySplitId);
         $rows = [];
         foreach ($splits as $split) {
             $teamId = $teamIdsBySplitId[$split->id];
             $rows[] = RestApiEntity::toChild('ControlPunch', [
                 'split' => $split,
-                'runner' => $runnersByResultId[$split->runner_result_id] ?? null,
+                'runner' => $runnersBySplitId[$split->id] ?? null,
                 'team' => $teamsById[$teamId] ?? null,
             ]);
         }
@@ -46,38 +46,52 @@ class ControlPunches
      * @param Split[] $splits
      * @return array<string, Runner>
      */
-    private function _loadRunnersByResultId(array $splits): array
+    private function _loadRunnersBySplitId(array $splits): array
     {
-        $resultIds = $this->_distinctNonNullIds(array_map(fn (Split $split) => $split->runner_result_id, $splits));
-        if (!$resultIds) {
+        $runnerIdsBySplitId = $this->_runnerIdsBySplitId($splits);
+        $runnerIds = $this->_distinctNonNullIds($runnerIdsBySplitId);
+        if (!$runnerIds) {
             return [];
         }
-        $runnerIdsByResultId = $this->Runners->RunnerResults->runnerIdsByResultId($resultIds);
-        $runnersById = $this->Runners
-            ->findInStageByIds($this->eventId, $this->stageId, $this->_distinctNonNullIds($runnerIdsByResultId))
+        $runnersById = $this->Runners->findInStageByIds($this->eventId, $this->stageId, $runnerIds)
             ->all()
             ->indexBy('id')
             ->toArray();
-        $runnersByResultId = [];
-        foreach ($runnerIdsByResultId as $resultId => $runnerId) {
+        $runnersBySplitId = [];
+        foreach ($runnerIdsBySplitId as $splitId => $runnerId) {
             if (isset($runnersById[$runnerId])) {
-                $runnersByResultId[$resultId] = $runnersById[$runnerId];
+                $runnersBySplitId[$splitId] = $runnersById[$runnerId];
             }
         }
-        return $runnersByResultId;
+        return $runnersBySplitId;
     }
 
     /**
      * @param Split[] $splits
-     * @param array<string, Runner> $runnersByResultId
      * @return array<string, ?string>
      */
-    private function _teamIdsBySplitId(array $splits, array $runnersByResultId): array
+    private function _runnerIdsBySplitId(array $splits): array
+    {
+        $resultIds = $this->_distinctNonNullIds(array_map(fn (Split $split) => $split->runner_result_id, $splits));
+        $runnerIdsByResultId = $resultIds ? $this->Runners->RunnerResults->runnerIdsByResultId($resultIds) : [];
+        $runnerIds = [];
+        foreach ($splits as $split) {
+            $runnerIds[$split->id] = $runnerIdsByResultId[$split->runner_result_id] ?? $split->runner_id;
+        }
+        return $runnerIds;
+    }
+
+    /**
+     * @param Split[] $splits
+     * @param array<string, Runner> $runnersBySplitId
+     * @return array<string, ?string>
+     */
+    private function _teamIdsBySplitId(array $splits, array $runnersBySplitId): array
     {
         $teamIdsByResultId = $this->_teamIdsByResultId($splits);
         $teamIds = [];
         foreach ($splits as $split) {
-            $runner = $runnersByResultId[$split->runner_result_id] ?? null;
+            $runner = $runnersBySplitId[$split->id] ?? null;
             $teamIds[$split->id] = $teamIdsByResultId[$split->team_result_id] ?? $runner?->team_id;
         }
         return $teamIds;

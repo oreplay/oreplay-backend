@@ -126,6 +126,14 @@ class SplitsTableTest extends TestCase
         $this->assertSame([SplitsFixture::SPLIT_2, SplitsFixture::SPLIT_1], $this->_punchIdsAt('31'));
     }
 
+    public function testFindPunchesAtStation_skipsARadioStoredBeforeTheRunnerHadAResult()
+    {
+        $radio = $this->_savePunch('31', '2024-01-02 09:59:00', true, null);
+        $this->Splits->updateAll(['runner_id' => Runner::FIRST_RUNNER], ['id' => $radio]);
+
+        $this->assertSame([SplitsFixture::SPLIT_2, SplitsFixture::SPLIT_1], $this->_punchIdsAt('31'));
+    }
+
     public function testFindPunchesAtStation_breaksTiesInTimeById()
     {
         $tiedTime = '2024-01-05 10:00:00';
@@ -146,7 +154,7 @@ class SplitsTableTest extends TestCase
         string $station,
         ?string $readingTime,
         bool $isRadio,
-        string $runnerResultId = RunnerResult::FIRST_RES,
+        ?string $runnerResultId = RunnerResult::FIRST_RES,
         ?string $id = null
     ): string {
         /** @var Split $split */

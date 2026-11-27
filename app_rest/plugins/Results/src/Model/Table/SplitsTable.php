@@ -76,8 +76,10 @@ class SplitsTable extends AppTable
                 $this->_alias . '.reading_time IS NOT' => null,
             ])
             ->where(function (QueryExpression $exp) {
-                return $exp->or([$this->_alias . '.is_intermediate' => false])
-                    ->notExists($this->_downloadOfTheSameResultAtStation());
+                $isRadioWithoutDownload = $exp->and([])
+                    ->notExists($this->_downloadOfTheSameResultAtStation())
+                    ->notExists($this->_downloadOfTheSameRunnerAtStation());
+                return $exp->or([$this->_alias . '.is_intermediate' => false, $isRadioWithoutDownload]);
             })
             ->orderBy([
                 $this->_alias . '.reading_time' => 'DESC',
@@ -89,12 +91,30 @@ class SplitsTable extends AppTable
     private function _downloadOfTheSameResultAtStation(): SelectQuery
     {
         $radio = $this->_alias;
+        return $this->_downloadAtTheStationOf($radio)
+            ->where([
+                'Downloaded.runner_result_id <=> ' . $radio . '.runner_result_id',
+                'Downloaded.team_result_id <=> ' . $radio . '.team_result_id',
+            ]);
+    }
+
+    private function _downloadOfTheSameRunnerAtStation(): SelectQuery
+    {
+        $radio = $this->_alias;
+        return $this->_downloadAtTheStationOf($radio)
+            ->innerJoin(
+                ['DownloadedResult' => $this->RunnerResults->getTable()],
+                'DownloadedResult.id = Downloaded.runner_result_id'
+            )
+            ->where(['DownloadedResult.runner_id = ' . $radio . '.runner_id']);
+    }
+
+    private function _downloadAtTheStationOf(string $radio): SelectQuery
+    {
         return $this->subquery()
             ->select(['Downloaded.id'])
             ->from(['Downloaded' => $this->getTable()])
             ->where([
-                'Downloaded.runner_result_id <=> ' . $radio . '.runner_result_id',
-                'Downloaded.team_result_id <=> ' . $radio . '.team_result_id',
                 'Downloaded.stage_id = ' . $radio . '.stage_id',
                 'Downloaded.station = ' . $radio . '.station',
                 'Downloaded.is_intermediate' => false,
