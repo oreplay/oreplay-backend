@@ -19,7 +19,11 @@ use Results\Lib\Import\DeclaredRadiosImporter;
 use Results\Lib\Import\RunnerImporter;
 use Results\Lib\Import\TeamImporter;
 use Results\Lib\Publish\ClassResultsPublisher;
+use Results\Lib\Publish\ControlChangedPublisher;
 use Results\Lib\Publish\NchanChannel;
+use Results\Lib\Publish\UploadPublisher;
+use Results\Lib\Publish\UploadPublishers;
+use Results\Lib\Publish\UploadedControlsPublisher;
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
@@ -97,7 +101,7 @@ class UploadsController extends ApiController
         }
 
         $counter = 0;
-        $publisher = $this->_classResultsPublisher();
+        $publisher = $this->_publishers();
         $declaredRadios = new DeclaredRadiosImporter($this->Classes, $helper);
         foreach ($configChecker->getClasses() as $classObj) {
             $class = $this->Classes->createIfNotExists($helper->getEventId(), $stageId, $classObj);
@@ -337,12 +341,16 @@ class UploadsController extends ApiController
         return substr($auth, strlen('Bearer '));
     }
 
-    private function _classResultsPublisher(): ?ClassResultsPublisher
+    private function _publishers(): ?UploadPublisher
     {
         if (!NchanChannel::isConfigured()) {
             return null;
         }
-        return new ClassResultsPublisher(new NchanChannel());
+        $channel = new NchanChannel();
+        return new UploadPublishers([
+            new ClassResultsPublisher($channel),
+            new UploadedControlsPublisher(new ControlChangedPublisher($channel)),
+        ]);
     }
 
     private function _needsProcessing(ClassEntity $class, array $classObj, UploadHelper $helper): bool

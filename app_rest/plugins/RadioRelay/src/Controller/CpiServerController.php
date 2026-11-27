@@ -9,6 +9,8 @@ use Cake\Http\Exception\BadRequestException;
 use RadioRelay\Lib\Cpi\CheckMinimumEventUser;
 use RadioRelay\Lib\Cpi\PayloadParser;
 use RadioRelay\Lib\Cpi\ProcessPunches;
+use Results\Lib\Publish\ControlChangedPublisher;
+use Results\Lib\Publish\NchanChannel;
 use Results\Model\Table\EventsTable;
 use Results\Model\Table\RunnersTable;
 use Results\Model\Table\TokensTable;
@@ -27,7 +29,11 @@ class CpiServerController extends ApiController
             case 'ProcessPunches':
                 try {
                     $processor = new ProcessPunches(new PayloadParser($data));
-                    $toRet = $processor->setRunnersTable(RunnersTable::load())->process();
+                    $processor->setRunnersTable(RunnersTable::load());
+                    if (NchanChannel::isConfigured()) {
+                        $processor->setControlChangedPublisher(new ControlChangedPublisher(new NchanChannel()));
+                    }
+                    $toRet = $processor->process();
                 } catch (BadRequestException $e) {
                     $this->log('CpiServerController: [20] ' . $e->getMessage()
                         . ' ------------- ' . $e->getTraceAsString());

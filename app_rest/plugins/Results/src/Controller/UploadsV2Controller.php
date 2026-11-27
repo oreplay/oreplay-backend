@@ -20,10 +20,12 @@ use Results\Lib\Import\Iof\IofUploadOptions;
 use Results\Lib\Import\StageUploadLock;
 use Results\Lib\Import\UploadProcessor;
 use Results\Lib\Publish\ClassResultsPublisher;
+use Results\Lib\Publish\ControlChangedPublisher;
 use Results\Lib\Publish\NchanChannel;
 use Results\Lib\Publish\UploadProgressPublisher;
 use Results\Lib\Publish\UploadPublisher;
 use Results\Lib\Publish\UploadPublishers;
+use Results\Lib\Publish\UploadedControlsPublisher;
 use Results\Lib\UploadConfigChecker;
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMessage;
@@ -101,7 +103,9 @@ class UploadsV2Controller extends ApiController
     {
         $publishers = [new UploadProgressPublisher($log)];
         if (NchanChannel::isConfigured()) {
-            $publishers[] = new ClassResultsPublisher(new NchanChannel(), $log->id);
+            $channel = new NchanChannel();
+            $publishers[] = new ClassResultsPublisher($channel, $log->id);
+            $publishers[] = new UploadedControlsPublisher(new ControlChangedPublisher($channel), $log->id);
         }
         return new UploadPublishers($publishers);
     }

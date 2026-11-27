@@ -7,6 +7,7 @@ namespace RadioRelay\Lib\Cpi;
 use Cake\Log\LogTrait;
 use Psr\Log\LogLevel;
 use Results\Lib\ExistingResultsIndex;
+use Results\Lib\Publish\ControlChangedPublisher;
 use Results\Lib\UploadContext;
 use Results\Model\Entity\Runner;
 use Results\Model\Entity\Split;
@@ -21,6 +22,7 @@ class ProcessPunches
     private ExistingResultsIndex $existingResults;
     private RunnersTable $Runners;
     private SplitsTable $Splits;
+    private ?ControlChangedPublisher $controlChanged = null;
 
     public function __construct(PayloadParser $data)
     {
@@ -37,19 +39,34 @@ class ProcessPunches
         return $this;
     }
 
+    public function setControlChangedPublisher(ControlChangedPublisher $publisher): self
+    {
+        $this->controlChanged = $publisher;
+        return $this;
+    }
+
     public function process(): array
     {
         $this->_indexStoredControls();
         $punchAmount = 0;
         $stations = [];
+        $storedStations = [];
         foreach ($this->data->getPunches() as $punch) {
-            $this->_processPunch($punch);
+            $stored = $this->_processPunch($punch);
             if ($punch['station'] ?? null) {
                 $stations[] = (string)$punch['station'];
+            }
+            if ($stored) {
+                $storedStations[] = (string)$stored->station;
             }
             $punchAmount++;
         }
         $this->Splits->Controls->markIntermediateStations($this->data->getStageId(), array_unique($stations));
+        $this->controlChanged?->publish(
+            $this->data->getStageId(),
+            $storedStations,
+            ControlChangedPublisher::SOURCE_CPI
+        );
         $lastId = '1'; // must be numeric
         return ['OK', '' . $punchAmount, $lastId];
     }
