@@ -118,12 +118,13 @@ class SplitsTableTest extends TestCase
         $this->assertSame([SplitsFixture::SPLIT_2, SplitsFixture::SPLIT_1], $this->_punchIdsAt('31'));
     }
 
-    public function testFindPunchesAtStation_skipsTheRadioCopyOfAPunchWithoutRunner()
+    public function testFindPunchesAtStation_keepsARadioWithoutRunnerSinceNoDownloadCanBeMatchedToIt()
     {
         $orphanIds = [SplitsFixture::SPLIT_1, SplitsFixture::SPLIT_1_RADIO];
         $this->Splits->updateAll(['runner_result_id' => null], ['id IN' => $orphanIds]);
 
-        $this->assertSame([SplitsFixture::SPLIT_2, SplitsFixture::SPLIT_1], $this->_punchIdsAt('31'));
+        $expected = [SplitsFixture::SPLIT_2, SplitsFixture::SPLIT_1, SplitsFixture::SPLIT_1_RADIO];
+        $this->assertSame($expected, $this->_punchIdsAt('31'));
     }
 
     public function testFindPunchesAtStation_skipsARadioStoredBeforeTheRunnerHadAResult()

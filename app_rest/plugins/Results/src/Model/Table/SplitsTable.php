@@ -76,10 +76,14 @@ class SplitsTable extends AppTable
                 $this->_alias . '.reading_time IS NOT' => null,
             ])
             ->where(function (QueryExpression $exp) {
-                $isRadioWithoutDownload = $exp->and([])
-                    ->notExists($this->_downloadOfTheSameResultAtStation())
+                $radio = $this->_alias;
+                $hasNoRunnerResultDownload = $exp->or([$radio . '.runner_result_id IS' => null])
+                    ->notExists($this->_downloadOfTheSameResultAtStation('runner_result_id'));
+                $hasNoTeamResultDownload = $exp->or([$radio . '.team_result_id IS' => null])
+                    ->notExists($this->_downloadOfTheSameResultAtStation('team_result_id'));
+                $isRadioWithoutDownload = $exp->and([$hasNoRunnerResultDownload, $hasNoTeamResultDownload])
                     ->notExists($this->_downloadOfTheSameRunnerAtStation());
-                return $exp->or([$this->_alias . '.is_intermediate' => false, $isRadioWithoutDownload]);
+                return $exp->or([$radio . '.is_intermediate' => false, $isRadioWithoutDownload]);
             })
             ->orderBy([
                 $this->_alias . '.reading_time' => 'DESC',
@@ -88,14 +92,11 @@ class SplitsTable extends AppTable
             ], true);
     }
 
-    private function _downloadOfTheSameResultAtStation(): SelectQuery
+    private function _downloadOfTheSameResultAtStation(string $resultForeignKey): SelectQuery
     {
         $radio = $this->_alias;
         return $this->_downloadAtTheStationOf($radio)
-            ->where([
-                'Downloaded.runner_result_id <=> ' . $radio . '.runner_result_id',
-                'Downloaded.team_result_id <=> ' . $radio . '.team_result_id',
-            ]);
+            ->where(['Downloaded.' . $resultForeignKey . ' = ' . $radio . '.' . $resultForeignKey]);
     }
 
     private function _downloadOfTheSameRunnerAtStation(): SelectQuery

@@ -133,7 +133,7 @@ class ControlPunchesControllerTest extends ApiCommonErrorsTest
         $this->get($this->_getEndpoint());
 
         $bodyDecoded = $this->assertJsonResponseOK();
-        $this->assertSame(2, $bodyDecoded['total']);
+        $this->assertSame(3, $bodyDecoded['total']);
         $orphanPunch = $bodyDecoded['data'][1];
         $this->assertSame(SplitsFixture::SPLIT_1, $orphanPunch['split']['id']);
         $this->assertNull($orphanPunch['runner']);
