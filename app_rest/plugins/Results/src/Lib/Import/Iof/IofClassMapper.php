@@ -56,7 +56,7 @@ abstract class IofClassMapper
             $key = self::_teamKeyOf($teamNode);
             $teams[$key] ??= $this->_newTeam($teamNode);
             foreach (IofNode::listOf($teamNode[$this->teamMemberElement()] ?? []) as $member) {
-                $teams[$key]['runners'][] = $this->_teamMemberOf($member);
+                $teams[$key]['runners'][] = $this->_teamMemberOf($member, $teams[$key]);
                 $membersOfTeam[$key][] = $member;
             }
         }
@@ -95,15 +95,23 @@ abstract class IofClassMapper
      * Each leg declares the variant that leg ran, and this is the only place those courses reach the
      * database: runner_results.course_id, which the forked-class handling consumes.
      */
-    private function _teamMemberOf(array $member): array
+    private function _teamMemberOf(array $member, array $team): array
     {
-        $runner = $this->runnerOf($member);
+        $runner = self::_withTheClubOfItsTeamWhenItHasNone($this->runnerOf($member), $team);
         if (!$this->_declaresALeg($member)) {
             $runner = self::_withoutTheEntryIdOfItsTeam($runner, $member);
         }
         $course = $this->courseOf($this->legOf($member)['Course'] ?? []);
         if ($course) {
             $runner['course'] = $course;
+        }
+        return $runner;
+    }
+
+    private static function _withTheClubOfItsTeamWhenItHasNone(array $runner, array $team): array
+    {
+        if (!isset($runner['club']) && isset($team['club'])) {
+            $runner['club'] = $team['club'];
         }
         return $runner;
     }

@@ -94,6 +94,16 @@ class RelayMappingTest extends TestCase
         $this->assertEquals('70.0', $team['runners'][0]['course']['climb']);
     }
 
+    public function testClassOf_shouldKeepTheClubALegDeclaresOverTheClubOfItsTeam()
+    {
+        $expectedLegClub = ['id' => '', 'uuid' => '', 'oe_key' => '', 'short_name' => 'DKP', 'long_name' => ''];
+
+        $team = $this->_relayClass()['teams'][0];
+
+        $this->assertEquals($expectedLegClub, $team['runners'][0]['club']);
+        $this->assertEquals('Oddíl OB Kotlářka', $team['club']['long_name'], 'the team declares a club of its own');
+    }
+
     /**
      * OverallResult is the team's cumulative standing after that leg, so it becomes one team_result per
      * leg rather than one per team.

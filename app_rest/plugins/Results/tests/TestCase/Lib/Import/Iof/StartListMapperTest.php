@@ -137,6 +137,16 @@ class StartListMapperTest extends TestCase
         $this->assertEquals('#1', $class['course']['short_name'], 'the first leg stands in for the class course');
     }
 
+    public function testClassOf_shouldGiveARelayLegWithoutAClubTheClubOfItsTeam()
+    {
+        $team = $this->_mappedClasses('relay_starts.xml')[0]['teams'][0];
+        $expectedClubs = [$team['club'], $team['club']];
+
+        $legClubs = array_map(fn($runner) => $runner['club'] ?? null, $team['runners']);
+
+        $this->assertEquals($expectedClubs, $legClubs);
+    }
+
     public function testClassOf_shouldKeepTheClubOfEachEntry()
     {
         $runners = $this->_mappedClasses('starts.xml')[0]['runners'];
