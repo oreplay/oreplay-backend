@@ -39,8 +39,8 @@ use Results\Model\Table\UploadLogsTable;
 
 class UploadsController extends ApiController
 {
-    private const string INVALID_TOKEN_MESSAGE =
-        'There is a problem with the token, create a new one and set it in the client';
+    private const string INVALID_TOKEN_MESSAGE = 'There is a problem with the token, '
+        . 'create a new one and set it in the client';
 
     public const NEW_VERSION = 402;
 
