@@ -1,0 +1,76 @@
+{
+    "/api/v1/events/{eventID}/stages/{stageID}/controls/{station}/punches/": {
+        "get": {
+            "operationId": "getListControlPunches",
+            "summary": "",
+            "description": "Get list",
+            "parameters": [
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "eventID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "8f3b542c-23b9-4790-a113-b83d476c0ad9"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "stageID",
+                    "required": true,
+                    "schema": {
+                        "type": "string"
+                    },
+                    "example": "51d63e99-5d7c-4382-a541-8567015d8eed"
+                },
+                {
+                    "description": "ID in URL",
+                    "in": "path",
+                    "name": "station",
+                    "required": true,
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "example": 31
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "limit",
+                    "example": "20",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                },
+                {
+                    "description": "",
+                    "in": "query",
+                    "name": "page",
+                    "example": "1",
+                    "required": false,
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ],
+            "tags": [
+                "ControlPunches"
+            ],
+            "responses": {
+                "200": {
+                    "description": "OK",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PaginatedControlPunch"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

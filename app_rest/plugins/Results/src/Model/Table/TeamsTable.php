@@ -32,6 +32,13 @@ class TeamsTable extends AppTable
         ClubsTable::addHasMany($this);
     }
 
+    public static function load(): self
+    {
+        /** @var TeamsTable $table */
+        $table = parent::load();
+        return $table;
+    }
+
     private function _findTeamsInStage(string $eventId, string $stageId): RestApiSelectQuery
     {
         /** @var RestApiSelectQuery $res */
@@ -59,6 +66,15 @@ class TeamsTable extends AppTable
             ->contain(RunnersTable::name(), function (Query $q) use ($filters) {
                 return RunnersTable::mainRunnerContain($q, RunnerResultsTable::name(), $filters);
             });
+    }
+
+    /**
+     * @param string[] $teamIds
+     */
+    public function findInStageByIds(string $eventId, string $stageId, array $teamIds): Query
+    {
+        return $this->findTeamsInStage($eventId, $stageId)
+            ->where([$this->aliasField('id') . ' IN' => $teamIds]);
     }
 
     public function matchTeam(array $teamData, ClassEntity $class): Team

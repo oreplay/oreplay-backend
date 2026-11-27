@@ -274,4 +274,13 @@ class RunnerResultsTableTest extends TestCase
         $this->assertEquals($data['leg_number'], $db->leg_number);
         $this->assertEquals('2014-07-06T10:09:14+00:00', $db->start_time->toIso8601String());
     }
+
+    public function testRunnerIdsByResultId_mapsEachKnownResultToItsRunner()
+    {
+        $resultIds = [RunnerResult::FIRST_RES, 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'];
+
+        $runnerIds = $this->RunnerResults->runnerIdsByResultId($resultIds);
+
+        $this->assertSame([RunnerResult::FIRST_RES => Runner::FIRST_RUNNER], $runnerIds);
+    }
 }

@@ -10,6 +10,56 @@ servers:
   - url: https://127.0.0.1
 tags: []
 paths:
+  /api/v1/events/{eventID}/stages/{stageID}/controls/{station}/punches/:
+    get:
+      operationId: getListControlPunches
+      summary: ''
+      description: Get list
+      parameters:
+        - description: ID in URL
+          in: path
+          name: eventID
+          required: true
+          schema:
+            type: string
+          example: 8f3b542c-23b9-4790-a113-b83d476c0ad9
+        - description: ID in URL
+          in: path
+          name: stageID
+          required: true
+          schema:
+            type: string
+          example: 51d63e99-5d7c-4382-a541-8567015d8eed
+        - description: ID in URL
+          in: path
+          name: station
+          required: true
+          schema:
+            type: integer
+          example: 31
+        - description: ''
+          in: query
+          name: limit
+          example: '20'
+          required: false
+          schema:
+            type: string
+        - description: ''
+          in: query
+          name: page
+          example: '1'
+          required: false
+          schema:
+            type: string
+      tags:
+        - ControlPunches
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedControlPunch'
   /api/v1/events/{eventID}/tokens/:
     post:
       operationId: postListEventTokens
@@ -167,14 +217,14 @@ paths:
         - description: ''
           in: query
           name: initial_date:lte
-          example: '2026-10-14'
+          example: '2026-10-29'
           required: false
           schema:
             type: string
         - description: ''
           in: query
           name: final_date:gte
-          example: '2026-10-14'
+          example: '2026-10-29'
           required: false
           schema:
             type: string
@@ -1969,6 +2019,326 @@ components:
       type: http
       scheme: bearer
   schemas:
+    Split:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 2f05c0d3-f868-4276-9bf8-95f1308729cf
+        is_intermediate:
+          type: boolean
+          example: true
+        reading_time:
+          type: string
+          example: '2024-01-04T09:00:00.000+00:00'
+        points:
+          type: string
+          nullable: true
+          example: null
+        order_number:
+          type: string
+          nullable: true
+          example: null
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+        control:
+          $ref: '#/components/schemas/Control'
+        station:
+          type: number
+          example: 31
+      description: Entity Split
+      required:
+        - id
+    ControlPunch:
+      type: object
+      properties:
+        split:
+          $ref: '#/components/schemas/Split'
+        runner:
+          $ref: '#/components/schemas/Participant'
+        team:
+          $ref: '#/components/schemas/Participant'
+      description: Entity ControlPunch
+    Participant:
+      type: object
+      properties:
+        id:
+          type: string
+          example: d08fa43b-ddf8-47f6-9a59-2f1828881765
+        bib_number:
+          type: number
+          example: 4444
+        is_nc:
+          type: boolean
+          example: false
+        eligibility:
+          type: string
+          example: ''
+        sicard:
+          type: number
+          example: 2009933
+        sex:
+          type: string
+          example: M
+          nullable: true
+        leg_number:
+          type: string
+          nullable: true
+          example: null
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+        class:
+          $ref: '#/components/schemas/ClassEntity'
+          nullable: true
+        club:
+          $ref: '#/components/schemas/Club'
+        full_name:
+          type: string
+          example: First Runner
+        stage:
+          $ref: '#/components/schemas/Result'
+          nullable: true
+        overalls:
+          $ref: '#/components/schemas/Overalls'
+          nullable: true
+        legs:
+          type: string
+          nullable: true
+          example: null
+        runners:
+          type: array
+          items:
+            $ref: '#/components/schemas/Participant'
+      description: Entity Participant
+      required:
+        - id
+        - bib_number
+        - is_nc
+        - eligibility
+        - created
+        - club
+        - full_name
+    ClassEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          example: d8a87faf-68a4-487b-8f28-6e0ead6c1a57
+        short_name:
+          type: string
+          example: ME
+        long_name:
+          type: string
+          example: M Elite
+        runners:
+          type: array
+          items:
+            $ref: '#/components/schemas/Participant'
+        splits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Split'
+      description: Entity ClassEntity
+      required:
+        - id
+        - short_name
+        - long_name
+    Club:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 83dc3504-9edd-4bbd-80b8-589aa0359c3e
+        short_name:
+          type: string
+          example: Club A
+        city:
+          type: string
+          nullable: true
+          example: null
+        region:
+          type: string
+          nullable: true
+          example: null
+        province:
+          type: string
+          nullable: true
+          example: null
+      description: Entity Club
+      required:
+        - id
+        - short_name
+    Result:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 635af121-db7b-4c5e-82ab-79208e45568f
+        result_type_id:
+          type: string
+          example: e4ddfa9d-3347-47e4-9d32-c6c119aeac0e
+        start_time:
+          type: string
+          example: '2024-01-02T10:00:00.000+00:00'
+        finish_time:
+          type: string
+          example: '2024-01-02T10:05:10.123+00:00'
+        upload_type:
+          type: string
+          example: entry_list
+          nullable: true
+        time_seconds:
+          type: number
+          example: 310
+        position:
+          type: number
+          example: 1
+        status_code:
+          type: number
+          example: 0
+          nullable: true
+        is_nc:
+          type: boolean
+          example: false
+        contributory:
+          type: string
+          nullable: true
+          example: null
+        time_behind:
+          type: number
+          example: 0
+        time_neutralization:
+          type: string
+          nullable: true
+          example: null
+        time_adjusted:
+          type: string
+          nullable: true
+          example: null
+        time_penalty:
+          type: string
+          nullable: true
+          example: null
+        time_bonus:
+          type: string
+          nullable: true
+          example: null
+        points_final:
+          type: string
+          nullable: true
+          example: null
+        points_behind:
+          type: string
+          nullable: true
+          example: null
+        points_adjusted:
+          type: string
+          nullable: true
+          example: null
+        points_penalty:
+          type: string
+          nullable: true
+          example: null
+        points_bonus:
+          type: string
+          nullable: true
+          example: null
+        note:
+          type: string
+          example: ORG
+          nullable: true
+        leg_number:
+          type: number
+          example: 0
+          nullable: true
+        created:
+          type: string
+          example: '****-**-*****:**:**.***+**:**'
+        splits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Split'
+      description: Entity Result
+      required:
+        - id
+        - created
+    Control:
+      type: object
+      properties:
+        id:
+          type: string
+          example: ed98f978-06cf-45ab-9144-26f3ed65a935
+        station:
+          type: number
+          example: 31
+        control_type:
+          $ref: '#/components/schemas/ControlType'
+      description: Entity Control
+      required:
+        - id
+        - station
+        - control_type
+    ControlType:
+      type: object
+      properties:
+        id:
+          type: string
+          example: f3cc5efa-065f-4ad6-844b-74e99612889b
+        description:
+          type: string
+          example: Normal Control
+      description: Entity ControlType
+      required:
+        - id
+        - description
+    PaginatedControlPunch:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ControlPunch'
+        total:
+          type: number
+          example: 3
+        limit:
+          type: number
+          example: 20
+        _links:
+          $ref: '#/components/schemas/PaginationLinks'
+      description: Paginated ControlPunch
+      required:
+        - data
+        - total
+        - limit
+        - _links
+    PaginationLinks:
+      type: object
+      properties:
+        self:
+          type: object
+          properties:
+            href:
+              type: string
+              example: http://dev.example.com/api/v1/events/8f3b542c-23b9-4790-a113-b83d476c0ad9/stages/51d63e99-5d7c-4382-a541-8567015d8eed/controls/31/punches/?limit=20&page=1
+          description: Generic object.
+        next:
+          type: object
+          properties:
+            href:
+              type: string
+              example: http://dev.example.com/api/v1/events/?limit=1&page=4
+          description: Generic object.
+        prev:
+          type: object
+          properties:
+            href:
+              type: string
+              example: http://dev.example.com/api/v1/events/?limit=1&page=2
+          description: Generic object.
+      description: Pagination links.
     Token:
       type: object
       properties:
@@ -2034,10 +2404,10 @@ components:
           nullable: true
         initial_date:
           type: string
-          example: '2026-10-15'
+          example: '2026-10-30'
         final_date:
           type: string
-          example: '2026-10-15'
+          example: '2026-10-30'
         timezone:
           type: string
           example: Europe/Madrid
@@ -2145,31 +2515,6 @@ components:
         - total
         - limit
         - _links
-    PaginationLinks:
-      type: object
-      properties:
-        self:
-          type: object
-          properties:
-            href:
-              type: string
-              example: http://dev.example.com/api/v1/events/?page=1
-          description: Generic object.
-        next:
-          type: object
-          properties:
-            href:
-              type: string
-              example: http://dev.example.com/api/v1/events/?limit=1&page=4
-          description: Generic object.
-        prev:
-          type: object
-          properties:
-            href:
-              type: string
-              example: http://dev.example.com/api/v1/events/?limit=1&page=2
-          description: Generic object.
-      description: Pagination links.
     ResEvent:
       type: object
       properties:
@@ -2479,116 +2824,6 @@ components:
       description: Data wrapper for PdfBook
       required:
         - data
-    ClassEntity:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 9069fa2d-fabd-45f3-97a5-af785713bb8a
-        short_name:
-          type: string
-          example: ME
-        long_name:
-          type: string
-          example: M Elite
-        runners:
-          type: array
-          items:
-            $ref: '#/components/schemas/Participant'
-        splits:
-          type: array
-          items:
-            $ref: '#/components/schemas/Split'
-      description: Entity ClassEntity
-      required:
-        - id
-        - short_name
-        - long_name
-    Participant:
-      type: object
-      properties:
-        id:
-          type: string
-          example: a9fee8b2-f537-4176-96ff-350680e939bc
-        sicard:
-          type: number
-          example: 2009933
-        bib_number:
-          type: number
-          example: 4444
-        sex:
-          type: string
-          example: M
-          nullable: true
-        is_nc:
-          type: boolean
-          example: false
-        eligibility:
-          type: string
-          example: ''
-        club:
-          $ref: '#/components/schemas/Club'
-        created:
-          type: string
-          example: '****-**-*****:**:**.***+**:**'
-        full_name:
-          type: string
-          example: First Runner
-        stage:
-          $ref: '#/components/schemas/Result'
-          nullable: true
-        overalls:
-          $ref: '#/components/schemas/Overalls'
-          nullable: true
-        legs:
-          type: string
-          nullable: true
-          example: null
-        leg_number:
-          type: string
-          nullable: true
-          example: null
-        class:
-          $ref: '#/components/schemas/ClassEntity'
-          nullable: true
-        runners:
-          type: array
-          items:
-            $ref: '#/components/schemas/Participant'
-      description: Entity Participant
-      required:
-        - id
-        - bib_number
-        - is_nc
-        - eligibility
-        - club
-        - created
-        - full_name
-    Club:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 5e2699bf-e6d9-42e0-b6ad-71c767d2b043
-        short_name:
-          type: string
-          example: Club A
-        city:
-          type: string
-          nullable: true
-          example: null
-        region:
-          type: string
-          nullable: true
-          example: null
-        province:
-          type: string
-          nullable: true
-          example: null
-      description: Entity Club
-      required:
-        - id
-        - short_name
     PartialOverall:
       type: object
       properties:
@@ -2731,100 +2966,6 @@ components:
       description: Data wrapper for RankingOrganizer
       required:
         - data
-    Result:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 6bb434c7-49a0-455a-b207-023f639adb2c
-        status_code:
-          type: number
-          example: 0
-          nullable: true
-        note:
-          type: string
-          example: ORG
-          nullable: true
-        upload_type:
-          type: string
-          example: entry_list
-          nullable: true
-        result_type_id:
-          type: string
-          example: 292d7076-912b-4713-8cd3-039ee5a394a7
-        created:
-          type: string
-          example: '****-**-*****:**:**.***+**:**'
-        time_seconds:
-          type: number
-          example: 0
-        position:
-          type: number
-          example: 0
-        is_nc:
-          type: boolean
-          example: false
-        time_behind:
-          type: number
-          example: 0
-        splits:
-          type: array
-          items:
-            $ref: '#/components/schemas/Split'
-        start_time:
-          type: string
-          example: '2024-01-03T10:10:00.000+00:00'
-        finish_time:
-          type: string
-          example: '2024-01-03T10:15:10.000+00:00'
-        contributory:
-          type: string
-          nullable: true
-          example: null
-        time_neutralization:
-          type: string
-          nullable: true
-          example: null
-        time_adjusted:
-          type: string
-          nullable: true
-          example: null
-        time_penalty:
-          type: string
-          nullable: true
-          example: null
-        time_bonus:
-          type: string
-          nullable: true
-          example: null
-        points_final:
-          type: string
-          nullable: true
-          example: null
-        points_adjusted:
-          type: string
-          nullable: true
-          example: null
-        points_penalty:
-          type: string
-          nullable: true
-          example: null
-        points_bonus:
-          type: string
-          nullable: true
-          example: null
-        leg_number:
-          type: number
-          example: 0
-          nullable: true
-        points_behind:
-          type: string
-          nullable: true
-          example: null
-      description: Entity Result
-      required:
-        - id
-        - created
     ResResult:
       type: object
       properties:
@@ -3070,66 +3211,6 @@ components:
       description: Data wrapper for RawUpload
       required:
         - data
-    Split:
-      type: object
-      properties:
-        id:
-          type: string
-          example: b8e6927d-a17b-4d24-a10e-bb1f2ed9061c
-        is_intermediate:
-          type: boolean
-          example: false
-        reading_time:
-          type: string
-          example: '2024-01-03T11:00:20.321+00:00'
-        points:
-          type: string
-          nullable: true
-          example: null
-        order_number:
-          type: string
-          nullable: true
-          example: null
-        created:
-          type: string
-          example: '****-**-*****:**:**.***+**:**'
-        control:
-          $ref: '#/components/schemas/Control'
-        station:
-          type: number
-          example: 31
-      description: Entity Split
-      required:
-        - id
-    Control:
-      type: object
-      properties:
-        id:
-          type: string
-          example: ed98f978-06cf-45ab-9144-26f3ed65a935
-        station:
-          type: number
-          example: 31
-        control_type:
-          $ref: '#/components/schemas/ControlType'
-      description: Entity Control
-      required:
-        - id
-        - station
-        - control_type
-    ControlType:
-      type: object
-      properties:
-        id:
-          type: string
-          example: f3cc5efa-065f-4ad6-844b-74e99612889b
-        description:
-          type: string
-          example: Normal Control
-      description: Entity ControlType
-      required:
-        - id
-        - description
     ArrayParticipant:
       type: object
       properties:

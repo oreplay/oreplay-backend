@@ -38,6 +38,20 @@ class TeamResultsTable extends AppTable
         return parent::_insert($entity, $data);
     }
 
+    /**
+     * @param string[] $resultIds
+     * @return array<string, string>
+     */
+    public function teamIdsByResultId(array $resultIds): array
+    {
+        return $this->find()
+            ->select(['id', 'team_id'])
+            ->where([$this->aliasField('id') . ' IN' => $resultIds])
+            ->all()
+            ->combine('id', 'team_id')
+            ->toArray();
+    }
+
     public function fillNewWithStage(array $data, string $eventId, string $stageId): TeamResult
     {
         /** @var TeamResult $res */

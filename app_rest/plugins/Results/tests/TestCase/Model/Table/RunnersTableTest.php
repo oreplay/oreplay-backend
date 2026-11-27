@@ -499,4 +499,14 @@ class RunnersTableTest extends TestCase
         $returnedValue = $this->Runners->moveRunnersFromClassTo(ClassEntity::ME, ClassEntity::FE);
         $this->assertEquals(2, $returnedValue);
     }
+
+    public function testFindInStageByIds_onlyReturnsTheRunnersOfThatStage()
+    {
+        $runnerIds = [Runner::FIRST_RUNNER, RunnersFixture::RUNNER_RAID_ID];
+
+        $found = $this->Runners->findInStageByIds(Event::FIRST_EVENT, Stage::FIRST_STAGE, $runnerIds)
+            ->all()->extract('id')->toList();
+
+        $this->assertSame([Runner::FIRST_RUNNER], $found);
+    }
 }

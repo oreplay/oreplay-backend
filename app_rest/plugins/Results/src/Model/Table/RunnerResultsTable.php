@@ -196,6 +196,20 @@ class RunnerResultsTable extends AppTable
         return parent::_insert($entity, $data);
     }
 
+    /**
+     * @param string[] $resultIds
+     * @return array<string, string>
+     */
+    public function runnerIdsByResultId(array $resultIds): array
+    {
+        return $this->find()
+            ->select(['id', 'runner_id'])
+            ->where([$this->aliasField('id') . ' IN' => $resultIds])
+            ->all()
+            ->combine('id', 'runner_id')
+            ->toArray();
+    }
+
     public function fillNewWithStage(array $data, string $eventId, string $stageId): RunnerResult
     {
         /** @var RunnerResult $res */

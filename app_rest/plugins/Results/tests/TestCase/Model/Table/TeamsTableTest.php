@@ -96,4 +96,14 @@ class TeamsTableTest extends TestCase
         $expected = [1, 3];
         $this->assertEquals($expected, $res);
     }
+
+    public function testFindInStageByIds_returnsTheRequestedTeams()
+    {
+        $teamIds = [Team::FIRST_TEAM, 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'];
+
+        $found = $this->Teams->findInStageByIds(Event::FIRST_EVENT, Stage::FIRST_STAGE, $teamIds)
+            ->all()->extract('id')->toList();
+
+        $this->assertSame([Team::FIRST_TEAM], $found);
+    }
 }

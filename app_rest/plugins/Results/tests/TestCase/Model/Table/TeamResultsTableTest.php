@@ -64,4 +64,13 @@ class TeamResultsTableTest extends TestCase
         $this->assertEquals('2014-07-06T13:09:01+00:00', $storedRes->start_time->toIso8601String());
         $this->assertEquals($data['leg_number'], $storedRes->leg_number);
     }
+
+    public function testTeamIdsByResultId_mapsEachKnownResultToItsTeam()
+    {
+        $resultIds = [TeamResultsFixture::TEAM_RESULT_1, 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'];
+
+        $teamIds = $this->TeamResults->teamIdsByResultId($resultIds);
+
+        $this->assertSame([TeamResultsFixture::TEAM_RESULT_1 => Team::FIRST_TEAM], $teamIds);
+    }
 }

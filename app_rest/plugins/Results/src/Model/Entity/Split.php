@@ -19,7 +19,8 @@ use Results\Lib\SplitCompareReason;
  * @property mixed|null $battery_perc
  * @property mixed|null $battery_time
  * @property string $runner_id
- * @property string $runner_result_id
+ * @property string|null $runner_result_id
+ * @property string|null $team_result_id
  * @property mixed $control_id
  */
 class Split extends AppEntity

@@ -5,9 +5,11 @@ declare(strict_types = 1);
 namespace Results\Model\Table;
 
 use App\Model\Table\AppTable;
+use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
 use Cake\I18n\FrozenTime;
 use Cake\ORM\Behavior\TimestampBehavior;
+use Cake\ORM\Query\SelectQuery;
 use Results\Lib\UploadHelper;
 use Results\Model\Entity\Split;
 
@@ -62,6 +64,42 @@ class SplitsTable extends AppTable
             $keepingProbe[$association->getName()] = ['checkExisting' => true];
         }
         return $keepingProbe;
+    }
+
+    public function findPunchesAtStation(string $eventId, string $stageId, string $station): SelectQuery
+    {
+        return $this->find()
+            ->where([
+                $this->_alias . '.event_id' => $eventId,
+                $this->_alias . '.stage_id' => $stageId,
+                $this->_alias . '.station' => $station,
+                $this->_alias . '.reading_time IS NOT' => null,
+            ])
+            ->where(function (QueryExpression $exp) {
+                return $exp->or([$this->_alias . '.is_intermediate' => false])
+                    ->notExists($this->_downloadOfTheSameResultAtStation());
+            })
+            ->orderBy([
+                $this->_alias . '.reading_time' => 'DESC',
+                $this->_alias . '.created' => 'DESC',
+                $this->_alias . '.id' => 'DESC',
+            ], true);
+    }
+
+    private function _downloadOfTheSameResultAtStation(): SelectQuery
+    {
+        $radio = $this->_alias;
+        return $this->subquery()
+            ->select(['Downloaded.id'])
+            ->from(['Downloaded' => $this->getTable()])
+            ->where([
+                'Downloaded.runner_result_id <=> ' . $radio . '.runner_result_id',
+                'Downloaded.team_result_id <=> ' . $radio . '.team_result_id',
+                'Downloaded.stage_id = ' . $radio . '.stage_id',
+                'Downloaded.station = ' . $radio . '.station',
+                'Downloaded.is_intermediate' => false,
+                'Downloaded.deleted IS' => null,
+            ]);
     }
 
     public function fillNewWithStage(array $data, string $eventId, string $stageId)
