@@ -21,6 +21,10 @@ class SplitsToReplace
      * A radio upload resends every punch the runner has made so far, so its stored punches have to
      * go or they are written twice. It carries none of the downloaded chip readings, though, so
      * those must survive — which is why the whole result cannot be replaced.
+     *
+     * Punches the radio relay (CPI) stored for the runner go too, at every station, including those
+     * the export does not mention. That is deliberate: an event feeds its radios either through the
+     * relay or through exports, never both, so there is no relay punch here worth keeping.
      */
     public function addIntermediatesOnly(ParticipantResultsEntity $result): void
     {
