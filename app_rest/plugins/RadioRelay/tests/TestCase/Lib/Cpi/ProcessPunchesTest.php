@@ -10,6 +10,7 @@ use RadioRelay\Lib\Cpi\PayloadParser;
 use RadioRelay\Lib\Cpi\ProcessPunches;
 use Results\Lib\Publish\ChannelPublisher;
 use Results\Lib\Publish\ControlChangedPublisher;
+use Results\Lib\Publish\WatchedControls;
 use Results\Model\Entity\Event;
 use Results\Model\Entity\Stage;
 use Results\Model\Table\RunnersTable;
@@ -37,6 +38,12 @@ class ProcessPunchesTest extends TestCase
         RunnersFixture::LOAD,
         RunnerResultsFixture::LOAD,
     ];
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        (new WatchedControls())->watchAll(Stage::FIRST_STAGE, ['31', '45']);
+    }
 
     private function _spyChannel(): ChannelPublisher
     {
@@ -75,7 +82,7 @@ class ProcessPunchesTest extends TestCase
         ];
         $processor = (new ProcessPunches(new PayloadParser($payload)))->setRunnersTable(RunnersTable::load());
         if ($channel) {
-            $processor->setControlChangedPublisher(new ControlChangedPublisher($channel));
+            $processor->setControlChangedPublisher(new ControlChangedPublisher($channel, new WatchedControls()));
         }
         return $processor->process();
     }

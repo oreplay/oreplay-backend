@@ -200,6 +200,14 @@ return [
             'path' => CACHE,
             'url' => env('CACHE_DEFAULT_URL', null),
         ],
+        CacheGrp::LIVE_CONTROLS => [
+            'className' => MemcachedEngine::class,
+            'prefix' => env('TAG_VERSION', ''). '_' . CacheGrp::LIVE_CONTROLS . '_',
+            // a control nobody subscribed to or was pushed to for an hour is not being watched
+            'duration' => '+1 hour',
+            'path' => CACHE,
+            'url' => env('CACHE_DEFAULT_URL', null),
+        ],
         CacheGrp::ACL => [
             'className' => MemcachedEngine::class,
             'prefix' => env('TAG_VERSION', ''). '_' . CacheGrp::ACL . '_',

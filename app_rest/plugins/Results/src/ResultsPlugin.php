@@ -61,6 +61,10 @@ class ResultsPlugin extends RestPlugin
             \Results\Controller\ControlPunchesController::route()
         );
         $builder->connect(
+            '/internal/stages/{stageID}/controls/{station}/watched/*',
+            \Results\Controller\WatchedControlsController::route()
+        );
+        $builder->connect(
             '/events/{eventID}/stages/{stageID}/stageOrders/*',
             \Results\Controller\StageOrdersController::route()
         );

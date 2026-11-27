@@ -24,6 +24,7 @@ use Results\Lib\Publish\NchanChannel;
 use Results\Lib\Publish\UploadPublisher;
 use Results\Lib\Publish\UploadPublishers;
 use Results\Lib\Publish\UploadedControlsPublisher;
+use Results\Lib\Publish\WatchedControls;
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMetrics;
 use Results\Model\Entity\ClassEntity;
@@ -349,7 +350,7 @@ class UploadsController extends ApiController
         $channel = new NchanChannel();
         return new UploadPublishers([
             new ClassResultsPublisher($channel),
-            new UploadedControlsPublisher(new ControlChangedPublisher($channel)),
+            new UploadedControlsPublisher(new ControlChangedPublisher($channel, new WatchedControls())),
         ]);
     }
 

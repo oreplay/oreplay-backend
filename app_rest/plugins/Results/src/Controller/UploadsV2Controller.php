@@ -26,6 +26,7 @@ use Results\Lib\Publish\UploadProgressPublisher;
 use Results\Lib\Publish\UploadPublisher;
 use Results\Lib\Publish\UploadPublishers;
 use Results\Lib\Publish\UploadedControlsPublisher;
+use Results\Lib\Publish\WatchedControls;
 use Results\Lib\UploadConfigChecker;
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMessage;
@@ -105,7 +106,10 @@ class UploadsV2Controller extends ApiController
         if (NchanChannel::isConfigured()) {
             $channel = new NchanChannel();
             $publishers[] = new ClassResultsPublisher($channel, $log->id);
-            $publishers[] = new UploadedControlsPublisher(new ControlChangedPublisher($channel), $log->id);
+            $publishers[] = new UploadedControlsPublisher(
+                new ControlChangedPublisher($channel, new WatchedControls()),
+                $log->id
+            );
         }
         return new UploadPublishers($publishers);
     }

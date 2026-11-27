@@ -11,6 +11,7 @@ use RadioRelay\Lib\Cpi\PayloadParser;
 use RadioRelay\Lib\Cpi\ProcessPunches;
 use Results\Lib\Publish\ControlChangedPublisher;
 use Results\Lib\Publish\NchanChannel;
+use Results\Lib\Publish\WatchedControls;
 use Results\Model\Table\EventsTable;
 use Results\Model\Table\RunnersTable;
 use Results\Model\Table\TokensTable;
@@ -31,7 +32,9 @@ class CpiServerController extends ApiController
                     $processor = new ProcessPunches(new PayloadParser($data));
                     $processor->setRunnersTable(RunnersTable::load());
                     if (NchanChannel::isConfigured()) {
-                        $processor->setControlChangedPublisher(new ControlChangedPublisher(new NchanChannel()));
+                        $processor->setControlChangedPublisher(
+                            new ControlChangedPublisher(new NchanChannel(), new WatchedControls())
+                        );
                     }
                     $toRet = $processor->process();
                 } catch (BadRequestException $e) {

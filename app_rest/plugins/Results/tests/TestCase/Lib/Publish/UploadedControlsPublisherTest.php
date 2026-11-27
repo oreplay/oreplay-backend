@@ -11,6 +11,7 @@ use Results\Lib\Import\UploadProcessor;
 use Results\Lib\Publish\ChannelPublisher;
 use Results\Lib\Publish\ControlChangedPublisher;
 use Results\Lib\Publish\UploadedControlsPublisher;
+use Results\Lib\Publish\WatchedControls;
 use Results\Lib\UploadHelper;
 use Results\Lib\UploadMetrics;
 use Results\Model\Entity\Event;
@@ -63,6 +64,7 @@ class UploadedControlsPublisherTest extends TestCase
     {
         parent::setUp();
         $this->_clearUploadCache();
+        (new WatchedControls())->watchAll(StagesFixture::STAGE_FEDO_2, ['31', '32', '33', '34']);
     }
 
     private function _clearUploadCache(): void
@@ -127,7 +129,8 @@ class UploadedControlsPublisherTest extends TestCase
     private function _upload(array $payload, ChannelPublisher $channel, string $uploadId = null): void
     {
         $helper = new UploadHelper($payload, Event::FIRST_EVENT, new UploadMetrics());
-        $publisher = new UploadedControlsPublisher(new ControlChangedPublisher($channel), $uploadId);
+        $controls = new ControlChangedPublisher($channel, new WatchedControls());
+        $publisher = new UploadedControlsPublisher($controls, $uploadId);
         (new UploadProcessor(ClassesTable::load(), $publisher))->process($helper);
     }
 

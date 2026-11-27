@@ -9,8 +9,10 @@ class ControlChangedPublisher
     public const string SOURCE_CPI = 'cpi';
     public const string SOURCE_UPLOAD = 'upload';
 
-    public function __construct(private readonly ChannelPublisher $channel)
-    {
+    public function __construct(
+        private readonly ChannelPublisher $channel,
+        private readonly WatchedControls $watched
+    ) {
     }
 
     /**
@@ -18,11 +20,13 @@ class ControlChangedPublisher
      */
     public function publish(string $stageId, array $stations, string $source, ?string $uploadId = null): void
     {
-        foreach (array_unique(array_filter($stations)) as $station) {
+        $watchedStations = $this->watched->watchedAmong($stageId, array_unique(array_filter($stations)));
+        foreach ($watchedStations as $station) {
             $this->channel->publish(
                 'stage/' . $stageId . '/control/' . $station,
                 ['station' => $station, 'source' => $source, 'uploadId' => $uploadId]
             );
         }
+        $this->watched->watchAll($stageId, $watchedStations);
     }
 }
