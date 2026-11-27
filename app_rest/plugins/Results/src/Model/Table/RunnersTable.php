@@ -237,8 +237,16 @@ class RunnersTable extends AppTable
      */
     public function findInStageByIds(string $eventId, string $stageId, array $runnerIds): Query
     {
-        return $this->findRunnersInStage($eventId, $stageId)
+        $q = $this->_findRunnersInStage($eventId, $stageId)
             ->where([$this->aliasField('id') . ' IN' => $runnerIds]);
+        return self::summaryRunnerContain($q, RunnerResultsTable::name());
+    }
+
+    public static function summaryRunnerContain(Query $q, string $resultsTableName): Query
+    {
+        return $q->contain(ClubsTable::name())
+            ->contain(ClassesTable::name())
+            ->contain($resultsTableName);
     }
 
     public static function mainRunnerContain($q, string $resultsTableName, array $filters = [])

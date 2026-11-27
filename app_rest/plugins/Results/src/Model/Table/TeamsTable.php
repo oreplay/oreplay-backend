@@ -73,8 +73,12 @@ class TeamsTable extends AppTable
      */
     public function findInStageByIds(string $eventId, string $stageId, array $teamIds): Query
     {
-        return $this->findTeamsInStage($eventId, $stageId)
+        $q = $this->_findTeamsInStage($eventId, $stageId)
             ->where([$this->aliasField('id') . ' IN' => $teamIds]);
+        return RunnersTable::summaryRunnerContain($q, TeamResultsTable::name())
+            ->contain(RunnersTable::name(), function (Query $q) {
+                return RunnersTable::summaryRunnerContain($q, RunnerResultsTable::name());
+            });
     }
 
     public function matchTeam(array $teamData, ClassEntity $class): Team

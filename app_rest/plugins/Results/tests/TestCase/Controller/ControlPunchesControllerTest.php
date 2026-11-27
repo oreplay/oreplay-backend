@@ -61,9 +61,11 @@ class ControlPunchesControllerTest extends ApiCommonErrorsTest
                     'runner_id' => null,
                     'club_id' => null,
                     'class_short_name' => null,
-                    'runner_has_splits' => false,
+                    'runner_has_stage_result' => false,
+                    'runner_carries_splits' => false,
                     'team_id' => Team::FIRST_TEAM,
                     'team_lists_runners' => true,
+                    'team_carries_splits' => false,
                 ],
                 [
                     'split_id' => SplitsFixture::SPLIT_1,
@@ -71,9 +73,11 @@ class ControlPunchesControllerTest extends ApiCommonErrorsTest
                     'runner_id' => Runner::FIRST_RUNNER,
                     'club_id' => ClubsFixture::CLUB_1,
                     'class_short_name' => 'ME',
-                    'runner_has_splits' => true,
+                    'runner_has_stage_result' => true,
+                    'runner_carries_splits' => false,
                     'team_id' => null,
                     'team_lists_runners' => false,
+                    'team_carries_splits' => false,
                 ],
             ],
         ];
@@ -153,10 +157,19 @@ class ControlPunchesControllerTest extends ApiCommonErrorsTest
             'runner_id' => $runner['id'] ?? null,
             'club_id' => $runner['club']['id'] ?? null,
             'class_short_name' => $runner['class']['short_name'] ?? null,
-            'runner_has_splits' => !empty($runner['stage']['splits']),
+            'runner_has_stage_result' => isset($runner['stage']['id']),
+            'runner_carries_splits' => !empty($runner['stage']['splits']),
             'team_id' => $team['id'] ?? null,
             'team_lists_runners' => isset($team['runners']),
+            'team_carries_splits' => $this->_teamCarriesSplits($team),
         ];
+    }
+
+    private function _teamCarriesSplits(?array $team): bool
+    {
+        $legResults = array_column($team['runners'] ?? [], 'stage');
+        $legSplits = array_filter(array_column($legResults, 'splits'));
+        return !empty($team['stage']['splits']) || !empty($legSplits);
     }
 
     private function _saveRadioPunch(string $runnerId, string $readingTime): string

@@ -5,56 +5,22 @@
             "id": [
                 {
                     "type": "string",
-                    "example": "2f05c0d3-f868-4276-9bf8-95f1308729cf"
-                },
-                {
-                    "type": "string",
-                    "example": "2f05c0d3-f868-4276-9bf8-95f1308729cf"
-                },
-                {
-                    "type": "string",
-                    "example": "b8e6927d-a17b-4d24-a10e-bb1f2ed9061c"
+                    "example": "25a08189-0e73-40f2-acd8-b08033b2174d"
                 }
             ],
             "is_intermediate": [
                 {
                     "type": "boolean",
                     "example": true
-                },
-                {
-                    "type": "boolean",
-                    "example": true
-                },
-                {
-                    "type": "boolean",
-                    "example": false
                 }
             ],
             "reading_time": [
                 {
                     "type": "string",
                     "example": "2024-01-04T09:00:00.000+00:00"
-                },
-                {
-                    "type": "string",
-                    "example": "2024-01-04T09:00:00.000+00:00"
-                },
-                {
-                    "type": "string",
-                    "example": "2024-01-03T11:00:20.321+00:00"
                 }
             ],
             "points": [
-                {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
-                },
-                {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
-                },
                 {
                     "type": "string",
                     "nullable": true,
@@ -66,38 +32,12 @@
                     "type": "string",
                     "nullable": true,
                     "example": null
-                },
-                {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
-                },
-                {
-                    "type": "string",
-                    "nullable": true,
-                    "example": null
                 }
             ],
             "created": [
                 {
                     "type": "string",
                     "example": "****-**-*****:**:**.***+**:**"
-                },
-                {
-                    "type": "string",
-                    "example": "****-**-*****:**:**.***+**:**"
-                },
-                {
-                    "type": "string",
-                    "example": "****-**-*****:**:**.***+**:**"
-                }
-            ],
-            "control": [
-                {
-                    "$ref": "#/components/schemas/Control"
-                },
-                {
-                    "$ref": "#/components/schemas/Control"
                 }
             ]
         },
@@ -669,85 +609,13 @@
             ],
             "splits": [
                 {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/components/schemas/Split"
-                    }
-                },
-                {
                     "type": "object",
                     "description": "Any object",
                     "additionalProperties": true
-                },
-                {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/components/schemas/Split"
-                    }
                 }
             ]
         },
         "description": "Entity Result"
-    },
-    "Control": {
-        "type": "object",
-        "properties": {
-            "id": [
-                {
-                    "type": "string",
-                    "example": "ed98f978-06cf-45ab-9144-26f3ed65a935"
-                },
-                {
-                    "type": "string",
-                    "example": "ed98f978-06cf-45ab-9144-26f3ed65a935"
-                }
-            ],
-            "station": [
-                {
-                    "type": "number",
-                    "example": 31
-                },
-                {
-                    "type": "number",
-                    "example": 31
-                }
-            ],
-            "control_type": [
-                {
-                    "$ref": "#/components/schemas/ControlType"
-                },
-                {
-                    "$ref": "#/components/schemas/ControlType"
-                }
-            ]
-        },
-        "description": "Entity Control"
-    },
-    "ControlType": {
-        "type": "object",
-        "properties": {
-            "id": [
-                {
-                    "type": "string",
-                    "example": "f3cc5efa-065f-4ad6-844b-74e99612889b"
-                },
-                {
-                    "type": "string",
-                    "example": "f3cc5efa-065f-4ad6-844b-74e99612889b"
-                }
-            ],
-            "description": [
-                {
-                    "type": "string",
-                    "example": "Normal Control"
-                },
-                {
-                    "type": "string",
-                    "example": "Normal Control"
-                }
-            ]
-        },
-        "description": "Entity ControlType"
     },
     "PaginatedControlPunch": {
         "type": "object",
