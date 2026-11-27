@@ -122,6 +122,19 @@ class SplitsTable extends AppTable
             ]);
     }
 
+    public function hasRadioPunch(string $stageId, string $station, FrozenTime $readingTime, string $runnerId): bool
+    {
+        return $this->find()
+            ->where([
+                $this->_alias . '.stage_id' => $stageId,
+                $this->_alias . '.station' => $station,
+                $this->_alias . '.reading_time' => $readingTime,
+                $this->_alias . '.runner_id' => $runnerId,
+                $this->_alias . '.is_intermediate' => true,
+            ])
+            ->count() > 0;
+    }
+
     public function fillNewWithStage(array $data, string $eventId, string $stageId)
     {
         /** @var Split $split */

@@ -252,6 +252,20 @@ class CpiServerControllerTest extends ApiCommonErrorsTest
             'the punch points at the stored control, the one every other query already joins');
     }
 
+    public function testAddNew_shouldStoreAPunchSentTwiceOnlyOnce()
+    {
+        $this->post($this->_getEndpoint(), $this->_punchAtStation31());
+        $this->assertJsonResponseOK();
+        $this->skipNextRequestInSwagger();
+        $this->post($this->_getEndpoint(), $this->_punchAtStation31());
+        $this->assertJsonResponseOK();
+
+        $storedPunches = SplitsTable::load()->find()
+            ->where(['stage_id' => Stage::FIRST_STAGE, 'station' => '31', 'runner_id' => Runner::FIRST_RUNNER])
+            ->all()->count();
+        $this->assertEquals(1, $storedPunches);
+    }
+
     private function _punchAtStation31(): array
     {
         return [

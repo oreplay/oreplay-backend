@@ -88,6 +88,9 @@ class ProcessPunches
             'raw_value' => $punch['raw'] ?? null,
         ];
         $splitToSave = $this->Splits->fillNewWithStage($split, $eventId, $stageId);
+        if ($this->_isAlreadyStored($splitToSave, $runner)) {
+            return null;
+        }
         $splitToSave->class_id = $runner->class_id;
         $splitToSave->runner_id = $runner->id;
         $splitToSave->runner_result_id = $runner->_getStage()->id;
@@ -102,5 +105,11 @@ class ProcessPunches
         /** @var Split $ret */
         $ret = $this->Splits->save($splitToSave);
         return $ret;
+    }
+
+    private function _isAlreadyStored(Split $split, Runner $runner): bool
+    {
+        $station = (string)$split->station;
+        return $this->Splits->hasRadioPunch($split->stage_id, $station, $split->reading_time, $runner->id);
     }
 }
