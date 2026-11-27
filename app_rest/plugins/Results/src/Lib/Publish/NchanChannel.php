@@ -19,6 +19,7 @@ use Psr\Log\LogLevel;
 class NchanChannel implements ChannelPublisher
 {
     use LogTrait;
+    // Only correct with a single pod.See "Live channels run in one pod" in docs/uploads-v1-vs-v2.md
 
     public const DEFAULT_URL = 'http://127.0.0.1:8080/internal/publish/';
     private const TIMEOUT_SECONDS = 2;

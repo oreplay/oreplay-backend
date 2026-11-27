@@ -262,6 +262,18 @@ a version jumping 2 to 13 proves the replay was incomplete. That is an optimisat
 time, and **deliberately not built**: re-seeding is already correct, so the counter is worth adding only if
 reconnects turn out to be frequent enough to measure.
 
+## Live channels run in one pod
+
+Every live channel — upload progress, `stage/{stageId}/class/{classId}` and
+`stage/{stageId}/control/{station}` — is published by PHP to the nchan of **its own pod**
+(`NchanChannel`, `127.0.0.1:8080`), and nchan keeps channels in that pod's nginx memory. A viewer connected to
+pod A therefore only hears what pod A published: with two replicas, a CPI punch or an upload handled by pod B is
+stored, served by every GET, and never pushed to the viewers on pod A.
+
+The backend runs as a single pod, so this does not happen today. **Scaling to more replicas needs nchan's
+Redis mode first** (`nchan_redis_*`, one Redis shared by every pod), which is deployment work rather than
+application code; until then, keep one replica.
+
 ## One import at a time per stage (v2 only)
 
 A client that uploads every few seconds posts again before the previous file has finished importing, and
