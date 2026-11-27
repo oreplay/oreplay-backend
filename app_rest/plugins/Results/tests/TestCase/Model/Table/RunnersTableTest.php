@@ -98,7 +98,6 @@ class RunnersTableTest extends TestCase
         $this->assertEquals($expected, $splitsArray);
     }
 
-
     private function getMissingPunch(string $id, int $orderNumber, int $station): Split
     {
         $controlsInFixture = [
