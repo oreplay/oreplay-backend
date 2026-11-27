@@ -58,6 +58,25 @@ class IofUploadSizeTest extends TestCase
         IofUpload::fromBody($body, 'event-id', 'stage-id', new DateTimeZone('UTC'), null, false);
     }
 
+    public function testFromBody_shouldRefuseARelayStartClassWithMoreLegsThanItCanImport()
+    {
+        $body = $this->_oneRelayStartClassOf(IofUpload::MAX_AVERAGE_ENTRIES_PER_CLASS + 1);
+
+        $this->expectException(InvalidPayloadException::class);
+        $this->expectExceptionMessageMatches('/holds about 2001 competitors, over the 2000/');
+
+        IofUpload::fromBody($body, 'event-id', 'stage-id', new DateTimeZone('UTC'), null, false);
+    }
+
+    private function _oneRelayStartClassOf(int $legs): string
+    {
+        $starts = file_get_contents(dirname(__DIR__, 4) . '/assets/iof/relay_starts.xml');
+        $firstLeg = strpos($starts, '<TeamMemberStart>');
+        preg_match('/<TeamMemberStart>.*?<\/TeamMemberStart>/s', $starts, $leg);
+        return substr($starts, 0, $firstLeg)
+            . str_repeat($leg[0], $legs) . '</TeamStart></ClassStart></StartList>';
+    }
+
     public function testFromBody_shouldAcceptAClassRightUpToTheLimit()
     {
         $body = $this->_oneClassOf(IofUpload::MAX_AVERAGE_ENTRIES_PER_CLASS);
