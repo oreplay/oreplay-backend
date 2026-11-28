@@ -1166,6 +1166,226 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->assertEquals($runnerResultAmount, RunnerResultsTable::load()->find()->all()->count());
     }
 
+    private function _ncReuploadAsset(string $name): array
+    {
+        $json = str_replace(
+            ['<EVENT_ID>', '<STAGE_ID>'],
+            [Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2],
+            file_get_contents(dirname(__DIR__, 2) . '/assets/nc-reupload/' . $name)
+        );
+        return json_decode($json, true);
+    }
+
+    private function _uploadNcReupload(array $body): void
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), $body);
+        $this->assertUploadOk();
+    }
+
+    private function _storedRunner2(): Runner
+    {
+        /** @var Runner $runner */
+        $runner = RunnersTable::load()->find()
+            ->where([
+                'event_id' => Event::FIRST_EVENT,
+                'stage_id' => StagesFixture::STAGE_FEDO_2,
+                'db_id' => '1002',
+            ])
+            ->firstOrFail();
+        return $runner;
+    }
+
+    private function _publicIsNcOfRunner2(): bool
+    {
+        $this->_request['headers'] = ['Accept' => 'application/json'];
+        $this->get(ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT
+            . '/stages/' . StagesFixture::STAGE_FEDO_2 . '/results/');
+        $body = $this->assertJsonResponseOK();
+        foreach ($body['data'] as $participant) {
+            if (($participant['full_name'] ?? null) === 'Name 2 Surname 2') {
+                return $participant['is_nc'];
+            }
+        }
+        $this->fail('Runner 2 not found in the public results: ' . json_encode($body['data']));
+    }
+
+    public function testAddNew_shouldMarkARunnerNcWhenAReUploadFlagsIt()
+    {
+        $this->_uploadNcReupload($this->_ncReuploadAsset('1-all-ok.json'));
+        $this->assertFalse((bool)$this->_storedRunner2()->is_nc);
+
+        $this->_uploadNcReupload($this->_ncReuploadAsset('2-runner2-nc.json'));
+
+        $this->assertTrue((bool)$this->_storedRunner2()->is_nc);
+        $this->assertTrue($this->_publicIsNcOfRunner2());
+    }
+
+    public function testAddNew_shouldKeepARunnerNcWhenItIsNcOnTheFirstUpload()
+    {
+        $this->_uploadNcReupload($this->_ncReuploadAsset('2-runner2-nc.json'));
+
+        $this->assertTrue((bool)$this->_storedRunner2()->is_nc);
+    }
+
+    public function testAddNew_shouldClearNcWhenAReUploadNoLongerFlagsTheRunner()
+    {
+        $this->_uploadNcReupload($this->_ncReuploadAsset('2-runner2-nc.json'));
+
+        $this->_uploadNcReupload($this->_ncReuploadAsset('1-all-ok.json'));
+
+        $this->assertFalse((bool)$this->_storedRunner2()->is_nc);
+        $this->assertFalse($this->_publicIsNcOfRunner2());
+    }
+
+    public function testAddNew_shouldKeepNcWhenAReUploadDoesNotSendTheFlag()
+    {
+        $this->_uploadNcReupload($this->_ncReuploadAsset('2-runner2-nc.json'));
+        $withoutNc = $this->_ncReuploadAsset('1-all-ok.json');
+        foreach ($withoutNc['oreplay_data_transfer']['event']['stages'][0]['classes'][0]['runners'] as &$runner) {
+            unset($runner['is_nc']);
+        }
+
+        $this->_uploadNcReupload($withoutNc);
+
+        $this->assertTrue((bool)$this->_storedRunner2()->is_nc);
+    }
+
+    public function testAddNew_shouldNotUndoARemovalFromTheRankingOnAReUpload()
+    {
+        $this->_uploadNcReupload($this->_ncReuploadAsset('1-all-ok.json'));
+        RunnersTable::load()->removeFromRanking($this->_storedRunner2()->id, 'duplicated');
+
+        $this->_uploadNcReupload($this->_ncReuploadAsset('1-all-ok.json'));
+
+        $runner = $this->_storedRunner2();
+        $this->assertTrue((bool)$runner->is_nc);
+        $this->assertEquals(-2, $runner->bib_number);
+    }
+
+    private function _uploadFinishTimesWithFirstRunner(array $changes): void
+    {
+        $data = ResultExamples::resultSimpleFinishTime();
+        $runner = &$data['event']['stages'][0]['classes'][0]['runners'][0];
+        $runner = array_merge($runner, $changes);
+        unset($runner);
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), ['oreplay_data_transfer' => $data]);
+        $this->assertUploadOk();
+    }
+
+    private function _storedRunnerByLastName(string $lastName): Runner
+    {
+        /** @var Runner $runner */
+        $runner = RunnersTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'last_name' => $lastName])
+            ->firstOrFail();
+        return $runner;
+    }
+
+    private function _publicResultOf(string $runnerId): array
+    {
+        $this->skipNextRequestInSwagger();
+        $this->get(ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/stages/'
+            . StagesFixture::STAGE_FEDO_2 . '/results/');
+        $bodyDecoded = $this->assertJsonResponseOK();
+        foreach ($bodyDecoded['data'] as $runner) {
+            if ($runner['id'] === $runnerId) {
+                return $runner;
+            }
+        }
+        $this->fail('Runner not found in the public results');
+    }
+
+    /**
+     * #86: the event software corrects a rented card and a misspelt name after a first upload, and the
+     * runner matched by bib on the re-upload has to take the corrections instead of keeping the old row.
+     */
+    public function testAddNew_shouldUpdateTheCardAndNameOfAnExistingRunnerOnReupload()
+    {
+        $this->flushMemcached();
+        $this->_uploadFinishTimesWithFirstRunner([]);
+        $runnerId = $this->_storedRunnerByLastName('Ballesteros')->id;
+
+        $this->_uploadFinishTimesWithFirstRunner([
+            'sicard' => '7777777',
+            'first_name' => 'Mariana',
+            'sex' => 'M',
+        ]);
+
+        $runner = $this->_storedRunnerByLastName('Ballesteros');
+        $this->assertEquals($runnerId, $runner->id, 'the runner is matched, not created again');
+        $this->assertEquals('7777777', $runner->sicard);
+        $this->assertEquals('Mariana', $runner->first_name);
+        $this->assertEquals('M', $runner->sex);
+        $this->assertEquals('125', $runner->bib_number);
+        $this->assertEquals(2, RunnersTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2])->all()->count());
+        $public = $this->_publicResultOf($runnerId);
+        $this->assertEquals('7777777', $public['sicard']);
+        $this->assertEquals('Mariana Ballesteros', $public['full_name']);
+    }
+
+    public function testAddNew_shouldKeepTheStoredValuesOfFieldsMissingFromTheReupload()
+    {
+        $this->flushMemcached();
+        $this->_uploadFinishTimesWithFirstRunner(['sicard_alt' => '8888888']);
+
+        $this->_uploadFinishTimesWithFirstRunner(['sicard' => '', 'sex' => null, 'eligibility' => 'X']);
+
+        $runner = $this->_storedRunnerByLastName('Ballesteros');
+        $this->assertEquals('X', $runner->eligibility);
+        $this->assertEquals('4440522', $runner->sicard);
+        $this->assertEquals('8888888', $runner->sicard_alt);
+        $this->assertEquals('F', $runner->sex);
+    }
+
+    /**
+     * RunnersTable::removeFromRanking() negates the bib on purpose, so a re-upload that still carries the
+     * positive bib must not bring the runner back into the ranking, while its other corrections still apply.
+     */
+    public function testAddNew_shouldKeepTheBibNegativeOfARunnerRemovedFromTheRankingOnReupload()
+    {
+        $this->flushMemcached();
+        $this->_uploadFinishTimesWithFirstRunner([]);
+        $runnerId = $this->_storedRunnerByLastName('Ballesteros')->id;
+        RunnersTable::load()->removeFromRanking($runnerId, 'duplicated');
+
+        $this->_uploadFinishTimesWithFirstRunner(['sicard' => '7777777']);
+
+        $runner = $this->_storedRunnerByLastName('Ballesteros');
+        $this->assertEquals($runnerId, $runner->id);
+        $this->assertEquals('-125', $runner->bib_number);
+        $this->assertEquals('7777777', $runner->sicard);
+    }
+
+    /**
+     * Several people sharing a bib all match the first one's row. On a re-upload only the row that really
+     * is that runner may correct it: the others must not overwrite its name or card with their own.
+     */
+    public function testAddNew_shouldNotLetARunnerSharingTheBibOverwriteTheMatchedRunnerOnReupload()
+    {
+        Cache::clear();
+        $ClassesTable = ClassesTable::load();
+        $ClassesTable->updateAll(['stage_id' => StagesFixture::STAGE_FEDO_2], ['id' => ClassEntity::ME]);
+        $data = ['oreplay_data_transfer' => IntermediateExamples::itermediateWithDuplicatedBibs()];
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertUploadOk();
+
+        $data['oreplay_data_transfer']['configuration']['reprocess_all'] = true;
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), $data);
+        $this->assertUploadOk();
+
+        /** @var Runner $runner */
+        $runner = RunnersTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'bib_number' => '1'])
+            ->firstOrFail();
+        $this->assertEquals('Sara Alonso', $runner->first_name . ' ' . $runner->last_name);
+        $this->assertEquals('8502422', $runner->sicard);
+    }
+
     public function testAddNew_shouldReprocessAnUnchangedClassWhenReprocessAllIsRequested()
     {
         $this->flushMemcached();
@@ -1374,6 +1594,96 @@ class UploadsV2ControllerTest extends ApiCommonErrorsTest
         $this->assertEquals(1, $splitA->order_number);
         $this->assertEquals(31, $splitA->control->station);
         $this->assertEquals($runnerResultAmount, RunnerResultsTable::load()->find()->all()->count());
+    }
+
+    private function _uploadSimpleFinishTimes(array $finishTimes): void
+    {
+        $this->loadAuthToken(TokensFixture::FIRST_TOKEN);
+        $this->post($this->_getEndpoint(), ['oreplay_data_transfer' => $finishTimes]);
+        $this->assertUploadOk();
+    }
+
+    private function _storedResultOf(string $lastName): RunnerResult
+    {
+        $runner = RunnersTable::load()
+            ->findRunnersInStage(Event::FIRST_EVENT, StagesFixture::STAGE_FEDO_2)
+            ->where(['last_name' => $lastName])
+            ->firstOrFail();
+        return RunnerResultsTable::load()->find()->where(['runner_id' => $runner->id])->firstOrFail();
+    }
+
+    private function _publicStageResultOf(string $fullName): array
+    {
+        $this->skipNextRequestInSwagger();
+        $this->get(ApiController::ROUTE_PREFIX . '/events/' . Event::FIRST_EVENT . '/stages/'
+            . StagesFixture::STAGE_FEDO_2 . '/results/');
+        $bodyDecoded = $this->assertJsonResponseOK();
+        foreach ($bodyDecoded['data'] as $runner) {
+            if ($runner['full_name'] === $fullName) {
+                return $runner['stage'];
+            }
+        }
+        $this->fail('The public results do not list ' . $fullName);
+    }
+
+    /**
+     * A re-upload reuses the stored row, which used to be saved as an UPDATE of the payload's keys only,
+     * so a runner corrected to DNF kept the finish time, time and position of the earlier upload.
+     */
+    public function testAddNew_shouldClearTheFinishDataOfAResultReUploadedAsDnfWithoutIt()
+    {
+        Cache::clear();
+        ClassesTable::load()->updateAll(['stage_id' => StagesFixture::STAGE_FEDO_2], ['id' => ClassEntity::ME]);
+        $finishTimes = ResultExamples::resultSimpleFinishTime();
+        $this->_uploadSimpleFinishTimes($finishTimes);
+        $this->assertEquals(2, $this->_storedResultOf('Pino')->position);
+
+        $dnf = &$finishTimes['event']['stages'][0]['classes'][0]['runners'][1]['runner_results'][0];
+        $dnf['status_code'] = StatusCode::DNF;
+        unset($dnf['finish_time'], $dnf['time_seconds'], $dnf['position'], $dnf['time_behind']);
+        unset($dnf);
+        $this->_uploadSimpleFinishTimes($finishTimes);
+
+        $result = $this->_storedResultOf('Pino');
+        $this->assertEquals(StatusCode::DNF, $result->status_code);
+        $this->assertNull($result->finish_time);
+        $this->assertEmpty($result->time_seconds);
+        $this->assertEmpty($result->position);
+        $this->assertEmpty($result->time_behind);
+        $this->assertEquals('2024-09-29T11:00:00.000+00:00', $result->start_time->jsonSerialize(),
+            'what the upload still carries is stored as before');
+        $this->assertEquals(1, $this->_storedResultOf('Ballesteros')->position);
+
+        $shown = $this->_publicStageResultOf('Antonio Pino');
+        $this->assertEquals(StatusCode::DNF, $shown['status_code']);
+        $this->assertNull($shown['finish_time']);
+        $this->assertEmpty($shown['time_seconds']);
+        $this->assertEmpty($shown['position']);
+    }
+
+    /**
+     * A runner that becomes NC has no position in the new upload, while the next runner takes it over:
+     * keeping the stale one left two runners sharing a position.
+     */
+    public function testAddNew_shouldNotKeepThePositionOfARunnerReUploadedWithoutOne()
+    {
+        Cache::clear();
+        ClassesTable::load()->updateAll(['stage_id' => StagesFixture::STAGE_FEDO_2], ['id' => ClassEntity::ME]);
+        $finishTimes = ResultExamples::resultSimpleFinishTime();
+        $this->_uploadSimpleFinishTimes($finishTimes);
+        $this->assertEquals(1, $this->_storedResultOf('Ballesteros')->position);
+
+        $runners = &$finishTimes['event']['stages'][0]['classes'][0]['runners'];
+        $runners[0]['runner_results'][0]['status_code'] = StatusCode::NC;
+        unset($runners[0]['runner_results'][0]['position']);
+        $runners[1]['runner_results'][0]['position'] = 1;
+        unset($runners);
+        $this->_uploadSimpleFinishTimes($finishTimes);
+
+        $this->assertEmpty($this->_storedResultOf('Ballesteros')->position);
+        $this->assertEquals(1, $this->_storedResultOf('Pino')->position);
+        $this->assertEmpty($this->_publicStageResultOf('Maria Ballesteros')['position']);
+        $this->assertEquals(1, $this->_publicStageResultOf('Antonio Pino')['position']);
     }
 
     public function testAddNew_shouldNotUpdateStartListWhenThereAreFinishTimes()

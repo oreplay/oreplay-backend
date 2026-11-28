@@ -110,7 +110,7 @@ class TeamsTable extends AppTable
         $teamData = self::_withStorableName($teamData);
         $this->getStoredAllParticipantsInClass($eventId, $stageId, $class->id);
         try {
-            $team = $this->matchTeam($teamData, $class);
+            $team = $this->matchTeam($teamData, $class)->applyUploadedNc($teamData);
         } catch (NotFoundException $e) {
             /** @var Team $team */
             $team = $this->fillNewWithStage($teamData, $eventId, $stageId);

@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Lib;
 
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\Http\Exception\InternalErrorException;
 use RestApi\Lib\Exception\DetailedException;
 use Results\Lib\Import\IntermediateStations;
@@ -235,19 +236,30 @@ class UploadHelper
         $existingResults = $this->_existingResults->getExistingDbResults($participant, $resultToSave);
         $existingResultAmount = count($existingResults);
         if ($existingResultAmount) {
+            $isRadiosAfterDownload = $resultToSave->isIntermediates() && $existingResults[0]->isSplits();
             if ($existingResultAmount === 1) {
                 // if there is only one existing result, we reuse the ID to replace the db row
                 $resultToSave->setIDsToUpdate($existingResults[0]);
+                if (!$isRadiosAfterDownload) {
+                    // the upload replaces the stored result, so what it omits must not survive from the old row;
+                    // radios after a download only add punches to the downloaded result and keep its finish data
+                    $resultToSave->resetFieldsTheUploadOmits($this->_resultsSchemaOf($resultToSave));
+                }
             } else {
                 // if there is more than one result, we remove them all to avoid duplicates
                 $participant = $participant->removeAllExistingResults($existingResults);
             }
-            $isRadiosAfterDownload = $resultToSave->isIntermediates() && $existingResults[0]->isSplits();
             if ($isRadiosAfterDownload) {
                 $resultToSave->setUploadTypeSplits();
             }
         }
         return $participant;
+    }
+
+    private function _resultsSchemaOf(RunnerResult|TeamResult $result): TableSchemaInterface
+    {
+        $table = $result instanceof TeamResult ? TeamResultsTable::load() : RunnerResultsTable::load();
+        return $table->getSchema();
     }
 
     public function getStageTypeId(): string

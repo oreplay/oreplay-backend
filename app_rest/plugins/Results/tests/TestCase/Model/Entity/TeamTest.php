@@ -112,4 +112,14 @@ class TeamTest extends TestCase
         ];
         $this->assertEquals($expected, $teamResult->_getStage()->toArray());
     }
+
+    public function testApplyUploadedNc_shouldUpdateTheNcFlagOfAStoredTeam()
+    {
+        $team = new Team(['is_nc' => false, 'bib_number' => 101], ['markClean' => true]);
+        $team->setNew(false);
+
+        $this->assertTrue($team->applyUploadedNc(['is_nc' => true])->is_nc);
+        $this->assertFalse($team->applyUploadedNc(['is_nc' => false])->is_nc);
+        $this->assertFalse($team->applyUploadedNc([])->is_nc);
+    }
 }

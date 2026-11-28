@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Results\Model\Entity;
 
+use Cake\Database\Schema\TableSchemaInterface;
 use Cake\I18n\FrozenTime;
 use Results\Lib\Consts\UploadTypes;
 use Results\Lib\UploadHelper;
@@ -49,6 +50,24 @@ trait ResultTraitMatcher
         $this->id = $oldResult->id;
         if ($this->_keepsTheStoredCourse($oldResult)) {
             $this->_carryOverSplitsHash($oldResult);
+        }
+        return $this;
+    }
+
+    /**
+     * A reused row is saved as an UPDATE of the dirty fields only, so every result field the upload does not
+     * carry is set back to its column default, as if the row had been inserted fresh. The fields that match
+     * the upload to the stored result (stage_order, leg_number) are kept.
+     */
+    public function resetFieldsTheUploadOmits(TableSchemaInterface $schema): static
+    {
+        foreach ($this->_accessible as $field => $isAccessible) {
+            $isMatchingKey = in_array($field, ['stage_order', 'leg_number'], true);
+            if ($isAccessible !== true || $isMatchingKey || $this->isDirty($field)) {
+                continue;
+            }
+            $this->_fields[$field] = $schema->getColumn($field)['default'] ?? null;
+            $this->setDirty($field);
         }
         return $this;
     }

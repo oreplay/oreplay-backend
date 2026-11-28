@@ -16,6 +16,10 @@ trait StoredParticipantTrait
     private array $_storedParticipantsInClass = [];
     private array $_participantsByKey = [];
     private string $_classIdForStoredParticipants = '';
+    /**
+     * Ids of the stored participants an earlier payload row of the class already matched or created.
+     */
+    private array $_claimedParticipantIds = [];
 
     public function getStoredAllParticipantsInClass(string $eventId, string $stageId, ?string $classId)
     {
@@ -38,6 +42,7 @@ trait StoredParticipantTrait
             }
             $this->_classIdForStoredParticipants = $classIdString;
             $this->_storedParticipantsInClass = $runners->all()->toArray();
+            $this->_claimedParticipantIds = [];
             foreach ($this->_storedParticipantsInClass as $participant) {
                 $this->_indexParticipant($participant);
             }
@@ -53,6 +58,7 @@ trait StoredParticipantTrait
             $this->_classIdForStoredParticipants = $classId;
             $this->_storedParticipantsInClass = [];
             $this->_participantsByKey = [];
+            $this->_claimedParticipantIds = [];
         }
     }
 
@@ -69,6 +75,7 @@ trait StoredParticipantTrait
         $this->ifDifferentClassEmptyStoredList($classId);
         $this->_storedParticipantsInClass[] = $runnerOrTeam;
         $this->_indexParticipant($runnerOrTeam);
+        $this->claimParticipant($runnerOrTeam);
     }
 
     /**
@@ -82,6 +89,41 @@ trait StoredParticipantTrait
         foreach ($participant->matchingKeys() as $kind => $value) {
             $key = self::_keyOf($value);
             if ($key !== null) {
+                $this->_participantsByKey[$kind][$key][] = $participant;
+            }
+        }
+    }
+
+    /**
+     * Two payload rows can match one stored participant (a bib handed out twice, see
+     * ClassImporter::_importEachRunner). Only the first row may correct its fields: a later one is another
+     * person colliding with it, and letting it write would overwrite the first row's data.
+     *
+     * @param Runner|Team $participant
+     * @return bool true the first time the participant is claimed in this class
+     */
+    protected function claimParticipant($participant): bool
+    {
+        if (isset($this->_claimedParticipantIds[$participant->id])) {
+            return false;
+        }
+        $this->_claimedParticipantIds[$participant->id] = true;
+        return true;
+    }
+
+    /**
+     * A matched participant may have had a match key corrected by the payload (a new bib, a fixed name), and
+     * a later row of the same upload has to find it under the new value. The old entry is left behind on
+     * purpose: the index only narrows the candidates and the entity's own predicate, which reads the current
+     * fields, still rejects it.
+     *
+     * @param Runner|Team $participant
+     */
+    protected function reindexParticipant($participant, array $keysBefore): void
+    {
+        foreach ($participant->matchingKeys() as $kind => $value) {
+            $key = self::_keyOf($value);
+            if ($key !== null && $key !== self::_keyOf($keysBefore[$kind] ?? null)) {
                 $this->_participantsByKey[$kind][$key][] = $participant;
             }
         }

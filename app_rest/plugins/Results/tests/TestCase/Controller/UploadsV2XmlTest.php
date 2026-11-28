@@ -10,6 +10,7 @@ use Cake\Cache\Cache;
 use Results\Lib\Consts\StatusCode;
 use Results\Lib\Consts\UploadTypes;
 use Results\Model\Entity\Event;
+use Results\Model\Entity\RunnerResult;
 use Results\Model\Table\EventsTable;
 use Results\Model\Table\RawUploadsTable;
 use Results\Model\Table\RunnerResultsTable;
@@ -248,6 +249,46 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
         $this->assertSame([StatusCode::OK], array_values(array_unique($codes)));
     }
 
+    private function _storedResultOfFamily(string $family): RunnerResult
+    {
+        $runner = RunnersTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'last_name' => $family])
+            ->firstOrFail();
+        return RunnerResultsTable::load()->find()->where(['runner_id' => $runner->id])->firstOrFail();
+    }
+
+    /**
+     * The IOF result of a runner who did not finish carries no FinishTime, Time or Position, and a
+     * re-upload reusing the stored row must not keep the ones of the earlier upload.
+     */
+    public function testAddNew_shouldClearTheFinishDataOfAResultReUploadedAsDidNotFinish()
+    {
+        $original = file_get_contents($this->_asset('iof/splits.xml'));
+        $this->_postXmlBody($original);
+        $this->assertUploadOk();
+        $this->assertEquals(3, $this->_storedResultOfFamily('stni stni')->position);
+
+        $dnf = str_replace([
+            '<FinishTime>2025-03-26T09:07:52.000</FinishTime>',
+            '<Time>3952</Time>',
+            '<TimeBehind>42</TimeBehind>',
+            '<Position>3</Position>',
+        ], '', $original);
+        $dnf = preg_replace('#(<Family>stni stni</Family>.*?)<Status>OK</Status>#s',
+            '$1<Status>DidNotFinish</Status>', $dnf, 1);
+        $this->_postXmlBody($dnf);
+        $this->assertUploadOk();
+
+        $result = $this->_storedResultOfFamily('stni stni');
+        $this->assertEquals(StatusCode::DNF, $result->status_code);
+        $this->assertNull($result->finish_time);
+        $this->assertEmpty($result->time_seconds);
+        $this->assertEmpty($result->position);
+        $this->assertEmpty($result->time_behind);
+        $this->assertEquals(1, $this->_storedResultOfFamily('rnrss rnrss')->position);
+        $this->assertEquals(2, $this->_storedResultOfFamily('srmos srmos')->position);
+    }
+
     /**
      * Only reachable with validate=0, since the schema refuses a status outside the standard. Inventing a
      * status for it would publish a result nobody set, so the upload is refused and names the value.
@@ -288,6 +329,43 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
             'the comment is the order to show, including radio 35 that no runner has reached yet');
     }
 
+    private function _isNcOfRunner2(): bool
+    {
+        $runner = RunnersTable::load()->find()
+            ->where([
+                'event_id' => Event::FIRST_EVENT,
+                'stage_id' => StagesFixture::STAGE_FEDO_2,
+                'first_name' => 'Name 2',
+                'last_name' => 'Surname 2',
+            ])
+            ->firstOrFail();
+        return (bool)$runner->is_nc;
+    }
+
+    public function testAddNew_shouldMarkARunnerNotCompetingWhenAReUploadFlagsIt()
+    {
+        $this->_postXml('nc-reupload/1-all-ok.xml');
+        $this->assertUploadOk();
+        $this->assertFalse($this->_isNcOfRunner2());
+
+        $this->_postXml('nc-reupload/2-runner2-nc.xml');
+        $this->assertUploadOk();
+
+        $this->assertTrue($this->_isNcOfRunner2());
+    }
+
+    public function testAddNew_shouldClearNotCompetingWhenAReUploadNoLongerFlagsIt()
+    {
+        $this->_postXml('nc-reupload/2-runner2-nc.xml');
+        $this->assertUploadOk();
+        $this->assertTrue($this->_isNcOfRunner2());
+
+        $this->_postXml('nc-reupload/1-all-ok.xml');
+        $this->assertUploadOk();
+
+        $this->assertFalse($this->_isNcOfRunner2());
+    }
+
     public function testAddNew_shouldSkipAnUnchangedClassOnASecondIdenticalXmlUpload()
     {
         $first = $this->_postXml('iof/splits.xml');
@@ -299,6 +377,40 @@ class UploadsV2XmlTest extends ApiCommonErrorsTest
 
         $this->assertEquals(0, $second['meta']['updated']['classes'],
             'the canonical upload hash has to recognise the same XML as unchanged');
+    }
+
+    /**
+     * #86: an IOF XML re-upload carries the corrected card in <ControlCard> and the fixed name in <Given>;
+     * the runner matched by its bib has to take both.
+     */
+    public function testAddNew_shouldUpdateTheCardAndNameOfAnExistingRunnerOnXmlReupload()
+    {
+        $xml = file_get_contents($this->_asset('iof/splits.xml'));
+        $this->_postXmlBody($xml);
+        $this->assertUploadOk();
+        $runnerId = $this->_storedRunnerWithBib('3')->id;
+
+        $corrected = str_replace(
+            ['<Given>maoli</Given>', '<ControlCard>9000003</ControlCard>'],
+            ['<Given>maolia</Given>', '<ControlCard>7777777</ControlCard>'],
+            $xml
+        );
+        $this->_postXmlBody($corrected);
+        $this->assertUploadOk();
+
+        $runner = $this->_storedRunnerWithBib('3');
+        $this->assertEquals($runnerId, $runner->id, 'the runner is matched, not created again');
+        $this->assertEquals('7777777', $runner->sicard);
+        $this->assertEquals('maolia', $runner->first_name);
+    }
+
+    private function _storedRunnerWithBib(string $bib): \Results\Model\Entity\Runner
+    {
+        /** @var \Results\Model\Entity\Runner $runner */
+        $runner = RunnersTable::load()->find()
+            ->where(['stage_id' => StagesFixture::STAGE_FEDO_2, 'bib_number' => $bib])
+            ->firstOrFail();
+        return $runner;
     }
 
     public function testAddNew_shouldStoreTheOriginalBytesInRawUploads()

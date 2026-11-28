@@ -44,6 +44,7 @@ class Runner extends AppEntity implements ParticipantInterface
         'first_name' => true,
         'last_name' => true,
         'sicard' => true,
+        'sicard_alt' => true,
         'bib_number' => true,
         'sex' => true,
         'leg_number' => true,
@@ -104,6 +105,65 @@ class Runner extends AppEntity implements ParticipantInterface
             $this->addRunnerResult($existingResult);
         }
         return $this;
+    }
+
+    /**
+     * Fields the event software may correct after a first upload (a rented card swapped, a typo in a name)
+     * and that do not identify the runner on their own, so the payload always wins when it carries them.
+     */
+    private const FIELDS_UPDATED_ON_REUPLOAD = [
+        'first_name',
+        'last_name',
+        'sicard',
+        'sicard_alt',
+        'sex',
+        'eligibility',
+        'iof_id',
+    ];
+
+    /**
+     * A runner matched on a re-upload used to keep whatever the first upload stored, so corrections made
+     * in the event software never reached the results (#86). Only fields present in the payload are
+     * touched, and only when they changed, so an unchanged runner is not saved again.
+     * - db_id is the client's own identity for the runner: it is filled in when missing, never replaced.
+     * - A negative bib means the runner was removed from the ranking (RunnersTable::removeFromRanking), and
+     *   a re-upload must not bring the positive bib back.
+     * - The NC flag follows the payload too (#83), see ParticipantTrait::applyUploadedNc().
+     * - A row with another db_id is another person that only collided on the bib or the name, so it
+     *   corrects nothing, not even the NC flag.
+     */
+    public function updateFromUpload(array $runnerData): static
+    {
+        if ($this->_hasAnotherDbIdThan($runnerData)) {
+            return $this;
+        }
+        foreach (self::FIELDS_UPDATED_ON_REUPLOAD as $field) {
+            $this->_setIfChanged($field, $runnerData[$field] ?? null);
+        }
+        if (!$this->db_id) {
+            $this->_setIfChanged('db_id', $runnerData['db_id'] ?? null);
+        }
+        if (!$this->isRemovedFromRanking()) {
+            $this->_setIfChanged('bib_number', $runnerData['bib_number'] ?? null);
+        }
+        return $this->applyUploadedNc($runnerData);
+    }
+
+    private function _hasAnotherDbIdThan(array $runnerData): bool
+    {
+        $newDbId = $runnerData['db_id'] ?? null;
+        return $this->db_id && $newDbId && (string)$this->db_id !== (string)$newDbId;
+    }
+
+    private function _setIfChanged(string $field, $newValue): void
+    {
+        if ($newValue === null || $newValue === '') {
+            return;
+        }
+        if ((string)($this->_fields[$field] ?? '') === (string)$newValue) {
+            return;
+        }
+        $this->set($field, $newValue);
     }
 
     public function addClub(Club $club): Runner
